@@ -6,11 +6,10 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse, FileResponse
 
+# Routers "seguros" (no fallan al importar)
 from app.routes import (
     auth,
     plan,
-    stripe_routes,
-    stripe_webhook,
     analisis_cuerpo,
     user_status,
     chat,
@@ -29,21 +28,28 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Routers API
+# --------- incluir routers ---------
 app.include_router(auth.router)
 app.include_router(plan.router)
-app.include_router(stripe_routes.router)
-app.include_router(stripe_webhook.router)
 app.include_router(analisis_cuerpo.router)
 app.include_router(user_status.router)
 app.include_router(chat.router)
 app.include_router(onboarding.router)
 
-# Paths
+# Stripe (protegido por si faltan variables)
+try:
+    from app.routes import stripe_routes, stripe_webhook
+    app.include_router(stripe_routes.router)
+    app.include_router(stripe_webhook.router)
+    print("[INFO] Stripe routes enabled")
+except Exception as e:
+    print("[WARN] Stripe routes disabled:", e)
+
+# --------- paths de frontend ---------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))   # .../app
 FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")       # .../app/frontend
 
-# --- ENDPOINTS DE TEST (3 alias para evitar dudas) ---
+# --------- health & debug ---------
 @app.get("/ping")
 @app.get("/_ping")
 @app.get("/__ping")
@@ -62,12 +68,11 @@ def __debug_ls():
     except Exception as e:
         return {"error": str(e)}
 
-# --- Redirección raíz
+# --------- servir HTMLs (sin conflictos) ---------
 @app.get("/")
 def root_redirect():
     return RedirectResponse(url="/login.html")
 
-# --- Servir HTMLs (sin conflictos)
 def _html(name: str):
     return FileResponse(os.path.join(FRONTEND_DIR, name))
 
@@ -89,10 +94,10 @@ def _tarifas(): return _html("tarifas.html")
 @app.get("/pago.html")
 def _pago(): return _html("pago.html")
 
-# --- Assets
+# estáticos (css/js/img) si los tienes en la misma carpeta
 app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
-# --- OpenAPI custom
+# --------- openapi custom ---------
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
@@ -113,7 +118,7 @@ def custom_openapi():
 
 app.openapi = custom_openapi
 
-# --- LOG de rutas al arrancar (lo verás en Deploy Logs)
+# log de rutas al arrancar (aparece en Deploy Logs)
 @app.on_event("startup")
 async def _print_routes():
     try:
