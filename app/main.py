@@ -4,7 +4,7 @@ import os
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import RedirectResponse
 
 from app.routes import (
     auth,
@@ -42,41 +42,23 @@ app.include_router(user_status.router)
 app.include_router(chat.router)
 app.include_router(onboarding.router)
 
-@app.get("/")
-def root():
+@app.get("/health")
+def health():
     return {
         "message": "GYM AI API",
         "openai_available": bool(os.getenv("OPENAI_API_KEY")),
     }
 
-# Servir archivos HTML específicos
-@app.get("/dashboard.html")
-async def serve_dashboard():
-    return FileResponse(os.path.join(FRONTEND_DIR, "dashboard.html"))
+# --------- SERVIR FRONTEND ---------
+# Monta todos los archivos .html directamente
+app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
 
-@app.get("/login.html")
-async def serve_login():
-    return FileResponse(os.path.join(FRONTEND_DIR, "login.html"))
+# Redirigir "/" a login.html
+@app.get("/")
+def root_redirect():
+    return RedirectResponse(url="/login.html")
 
-@app.get("/rutina.html")
-async def serve_rutina():
-    return FileResponse(os.path.join(FRONTEND_DIR, "rutina.html"))
-
-@app.get("/onboarding.html")
-async def serve_onboarding_html():
-    return FileResponse(os.path.join(FRONTEND_DIR, "onboarding.html"))
-
-@app.get("/tarifas.html")
-async def serve_tarifas():
-    return FileResponse(os.path.join(FRONTEND_DIR, "tarifas.html"))
-
-@app.get("/pago.html")
-async def serve_pago():
-    return FileResponse(os.path.join(FRONTEND_DIR, "pago.html"))
-
-# Montar archivos estáticos para CSS, JS, imágenes
-app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
-
+# --------- OPENAPI CUSTOM ---------
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
