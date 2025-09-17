@@ -20,6 +20,7 @@ from app.routes import (
 load_dotenv()
 app = FastAPI()
 
+# CORS abierto mientras probamos
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,27 +29,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Directorio absoluto de frontend (robusto para Railway)
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
+# ----- Paths útiles para estáticos
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))         # .../app
+FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")             # .../app/frontend
 
-# --- DEBUG: listar carpeta del frontend dentro del contenedor ---
-@app.get("/__debug_ls")
-def __debug_ls():
-    try:
-        import os
-        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-        FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
-        return {
-            "BASE_DIR": BASE_DIR,
-            "FRONTEND_DIR": FRONTEND_DIR,
-            "exists": os.path.exists(FRONTEND_DIR),
-            "files": os.listdir(FRONTEND_DIR) if os.path.exists(FRONTEND_DIR) else []
-        }
-    except Exception as e:
-        return {"error": str(e)}
-
-# Routers para API
+# Routers API
 app.include_router(auth.router)
 app.include_router(plan.router)
 app.include_router(stripe_routes.router)
@@ -58,18 +43,36 @@ app.include_router(user_status.router)
 app.include_router(chat.router)
 app.include_router(onboarding.router)
 
-@app.get("/health")
-def health():
-    return {
-        "message": "GYM AI API",
-        "openai_available": bool(os.getenv("OPENAI_API_KEY")),
-    }
+# --------- ENDPOINTS DE DIAGNÓSTICO ---------
+@app.get("/__ping")
+def __ping():
+    return {"ok": True}
+
+@app.get("/__debug_ls")
+def __debug_ls():
+    try:
+        cwd = os.getcwd()
+        exists_front = os.path.exists(FRONTEND_DIR)
+        files_front = os.listdir(FRONTEND_DIR) if exists_front else []
+        here_files = os.listdir(BASE_DIR)
+        return {
+            "cwd": cwd,
+            "BASE_DIR": BASE_DIR,
+            "FRONTEND_DIR": FRONTEND_DIR,
+            "frontend_exists": exists_front,
+            "frontend_files": files_front,
+            "app_dir_listing": here_files,
+        }
+    except Exception as e:
+        return {"error": str(e)}
 
 # --------- SERVIR FRONTEND ---------
-# Monta todos los archivos .html directamente
+# montaje normal en raíz
 app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
+# montaje alternativo para pruebas en /_f
+app.mount("/_f", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend_alt")
 
-# Redirigir "/" a login.html
+# Redirige "/" a login.html
 @app.get("/")
 def root_redirect():
     return RedirectResponse(url="/login.html")
