@@ -4,7 +4,7 @@ import os
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, FileResponse
 
 from app.routes import (
     auth,
@@ -29,10 +29,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ----- Paths útiles para estáticos
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))         # .../app
-FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")             # .../app/frontend
-
 # Routers API
 app.include_router(auth.router)
 app.include_router(plan.router)
@@ -43,7 +39,11 @@ app.include_router(user_status.router)
 app.include_router(chat.router)
 app.include_router(onboarding.router)
 
-# --------- ENDPOINTS DE DIAGNÓSTICO ---------
+# Paths
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))   # .../app
+FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")       # .../app/frontend
+
+# --- Test / diagnóstico ---
 @app.get("/__ping")
 def __ping():
     return {"ok": True}
@@ -51,33 +51,46 @@ def __ping():
 @app.get("/__debug_ls")
 def __debug_ls():
     try:
-        cwd = os.getcwd()
-        exists_front = os.path.exists(FRONTEND_DIR)
-        files_front = os.listdir(FRONTEND_DIR) if exists_front else []
-        here_files = os.listdir(BASE_DIR)
         return {
-            "cwd": cwd,
             "BASE_DIR": BASE_DIR,
             "FRONTEND_DIR": FRONTEND_DIR,
-            "frontend_exists": exists_front,
-            "frontend_files": files_front,
-            "app_dir_listing": here_files,
+            "frontend_exists": os.path.exists(FRONTEND_DIR),
+            "frontend_files": os.listdir(FRONTEND_DIR) if os.path.exists(FRONTEND_DIR) else [],
         }
     except Exception as e:
         return {"error": str(e)}
 
-# --------- SERVIR FRONTEND ---------
-# montaje normal en raíz
-app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
-# montaje alternativo para pruebas en /_f
-app.mount("/_f", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend_alt")
-
-# Redirige "/" a login.html
+# --- Redirección raíz
 @app.get("/")
 def root_redirect():
     return RedirectResponse(url="/login.html")
 
-# --------- OPENAPI CUSTOM ---------
+# --- Servir HTMLs (sin conflictos)
+def _html(name: str):
+    return FileResponse(os.path.join(FRONTEND_DIR, name))
+
+@app.get("/login.html")
+def _login(): return _html("login.html")
+
+@app.get("/dashboard.html")
+def _dashboard(): return _html("dashboard.html")
+
+@app.get("/rutina.html")
+def _rutina(): return _html("rutina.html")
+
+@app.get("/onboarding.html")
+def _onboarding(): return _html("onboarding.html")
+
+@app.get("/tarifas.html")
+def _tarifas(): return _html("tarifas.html")
+
+@app.get("/pago.html")
+def _pago(): return _html("pago.html")
+
+# --- Assets (css/js/img)
+app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
+
+# --- OpenAPI custom
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
