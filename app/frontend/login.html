@@ -47,7 +47,10 @@
   </div>
 
   <script type="module">
+    console.log("🟢 Script login.html cargando...");
+    
     import { doLogin, doRegister, logout } from "./auth.js";
+    console.log("🟢 Auth.js importado correctamente");
 
     const form = document.getElementById("form-login");
     const emailInput = document.getElementById("email");
@@ -57,6 +60,14 @@
     const msgEl = document.getElementById("msg");
     const logoutSection = document.getElementById("logoutSection");
     const logoutBtn = document.getElementById("logoutBtn");
+    
+    console.log("🟢 Elementos encontrados:", {
+      emailInput: !!emailInput,
+      passwordInput: !!passwordInput,
+      loginBtn: !!loginBtn,
+      registerBtn: !!registerBtn,
+      msgEl: !!msgEl
+    });
 
     // Crear formulario virtual para manejar el submit
     const virtualForm = document.createElement("form");
@@ -95,9 +106,12 @@
 
     // Manejar registro
     registerBtn.addEventListener("click", async (e) => {
+      console.log("🔵 Botón registro clickeado");
       e.preventDefault();
       const email = emailInput.value.trim();
       const password = passwordInput.value;
+
+      console.log("🔵 Email:", email, "Password:", password ? "***" : "vacío");
 
       if (!email || !password) {
         msgEl.textContent = "Por favor completa todos los campos";

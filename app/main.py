@@ -94,6 +94,16 @@ def _tarifas(): return _html("tarifas.html")
 @app.get("/pago.html")
 def _pago(): return _html("pago.html")
 
+# Servir archivos JS específicos
+@app.get("/auth.js")
+def _auth_js(): return FileResponse(FRONTEND_DIR / "auth.js", media_type="application/javascript")
+
+@app.get("/config.js")
+def _config_js(): return FileResponse(FRONTEND_DIR / "config.js", media_type="application/javascript")
+
+@app.get("/onboarding.js")
+def _onboarding_js(): return FileResponse(FRONTEND_DIR / "onboarding.js", media_type="application/javascript")
+
 # estáticos (css/js/img) si los tienes en la misma carpeta
 app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
