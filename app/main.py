@@ -4,13 +4,12 @@ import os
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import RedirectResponse, FileResponse
 
+# Routers "seguros" (no fallan al importar)
 from app.routes import (
     auth,
     plan,
-    stripe_routes,
-    stripe_webhook,
     analisis_cuerpo,
     user_status,
     chat,
@@ -20,6 +19,7 @@ from app.routes import (
 load_dotenv()
 app = FastAPI()
 
+# CORS abierto mientras probamos
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,55 +28,76 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Directorio absoluto de frontend (robusto para Railway)
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
-
-# Routers para API
+# --------- incluir routers ---------
 app.include_router(auth.router)
 app.include_router(plan.router)
-app.include_router(stripe_routes.router)
-app.include_router(stripe_webhook.router)
 app.include_router(analisis_cuerpo.router)
 app.include_router(user_status.router)
 app.include_router(chat.router)
 app.include_router(onboarding.router)
 
-@app.get("/")
-def root():
-    return {
-        "message": "GYM AI API",
-        "openai_available": bool(os.getenv("OPENAI_API_KEY")),
-    }
+# Stripe (protegido por si faltan variables)
+try:
+    from app.routes import stripe_routes, stripe_webhook
+    app.include_router(stripe_routes.router)
+    app.include_router(stripe_webhook.router)
+    print("[INFO] Stripe routes enabled")
+except Exception as e:
+    print("[WARN] Stripe routes disabled:", e)
 
-# Servir archivos HTML específicos
-@app.get("/dashboard.html")
-async def serve_dashboard():
-    return FileResponse(os.path.join(FRONTEND_DIR, "dashboard.html"))
+# --------- paths de frontend ---------
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))   # .../app
+FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")       # .../app/frontend
+
+# --------- health & debug ---------
+@app.get("/ping")
+@app.get("/_ping")
+@app.get("/__ping")
+def __ping():
+    return {"ok": True}
+
+@app.get("/__debug_ls")
+def __debug_ls():
+    try:
+        return {
+            "BASE_DIR": BASE_DIR,
+            "FRONTEND_DIR": FRONTEND_DIR,
+            "frontend_exists": os.path.exists(FRONTEND_DIR),
+            "frontend_files": os.listdir(FRONTEND_DIR) if os.path.exists(FRONTEND_DIR) else [],
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+# --------- servir HTMLs (sin conflictos) ---------
+@app.get("/")
+def root_redirect():
+    return RedirectResponse(url="/login.html")
+
+def _html(name: str):
+    return FileResponse(os.path.join(FRONTEND_DIR, name))
 
 @app.get("/login.html")
-async def serve_login():
-    return FileResponse(os.path.join(FRONTEND_DIR, "login.html"))
+def _login(): return _html("login.html")
+
+@app.get("/dashboard.html")
+def _dashboard(): return _html("dashboard.html")
 
 @app.get("/rutina.html")
-async def serve_rutina():
-    return FileResponse(os.path.join(FRONTEND_DIR, "rutina.html"))
+def _rutina(): return _html("rutina.html")
 
 @app.get("/onboarding.html")
-async def serve_onboarding_html():
-    return FileResponse(os.path.join(FRONTEND_DIR, "onboarding.html"))
+def _onboarding(): return _html("onboarding.html")
 
 @app.get("/tarifas.html")
-async def serve_tarifas():
-    return FileResponse(os.path.join(FRONTEND_DIR, "tarifas.html"))
+def _tarifas(): return _html("tarifas.html")
 
 @app.get("/pago.html")
-async def serve_pago():
-    return FileResponse(os.path.join(FRONTEND_DIR, "pago.html"))
+def _pago(): return _html("pago.html")
 
-# Montar archivos estáticos para CSS, JS, imágenes
+# estáticos (css/js/img) si los tienes en la misma carpeta
 app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
+# --------- openapi custom ---------
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
@@ -96,3 +117,12 @@ def custom_openapi():
     return app.openapi_schema
 
 app.openapi = custom_openapi
+
+# log de rutas al arrancar (aparece en Deploy Logs)
+@app.on_event("startup")
+async def _print_routes():
+    try:
+        paths = sorted({getattr(r, "path", "") for r in app.routes})
+        print("[ROUTES]", paths)
+    except Exception as e:
+        print("[ROUTES-ERROR]", e)
