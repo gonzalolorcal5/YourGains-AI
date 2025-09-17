@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <title>Planes de Suscripción • YourGains AI</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Bloqueo simple: exige estar logueado con Supabase (revisamos token guardado por auth.js)
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) window.location.href = './login.html';
+  </script>
+</head>
+<body class="min-h-screen bg-neutral-950 text-white">
+  <header class="border-b border-neutral-800">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="text-xl font-bold">YourGains <span class="text-lime-400">AI</span></div>
+      <a href="./rutina.html" class="text-sm bg-neutral-800 px-3 py-1.5 rounded-lg hover:bg-neutral-700">Ir a mi área</a>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-10">
+    <h1 class="text-3xl font-semibold text-center mb-8">Elige tu plan</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Plan Mensual -->
+      <div class="bg-neutral-900 rounded-2xl p-6 border border-neutral-800">
+        <h2 class="text-xl font-semibold mb-2">Plan Mensual</h2>
+        <p class="text-3xl font-bold text-lime-400 mb-1">9,99 €/mes</p>
+        <p class="text-neutral-400 mb-6">Acceso completo a rutinas y dietas.</p>
+        <a href="./pago.html?price_id=price_1RndvwCQGqty2HEcyuIQrzaq"
+           class="inline-block bg-lime-400 text-black font-semibold rounded-xl px-5 py-3 hover:bg-lime-300 transition">
+          Seleccionar
+        </a>
+      </div>
+
+      <!-- Plan Anual -->
+      <div class="bg-neutral-900 rounded-2xl p-6 border border-neutral-800">
+        <h2 class="text-xl font-semibold mb-2">Plan Anual</h2>
+        <p class="text-3xl font-bold text-lime-400 mb-1">79,99 €/año</p>
+        <p class="text-neutral-400 mb-6">Ahorra más de 35 € al año.</p>
+        <a href="./pago.html?price_id=price_1Rndx1CQGqty2HEcme6eiOmD"
+           class="inline-block bg-lime-400 text-black font-semibold rounded-xl px-5 py-3 hover:bg-lime-300 transition">
+          Seleccionar
+        </a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
