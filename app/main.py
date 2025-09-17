@@ -32,6 +32,22 @@ app.add_middleware(
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
 
+# --- DEBUG: listar carpeta del frontend dentro del contenedor ---
+@app.get("/__debug_ls")
+def __debug_ls():
+    try:
+        import os
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
+        return {
+            "BASE_DIR": BASE_DIR,
+            "FRONTEND_DIR": FRONTEND_DIR,
+            "exists": os.path.exists(FRONTEND_DIR),
+            "files": os.listdir(FRONTEND_DIR) if os.path.exists(FRONTEND_DIR) else []
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
 # Routers para API
 app.include_router(auth.router)
 app.include_router(plan.router)
