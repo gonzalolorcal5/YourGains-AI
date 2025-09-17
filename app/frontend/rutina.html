@@ -100,50 +100,13 @@
     </div>
   </main>
 
-  <script>
-    // Configuración de API (igual que dashboard.html)
-    const isLocal = location.hostname === "127.0.0.1" || location.hostname === "localhost" || location.protocol === "file:";
-    const API_BASE = isLocal ? "http://127.0.0.1:8000" : "https://yourgains-ai-production.up.railway.app";
-
-    // Funciones de autenticación (igual que dashboard.html)
-    function checkAuth() {
-        const token = localStorage.getItem('accessToken');
-        const email = localStorage.getItem('email');
-        
-        if (!token || !email) {
-            localStorage.clear();
-            window.location.href = './login.html';
-            return false;
-        }
-        
-        return true;
-    }
-
-    function getAuthHeaders() {
-        const token = localStorage.getItem('accessToken');
-        const email = localStorage.getItem('email');
-        
-        if (!token || !email) {
-            localStorage.clear();
-            window.location.href = './login.html';
-            return null;
-        }
-        
-        return {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            'X-User-Email': email
-        };
-    }
-
-    function logout() {
-        localStorage.clear();
-        window.location.href = './login.html';
-    }
+  <script type="module">
+    import { API_BASE } from "./config.js";
+    import { checkAuthOrRedirect, getAuthHeaders, logout } from "./auth.js";
 
     // Verificar autenticación al cargar la página
-    if (!checkAuth()) {
-        // La función ya redirige, no necesitamos hacer nada más
+    if (!checkAuthOrRedirect()) {
+      return;
     }
 
     const form = document.getElementById("rutina-form");
@@ -153,7 +116,7 @@
       e.preventDefault();
 
       // Verificar autenticación antes de enviar
-      if (!checkAuth()) return;
+      if (!checkAuthOrRedirect()) return;
 
       // Construir el JSON con el formato correcto para el backend
       const datos = {
@@ -210,6 +173,9 @@
         console.error(err);
       }
     });
+
+    // Hacer logout disponible globalmente
+    window.logout = logout;
   </script>
 </body>
 </html>

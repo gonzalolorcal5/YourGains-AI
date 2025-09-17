@@ -5,10 +5,13 @@
   <title>Planes de Suscripción • YourGains AI</title>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    // Bloqueo simple: exige estar logueado con Supabase (revisamos token guardado por auth.js)
-    const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken) window.location.href = './login.html';
+  <script type="module">
+    import { checkAuthOrRedirect } from "./auth.js";
+    
+    // Verificar autenticación
+    if (!checkAuthOrRedirect()) {
+      return;
+    }
   </script>
 </head>
 <body class="min-h-screen bg-neutral-950 text-white">

@@ -12,7 +12,15 @@
     <p class="text-neutral-400">Un momento mientras te redirigimos a Stripe.</p>
   </div>
 
-  <script>
+  <script type="module">
+    import { API_BASE } from "./config.js";
+    import { checkAuthOrRedirect, getAuthHeaders } from "./auth.js";
+    
+    // Verificar autenticación
+    if (!checkAuthOrRedirect()) {
+      return;
+    }
+
     async function iniciarPago() {
       // ✅ Sacamos el price_id de la URL (ej: pago.html?price_id=...)
       const params = new URLSearchParams(window.location.search);
@@ -26,9 +34,12 @@
 
       try {
         // ✅ Llamamos a tu backend FastAPI
-        const response = await fetch("https://yourgains-ai-production.up.railway.app/create-checkout-session", {
+        const headers = getAuthHeaders();
+        if (!headers) return;
+        
+        const response = await fetch(`${API_BASE}/create-checkout-session`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: headers,
           body: JSON.stringify({ price_id })
         });
 

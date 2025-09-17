@@ -1,6 +1,6 @@
 // onboarding.js - Manejo del formulario de configuración inicial
-const isLocal = location.hostname === "127.0.0.1" || location.hostname === "localhost" || location.protocol === "file:";
-const API_BASE = isLocal ? "http://127.0.0.1:8000" : "https://yourgains-ai-production.up.railway.app";
+import { API_BASE } from "./config.js";
+import { checkAuthOrRedirect, getAuthHeaders } from "./auth.js";
 
 const form = document.getElementById('onboardingForm');
 const submitBtn = document.getElementById('submitBtn');
@@ -8,11 +8,7 @@ const msg = document.getElementById('msg');
 
 // Verificar si hay sesión activa
 window.addEventListener('load', () => {
-    const token = localStorage.getItem("accessToken");
-    const email = localStorage.getItem("email");
-    
-    if (!token || !email) {
-        window.location.href = "./login.html";
+    if (!checkAuthOrRedirect()) {
         return;
     }
 });
@@ -56,13 +52,12 @@ form.addEventListener('submit', async (e) => {
         }
 
         // Enviar datos al backend
+        const headers = getAuthHeaders();
+        if (!headers) return;
+        
         const response = await fetch(`${API_BASE}/onboarding`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                'X-User-Email': localStorage.getItem('email')
-            },
+            headers: headers,
             body: JSON.stringify(formData)
         });
 

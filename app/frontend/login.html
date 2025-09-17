@@ -46,6 +46,105 @@
     </div>
   </div>
 
-  <script src="./auth.js" defer></script>
+  <script type="module">
+    import { doLogin, doRegister, logout } from "./auth.js";
+
+    const form = document.getElementById("form-login");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const loginBtn = document.getElementById("login");
+    const registerBtn = document.getElementById("register");
+    const msgEl = document.getElementById("msg");
+    const logoutSection = document.getElementById("logoutSection");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    // Crear formulario virtual para manejar el submit
+    const virtualForm = document.createElement("form");
+    virtualForm.id = "form-login";
+    virtualForm.style.display = "none";
+    virtualForm.appendChild(emailInput.cloneNode(true));
+    virtualForm.appendChild(passwordInput.cloneNode(true));
+    document.body.appendChild(virtualForm);
+
+    // Manejar login
+    loginBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        msgEl.textContent = "Por favor completa todos los campos";
+        return;
+      }
+
+      try {
+        loginBtn.disabled = true;
+        loginBtn.textContent = "Iniciando...";
+        msgEl.textContent = "";
+
+        await doLogin(email, password);
+        window.location.href = "./dashboard.html";
+      } catch (err) {
+        msgEl.textContent = err.message || "Error al iniciar sesión";
+        console.error(err);
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Iniciar sesión";
+      }
+    });
+
+    // Manejar registro
+    registerBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        msgEl.textContent = "Por favor completa todos los campos";
+        return;
+      }
+
+      try {
+        registerBtn.disabled = true;
+        registerBtn.textContent = "Registrando...";
+        msgEl.textContent = "";
+
+        await doRegister(email, password);
+        msgEl.textContent = "Registro exitoso. Ahora inicia sesión.";
+        msgEl.className = "text-center text-sm text-green-400 min-h-5";
+      } catch (err) {
+        msgEl.textContent = err.message || "Error al registrarse";
+        msgEl.className = "text-center text-sm text-red-400 min-h-5";
+        console.error(err);
+      } finally {
+        registerBtn.disabled = false;
+        registerBtn.textContent = "Registrarse";
+      }
+    });
+
+    // Manejar logout
+    logoutBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      logout();
+    });
+
+    // Verificar si ya hay sesión activa
+    const token = localStorage.getItem("accessToken");
+    const email = localStorage.getItem("email");
+    if (token && email) {
+      logoutSection.style.display = "block";
+      msgEl.textContent = `Sesión activa: ${email}`;
+      msgEl.className = "text-center text-sm text-green-400 min-h-5";
+    }
+
+    // Manejar Enter en los inputs
+    [emailInput, passwordInput].forEach(input => {
+      input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          loginBtn.click();
+        }
+      });
+    });
+  </script>
 </body>
 </html>

@@ -417,82 +417,17 @@
           </div>
       </div>
 
-      <script>
-          const isLocal = location.hostname === "127.0.0.1" || location.hostname === "localhost";
-          const API_BASE = isLocal ? "http://127.0.0.1:8000" : "https://yourgains-ai-production.up.railway.app";
+      <script type="module">
+          import { API_BASE } from "./config.js";
+          import { checkAuthOrRedirect, getAuthHeaders, logout, isTokenExpired, decodeJwt } from "./auth.js";
           
           const chatMessages = document.getElementById('chatMessages');
           const chatInput = document.getElementById('chatInput');
           const sendBtn = document.getElementById('sendBtn');
 
-          // Decodifica JWT (sin validar) para leer el 'exp'.
-          function decodeJwt(token) {
-              try {
-                  const [, payload] = token.split(".");
-                  const json = atob(payload.replace(/-/g, "+").replace(/_/g, "/"));
-                  return JSON.parse(json);
-              } catch {
-                  return null;
-              }
-          }
-
-          // Verificar si el token ha expirado usando 'exp' del JWT; fallback a 5 minutos desde login
-          function isTokenExpired() {
-              const token = localStorage.getItem("accessToken");
-              const loginTs = parseInt(localStorage.getItem("loginTimestamp") || "0");
-              
-              if (!token) {
-                  return true;
-              }
-
-              const decoded = decodeJwt(token);
-              
-              if (decoded && typeof decoded.exp === "number") {
-                  // exp en segundos → ms
-                  return Date.now() >= decoded.exp * 1000;
-              }
-
-              // Fallback: 5 minutos (consistente con backend ACCESS_TOKEN_EXPIRE_MINUTES)
-              const fiveMinutes = 5 * 60 * 1000;
-              if (!loginTs) return true;
-              return (Date.now() - loginTs) > fiveMinutes;
-          }
-
-          // Verificar autenticación al cargar
-          function checkAuth() {
-              const token = localStorage.getItem('accessToken');
-              const email = localStorage.getItem('email');
-              
-              if (!token || !email) {
-                  localStorage.clear();
-                  window.location.href = './login.html';
-                  return false;
-              }
-              
-              return true;
-          }
-
-          // Obtener headers de autenticación
-          function getAuthHeaders() {
-              const token = localStorage.getItem('accessToken');
-              const email = localStorage.getItem('email');
-              
-              if (!token || !email) {
-                  localStorage.clear();
-                  window.location.href = './login.html';
-                  return null;
-              }
-              
-              return {
-                  'Authorization': `Bearer ${token}`,
-                  'Content-Type': 'application/json',
-                  'X-User-Email': email
-              };
-          }
-
           // Verificar autenticación al cargar la página
-          if (!checkAuth()) {
-              // La función ya redirige, no necesitamos hacer nada más
+          if (!checkAuthOrRedirect()) {
+              return;
           }
 
           function addMessage(content, isUser = false) {
@@ -515,7 +450,7 @@
               if (!message) return;
 
               // Verificar autenticación antes de enviar
-              if (!checkAuth()) return;
+              if (!checkAuthOrRedirect()) return;
 
               addMessage(message, true);
               chatInput.value = '';
@@ -778,11 +713,8 @@
               }
           }
 
-          // Función de logout
-          function logout() {
-              localStorage.clear();
-              window.location.href = './login.html';
-          }
+          // Hacer logout disponible globalmente
+          window.logout = logout;
       </script>
   </body>
   </html>
