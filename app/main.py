@@ -43,7 +43,9 @@ app.include_router(onboarding.router)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))   # .../app
 FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")       # .../app/frontend
 
-# --- Test / diagnóstico ---
+# --- ENDPOINTS DE TEST (3 alias para evitar dudas) ---
+@app.get("/ping")
+@app.get("/_ping")
 @app.get("/__ping")
 def __ping():
     return {"ok": True}
@@ -87,7 +89,7 @@ def _tarifas(): return _html("tarifas.html")
 @app.get("/pago.html")
 def _pago(): return _html("pago.html")
 
-# --- Assets (css/js/img)
+# --- Assets
 app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
 # --- OpenAPI custom
@@ -110,3 +112,12 @@ def custom_openapi():
     return app.openapi_schema
 
 app.openapi = custom_openapi
+
+# --- LOG de rutas al arrancar (lo verás en Deploy Logs)
+@app.on_event("startup")
+async def _print_routes():
+    try:
+        paths = sorted({getattr(r, "path", "") for r in app.routes})
+        print("[ROUTES]", paths)
+    except Exception as e:
+        print("[ROUTES-ERROR]", e)
