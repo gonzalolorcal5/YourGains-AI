@@ -583,6 +583,34 @@
 
                 if (!premium && visibles < total) {
                     const ocultos = total - visibles;
+                    
+                    // Días censurados con efecto blur
+                    const diasCensurados = [
+                        { dia: "Día 3: Tren Superior", ejercicios: [
+                            { nombre: "Press de banca", series: "4", repeticiones: "8-10", descanso: "2 min" },
+                            { nombre: "Remo con barra", series: "4", repeticiones: "8-10", descanso: "2 min" }
+                        ]},
+                        { dia: "Día 4: Tren Inferior", ejercicios: [
+                            { nombre: "Sentadilla búlgara", series: "3", repeticiones: "12-15", descanso: "90 seg" },
+                            { nombre: "Peso muerto rumano", series: "3", repeticiones: "10-12", descanso: "2 min" }
+                        ]}
+                    ];
+
+                    diasCensurados.slice(0, Math.min(ocultos, 2)).forEach(dia => {
+                        rutinaHTML += `<div style=\"margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; position: relative; overflow: hidden;\">`;
+                        rutinaHTML += `<div style=\"filter: blur(1.5px); color: #64748b; user-select: none; pointer-events: none;\">`;
+                        rutinaHTML += `<h4 style=\"color: #84cc16; margin-bottom: 10px;\">${dia.dia}</h4>`;
+                        dia.ejercicios.forEach(ejercicio => {
+                            rutinaHTML += `<div style=\"margin-bottom: 10px;\">`;
+                            rutinaHTML += `<strong>${ejercicio.nombre}</strong><br>`;
+                            rutinaHTML += `Series: ${ejercicio.series} | Reps: ${ejercicio.repeticiones} | Descanso: ${ejercicio.descanso}`;
+                            rutinaHTML += `</div>`;
+                        });
+                        rutinaHTML += `</div>`;
+                        rutinaHTML += `<div style=\"position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(132, 204, 22, 0.9); color: white; padding: 6px 12px; border-radius: 6px; font-size: 14px; font-weight: 600;\">PRO</div>`;
+                        rutinaHTML += `</div>`;
+                    });
+
                     rutinaHTML += `<div style=\"margin-top: 10px; padding: 14px; border: 1px dashed #94a3b8; border-radius: 8px; background: rgba(148,163,184,0.08); color: #cbd5e1;\">`;
                     rutinaHTML += `${ocultos} día(s) restantes ocultos en el plan gratuito. `;
                     rutinaHTML += `<a href=\"./tarifas.html\" style=\"color:#84cc16; font-weight:600; text-decoration: underline;\">Mejora a Pro</a> para ver el 100% de tu rutina.`;
@@ -592,15 +620,48 @@
                 rutinaContent.innerHTML = rutinaHTML;
             }
 
-            // Mostrar consejos (sin recorte)
+            // Mostrar consejos (aplicar recorte si es free)
             const consejosContent = document.getElementById('consejosContent');
             if (plan.rutina && plan.rutina.consejos) {
+                const consejos = plan.rutina.consejos;
+                const total = consejos.length;
+                const premium = isPremiumUser();
+                const visibles = premium ? total : Math.max(2, Math.ceil(total * 0.33)); // Mostrar 33% (mínimo 2)
+
                 let consejosHTML = '<h3>Consejos de Entrenamiento</h3>';
-                plan.rutina.consejos.forEach(consejo => {
+                
+                // Consejos visibles
+                consejos.slice(0, visibles).forEach(consejo => {
                     consejosHTML += `<div style=\"margin-bottom: 10px; padding: 10px; background: #e8f5e8; border-radius: 5px;\">`;
                     consejosHTML += `• ${consejo}`;
                     consejosHTML += `</div>`;
                 });
+
+                // Consejos censurados para usuarios no premium
+                if (!premium && visibles < total) {
+                    const ocultos = total - visibles;
+                    const consejosCensurados = [
+                        "La hidratación adecuada es fundamental para el rendimiento muscular. Bebe al menos 2-3 litros de agua diarios, especialmente antes y después del entrenamiento.",
+                        "El descanso entre series debe ser progresivo: 60-90 segundos para hipertrofia, 2-3 minutos para fuerza máxima.",
+                        "La técnica correcta siempre prevalece sobre el peso. Es mejor hacer 8 repeticiones perfectas que 12 mal ejecutadas.",
+                        "La nutrición post-entrenamiento es crucial. Consume proteínas y carbohidratos en los primeros 30-60 minutos después del ejercicio."
+                    ];
+
+                    consejosCensurados.slice(0, Math.min(ocultos, 4)).forEach(consejo => {
+                        consejosHTML += `<div style=\"margin-bottom: 10px; padding: 10px; background: #f1f5f9; border-radius: 5px; position: relative; overflow: hidden;\">`;
+                        consejosHTML += `<div style=\"filter: blur(2px); color: #64748b; user-select: none; pointer-events: none;\">`;
+                        consejosHTML += `• ${consejo}`;
+                        consejosHTML += `</div>`;
+                        consejosHTML += `<div style=\"position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(132, 204, 22, 0.9); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;\">PRO</div>`;
+                        consejosHTML += `</div>`;
+                    });
+
+                    consejosHTML += `<div style=\"margin-top: 10px; padding: 14px; border: 1px dashed #94a3b8; border-radius: 8px; background: rgba(148,163,184,0.08); color: #cbd5e1;\">`;
+                    consejosHTML += `${ocultos} consejo(s) adicionales disponibles en Pro. `;
+                    consejosHTML += `<a href=\"./tarifas.html\" style=\"color:#84cc16; font-weight:600; text-decoration: underline;\">Mejora a Pro</a> para desbloquear todos los consejos.`;
+                    consejosHTML += `</div>`;
+                }
+
                 consejosContent.innerHTML = consejosHTML;
             }
         }
