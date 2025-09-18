@@ -398,6 +398,41 @@
       <script type="module">
           import { API_BASE } from "./config.js";
           import { checkAuthOrRedirect, getAuthHeaders, logout, isTokenExpired, decodeJwt } from "./auth.js";
+
+        // Freemium helpers (frontend-only)
+        function isPremiumUser() {
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                const payload = decodeJwt(token) || {};
+                if (payload.plan === 'premium' || payload.tier === 'premium' || payload.premium === true) {
+                    return true;
+                }
+            }
+            const storedPlan = localStorage.getItem('plan');
+            return storedPlan === 'premium';
+        }
+
+        function getChatUsageKey() {
+            const email = localStorage.getItem('email') || 'anonymous';
+            return `chat_usage_count_${email}`;
+        }
+
+        function getChatUsageCount() {
+            const raw = localStorage.getItem(getChatUsageKey());
+            const n = parseInt(raw || '0', 10);
+            return Number.isFinite(n) ? n : 0;
+        }
+
+        function incrementChatUsage() {
+            const next = getChatUsageCount() + 1;
+            localStorage.setItem(getChatUsageKey(), String(next));
+            return next;
+        }
+
+        function canUseChat() {
+            if (isPremiumUser()) return true;
+            return getChatUsageCount() < 2; // 2 prompts for free tier
+        }
         
         // Función principal
         function initDashboard() {
@@ -433,6 +468,12 @@
                 // Verificar autenticación antes de enviar
                 if (!checkAuthOrRedirect()) return;
 
+                // Freemium limit: block after 2 prompts if not premium
+                if (!isPremiumUser() && !canUseChat()) {
+                    addMessage('Has alcanzado el límite gratuito de 2 mensajes. Mejora a Pro para continuar.');
+                    return;
+                }
+
                 addMessage(message, true);
                 chatInput.value = '';
                 
@@ -450,6 +491,12 @@
 
                     if (response.ok) {
                         addMessage(data.answer);
+                        if (!isPremiumUser()) {
+                            incrementChatUsage();
+                            if (!canUseChat()) {
+                                addMessage('Has llegado al máximo de mensajes gratis. Sube a Pro para seguir chateando.');
+                            }
+                        }
                     } else {
                         if (response.status === 401) {
                             addMessage('Sesión expirada. Redirigiendo al login...');
@@ -512,30 +559,45 @@
 
         // Función para mostrar el plan en los overlays
         function displayPlan(plan) {
-            // Mostrar rutina
+            // Mostrar rutina (aplicar recorte si es free)
             const rutinaContent = document.getElementById('rutinaContent');
             if (plan.rutina && plan.rutina.dias) {
+                const dias = plan.rutina.dias;
+                const total = dias.length;
+                const premium = isPremiumUser();
+                const visibles = premium ? total : Math.max(1, Math.ceil(total * 0.25));
+
                 let rutinaHTML = '<h3>Rutina de Entrenamiento</h3>';
-                plan.rutina.dias.forEach(dia => {
+
+                dias.slice(0, visibles).forEach(dia => {
                     rutinaHTML += `<div style="margin-bottom: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px;">`;
-                    rutinaHTML += `<h4 style="color: #84cc16; margin-bottom: 10px;">${dia.dia}</h4>`;
-                    dia.ejercicios.forEach(ejercicio => {
-                        rutinaHTML += `<div style="margin-bottom: 10px;">`;
+                    rutinaHTML += `<h4 style=\"color: #84cc16; margin-bottom: 10px;\">${dia.dia}</h4>`;
+                    (dia.ejercicios || []).forEach(ejercicio => {
+                        rutinaHTML += `<div style=\"margin-bottom: 10px;\">`;
                         rutinaHTML += `<strong>${ejercicio.nombre}</strong><br>`;
                         rutinaHTML += `Series: ${ejercicio.series} | Reps: ${ejercicio.repeticiones} | Descanso: ${ejercicio.descanso}`;
                         rutinaHTML += `</div>`;
                     });
                     rutinaHTML += `</div>`;
                 });
+
+                if (!premium && visibles < total) {
+                    const ocultos = total - visibles;
+                    rutinaHTML += `<div style=\"margin-top: 10px; padding: 14px; border: 1px dashed #94a3b8; border-radius: 8px; background: rgba(148,163,184,0.08); color: #cbd5e1;\">`;
+                    rutinaHTML += `${ocultos} día(s) restantes ocultos en el plan gratuito. `;
+                    rutinaHTML += `<a href=\"./tarifas.html\" style=\"color:#84cc16; font-weight:600; text-decoration: underline;\">Mejora a Pro</a> para ver el 100% de tu rutina.`;
+                    rutinaHTML += `</div>`;
+                }
+
                 rutinaContent.innerHTML = rutinaHTML;
             }
 
-            // Mostrar consejos
+            // Mostrar consejos (sin recorte)
             const consejosContent = document.getElementById('consejosContent');
             if (plan.rutina && plan.rutina.consejos) {
                 let consejosHTML = '<h3>Consejos de Entrenamiento</h3>';
                 plan.rutina.consejos.forEach(consejo => {
-                    consejosHTML += `<div style="margin-bottom: 10px; padding: 10px; background: #e8f5e8; border-radius: 5px;">`;
+                    consejosHTML += `<div style=\"margin-bottom: 10px; padding: 10px; background: #e8f5e8; border-radius: 5px;\">`;
                     consejosHTML += `• ${consejo}`;
                     consejosHTML += `</div>`;
                 });
