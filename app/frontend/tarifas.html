@@ -22,30 +22,153 @@
     </div>
   </header>
 
-  <main class="max-w-5xl mx-auto px-4 py-10">
-    <h1 class="text-3xl font-semibold text-center mb-8">Elige tu plan</h1>
+  <main class="max-w-6xl mx-auto px-4 py-10">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold mb-4">Elige tu plan</h1>
+      <p class="text-xl text-neutral-400">Desbloquea todo el potencial de YourGains AI</p>
+    </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- Plan Mensual -->
-      <div class="bg-neutral-900 rounded-2xl p-6 border border-neutral-800">
-        <h2 class="text-xl font-semibold mb-2">Plan Mensual</h2>
-        <p class="text-3xl font-bold text-lime-400 mb-1">9,99 €/mes</p>
-        <p class="text-neutral-400 mb-6">Acceso completo a rutinas y dietas.</p>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Plan Gratuito -->
+      <div class="bg-neutral-900 rounded-2xl p-8 border border-neutral-800 relative">
+        <div class="text-center mb-6">
+          <h2 class="text-2xl font-bold mb-2">Plan Gratuito</h2>
+          <p class="text-4xl font-bold text-white mb-1">0 €</p>
+          <p class="text-neutral-400">Para empezar</p>
+        </div>
+        
+        <ul class="space-y-4 mb-8">
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>2 mensajes de IA por día</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>25% de tu rutina visible</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>Consejos básicos</span>
+          </li>
+          <li class="flex items-center text-neutral-500">
+            <span class="text-neutral-500 mr-3">✗</span>
+            <span>Contenido premium censurado</span>
+          </li>
+        </ul>
+        
+        <div class="text-center">
+          <span class="text-neutral-500 text-sm">Plan actual</span>
+        </div>
+      </div>
+
+      <!-- Plan Pro Mensual -->
+      <div class="bg-gradient-to-br from-lime-500 to-lime-600 rounded-2xl p-8 border-2 border-lime-400 relative transform scale-105">
+        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+          <span class="bg-lime-400 text-black px-4 py-1 rounded-full text-sm font-bold">MÁS POPULAR</span>
+        </div>
+        
+        <div class="text-center mb-6">
+          <h2 class="text-2xl font-bold mb-2 text-black">Pro Mensual</h2>
+          <p class="text-4xl font-bold text-black mb-1">9,99 €</p>
+          <p class="text-black/70">por mes</p>
+        </div>
+        
+        <ul class="space-y-4 mb-8">
+          <li class="flex items-center">
+            <span class="text-black mr-3">✓</span>
+            <span class="text-black font-medium">Mensajes ilimitados de IA</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-black mr-3">✓</span>
+            <span class="text-black font-medium">100% de rutina visible</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-black mr-3">✓</span>
+            <span class="text-black font-medium">Todos los consejos premium</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-black mr-3">✓</span>
+            <span class="text-black font-medium">Dieta personalizada completa</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-black mr-3">✓</span>
+            <span class="text-black font-medium">Soporte prioritario</span>
+          </li>
+        </ul>
+        
         <a href="./pago.html?price_id=price_1RndvwCQGqty2HEcyuIQrzaq"
-           class="inline-block bg-lime-400 text-black font-semibold rounded-xl px-5 py-3 hover:bg-lime-300 transition">
-          Seleccionar
+           class="block w-full bg-black text-lime-400 font-bold rounded-xl px-5 py-3 hover:bg-neutral-800 transition text-center">
+          Mejorar a Pro
         </a>
       </div>
 
-      <!-- Plan Anual -->
-      <div class="bg-neutral-900 rounded-2xl p-6 border border-neutral-800">
-        <h2 class="text-xl font-semibold mb-2">Plan Anual</h2>
-        <p class="text-3xl font-bold text-lime-400 mb-1">79,99 €/año</p>
-        <p class="text-neutral-400 mb-6">Ahorra más de 35 € al año.</p>
+      <!-- Plan Pro Anual -->
+      <div class="bg-neutral-900 rounded-2xl p-8 border border-neutral-800 relative">
+        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+          <span class="bg-lime-400 text-black px-4 py-1 rounded-full text-sm font-bold">AHORRA 35€</span>
+        </div>
+        
+        <div class="text-center mb-6">
+          <h2 class="text-2xl font-bold mb-2">Pro Anual</h2>
+          <p class="text-4xl font-bold text-lime-400 mb-1">79,99 €</p>
+          <p class="text-neutral-400">por año</p>
+          <p class="text-sm text-lime-400 mt-1">6,67 €/mes</p>
+        </div>
+        
+        <ul class="space-y-4 mb-8">
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>Mensajes ilimitados de IA</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>100% de rutina visible</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>Todos los consejos premium</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>Dieta personalizada completa</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>Soporte prioritario</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>Actualizaciones exclusivas</span>
+          </li>
+        </ul>
+        
         <a href="./pago.html?price_id=price_1Rndx1CQGqty2HEcme6eiOmD"
-           class="inline-block bg-lime-400 text-black font-semibold rounded-xl px-5 py-3 hover:bg-lime-300 transition">
-          Seleccionar
+           class="block w-full bg-lime-400 text-black font-bold rounded-xl px-5 py-3 hover:bg-lime-300 transition text-center">
+          Mejorar a Pro
         </a>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="mt-16">
+      <h2 class="text-2xl font-bold text-center mb-8">Preguntas Frecuentes</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-neutral-900 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">¿Puedo cancelar en cualquier momento?</h3>
+          <p class="text-neutral-400 text-sm">Sí, puedes cancelar tu suscripción en cualquier momento desde tu perfil.</p>
+        </div>
+        <div class="bg-neutral-900 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">¿Qué incluye el plan gratuito?</h3>
+          <p class="text-neutral-400 text-sm">2 mensajes de IA por día y acceso al 25% de tu rutina personalizada.</p>
+        </div>
+        <div class="bg-neutral-900 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">¿Hay garantía de devolución?</h3>
+          <p class="text-neutral-400 text-sm">Ofrecemos 7 días de garantía de devolución sin preguntas.</p>
+        </div>
+        <div class="bg-neutral-900 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">¿Cómo funciona el pago?</h3>
+          <p class="text-neutral-400 text-sm">Procesamos los pagos de forma segura a través de Stripe.</p>
+        </div>
       </div>
     </div>
   </main>

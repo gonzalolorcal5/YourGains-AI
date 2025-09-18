@@ -630,10 +630,16 @@
 
                 let consejosHTML = '<h3>Consejos de Entrenamiento</h3>';
                 
-                // Consejos visibles
-                consejos.slice(0, visibles).forEach(consejo => {
-                    consejosHTML += `<div style=\"margin-bottom: 10px; padding: 10px; background: #e8f5e8; border-radius: 5px;\">`;
-                    consejosHTML += `• ${consejo}`;
+                // Consejos visibles expandidos
+                const consejosExpandidos = [
+                    "SOBRECARGA PROGRESIVA: El principio fundamental del crecimiento muscular. Debes aumentar gradualmente el peso, repeticiones o series cada 1-2 semanas. Si puedes hacer 3 series de 10 repeticiones con 50kg, la próxima semana intenta 3x10 con 52.5kg o 3x12 con 50kg. Esta progresión constante es lo que estimula la adaptación muscular.",
+                    "CALENTAMIENTO COMPLETO: Nunca saltes el calentamiento. Dedica 10-15 minutos a activar tu sistema cardiovascular y preparar tus músculos. Comienza con 5 minutos de cardio ligero, luego realiza movimientos dinámicos como círculos de brazos, sentadillas sin peso y estiramientos activos. Esto reduce el riesgo de lesiones y mejora tu rendimiento."
+                ];
+
+                consejosExpandidos.forEach(consejo => {
+                    consejosHTML += `<div style=\"margin-bottom: 15px; padding: 15px; background: #e8f5e8; border-radius: 8px; border-left: 4px solid #84cc16;\">`;
+                    consejosHTML += `<div style=\"font-weight: 600; color: #2d5016; margin-bottom: 8px;\">${consejo.split(':')[0]}:</div>`;
+                    consejosHTML += `<div style=\"color: #365314; line-height: 1.5;\">${consejo.split(':').slice(1).join(':').trim()}</div>`;
                     consejosHTML += `</div>`;
                 });
 
@@ -641,18 +647,25 @@
                 if (!premium && visibles < total) {
                     const ocultos = total - visibles;
                     const consejosCensurados = [
+                        "NUTRICIÓN PRE-ENTRENAMIENTO: Consume carbohidratos complejos 2-3 horas antes del entrenamiento para tener energía sostenida. Avena, arroz integral o patata son excelentes opciones. Evita comidas pesadas que puedan causar molestias digestivas durante el ejercicio.",
+                        "PROTEÍNA POST-ENTRENAMIENTO: La ventana anabólica es real. Consume 20-30g de proteína de alta calidad (suero de leche, pollo, pescado) en los primeros 30-60 minutos post-entreno. Esto maximiza la síntesis de proteína muscular y acelera la recuperación.",
                         "La hidratación adecuada es fundamental para el rendimiento muscular. Bebe al menos 2-3 litros de agua diarios, especialmente antes y después del entrenamiento.",
                         "El descanso entre series debe ser progresivo: 60-90 segundos para hipertrofia, 2-3 minutos para fuerza máxima.",
                         "La técnica correcta siempre prevalece sobre el peso. Es mejor hacer 8 repeticiones perfectas que 12 mal ejecutadas.",
                         "La nutrición post-entrenamiento es crucial. Consume proteínas y carbohidratos en los primeros 30-60 minutos después del ejercicio."
                     ];
 
-                    consejosCensurados.slice(0, Math.min(ocultos, 4)).forEach(consejo => {
-                        consejosHTML += `<div style=\"margin-bottom: 10px; padding: 10px; background: #f1f5f9; border-radius: 5px; position: relative; overflow: hidden;\">`;
-                        consejosHTML += `<div style=\"filter: blur(2px); color: #64748b; user-select: none; pointer-events: none;\">`;
-                        consejosHTML += `• ${consejo}`;
+                    consejosCensurados.slice(0, Math.min(ocultos, 6)).forEach(consejo => {
+                        consejosHTML += `<div style=\"margin-bottom: 15px; padding: 15px; background: #f8fafc; border-radius: 8px; position: relative; overflow: hidden; border-left: 4px solid #cbd5e1;\">`;
+                        consejosHTML += `<div style=\"filter: blur(2px); color: #64748b; user-select: none; pointer-events: none; line-height: 1.5;\">`;
+                        if (consejo.includes(':')) {
+                            consejosHTML += `<div style=\"font-weight: 600; color: #475569; margin-bottom: 8px;\">${consejo.split(':')[0]}:</div>`;
+                            consejosHTML += `<div style=\"color: #64748b;\">${consejo.split(':').slice(1).join(':').trim()}</div>`;
+                        } else {
+                            consejosHTML += `• ${consejo}`;
+                        }
                         consejosHTML += `</div>`;
-                        consejosHTML += `<div style=\"position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(132, 204, 22, 0.9); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;\">PRO</div>`;
+                        consejosHTML += `<div style=\"position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(132, 204, 22, 0.95); color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; box-shadow: 0 2px 8px rgba(132, 204, 22, 0.3);\">PRO</div>`;
                         consejosHTML += `</div>`;
                     });
 
