@@ -32,18 +32,28 @@ export async function doLogin(email, password) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.detail || `Error login: ${res.status}`);
   }
-  const data = await res.json(); // { access_token, token_type }
+  const data = await res.json(); // { access_token, token_type, onboarding_completed }
   if (!data.access_token) throw new Error("Sin access_token");
   saveAuth(data.access_token, email);
+  
+  // Guardar estado de onboarding
+  localStorage.setItem("onboarding_completed", data.onboarding_completed ? "true" : "false");
+  
   return data;
 }
 
 export function getAuthHeaders() {
   const token = localStorage.getItem("accessToken");
   const email = localStorage.getItem("email");
+  
+  if (!token) {
+    console.error("No hay token de autenticación");
+    return null;
+  }
+  
   return {
     "Content-Type": "application/json",
-    "Authorization": token ? `Bearer ${token}` : "",
+    "Authorization": `Bearer ${token}`,
     "X-User-Email": email || "",
   };
 }

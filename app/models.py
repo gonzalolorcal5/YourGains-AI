@@ -17,6 +17,9 @@ class Usuario(Base):
     # NUEVO: plan y cupo de chat
     plan_type = Column(String, default="FREE", nullable=False)   # FREE | PREMIUM
     chat_uses_free = Column(Integer, default=2, nullable=False)  # preguntas gratis disponibles
+    
+    # Onboarding
+    onboarding_completed = Column(Boolean, default=False, nullable=False)
 
     planes = relationship("Plan", back_populates="usuario")
 

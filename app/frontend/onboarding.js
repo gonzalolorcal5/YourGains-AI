@@ -53,7 +53,11 @@ form.addEventListener('submit', async (e) => {
 
         // Enviar datos al backend
         const headers = getAuthHeaders();
-        if (!headers) return;
+        if (!headers) {
+            msg.textContent = 'Error: No hay token de autenticación. Por favor, inicia sesión de nuevo.';
+            msg.className = 'text-center text-sm text-red-400 min-h-5';
+            return;
+        }
         
         const response = await fetch(`${API_BASE}/onboarding`, {
             method: 'POST',
@@ -67,7 +71,8 @@ form.addEventListener('submit', async (e) => {
             throw new Error(data.detail || 'Error al crear el plan');
         }
 
-        // Éxito - redirigir al dashboard
+        // Éxito - marcar onboarding como completado y redirigir al dashboard
+        localStorage.setItem("onboarding_completed", "true");
         msg.textContent = '¡Plan creado exitosamente! Redirigiendo...';
         msg.style.color = '#84cc16';
         

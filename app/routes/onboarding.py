@@ -68,11 +68,17 @@ def process_onboarding(
             restricciones_dieta=data.restricciones_dieta,
             rutina=json.dumps(plan_data["rutina"], ensure_ascii=False),
             dieta=json.dumps(plan_data["dieta"], ensure_ascii=False),
-            motivacion=json.dumps(plan_data["motivacion"], ensure_ascii=False),
+            motivacion=plan_data["motivacion"],
             fecha_creacion=datetime.utcnow()
         )
 
         db.add(nuevo_plan)
+        
+        # Marcar onboarding como completado - actualizar directamente en la base de datos
+        db.query(Usuario).filter(Usuario.id == usuario.id).update({
+            "onboarding_completed": True
+        })
+        
         db.commit()
         db.refresh(nuevo_plan)
 

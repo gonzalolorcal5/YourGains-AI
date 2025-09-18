@@ -73,8 +73,15 @@
     const virtualForm = document.createElement("form");
     virtualForm.id = "form-login";
     virtualForm.style.display = "none";
-    virtualForm.appendChild(emailInput.cloneNode(true));
-    virtualForm.appendChild(passwordInput.cloneNode(true));
+    
+    // Clonar elementos sin IDs duplicados
+    const emailClone = emailInput.cloneNode(true);
+    emailClone.id = "email-clone";
+    const passwordClone = passwordInput.cloneNode(true);
+    passwordClone.id = "password-clone";
+    
+    virtualForm.appendChild(emailClone);
+    virtualForm.appendChild(passwordClone);
     document.body.appendChild(virtualForm);
 
     // Manejar login
@@ -93,8 +100,14 @@
         loginBtn.textContent = "Iniciando...";
         msgEl.textContent = "";
 
-        await doLogin(email, password);
-        window.location.href = "./dashboard.html";
+        const loginData = await doLogin(email, password);
+        
+        // Redirigir según el estado de onboarding
+        if (loginData.onboarding_completed) {
+          window.location.href = "./dashboard.html";
+        } else {
+          window.location.href = "./onboarding.html";
+        }
       } catch (err) {
         msgEl.textContent = err.message || "Error al iniciar sesión";
         console.error(err);

@@ -12,10 +12,11 @@ from app.auth_utils import (
 )
 from app.database import get_db
 from app import models, schemas
+from app.auth_utils import ACCESS_TOKEN_EXPIRE_MINUTES
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
-ACCESS_TOKEN_EXPIRE_MINUTES = 5
+# ACCESS_TOKEN_EXPIRE_MINUTES se importa desde auth_utils
 
 router = APIRouter()
 
@@ -44,7 +45,7 @@ def register(
     return {"message": "Usuario creado con éxito"}
 
 
-@router.post("/login", response_model=schemas.TokenResponse)
+@router.post("/login")
 def login(
     user: UserCredentials,
     db: Session = Depends(get_db)
@@ -58,4 +59,8 @@ def login(
         data={"sub": str(db_user.id)},
         expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {
+        "access_token": access_token, 
+        "token_type": "bearer",
+        "onboarding_completed": db_user.onboarding_completed
+    }
