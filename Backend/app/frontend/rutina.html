@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <title>Tu rutina personalizada • YourGains AI</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-neutral-950 text-white">
+  <header class="border-b border-neutral-800">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="text-xl font-bold">YourGains <span class="text-lime-400">AI</span></div>
+      <nav class="flex items-center gap-3 text-sm">
+        <a href="./dashboard.html" class="bg-neutral-800 px-3 py-1.5 rounded-lg hover:bg-neutral-700">Dashboard</a>
+        <a href="./tarifas.html" class="bg-neutral-800 px-3 py-1.5 rounded-lg hover:bg-neutral-700">Planes</a>
+        <button onclick="logout()" class="bg-red-600 px-3 py-1.5 rounded-lg hover:bg-red-700">Cerrar Sesión</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-6">
+    <h1 class="text-2xl font-semibold mb-4">Completa tu perfil</h1>
+
+    <form id="rutina-form" class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-neutral-900 border border-neutral-800 rounded-2xl p-4">
+      <div>
+        <label class="block text-sm mb-1">Altura (cm)</label>
+        <input type="number" id="altura" required class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+      </div>
+      <div>
+        <label class="block text-sm mb-1">Peso (kg)</label>
+        <input type="number" id="peso" step="0.1" required class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+      </div>
+      <div>
+        <label class="block text-sm mb-1">Edad</label>
+        <input type="number" id="edad" required class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+      </div>
+      <div>
+        <label class="block text-sm mb-1">Sexo</label>
+        <select id="sexo" required class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+          <option value="">Selecciona</option>
+          <option value="hombre">Hombre</option>
+          <option value="mujer">Mujer</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm mb-1">Objetivo</label>
+        <select id="objetivo" required class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+          <option value="ganar_musculo">Ganar masa muscular</option>
+          <option value="perder_peso">Perder grasa</option>
+          <option value="mantenimiento">Mantener</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm mb-1">Experiencia</label>
+        <select id="experiencia" required class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+          <option value="">Selecciona</option>
+          <option value="principiante">Principiante</option>
+          <option value="intermedio">Intermedio</option>
+          <option value="avanzado">Avanzado</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm mb-1">Materiales disponibles</label>
+        <input id="materiales" placeholder="Ej: mancuernas, bandas, gym completo" class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+      </div>
+      <div>
+        <label class="block text-sm mb-1">Tipo de cuerpo</label>
+        <select id="tipo_cuerpo" class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+          <option value="ectomorfo">Ectomorfo (delgado)</option>
+          <option value="mesomorfo">Mesomorfo (atlético)</option>
+          <option value="endomorfo">Endomorfo (robusto)</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm mb-1">Lesiones o limitaciones</label>
+        <input id="lesiones" placeholder="Ej: hombro derecho" class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+      </div>
+      <div>
+        <label class="block text-sm mb-1">Puntos débiles</label>
+        <input id="puntos_debiles" placeholder="Ej: pectoral, pierna" class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+      </div>
+      <div>
+        <label class="block text-sm mb-1">Alergias / evitar</label>
+        <input id="alergias" class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+      </div>
+      <div>
+        <label class="block text-sm mb-1">Restricciones dietéticas</label>
+        <input id="restricciones_dieta" placeholder="Ej: vegetariano, sin gluten" class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+      </div>
+
+      <div class="md:col-span-2">
+        <button type="submit" class="w-full bg-lime-400 text-black font-semibold rounded-xl py-3 hover:bg-lime-300 transition">
+          Generar rutina y dieta
+        </button>
+      </div>
+    </form>
+
+    <div id="resultado" class="mt-6 bg-neutral-900 border border-neutral-800 rounded-2xl p-4 text-sm whitespace-pre-wrap">
+      Aquí aparecerá tu rutina y dieta...
+    </div>
+  </main>
+
+  <script type="module">
+    import { API_BASE } from "./config.js";
+    import { checkAuthOrRedirect, getAuthHeaders, logout } from "./auth.js";
+
+    // Verificar autenticación al cargar la página
+    if (!checkAuthOrRedirect()) {
+      return;
+    }
+
+    const form = document.getElementById("rutina-form");
+    const resultado = document.getElementById("resultado");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Verificar autenticación antes de enviar
+      if (!checkAuthOrRedirect()) return;
+
+      // Construir el JSON con el formato correcto para el backend
+      const datos = {
+        altura: parseInt(document.getElementById("altura").value),
+        peso: parseFloat(document.getElementById("peso").value),
+        edad: parseInt(document.getElementById("edad").value),
+        sexo: document.getElementById("sexo").value,
+        objetivo: document.getElementById("objetivo").value,
+        experiencia: document.getElementById("experiencia").value,
+        materiales: document.getElementById("materiales").value.split(',').map(m => m.trim()).filter(m => m),
+        tipo_cuerpo: document.getElementById("tipo_cuerpo").value,
+        idioma: "es",
+        puntos_fuertes: "",
+        puntos_debiles: document.getElementById("puntos_debiles").value,
+        entrenar_fuerte: true,
+        lesiones: document.getElementById("lesiones").value,
+        alergias: document.getElementById("alergias").value,
+        restricciones_dieta: document.getElementById("restricciones_dieta").value
+      };
+
+      // Mostrar loading
+      resultado.textContent = "⏳ Generando tu rutina y dieta personalizada...";
+
+      try {
+        const headers = getAuthHeaders();
+        if (!headers) return;
+
+        const res = await fetch(`${API_BASE}/onboarding`, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(datos),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          resultado.textContent = "✅ ¡Plan personalizado creado exitosamente!\n\nRedirigiendo al dashboard...";
+          setTimeout(() => {
+            window.location.href = './dashboard.html';
+          }, 2000);
+        } else {
+          if (res.status === 401) {
+            resultado.textContent = "❌ Sesión expirada. Redirigiendo al login...";
+            setTimeout(() => {
+              localStorage.clear();
+              window.location.href = './login.html';
+            }, 2000);
+          } else {
+            resultado.textContent = "❌ Error al generar rutina: " + (data.detail || 'Error desconocido');
+          }
+        }
+      } catch (err) {
+        resultado.textContent = "❌ Error de conexión: " + err.message;
+        console.error(err);
+      }
+    });
+
+    // Hacer logout disponible globalmente
+    window.logout = logout;
+  </script>
+</body>
+</html>

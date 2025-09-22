@@ -1,0 +1,1398 @@
+  <!DOCTYPE html>
+  <html lang="es">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>YourGains AI</title>
+      <style>
+          * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+          }
+          
+          body {
+              background-color: black;
+              height: 100vh;
+              color: white;
+              font-family: Arial, sans-serif;
+              position: relative;
+          }
+          
+          .logo {
+              position: absolute;
+              top: 60px;
+              left: 100px;
+              display: flex;
+              align-items: center;
+              gap: 6px;
+          }
+          
+          .dna-icon {
+              width: 50px;
+              height: 50px;
+              border-radius: 8px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+          }
+          
+          .dna-icon img, .dna-icon svg {
+              width: 100%;
+              height: 100%;
+              object-fit: contain;
+              filter: drop-shadow(0 0 4px rgba(132, 204, 22, 0.45));
+          }
+          
+          .logo-text {
+              font-size: 28px;
+              font-weight: bold;
+          }
+          
+          .your-gains {
+              color: white;
+          }
+          
+          .ai {
+              color: #a3e635;
+          }
+          
+          .chat-container {
+              position: absolute;
+            top: 60%;
+            left: 35%;
+              transform: translate(-50%, -50%);
+            width: 45%;
+            max-width: 450px;
+            height: 45%;
+            border: 2px solid #84cc16;
+            border-radius: 16px;
+              display: flex;
+              flex-direction: column;
+              overflow: hidden;
+              box-shadow: 0 8px 32px rgba(132, 204, 22, 0.15);
+              backdrop-filter: blur(10px);
+              background: rgba(255, 255, 255, 0.95);
+          }
+          
+          .chat-header {
+              padding: 14px 20px;
+              text-align: center;
+              background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+              color: white;
+              border-radius: 14px 14px 0 0;
+          }
+          
+          .chat-header h2 {
+              font-size: 18px;
+              margin-bottom: 4px;
+              font-weight: 600;
+          }
+          
+          .chat-header p {
+              font-size: 12px;
+              opacity: 0.9;
+              margin: 0;
+          }
+          
+          .chat-messages {
+              flex: 1;
+            padding: 16px;
+              overflow-y: auto;
+              color: black;
+              background: white;
+          }
+          
+          .chat-input-area {
+            padding: 14px 18px;
+              display: flex;
+              gap: 10px;
+              background: #f8f9fa;
+              border-radius: 0 0 14px 14px;
+              border-top: 1px solid #e9ecef;
+          }
+          
+          .chat-input {
+              flex: 1;
+              padding: 12px 16px;
+              border: 2px solid #e9ecef;
+            border-radius: 18px;
+              outline: none;
+              color: #333;
+              font-size: 13px;
+              transition: all 0.3s ease;
+              background: white;
+          }
+          
+          .chat-input:focus {
+              border-color: #84cc16;
+              box-shadow: 0 0 0 3px rgba(132, 204, 22, 0.1);
+          }
+          
+          .send-btn {
+            padding: 12px 16px;
+              background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+              color: white;
+              border: none;
+            border-radius: 18px;
+              cursor: pointer;
+              font-weight: 600;
+              font-size: 13px;
+              transition: all 0.3s ease;
+              min-width: 70px;
+          }
+          
+          .send-btn:hover {
+              background: linear-gradient(135deg, #65a30d 0%, #4d7c0f 100%);
+              transform: translateY(-1px);
+              box-shadow: 0 4px 12px rgba(132, 204, 22, 0.3);
+          }
+          
+          .send-btn:disabled {
+              background: #e9ecef;
+              color: #6c757d;
+              cursor: not-allowed;
+              transform: none;
+              box-shadow: none;
+          }
+          
+          .message {
+            margin: 10px 0;
+              padding: 10px 15px;
+            border-radius: 15px;
+              max-width: 90%;
+              word-wrap: break-word;
+          }
+          
+          .user-message {
+              background: #84cc16;
+              color: white;
+              margin-left: auto;
+              text-align: right;
+          }
+          
+          .ai-message {
+              background: #f0f0f0;
+              color: black;
+          }
+          
+          .placeholder {
+              text-align: center;
+            color: #999;
+              padding: 40px 20px;
+              font-style: italic;
+          }
+          
+          .navigation {
+              position: absolute;
+            top: 60px;
+            right: 100px;
+              display: flex;
+            gap: 20px;
+              align-items: center;
+              color: white;
+              white-space: nowrap;
+          }
+          
+          .nav-item {
+            padding: 8px 16px;
+              border-radius: 8px;
+              transition: all 0.3s ease;
+          }
+          
+          .nav-item:hover {
+              color: #84cc16;
+              background: rgba(132, 204, 22, 0.1);
+          }
+
+          .nav-text {
+              font-size: 14px;
+              font-weight: 500;
+          }
+          
+          .overlay {
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: rgba(0, 0, 0, 0.8);
+              display: none;
+              align-items: center;
+              justify-content: center;
+              z-index: 1000;
+          }
+          
+          .overlay-content {
+              background: white;
+            color: black;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 80%;
+              max-height: 80%;
+              overflow-y: auto;
+              position: relative;
+          }
+          
+          .close-btn {
+              position: absolute;
+              top: 15px;
+              right: 20px;
+              background: none;
+              border: none;
+              font-size: 24px;
+              cursor: pointer;
+              color: #666;
+          }
+          
+          .close-btn:hover {
+              color: #84cc16;
+          }
+          
+          .overlay h2 {
+              color: #84cc16;
+              margin-bottom: 20px;
+              font-size: 24px;
+          }
+          
+          .overlay h3 {
+            color: #333;
+              margin-top: 20px;
+              margin-bottom: 10px;
+          }
+          
+          .premium-lock {
+            position: relative;
+              opacity: 0.5;
+              pointer-events: none;
+          }
+          
+          .upgrade-notice {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+              border-radius: 10px;
+              margin: 20px 0;
+          }
+          
+          .upgrade-btn {
+              background: #84cc16;
+              color: white;
+              border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+              cursor: pointer;
+              font-weight: bold;
+              margin-top: 10px;
+          }
+          
+          .download-btn {
+            background: #3b82f6;
+              color: white;
+              border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+              cursor: pointer;
+            display: flex;
+              align-items: center;
+              gap: 8px;
+              font-size: 14px;
+          }
+          
+          .download-btn:hover {
+              background: #1d4ed8;
+          }
+          
+          .download-btn:disabled {
+              background: #9ca3af;
+              cursor: not-allowed;
+          }
+          
+          .nav-separator {
+              color: #666;
+              font-size: 18px;
+          }
+          
+          .logout-btn {
+            background: #dc2626;
+              color: white;
+              border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+              cursor: pointer;
+              font-size: 12px;
+              font-weight: bold;
+          }
+          
+          .logout-btn:hover {
+              background: #dc2626;
+          }
+
+          /* Gym Image Container */
+          .gym-image-container {
+              position: absolute;
+              top: 50%;
+              right: 20px;
+              transform: translateY(-50%);
+              width: 500px;
+              height: 450px;
+              border-radius: 20px;
+              overflow: hidden;
+              box-shadow: 0 15px 50px rgba(132, 204, 22, 0.25);
+              backdrop-filter: blur(15px);
+              background: rgba(0, 0, 0, 0.9);
+              border: 3px solid rgba(132, 204, 22, 0.4);
+          }
+
+          .gym-image {
+              width: 100%;
+              height: 100%;
+              object-fit: contain;
+              border-radius: 17px;
+              filter: brightness(1.0) contrast(1.4) saturate(1.2);
+              transition: all 0.4s ease;
+              background: transparent;
+              mix-blend-mode: screen;
+          }
+
+          .gym-image:hover {
+              transform: scale(1.08);
+              filter: brightness(1.2) contrast(1.6) saturate(1.4);
+              box-shadow: 0 0 40px rgba(132, 204, 22, 0.5);
+          }
+
+          /* Responsive adjustments */
+          @media (max-width: 1600px) {
+              .gym-image-container {
+                  width: 400px;
+                  height: 360px;
+                  right: 15px;
+              }
+          }
+
+          @media (max-width: 1400px) {
+              .gym-image-container {
+                  width: 350px;
+                  height: 320px;
+                  right: 10px;
+              }
+          }
+
+          @media (max-width: 1200px) {
+              .gym-image-container {
+                  display: none;
+              }
+          }
+          
+          .overlay {
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: rgba(0, 0, 0, 0.8);
+              display: none;
+              justify-content: center;
+              align-items: center;
+              z-index: 1000;
+          }
+
+          .overlay-content {
+              background: #1a1a1a;
+              border-radius: 12px;
+              padding: 2rem;
+              max-width: 800px;
+              max-height: 80vh;
+              overflow-y: auto;
+              border: 1px solid #333;
+              position: relative;
+          }
+
+          .overlay-content.large {
+              max-width: 1200px;
+              max-height: 85vh;
+          }
+
+          .tab-content-grid {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 2rem;
+              margin-top: 1.5rem;
+          }
+
+          .content-column {
+              background: rgba(255, 255, 255, 0.03);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              border-radius: 12px;
+              padding: 1.5rem;
+          }
+
+          .content-column h3 {
+              color: #84cc16;
+              margin-bottom: 1rem;
+              font-size: 1.2rem;
+              font-weight: 600;
+              border-bottom: 1px solid rgba(132, 204, 22, 0.2);
+              padding-bottom: 0.5rem;
+          }
+
+          .close-btn {
+              position: absolute;
+              top: 1rem;
+              right: 1rem;
+              background: none;
+              border: none;
+              color: #fff;
+              font-size: 1.5rem;
+              cursor: pointer;
+              padding: 0.5rem;
+              border-radius: 50%;
+              transition: background 0.3s ease;
+          }
+
+          .close-btn:hover {
+              background: rgba(255, 255, 255, 0.1);
+          }
+
+          .overlay-content h2 {
+              color: #84cc16;
+              margin-bottom: 1rem;
+              font-size: 1.5rem;
+          }
+
+          .overlay-content p {
+              color: #ccc;
+              line-height: 1.6;
+          }
+
+          /* Estilos para contenido de rutina */
+          .routine-item {
+              background: rgba(132, 204, 22, 0.05);
+              border: 1px solid rgba(132, 204, 22, 0.2);
+              border-radius: 8px;
+              padding: 1rem;
+              margin-bottom: 1rem;
+          }
+
+          .routine-day {
+              color: #84cc16;
+              font-weight: 600;
+              margin-bottom: 0.5rem;
+          }
+
+          .exercise {
+              margin: 0.5rem 0;
+              padding: 0.5rem;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 6px;
+          }
+
+          .exercise-name {
+              font-weight: 500;
+              margin-bottom: 0.25rem;
+          }
+
+          .exercise-details {
+              font-size: 0.9rem;
+              color: rgba(255, 255, 255, 0.7);
+          }
+
+          /* Estilos para contenido de dieta */
+          .macros-grid {
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+              gap: 1rem;
+              margin-bottom: 1.5rem;
+          }
+
+          .macro-card {
+              background: rgba(255, 255, 255, 0.05);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              border-radius: 8px;
+              padding: 1rem;
+              text-align: center;
+          }
+
+          .macro-value {
+              font-size: 1.5rem;
+              font-weight: 700;
+              color: #84cc16;
+              display: block;
+          }
+
+          .macro-label {
+              font-size: 0.8rem;
+              color: rgba(255, 255, 255, 0.7);
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+          }
+
+          .meal-card {
+              background: rgba(255, 255, 255, 0.05);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              border-radius: 8px;
+              padding: 1rem;
+              margin-bottom: 1rem;
+          }
+
+          .meal-header {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 0.5rem;
+          }
+
+          .meal-time {
+              font-size: 0.8rem;
+              color: #84cc16;
+              background: rgba(132, 204, 22, 0.1);
+              padding: 0.25rem 0.5rem;
+              border-radius: 4px;
+          }
+
+          .meal-name {
+              font-weight: 500;
+          }
+
+          .food-item {
+              display: flex;
+              justify-content: space-between;
+              padding: 0.25rem 0;
+              font-size: 0.9rem;
+          }
+
+          /* Estilos para consejos */
+          .advice-card {
+              background: rgba(132, 204, 22, 0.05);
+              border: 1px solid rgba(132, 204, 22, 0.2);
+              border-radius: 8px;
+              padding: 1rem;
+              margin-bottom: 1rem;
+          }
+
+          .advice-title {
+              color: #84cc16;
+              font-weight: 600;
+              margin-bottom: 0.5rem;
+          }
+
+          .advice-content {
+              color: rgba(255, 255, 255, 0.9);
+              line-height: 1.6;
+          }
+
+          /* Estilos para estudios */
+          .study-card {
+              background: rgba(59, 130, 246, 0.05);
+              border: 1px solid rgba(59, 130, 246, 0.2);
+              border-radius: 8px;
+              padding: 1rem;
+              margin-bottom: 1rem;
+          }
+
+          .study-title {
+              color: #3b82f6;
+              font-weight: 600;
+              margin-bottom: 0.5rem;
+          }
+
+          .study-content {
+              color: rgba(255, 255, 255, 0.9);
+              line-height: 1.6;
+              margin-bottom: 0.75rem;
+          }
+
+          .study-meta {
+              border-top: 1px solid rgba(59, 130, 246, 0.2);
+              padding-top: 0.75rem;
+              font-size: 0.8rem;
+          }
+
+          .study-author {
+              color: #84cc16;
+              font-weight: 600;
+              display: block;
+              margin-bottom: 0.25rem;
+          }
+
+          .study-journal {
+              color: rgba(255, 255, 255, 0.6);
+              font-style: italic;
+          }
+
+          /* Premium overlay */
+          .premium-overlay {
+              position: relative;
+              overflow: hidden;
+          }
+
+          .premium-overlay::after {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              background: rgba(0, 0, 0, 0.8);
+              backdrop-filter: blur(4px);
+              border-radius: 8px;
+          }
+
+          .premium-badge {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+              color: white;
+              padding: 1rem 2rem;
+              border-radius: 8px;
+              font-weight: 600;
+              z-index: 2;
+              text-align: center;
+              box-shadow: 0 8px 32px rgba(132, 204, 22, 0.3);
+          }
+
+          .premium-badge h4 {
+              margin-bottom: 0.5rem;
+          }
+
+          .premium-badge p {
+              font-size: 0.9rem;
+              opacity: 0.9;
+              margin-bottom: 1rem;
+          }
+
+          .premium-btn {
+              background: rgba(255, 255, 255, 0.2);
+              color: white;
+              border: 1px solid rgba(255, 255, 255, 0.3);
+              padding: 0.5rem 1rem;
+              border-radius: 6px;
+              font-weight: 600;
+              cursor: pointer;
+              transition: all 0.3s ease;
+          }
+
+          .premium-btn:hover {
+              background: rgba(255, 255, 255, 0.3);
+              transform: translateY(-1px);
+          }
+
+          /* Responsive */
+          @media (max-width: 768px) {
+              .tab-content-grid {
+                  grid-template-columns: 1fr;
+                  gap: 1rem;
+              }
+
+              .overlay-content.large {
+                  max-width: 95%;
+                  margin: 1rem;
+              }
+
+              .macros-grid {
+                  grid-template-columns: 1fr;
+              }
+          }
+
+      </style>
+  </head>
+  <body>
+    <div class="logo">
+        <div class="dna-icon">
+            <svg viewBox="0 0 800 800" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+                <path transform="translate(237)" d="m0 0h19l10 5 8 6 4 4 4 8v5h1v10h234v-10l1-1 1-6 5-9 5-3 3-5 5-1 7-3h19l12 6 7 7h2l2 5 3 13v38l-2 20-3 15v8l-2 3-1 5h-2l-6 15-2 6-1 2-1 4-9 15-5 7-2 1-1 3-2 1-2 4-2 1-2 4-4 2-2 3-2 4-7 7-4 1-8 8-10 8-1 3-4 1-5 1-20-12-24-12-26-10-4-1v-2l10-4 14-8 10-7 1-1-91-1-16-10-13-11-10-9-6-4-1-4-4-2v-5l1-2 186-1 1-6 6-14 3-10 2-1h-232l2 1 2 6v7l4 5 9 17 5 7 1 3 3 2 1 4 4 2 2 5 10 10 17 13 14 9 23 12 21 8 26 8 22 9 22 11 8 5 5 1v2l12 8 12 9 4 1 3 5 4 1 3 5 15 15 4 2 1 4 5 3 1 3 5 5 7 10 7 11 8 16 1 8 6 18h2l1 7-1 1 3 17 1 14v12l-2 21-2 11 1 4-2 3-2 4-6 17v5l-10 19-12 18-5 5-2 4-4 2-2 5-5 3-15 15-2 4-4 1-15 12-5-2-23-13-23-11-24-9 1-3 19-10 15-10-94-1-14-9-14-11-15-15-4-2-1-4h-2l2-5h184l2-5h2l2-9h2l5-15h-229l1 7 2 1 1 7h2l2 4v5h2l6 10 1 3 5 5 1 3 3 2 1 4 5 3 7 7 2 4 8 6 3 1 2 4 17 11 23 12 21 8 36 12 20 9 21 11 21 14 14 11 11 10 4 1 3 5 4 2 3 3 1 4 4 3 3 2 1 4 3 1 1 3 2 1 1 3 4 4 10 16 1 6 3 1 3 9 2 7h2l1 8 2 4 2 2v8l3 14 2 21v38l-2 9-2 7-2 2-7 6-8 5-5 2h-18l-10-4-8-7-3-1-5-9-1-7h-1v-10h-234v10l-1 1-1 6-5 9-5 3-8 6-8 3h-18l-12-6-7-7h-2l-2-5-3-13v-38l2-21 3-14v-8l3-3 2-8 1-3 2-2 5-15h2l2-8 12-18 2-1 1-3 2-1 1-3 3-1 1-4 5-3 2-3 2-4 10-10 4-1 11-10 11-8 5 1 16 10 26 13 24 9 5 3-3 2-17 9-12 8-2 2 91 1 16 10 13 11 10 9 6 4 1 4 4 2v5l-1 2-184 1-7 15-5 15-2 1h232l-2-1-5-15-8-17-7-10-1-3-3-2-1-4-4-2-2-5-10-10-17-13-14-9-23-12-21-8-29-9-23-10-25-13-6-2v-2l-12-8-13-10-7-5-4-2-2-4-16-16-4-2-2-5-3-1-1-4-3-1-1-3-5-5-12-20-6-12v-5h-2l-1-8-6-20-3-18-1-13v-14l2-20 4-19 5-15v-5h2l1-7 9-17 9-14 6-8 3-1 1-4 3-1 1-4 6-4 16-16 2-4 4-1 3-5 4-1 8-6 5 2 23 13 23 11 24 9-1 3-19 10-15 10 98 1 1 3 13 9 11 9 14 14 4 2 1 4h2l-2 5h-184l-2 5h-2l-2 9h-2l-5 15h230l-5-15h-2l-2-9h-2l-6-10-1-3-5-5-1-3-3-2-1-4-5-3-7-7-2-4-3-2-3-1-1-3-4-1-2-4-17-11-23-12-21-8-36-12-20-9-21-11-21-14-14-11-12-11-5-2-8-8-1-4-4-3-3-2-1-4-3-1-1-3-2-1-1-3-4-4-10-16-1-6-3-1-2-9-3-7h-2l-1-8-2-4-2-2v-8l-3-14-2-21v-38l2-9 2-7 2-2 7-6 8-5zm296 5m-259 8m251 0m-250 1m249 0m-308 1m367 0m-307 1m247 0m-308 1m62 0m245 0m62 0m-306 2 1 2zm243 0 1 2zm-242 2 1 2zm241 0 1 2zm-240 3 1 3zm239 0 1 3zm-238 15v1h238v-1zm3 48m231 0m-230 1 1 3zm229 0 1 3zm-228 4 1 3zm227 0 1 2zm-1 3 1 2zm-1 3 1 2zm-1 2 1 2zm-1 3 1 2zm-219 1m1 1 1 2zm217 1m-291 2 1 3zm75 0m215 0m75 0 1 3zm-289 2m213 0m-212 2m211 0m-210 2m1 1m284 0 1 2zm-283 2m1 2m1 1m19 1m-18 1m19 0m-18 1m1 2m1 1m20 1m-19 1m20 0m-17 4m1 1m-80 5m84 0m-83 1 1 2zm84 0m1 1m253 5m-334 2m333 0m-332 2m331 0m-330 2m329 0m-328 1m327 0m-326 2m325 0m-324 2m323 0m-322 1m321 0m-320 2m319 0m-318 1m317 0m-316 2m315 0m-314 1m216 0m97 0m-312 2m311 0m-310 1m309 0m-306 4m303 0m-300 4m297 0m-293 5m289 0m-288 1m287 0m-280 8m273 0m-272 1m271 0m-270 1m269 0m-268 2m266 0m-264 2m263 0m-261 2m259 0m-25 21m-22 12m-193 20m221 0m-222 1m223 0m-229 5m235 0m-236 1m237 0m-259 22m281 0m-282 1m-1 1m-4 5m293 0m3 4m-300 1m301 0m-302 1m303 0m1 2m-306 1m307 0m-308 1m309 0m-310 2m311 0m-312 1m313 0m-314 1 1 2zm315 1m-316 1m195 0m122 0m-94 1m-224 1m319 0m-320 1m321 0m-322 2m231 0m92 0m-324 1m325 0m-326 2m327 0m-328 2m329 0m-330 1 1 2zm331 1m-332 1m244 0m89 0m-87 1m-247 1m248 0m87 0m-86 1m-250 1m251 0m86 0m-338 2m253 0m86 0m-340 2m341 0m-342 2m343 0m-344 2m262 0m83 0m-346 1 1 2zm264 0m83 1m-348 2 1 2zm349 0 1 2zm-81 1m1 1m1 2m1 1m-18 2m1 1m20 2m1 1m1 2m1 1m-206 2m207 0m-208 2m209 0m-213 8m217 0m-224 21v1h232v-1zm0 45v1h232v-1zm0 2m3 10m4 9m217 0m-216 2 1 2zm3 6m209 0m-208 2m207 0m-206 2m1 1m1 2m1 1m20 2m1 1m-18 2m1 1m1 2m-80 1 1 2zm81 0m268 0 1 2zm-348 3 1 2zm347 0m-264 1m-82 1m83 0m262 0m-344 2m343 0m-342 2m341 0m-340 2m86 0m253 0m-338 2m86 0m251 0m-250 1m-86 1m87 0m248 0m-247 1m-87 1m88 0m245 0m-332 1 1 2zm331 0m-330 2m329 0m-328 2m327 0m-326 2m325 0m-324 1m323 0m-322 2m321 0m-320 1m319 0m-224 1m-94 1m317 0m-316 1m315 0m-314 2m313 0m-312 1m311 0m-310 2m309 0m-308 1m307 0m-1 1m-1 2m-302 1m301 0m-1 1m-296 4m293 0m-289 5m1 1m282 1m-259 22m237 0m-236 1m235 0m-200 26m-42 29m-3 2m255 0m-257 2m-2 2m-2 2m267 0m-268 2m269 0m-270 1m271 0m-272 1m273 0m-280 8m287 0m-288 1m289 0m-293 5m297 0m-300 4m303 0m-306 4m309 0m-310 1m311 0m-312 2m97 0m216 0m-314 1m315 0m-316 2m317 0m-318 1m319 0m-320 2m321 0m-322 1m323 0m-324 2m325 0m-326 2m327 0m-328 1m329 0m-330 2m331 0m-332 2m333 0m-337 7m256 0m85 0m-84 1m-258 1m259 0m84 0m1 2 1 2zm-81 3m82 0m-81 1m-17 4m20 0m-19 1m20 1m1 1m1 2m-18 1m19 0m-18 1m19 1m1 1m1 2m-206 2m207 0m-208 1m209 0m-210 2m211 0m-288 2 1 3zm76 0m213 0m76 0 1 3zm-290 2m215 0m-216 2 1 2zm217 0 1 2zm-218 2m219 0m-220 3 1 2zm221 0 1 2zm-222 2 1 2zm223 0 1 2zm-224 3 1 2zm225 0 1 2zm-226 2 1 3zm227 0 1 3zm-228 4 1 3zm229 0 1 3zm-230 3m231 0m-234 48v1h238v-1zm-1 13 1 3zm239 0 1 3zm-240 4 1 2zm241 0 1 2zm-242 2 1 2zm243 0 1 2z" fill="#84CC16"/>
+            </svg>
+        </div>
+        <div class="logo-text">
+            <span class="your-gains">Your</span><span class="ai">Gains</span>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <div class="nav-item" id="rutinaDieta">Rutina y Dieta</div>
+        <div class="nav-separator">|</div>
+        <div class="nav-item" id="consejosEstudios">Consejos y Estudios</div>
+        <div class="nav-separator">|</div>
+        <div class="nav-item" id="terminosPrivacidad">Términos y Privacidad</div>
+        <div class="nav-separator">|</div>
+        <button class="upgrade-btn" onclick="window.location.href='./tarifas.html'">Upgrade</button>
+        <div class="nav-separator">|</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>¡Hola! Soy tu entrenador personal de IA</h2>
+            <p>Pregúntame lo que necesites sobre tu rutina, nutrición o consejos de fitness</p>
+                  </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="placeholder">Escribe tu primera pregunta aquí...</div>
+              </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Escribe tu pregunta aquí..." maxlength="500">
+            <button id="sendBtn" class="send-btn">Enviar</button>
+          </div>
+      </div>
+
+    <!-- Overlay para Rutina y Dieta -->
+    <div class="overlay" id="rutinaDietaOverlay">
+          <div class="overlay-content large">
+            <button class="close-btn" onclick="closeOverlay('rutinaDietaOverlay')">&times;</button>
+            <h2>Tu Plan Personalizado</h2>
+            <div class="tab-content-grid">
+                <div class="content-column">
+                    <h3>Rutina de Entrenamiento</h3>
+                    <div id="rutinaContent">
+                        <p>Cargando rutina...</p>
+                    </div>
+                </div>
+                <div class="content-column">
+                    <h3>Plan Nutricional</h3>
+                    <div id="dietaContent">
+                        <p>Cargando dieta...</p>
+                    </div>
+                </div>
+            </div>
+          </div>
+      </div>
+
+    <!-- Overlay para Consejos y Estudios -->
+    <div class="overlay" id="consejosEstudiosOverlay">
+        <div class="overlay-content large">
+            <button class="close-btn" onclick="closeOverlay('consejosEstudiosOverlay')">&times;</button>
+            <h2>Consejos y Estudios</h2>
+            <div class="tab-content-grid">
+                <div class="content-column">
+                    <h3>Consejos Técnicos</h3>
+                    <div id="consejosContent">
+                        <p>Cargando consejos...</p>
+                    </div>
+                </div>
+                <div class="content-column">
+                    <h3>Evidencia Científica</h3>
+                    <div id="estudiosContent">
+                        <p>Cargando estudios...</p>
+                    </div>
+                </div>
+            </div>
+          </div>
+      </div>
+
+    <!-- Overlay para Términos y Privacidad -->
+    <div class="overlay" id="terminosPrivacidadOverlay">
+        <div class="overlay-content">
+            <button class="close-btn" onclick="closeOverlay('terminosPrivacidadOverlay')">&times;</button>
+            <h2>Términos y Privacidad</h2>
+            <div id="terminosContent">
+                <p>Contenido de términos y condiciones...</p>
+            </div>
+          </div>
+      </div>
+
+      <!-- Gym Image Container -->
+      <div class="gym-image-container">
+          <img src="./images/gym-training.jpg" alt="Gimnasio moderno con persona entrenando - Your Gains AI" class="gym-image">
+      </div>
+
+      <script type="module">
+          import { API_BASE } from "./config.js";
+          import { checkAuthOrRedirect, getAuthHeaders, logout, isTokenExpired, decodeJwt } from "./auth.js";
+
+        // Freemium helpers (frontend-only)
+        function isPremiumUser() {
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                const payload = decodeJwt(token) || {};
+                if (payload.plan === 'premium' || payload.tier === 'premium' || payload.premium === true) {
+                    return true;
+                }
+            }
+            const storedPlan = localStorage.getItem('plan');
+            return storedPlan === 'premium';
+        }
+
+        function getChatUsageKey() {
+            const email = localStorage.getItem('email') || 'anonymous';
+            return `chat_usage_count_${email}`;
+        }
+
+        function getChatUsageCount() {
+            const raw = localStorage.getItem(getChatUsageKey());
+            const n = parseInt(raw || '0', 10);
+            return Number.isFinite(n) ? n : 0;
+        }
+
+        function incrementChatUsage() {
+            const next = getChatUsageCount() + 1;
+            localStorage.setItem(getChatUsageKey(), String(next));
+            return next;
+        }
+
+        function canUseChat() {
+            if (isPremiumUser()) return true;
+            return getChatUsageCount() < 2; // 2 prompts for free tier
+        }
+        
+        // Función principal
+        function initDashboard() {
+            // Verificar autenticación al cargar la página
+            if (!checkAuthOrRedirect()) {
+                // Si no está autenticado, la función checkAuthOrRedirect ya redirige
+                return;
+            }
+          
+            const chatMessages = document.getElementById('chatMessages');
+            const chatInput = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('sendBtn');
+
+            function addMessage(content, isUser = false) {
+                // Remove placeholder if it exists
+                const placeholder = chatMessages.querySelector('.placeholder');
+                if (placeholder) {
+                    placeholder.remove();
+                }
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+                messageDiv.textContent = content;
+                
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            async function sendMessage() {
+                const message = chatInput.value.trim();
+                if (!message) return;
+
+                // Verificar autenticación antes de enviar
+                if (!checkAuthOrRedirect()) return;
+
+                // Freemium limit: block after 2 prompts if not premium
+                if (!isPremiumUser() && !canUseChat()) {
+                    addMessage('Has alcanzado el límite gratuito de 2 mensajes. Mejora a Pro para continuar.');
+                    return;
+                }
+
+                addMessage(message, true);
+                chatInput.value = '';
+                
+                sendBtn.disabled = true;
+                sendBtn.textContent = 'Enviando...';
+
+                try {
+                    const response = await fetch(`${API_BASE}/chat`, {
+                        method: 'POST',
+                        headers: getAuthHeaders(),
+                        body: JSON.stringify({ message })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        addMessage(data.answer);
+                        if (!isPremiumUser()) {
+                            incrementChatUsage();
+                            if (!canUseChat()) {
+                                addMessage('Has llegado al máximo de mensajes gratis. Sube a Pro para seguir chateando.');
+                            }
+                        }
+                    } else {
+                        if (response.status === 401) {
+                            addMessage('Sesión expirada. Redirigiendo al login...');
+                            setTimeout(() => {
+                                localStorage.clear();
+                                window.location.href = './login.html';
+                            }, 2000);
+                        } else {
+                            addMessage(`Error: ${data.detail || 'Error desconocido'}`);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error en chat:', error);
+                    addMessage('Error de conexión. Verifica que el servidor esté funcionando.');
+                } finally {
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = 'Enviar';
+                }
+            }
+
+            sendBtn.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+
+            // Cargar planes del usuario al iniciar
+            loadUserPlans();
+
+            // Event listeners para los overlays
+            document.getElementById('rutina').addEventListener('click', () => openOverlay('rutinaOverlay'));
+            document.getElementById('consejos').addEventListener('click', () => openOverlay('consejosOverlay'));
+            document.getElementById('terminos').addEventListener('click', () => openOverlay('terminosOverlay'));
+
+            // Hacer logout disponible globalmente
+            window.logout = logout;
+        }
+
+        // Función para cargar planes del usuario
+        async function loadUserPlans() {
+            try {
+                const response = await fetch(`${API_BASE}/planes`, {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+
+                if (response.ok) {
+                    const plans = await response.json();
+                    if (plans && plans.length > 0) {
+                        // Usar el último plan
+                        const lastPlan = plans[0];
+                        displayPlan(lastPlan);
+                    }
+                } else {
+                    console.error('Error al cargar planes:', response.status);
+                }
+            } catch (error) {
+                console.error('Error al cargar planes:', error);
+            }
+        }
+
+        // Función para mostrar el plan en los overlays
+        function displayPlan(plan) {
+            // Mostrar rutina (aplicar recorte si es free)
+            const rutinaContent = document.getElementById('rutinaContent');
+            if (plan.rutina && plan.rutina.dias) {
+                const dias = plan.rutina.dias;
+                const total = dias.length;
+                const premium = isPremiumUser();
+                const visibles = premium ? total : Math.max(1, Math.ceil(total * 0.25));
+
+                let rutinaHTML = '<h3>Rutina de Entrenamiento</h3>';
+
+                dias.slice(0, visibles).forEach(dia => {
+                    rutinaHTML += `<div style="margin-bottom: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px;">`;
+                    rutinaHTML += `<h4 style=\"color: #84cc16; margin-bottom: 10px;\">${dia.dia}</h4>`;
+                    (dia.ejercicios || []).forEach(ejercicio => {
+                        rutinaHTML += `<div style=\"margin-bottom: 10px;\">`;
+                        rutinaHTML += `<strong>${ejercicio.nombre}</strong><br>`;
+                        rutinaHTML += `Series: ${ejercicio.series} | Reps: ${ejercicio.repeticiones} | Descanso: ${ejercicio.descanso}`;
+                        rutinaHTML += `</div>`;
+                    });
+                    rutinaHTML += `</div>`;
+                });
+
+                if (!premium && visibles < total) {
+                    const ocultos = total - visibles;
+                    
+                    // Días censurados con efecto blur
+                    const diasCensurados = [
+                        { dia: "Día 3: Tren Superior", ejercicios: [
+                            { nombre: "Press de banca", series: "4", repeticiones: "8-10", descanso: "2 min" },
+                            { nombre: "Remo con barra", series: "4", repeticiones: "8-10", descanso: "2 min" }
+                        ]},
+                        { dia: "Día 4: Tren Inferior", ejercicios: [
+                            { nombre: "Sentadilla búlgara", series: "3", repeticiones: "12-15", descanso: "90 seg" },
+                            { nombre: "Peso muerto rumano", series: "3", repeticiones: "10-12", descanso: "2 min" }
+                        ]}
+                    ];
+
+                    diasCensurados.slice(0, Math.min(ocultos, 2)).forEach(dia => {
+                        rutinaHTML += `<div style=\"margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; position: relative; overflow: hidden;\">`;
+                        rutinaHTML += `<div style=\"filter: blur(1.5px); color: #64748b; user-select: none; pointer-events: none;\">`;
+                        rutinaHTML += `<h4 style=\"color: #84cc16; margin-bottom: 10px;\">${dia.dia}</h4>`;
+                        dia.ejercicios.forEach(ejercicio => {
+                            rutinaHTML += `<div style=\"margin-bottom: 10px;\">`;
+                            rutinaHTML += `<strong>${ejercicio.nombre}</strong><br>`;
+                            rutinaHTML += `Series: ${ejercicio.series} | Reps: ${ejercicio.repeticiones} | Descanso: ${ejercicio.descanso}`;
+                            rutinaHTML += `</div>`;
+                        });
+                        rutinaHTML += `</div>`;
+                        rutinaHTML += `<div style=\"position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(132, 204, 22, 0.9); color: white; padding: 6px 12px; border-radius: 6px; font-size: 14px; font-weight: 600;\">PRO</div>`;
+                        rutinaHTML += `</div>`;
+                    });
+
+                    rutinaHTML += `<div style=\"margin-top: 10px; padding: 14px; border: 1px dashed #94a3b8; border-radius: 8px; background: rgba(148,163,184,0.08); color: #cbd5e1;\">`;
+                    rutinaHTML += `${ocultos} día(s) restantes ocultos en el plan gratuito. `;
+                    rutinaHTML += `<a href=\"./tarifas.html\" style=\"color:#84cc16; font-weight:600; text-decoration: underline;\">Mejora a Pro</a> para ver el 100% de tu rutina.`;
+                    rutinaHTML += `</div>`;
+                }
+
+                rutinaContent.innerHTML = rutinaHTML;
+            }
+
+            // Mostrar consejos (aplicar recorte si es free)
+            const consejosContent = document.getElementById('consejosContent');
+            if (plan.rutina && plan.rutina.consejos) {
+                const consejos = plan.rutina.consejos;
+                const total = consejos.length;
+                const premium = isPremiumUser();
+                const visibles = premium ? total : Math.max(2, Math.ceil(total * 0.33)); // Mostrar 33% (mínimo 2)
+
+                let consejosHTML = '<h3>Consejos de Entrenamiento</h3>';
+                
+                // Consejos visibles expandidos
+                const consejosExpandidos = [
+                    "SOBRECARGA PROGRESIVA: El principio fundamental del crecimiento muscular. Debes aumentar gradualmente el peso, repeticiones o series cada 1-2 semanas. Si puedes hacer 3 series de 10 repeticiones con 50kg, la próxima semana intenta 3x10 con 52.5kg o 3x12 con 50kg. Esta progresión constante es lo que estimula la adaptación muscular.",
+                    "CALENTAMIENTO COMPLETO: Nunca saltes el calentamiento. Dedica 10-15 minutos a activar tu sistema cardiovascular y preparar tus músculos. Comienza con 5 minutos de cardio ligero, luego realiza movimientos dinámicos como círculos de brazos, sentadillas sin peso y estiramientos activos. Esto reduce el riesgo de lesiones y mejora tu rendimiento."
+                ];
+
+                consejosExpandidos.forEach(consejo => {
+                    consejosHTML += `<div style=\"margin-bottom: 15px; padding: 15px; background: #e8f5e8; border-radius: 8px; border-left: 4px solid #84cc16;\">`;
+                    consejosHTML += `<div style=\"font-weight: 600; color: #2d5016; margin-bottom: 8px;\">${consejo.split(':')[0]}:</div>`;
+                    consejosHTML += `<div style=\"color: #365314; line-height: 1.5;\">${consejo.split(':').slice(1).join(':').trim()}</div>`;
+                    consejosHTML += `</div>`;
+                });
+
+                // Consejos censurados para usuarios no premium
+                if (!premium && visibles < total) {
+                    const ocultos = total - visibles;
+                    const consejosCensurados = [
+                        "NUTRICIÓN PRE-ENTRENAMIENTO: Consume carbohidratos complejos 2-3 horas antes del entrenamiento para tener energía sostenida. Avena, arroz integral o patata son excelentes opciones. Evita comidas pesadas que puedan causar molestias digestivas durante el ejercicio.",
+                        "PROTEÍNA POST-ENTRENAMIENTO: La ventana anabólica es real. Consume 20-30g de proteína de alta calidad (suero de leche, pollo, pescado) en los primeros 30-60 minutos post-entreno. Esto maximiza la síntesis de proteína muscular y acelera la recuperación.",
+                        "La hidratación adecuada es fundamental para el rendimiento muscular. Bebe al menos 2-3 litros de agua diarios, especialmente antes y después del entrenamiento.",
+                        "El descanso entre series debe ser progresivo: 60-90 segundos para hipertrofia, 2-3 minutos para fuerza máxima.",
+                        "La técnica correcta siempre prevalece sobre el peso. Es mejor hacer 8 repeticiones perfectas que 12 mal ejecutadas.",
+                        "La nutrición post-entrenamiento es crucial. Consume proteínas y carbohidratos en los primeros 30-60 minutos después del ejercicio."
+                    ];
+
+                    consejosCensurados.slice(0, Math.min(ocultos, 6)).forEach(consejo => {
+                        consejosHTML += `<div style=\"margin-bottom: 15px; padding: 15px; background: #f8fafc; border-radius: 8px; position: relative; overflow: hidden; border-left: 4px solid #cbd5e1;\">`;
+                        consejosHTML += `<div style=\"filter: blur(2px); color: #64748b; user-select: none; pointer-events: none; line-height: 1.5;\">`;
+                        if (consejo.includes(':')) {
+                            consejosHTML += `<div style=\"font-weight: 600; color: #475569; margin-bottom: 8px;\">${consejo.split(':')[0]}:</div>`;
+                            consejosHTML += `<div style=\"color: #64748b;\">${consejo.split(':').slice(1).join(':').trim()}</div>`;
+                        } else {
+                            consejosHTML += `• ${consejo}`;
+                        }
+                        consejosHTML += `</div>`;
+                        consejosHTML += `<div style=\"position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(132, 204, 22, 0.95); color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; box-shadow: 0 2px 8px rgba(132, 204, 22, 0.3);\">PRO</div>`;
+                        consejosHTML += `</div>`;
+                    });
+
+                    consejosHTML += `<div style=\"margin-top: 10px; padding: 14px; border: 1px dashed #94a3b8; border-radius: 8px; background: rgba(148,163,184,0.08); color: #cbd5e1;\">`;
+                    consejosHTML += `${ocultos} consejo(s) adicionales disponibles en Pro. `;
+                    consejosHTML += `<a href=\"./tarifas.html\" style=\"color:#84cc16; font-weight:600; text-decoration: underline;\">Mejora a Pro</a> para desbloquear todos los consejos.`;
+                    consejosHTML += `</div>`;
+                }
+
+                consejosContent.innerHTML = consejosHTML;
+            }
+        }
+
+        // Función para abrir overlays
+        function openOverlay(overlayId) {
+            document.getElementById(overlayId).style.display = 'flex';
+        }
+
+        // Función para cerrar overlays
+        function closeOverlay(overlayId) {
+            document.getElementById(overlayId).style.display = 'none';
+        }
+
+        // Función para cargar contenido de rutina y dieta
+        function loadRoutineAndDietContent() {
+            const storedPlan = localStorage.getItem('userPlan');
+            const premium = isPremiumUser();
+            
+            if (storedPlan) {
+                try {
+                    const plan = JSON.parse(storedPlan);
+                    displayRoutineContent(plan, premium);
+                    displayDietContent(plan, premium);
+                } catch (e) {
+                    console.error('Error parsing stored plan:', e);
+                    showNoContentMessages();
+                }
+            } else {
+                showNoContentMessages();
+            }
+        }
+
+        // Función para mostrar contenido de rutina
+        function displayRoutineContent(plan, premium) {
+            const contentArea = document.getElementById('rutinaContent');
+            
+            if (plan.rutina && plan.rutina.dias) {
+                const dias = plan.rutina.dias;
+                const total = dias.length;
+                const visibles = premium ? total : Math.max(1, Math.ceil(total * 0.2)); // 20% para usuarios básicos
+
+                let routineHTML = '';
+                
+                // Mostrar días visibles
+                dias.slice(0, visibles).forEach(dia => {
+                    routineHTML += `<div class="routine-item">`;
+                    routineHTML += `<div class="routine-day">${dia.dia}</div>`;
+                    (dia.ejercicios || []).forEach(ejercicio => {
+                        routineHTML += `<div class="exercise">`;
+                        routineHTML += `<div class="exercise-name">${ejercicio.nombre}</div>`;
+                        routineHTML += `<div class="exercise-details">Series: ${ejercicio.series} | Reps: ${ejercicio.repeticiones} | Descanso: ${ejercicio.descanso}</div>`;
+                        routineHTML += `</div>`;
+                    });
+                    routineHTML += `</div>`;
+                });
+
+                // Mostrar días censurados para usuarios no premium
+                if (!premium && visibles < total) {
+                    const ocultos = total - visibles;
+                    
+                    // Agregar días censurados
+                    dias.slice(visibles, visibles + Math.min(ocultos, 2)).forEach(dia => {
+                        routineHTML += `<div class="routine-item premium-overlay">`;
+                        routineHTML += `<div class="routine-day">${dia.dia}</div>`;
+                        (dia.ejercicios || []).forEach(ejercicio => {
+                            routineHTML += `<div class="exercise">`;
+                            routineHTML += `<div class="exercise-name">${ejercicio.nombre}</div>`;
+                            routineHTML += `<div class="exercise-details">Series: ${ejercicio.series} | Reps: ${ejercicio.repeticiones} | Descanso: ${ejercicio.descanso}</div>`;
+                            routineHTML += `</div>`;
+                        });
+                        routineHTML += `<div class="premium-badge">`;
+                        routineHTML += `<h4>Desbloquea contenido completo con Pro</h4>`;
+                        routineHTML += `<p>${ocultos} días adicionales disponibles</p>`;
+                        routineHTML += `<button class="premium-btn" onclick="window.location.href='./tarifas.html'">Mejorar a Pro</button>`;
+                        routineHTML += `</div>`;
+                        routineHTML += `</div>`;
+                    });
+                }
+
+                contentArea.innerHTML = routineHTML;
+            } else {
+                contentArea.innerHTML = '<p>No tienes una rutina generada. Usa el chat para crear tu plan personalizado.</p>';
+            }
+        }
+
+        // Función para mostrar contenido de dieta
+        function displayDietContent(plan, premium) {
+            const contentArea = document.getElementById('dietaContent');
+            
+            if (plan.dieta && plan.dieta.comidas) {
+                const comidas = plan.dieta.comidas;
+                const total = comidas.length;
+                const visibles = premium ? total : Math.max(2, Math.ceil(total * 0.5)); // 50% para usuarios básicos
+
+                let dietHTML = '';
+                
+                // Mostrar macros si están disponibles
+                if (plan.dieta.macros) {
+                    dietHTML += `<div class="macros-grid">`;
+                    dietHTML += `<div class="macro-card"><span class="macro-value">${plan.dieta.macros.proteinas}g</span><span class="macro-label">Proteínas</span></div>`;
+                    dietHTML += `<div class="macro-card"><span class="macro-value">${plan.dieta.macros.carbohidratos}g</span><span class="macro-label">Carbohidratos</span></div>`;
+                    dietHTML += `<div class="macro-card"><span class="macro-value">${plan.dieta.macros.grasas}g</span><span class="macro-label">Grasas</span></div>`;
+                    dietHTML += `<div class="macro-card"><span class="macro-value">${plan.dieta.macros.calorias}</span><span class="macro-label">Calorías</span></div>`;
+                    dietHTML += `</div>`;
+                }
+
+                // Mostrar comidas visibles
+                comidas.slice(0, visibles).forEach(comida => {
+                    dietHTML += `<div class="meal-card">`;
+                    dietHTML += `<div class="meal-header">`;
+                    dietHTML += `<span class="meal-time">${comida.hora}</span>`;
+                    dietHTML += `<span class="meal-name">${comida.nombre}</span>`;
+                    dietHTML += `</div>`;
+                    if (comida.alimentos) {
+                        comida.alimentos.forEach(alimento => {
+                            dietHTML += `<div class="food-item">`;
+                            dietHTML += `<span>${alimento.nombre}</span>`;
+                            dietHTML += `<span>${alimento.cantidad}</span>`;
+                            dietHTML += `</div>`;
+                        });
+                    }
+                    dietHTML += `</div>`;
+                });
+
+                // Mostrar comidas censuradas para usuarios no premium
+                if (!premium && visibles < total) {
+                    const ocultos = total - visibles;
+                    
+                    // Agregar comidas censuradas
+                    comidas.slice(visibles, visibles + Math.min(ocultos, 2)).forEach(comida => {
+                        dietHTML += `<div class="meal-card premium-overlay">`;
+                        dietHTML += `<div class="meal-header">`;
+                        dietHTML += `<span class="meal-time">${comida.hora}</span>`;
+                        dietHTML += `<span class="meal-name">${comida.nombre}</span>`;
+                        dietHTML += `</div>`;
+                        if (comida.alimentos) {
+                            comida.alimentos.forEach(alimento => {
+                                dietHTML += `<div class="food-item">`;
+                                dietHTML += `<span>${alimento.nombre}</span>`;
+                                dietHTML += `<span>${alimento.cantidad}</span>`;
+                                dietHTML += `</div>`;
+                            });
+                        }
+                        dietHTML += `<div class="premium-badge">`;
+                        dietHTML += `<h4>Desbloquea contenido completo con Pro</h4>`;
+                        dietHTML += `<p>${ocultos} comidas adicionales disponibles</p>`;
+                        dietHTML += `<button class="premium-btn" onclick="window.location.href='./tarifas.html'">Mejorar a Pro</button>`;
+                        dietHTML += `</div>`;
+                        dietHTML += `</div>`;
+                    });
+                }
+
+                contentArea.innerHTML = dietHTML;
+            } else {
+                contentArea.innerHTML = '<p>No tienes un plan nutricional generado. Usa el chat para crear tu dieta personalizada.</p>';
+            }
+        }
+
+        // Función para cargar contenido de consejos y estudios
+        function loadAdviceAndStudiesContent() {
+            const storedPlan = localStorage.getItem('userPlan');
+            const premium = isPremiumUser();
+            
+            loadAdviceContent(storedPlan, premium);
+            loadStudiesContent();
+        }
+
+        // Función para mostrar consejos
+        function loadAdviceContent(storedPlan, premium) {
+            const contentArea = document.getElementById('consejosContent');
+            
+            const consejosTecnicos = [
+                {
+                    title: "SOBRECARGA PROGRESIVA SISTEMÁTICA",
+                    content: "Implementa un sistema de progresión basado en el rendimiento. Aumenta el peso cuando puedas completar todas las series con 2-3 repeticiones en reserva. Para ejercicios de fuerza, incrementa 2.5-5kg; para hipertrofia, 1.25-2.5kg. Documenta cada sesión para asegurar progresión consistente."
+                },
+                {
+                    title: "OPTIMIZACIÓN DEL VOLUMEN DE ENTRENAMIENTO",
+                    content: "Mantén 10-20 series por grupo muscular por semana para maximizar la hipertrofia. Distribuye el volumen a lo largo de la semana, evitando sesiones excesivamente largas. Monitorea la fatiga acumulada y ajusta el volumen según tu capacidad de recuperación."
+                }
+            ];
+
+            let adviceHTML = '';
+            consejosTecnicos.forEach(consejo => {
+                adviceHTML += `<div class="advice-card">`;
+                adviceHTML += `<div class="advice-title">${consejo.title}</div>`;
+                adviceHTML += `<div class="advice-content">${consejo.content}</div>`;
+                adviceHTML += `</div>`;
+            });
+
+            // Consejos censurados para usuarios no premium
+            if (!premium) {
+                const consejosCensurados = [
+                    {
+                        title: "TÉCNICA Y ACTIVACIÓN MUSCULAR",
+                        content: "La ejecución técnica correcta es fundamental para la activación óptima del músculo objetivo. Realiza movimientos controlados con rango completo de movimiento, manteniendo tensión constante durante la fase excéntrica y concéntrica."
+                    },
+                    {
+                        title: "TIMING DE NUTRIENTES ESTRATÉGICO",
+                        content: "Consume 20-40g de proteína de alta calidad dentro de 2 horas post-entrenamiento. Combina con 30-60g de carbohidratos de rápida absorción para maximizar la síntesis de proteínas musculares y la reposición de glucógeno."
+                    }
+                ];
+
+                consejosCensurados.forEach(consejo => {
+                    adviceHTML += `<div class="advice-card premium-overlay">`;
+                    adviceHTML += `<div class="advice-title">${consejo.title}</div>`;
+                    adviceHTML += `<div class="advice-content">${consejo.content}</div>`;
+                    adviceHTML += `<div class="premium-badge">`;
+                    adviceHTML += `<h4>Consejos Avanzados Disponibles</h4>`;
+                    adviceHTML += `<p>Contenido técnico adicional para usuarios Pro</p>`;
+                    adviceHTML += `<button class="premium-btn" onclick="window.location.href='./tarifas.html'">Mejorar a Pro</button>`;
+                    adviceHTML += `</div>`;
+                    adviceHTML += `</div>`;
+                });
+            }
+
+            contentArea.innerHTML = adviceHTML;
+        }
+
+        // Función para mostrar estudios
+        function loadStudiesContent() {
+            const contentArea = document.getElementById('estudiosContent');
+            
+            const estudios = [
+                {
+                    title: "Progresión Lineal en Entrenamiento de Fuerza",
+                    content: "Estudio longitudinal que demuestra la efectividad de la sobrecarga progresiva sistemática en el desarrollo de la fuerza muscular. Los participantes que siguieron un protocolo de progresión lineal mostraron aumentos del 23% en fuerza máxima comparado con el grupo control.",
+                    author: "Schoenfeld, B.J., Grgic, J., Ogborn, D., & Krieger, J.W. (2017)",
+                    journal: "Journal of Strength and Conditioning Research, 31(12), 3508-3523"
+                },
+                {
+                    title: "Timing de Proteínas y Síntesis Muscular",
+                    content: "Investigación que evalúa el momento óptimo de consumo de proteínas post-entrenamiento. Los resultados indican que la ventana anabólica se extiende hasta 4 horas post-ejercicio, con beneficios máximos en los primeros 2 horas.",
+                    author: "Areta, J.L., Burke, L.M., Ross, M.L., et al. (2013)",
+                    journal: "Journal of the International Society of Sports Nutrition, 10(1), 5"
+                },
+                {
+                    title: "Volumen de Entrenamiento y Hipertrofia",
+                    content: "Meta-análisis de 15 estudios que examina la relación entre volumen de entrenamiento y crecimiento muscular. Los hallazgos sugieren que 10-20 series por grupo muscular por semana optimizan la hipertrofia en entrenados.",
+                    author: "Schoenfeld, B.J., Ogborn, D., & Krieger, J.W. (2017)",
+                    journal: "Sports Medicine, 47(8), 1681-1696"
+                }
+            ];
+
+            let studiesHTML = '';
+            estudios.forEach(estudio => {
+                studiesHTML += `<div class="study-card">`;
+                studiesHTML += `<div class="study-title">${estudio.title}</div>`;
+                studiesHTML += `<div class="study-content">${estudio.content}</div>`;
+                studiesHTML += `<div class="study-meta">`;
+                studiesHTML += `<span class="study-author">${estudio.author}</span>`;
+                studiesHTML += `<span class="study-journal">${estudio.journal}</span>`;
+                studiesHTML += `</div>`;
+                studiesHTML += `</div>`;
+            });
+
+            contentArea.innerHTML = studiesHTML;
+        }
+
+        // Función para cargar contenido de términos
+        function loadTermsContent() {
+            const contentArea = document.getElementById('terminosContent');
+            
+            const termsHTML = `
+                <h3>Términos de Servicio</h3>
+                <p>Al utilizar YourGains AI, aceptas estos términos de servicio. Si no estás de acuerdo con alguna parte de estos términos, no debes usar nuestros servicios.</p>
+                
+                <h4>Descripción del Servicio</h4>
+                <p>YourGains AI es una plataforma de inteligencia artificial que proporciona planes de entrenamiento personalizados, recomendaciones nutricionales y consejos de fitness basados en tus objetivos y preferencias.</p>
+                
+                <h4>Limitaciones de Responsabilidad</h4>
+                <p><strong>Importante:</strong> Los planes de entrenamiento y recomendaciones nutricionales son sugerencias generales. Siempre consulta con un profesional médico o de fitness antes de comenzar cualquier programa de ejercicios o dieta.</p>
+                
+                <h3>Política de Privacidad</h3>
+                <p>Recopilamos información para proporcionarte un servicio personalizado, incluyendo datos de perfil, historial de entrenamiento y preferencias. Utilizamos esta información para generar planes personalizados y mejorar nuestros algoritmos de IA.</p>
+                
+                <h4>Protección de Datos</h4>
+                <p>Implementamos medidas de seguridad técnicas y organizativas para proteger tu información personal contra acceso no autorizado, alteración, divulgación o destrucción.</p>
+                
+                <h4>Contacto</h4>
+                <p>Si tienes preguntas sobre estos términos y políticas, puedes contactarnos en: legal@yourgainsai.com</p>
+            `;
+            
+            contentArea.innerHTML = termsHTML;
+        }
+
+        // Función para mostrar mensajes de no contenido
+        function showNoContentMessages() {
+            document.getElementById('rutinaContent').innerHTML = '<p>No tienes una rutina generada. Usa el chat para crear tu plan personalizado.</p>';
+            document.getElementById('dietaContent').innerHTML = '<p>No tienes un plan nutricional generado. Usa el chat para crear tu dieta personalizada.</p>';
+        }
+
+        // Hacer funciones globales
+        window.openOverlay = openOverlay;
+        window.closeOverlay = closeOverlay;
+
+        // Event listeners para los botones de navegación
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('rutinaDieta').addEventListener('click', function() {
+                openOverlay('rutinaDietaOverlay');
+                loadRoutineAndDietContent();
+            });
+            
+            document.getElementById('consejosEstudios').addEventListener('click', function() {
+                openOverlay('consejosEstudiosOverlay');
+                loadAdviceAndStudiesContent();
+            });
+            
+            document.getElementById('terminosPrivacidad').addEventListener('click', function() {
+                openOverlay('terminosPrivacidadOverlay');
+                loadTermsContent();
+            });
+        });
+
+        // Inicializar el dashboard cuando se carga la página
+        initDashboard();
+      </script>
+  </body>
+  </html>

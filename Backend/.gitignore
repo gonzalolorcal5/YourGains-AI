@@ -1,0 +1,15 @@
+# secrets
+.env
+*.env
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# node
+node_modules/
+dist/
+build/

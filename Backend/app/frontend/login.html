@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Inicia sesión • YourGains AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-neutral-950 text-white flex items-center justify-center">
+  <div class="w-full max-w-md p-8 rounded-2xl bg-neutral-900 shadow-xl">
+    <div class="text-center mb-6">
+      <div class="text-2xl font-bold">YourGains <span class="text-lime-400">AI</span></div>
+      <p class="text-neutral-400 text-sm mt-1">Accede o crea tu cuenta</p>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm mb-1">Email</label>
+        <input id="email" type="email" required class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400"/>
+      </div>
+      <div>
+        <label class="block text-sm mb-1">Contraseña</label>
+        <input id="password" type="password" required class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400"/>
+      </div>
+
+      <div class="flex gap-2">
+        <button id="login" class="flex-1 bg-lime-400 text-black font-semibold rounded-xl py-3 hover:bg-lime-300 transition">
+          Iniciar sesión
+        </button>
+        <button id="register" class="flex-1 bg-neutral-800 rounded-xl py-3 hover:bg-neutral-700">
+          Registrarse
+        </button>
+      </div>
+
+      <p id="msg" class="text-center text-sm text-red-400 min-h-5"></p>
+      
+      <div id="logoutSection" class="text-center" style="display: none;">
+        <button id="logoutBtn" class="text-sm text-red-400 hover:text-red-300 underline">
+          Cerrar sesión actual
+        </button>
+      </div>
+      
+      <p class="text-center text-sm text-neutral-400">
+        Al continuar aceptas nuestros <a href="/terms.html" class="text-lime-400 hover:underline">Términos</a> y <a href="/privacy.html" class="text-lime-400 hover:underline">Privacidad</a>.
+      </p>
+    </div>
+  </div>
+
+  <script type="module">
+    console.log("🟢 Script login.html cargando...");
+    
+    import { doLogin, doRegister, logout } from "./auth.js";
+    console.log("🟢 Auth.js importado correctamente");
+
+    const form = document.getElementById("form-login");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const loginBtn = document.getElementById("login");
+    const registerBtn = document.getElementById("register");
+    const msgEl = document.getElementById("msg");
+    const logoutSection = document.getElementById("logoutSection");
+    const logoutBtn = document.getElementById("logoutBtn");
+    
+    console.log("🟢 Elementos encontrados:", {
+      emailInput: !!emailInput,
+      passwordInput: !!passwordInput,
+      loginBtn: !!loginBtn,
+      registerBtn: !!registerBtn,
+      msgEl: !!msgEl
+    });
+
+    // Crear formulario virtual para manejar el submit
+    const virtualForm = document.createElement("form");
+    virtualForm.id = "form-login";
+    virtualForm.style.display = "none";
+    
+    // Clonar elementos sin IDs duplicados
+    const emailClone = emailInput.cloneNode(true);
+    emailClone.id = "email-clone";
+    const passwordClone = passwordInput.cloneNode(true);
+    passwordClone.id = "password-clone";
+    
+    virtualForm.appendChild(emailClone);
+    virtualForm.appendChild(passwordClone);
+    document.body.appendChild(virtualForm);
+
+    // Manejar login
+    loginBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        msgEl.textContent = "Por favor completa todos los campos";
+        return;
+      }
+
+      try {
+        loginBtn.disabled = true;
+        loginBtn.textContent = "Iniciando...";
+        msgEl.textContent = "";
+
+        const loginData = await doLogin(email, password);
+        
+        // Redirigir según el estado de onboarding
+        if (loginData.onboarding_completed) {
+          window.location.href = "./dashboard.html";
+        } else {
+          window.location.href = "./onboarding.html";
+        }
+      } catch (err) {
+        msgEl.textContent = err.message || "Error al iniciar sesión";
+        console.error(err);
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Iniciar sesión";
+      }
+    });
+
+    // Manejar registro
+    registerBtn.addEventListener("click", async (e) => {
+      console.log("🔵 Botón registro clickeado");
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      console.log("🔵 Email:", email, "Password:", password ? "***" : "vacío");
+
+      if (!email || !password) {
+        msgEl.textContent = "Por favor completa todos los campos";
+        return;
+      }
+
+      try {
+        registerBtn.disabled = true;
+        registerBtn.textContent = "Registrando...";
+        msgEl.textContent = "";
+
+        await doRegister(email, password);
+        msgEl.textContent = "Registro exitoso. Ahora inicia sesión.";
+        msgEl.className = "text-center text-sm text-green-400 min-h-5";
+      } catch (err) {
+        msgEl.textContent = err.message || "Error al registrarse";
+        msgEl.className = "text-center text-sm text-red-400 min-h-5";
+        console.error(err);
+      } finally {
+        registerBtn.disabled = false;
+        registerBtn.textContent = "Registrarse";
+      }
+    });
+
+    // Manejar logout
+    logoutBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      logout();
+    });
+
+    // Verificar si ya hay sesión activa
+    const token = localStorage.getItem("accessToken");
+    const email = localStorage.getItem("email");
+    if (token && email) {
+      logoutSection.style.display = "block";
+      msgEl.textContent = `Sesión activa: ${email}`;
+      msgEl.className = "text-center text-sm text-green-400 min-h-5";
+    }
+
+    // Manejar Enter en los inputs
+    [emailInput, passwordInput].forEach(input => {
+      input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          loginBtn.click();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

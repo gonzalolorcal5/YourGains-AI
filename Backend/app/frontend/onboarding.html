@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración Inicial • YourGains AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-neutral-950 text-white flex items-center justify-center">
+    <div class="w-full max-w-2xl p-8 rounded-2xl bg-neutral-900 shadow-xl">
+        <div class="text-center mb-8">
+            <div class="text-3xl font-bold">YourGains <span class="text-lime-400">AI</span></div>
+            <p class="text-neutral-400 text-sm mt-2">Cuéntanos sobre ti para crear tu plan personalizado</p>
+        </div>
+
+        <form id="onboardingForm" class="space-y-6">
+            <!-- Datos básicos -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm mb-2">Altura (cm)</label>
+                    <input type="number" id="altura" required min="120" max="250" 
+                           class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+                </div>
+                <div>
+                    <label class="block text-sm mb-2">Peso (kg)</label>
+                    <input type="number" id="peso" required min="30" max="200" step="0.1"
+                           class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm mb-2">Edad</label>
+                    <input type="number" id="edad" required min="16" max="80"
+                           class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+                </div>
+                <div>
+                    <label class="block text-sm mb-2">Sexo</label>
+                    <select id="sexo" required class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+                        <option value="">Selecciona</option>
+                        <option value="hombre">Hombre</option>
+                        <option value="mujer">Mujer</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Objetivo -->
+            <div>
+                <label class="block text-sm mb-2">Objetivo principal</label>
+                <select id="objetivo" required class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+                    <option value="">Selecciona tu objetivo</option>
+                    <option value="perder_peso">Perder peso</option>
+                    <option value="ganar_musculo">Ganar músculo</option>
+                    <option value="definir">Definir</option>
+                    <option value="mantener">Mantener forma</option>
+                    <option value="fuerza">Aumentar fuerza</option>
+                </select>
+            </div>
+
+            <!-- Experiencia -->
+            <div>
+                <label class="block text-sm mb-2">Experiencia en el gym</label>
+                <select id="experiencia" required class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+                    <option value="">Selecciona tu nivel</option>
+                    <option value="principiante">Principiante (0-6 meses)</option>
+                    <option value="intermedio">Intermedio (6 meses - 2 años)</option>
+                    <option value="avanzado">Avanzado (2+ años)</option>
+                </select>
+            </div>
+
+            <!-- Materiales disponibles -->
+            <div>
+                <label class="block text-sm mb-2">Materiales disponibles</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="gym" value="gym" class="rounded">
+                        <span class="text-sm">Gym completo</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="pesas" value="pesas" class="rounded">
+                        <span class="text-sm">Pesas libres</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="mancuernas" value="mancuernas" class="rounded">
+                        <span class="text-sm">Mancuernas</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="barra" value="barra" class="rounded">
+                        <span class="text-sm">Barra olímpica</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="casa" value="casa" class="rounded">
+                        <span class="text-sm">Solo en casa</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="cardio" value="cardio" class="rounded">
+                        <span class="text-sm">Máquinas cardio</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Tipo de cuerpo -->
+            <div>
+                <label class="block text-sm mb-2">Tipo de cuerpo</label>
+                <select id="tipo_cuerpo" required class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+                    <option value="">Selecciona tu tipo</option>
+                    <option value="ectomorfo">Ectomorfo (delgado, difícil ganar peso)</option>
+                    <option value="mesomorfo">Mesomorfo (atlético, gana músculo fácil)</option>
+                    <option value="endomorfo">Endomorfo (tendencia a ganar grasa)</option>
+                </select>
+            </div>
+
+            <!-- Alergias y restricciones -->
+            <div>
+                <label class="block text-sm mb-2">Alergias alimentarias</label>
+                <input type="text" id="alergias" placeholder="Ej: nueces, mariscos, lactosa..."
+                       class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+            </div>
+
+            <div>
+                <label class="block text-sm mb-2">Restricciones dietéticas</label>
+                <select id="restricciones_dieta" class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+                    <option value="">Ninguna</option>
+                    <option value="vegetariano">Vegetariano</option>
+                    <option value="vegano">Vegano</option>
+                    <option value="keto">Keto</option>
+                    <option value="sin_gluten">Sin gluten</option>
+                </select>
+            </div>
+
+            <!-- Lesiones -->
+            <div>
+                <label class="block text-sm mb-2">Lesiones o limitaciones</label>
+                <input type="text" id="lesiones" placeholder="Ej: lesión en rodilla, dolor de espalda..."
+                       class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+            </div>
+
+            <div class="flex gap-4">
+                <button type="submit" id="submitBtn" 
+                        class="flex-1 bg-lime-400 text-black font-semibold rounded-xl py-4 hover:bg-lime-300 transition">
+                    Crear mi plan personalizado
+                </button>
+            </div>
+
+            <p id="msg" class="text-center text-sm text-red-400 min-h-5"></p>
+        </form>
+    </div>
+
+    <script type="module" src="./onboarding.js"></script>
+</body>
+</html>
+

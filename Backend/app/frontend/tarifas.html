@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <title>Planes de Suscripción • YourGains AI</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+  <script type="module">
+    import { checkAuthOrRedirect } from "./auth.js";
+    
+    // Verificar autenticación
+    if (!checkAuthOrRedirect()) {
+      return;
+    }
+  </script>
+</head>
+<body class="min-h-screen bg-neutral-950 text-white">
+  <header class="border-b border-neutral-800">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="text-xl font-bold">YourGains <span class="text-lime-400">AI</span></div>
+      <a href="./rutina.html" class="text-sm bg-neutral-800 px-3 py-1.5 rounded-lg hover:bg-neutral-700">Ir a mi área</a>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-10">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold mb-4">Elige tu plan</h1>
+      <p class="text-xl text-neutral-400">Desbloquea todo el potencial de YourGains AI</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Plan Gratuito -->
+      <div class="bg-neutral-900 rounded-2xl p-8 border border-neutral-800 relative">
+        <div class="text-center mb-6">
+          <h2 class="text-2xl font-bold mb-2">Plan Gratuito</h2>
+          <p class="text-4xl font-bold text-white mb-1">0 €</p>
+          <p class="text-neutral-400">Para empezar</p>
+        </div>
+        
+        <ul class="space-y-4 mb-8">
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>2 mensajes de IA por día</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>25% de tu rutina visible</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>Consejos básicos</span>
+          </li>
+          <li class="flex items-center text-neutral-500">
+            <span class="text-neutral-500 mr-3">✗</span>
+            <span>Contenido premium censurado</span>
+          </li>
+        </ul>
+        
+        <div class="text-center">
+          <span class="text-neutral-500 text-sm">Plan actual</span>
+        </div>
+      </div>
+
+      <!-- Plan Pro Mensual -->
+      <div class="bg-gradient-to-br from-lime-500 to-lime-600 rounded-2xl p-8 border-2 border-lime-400 relative transform scale-105">
+        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+          <span class="bg-lime-400 text-black px-4 py-1 rounded-full text-sm font-bold">MÁS POPULAR</span>
+        </div>
+        
+        <div class="text-center mb-6">
+          <h2 class="text-2xl font-bold mb-2 text-black">Pro Mensual</h2>
+          <p class="text-4xl font-bold text-black mb-1">9,99 €</p>
+          <p class="text-black/70">por mes</p>
+        </div>
+        
+        <ul class="space-y-4 mb-8">
+          <li class="flex items-center">
+            <span class="text-black mr-3">✓</span>
+            <span class="text-black font-medium">Mensajes ilimitados de IA</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-black mr-3">✓</span>
+            <span class="text-black font-medium">100% de rutina visible</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-black mr-3">✓</span>
+            <span class="text-black font-medium">Todos los consejos premium</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-black mr-3">✓</span>
+            <span class="text-black font-medium">Dieta personalizada completa</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-black mr-3">✓</span>
+            <span class="text-black font-medium">Soporte prioritario</span>
+          </li>
+        </ul>
+        
+        <button onclick="showPaymentModal('monthly')"
+           class="block w-full bg-black text-lime-400 font-bold rounded-xl px-5 py-3 hover:bg-neutral-800 transition text-center">
+          Mejorar a Pro
+        </button>
+      </div>
+
+      <!-- Plan Pro Anual -->
+      <div class="bg-neutral-900 rounded-2xl p-8 border border-neutral-800 relative">
+        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+          <span class="bg-lime-400 text-black px-4 py-1 rounded-full text-sm font-bold">AHORRA 35€</span>
+        </div>
+        
+        <div class="text-center mb-6">
+          <h2 class="text-2xl font-bold mb-2">Pro Anual</h2>
+          <p class="text-4xl font-bold text-lime-400 mb-1">79,99 €</p>
+          <p class="text-neutral-400">por año</p>
+          <p class="text-sm text-lime-400 mt-1">6,67 €/mes</p>
+        </div>
+        
+        <ul class="space-y-4 mb-8">
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>Mensajes ilimitados de IA</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>100% de rutina visible</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>Todos los consejos premium</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>Dieta personalizada completa</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>Soporte prioritario</span>
+          </li>
+          <li class="flex items-center">
+            <span class="text-lime-400 mr-3">✓</span>
+            <span>Actualizaciones exclusivas</span>
+          </li>
+        </ul>
+        
+        <button onclick="showPaymentModal('yearly')"
+           class="block w-full bg-lime-400 text-black font-bold rounded-xl px-5 py-3 hover:bg-lime-300 transition text-center">
+          Mejorar a Pro
+        </button>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="mt-16">
+      <h2 class="text-2xl font-bold text-center mb-8">Preguntas Frecuentes</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-neutral-900 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">¿Puedo cancelar en cualquier momento?</h3>
+          <p class="text-neutral-400 text-sm">Sí, puedes cancelar tu suscripción en cualquier momento desde tu perfil.</p>
+        </div>
+        <div class="bg-neutral-900 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">¿Qué incluye el plan gratuito?</h3>
+          <p class="text-neutral-400 text-sm">2 mensajes de IA por día y acceso al 25% de tu rutina personalizada.</p>
+        </div>
+        <div class="bg-neutral-900 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">¿Hay garantía de devolución?</h3>
+          <p class="text-neutral-400 text-sm">Ofrecemos 7 días de garantía de devolución sin preguntas.</p>
+        </div>
+        <div class="bg-neutral-900 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">¿Cómo funciona el pago?</h3>
+          <p class="text-neutral-400 text-sm">Procesamos los pagos de forma segura a través de Stripe.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal de Pago -->
+  <div id="paymentModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" style="backdrop-filter: blur(8px); background: rgba(0, 0, 0, 0.7);">
+    <div class="bg-neutral-900 rounded-2xl p-8 max-w-md w-full border border-neutral-800 shadow-2xl">
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold">Mejorar a Pro</h2>
+        <button id="closeModal" class="text-neutral-400 hover:text-white text-2xl">&times;</button>
+      </div>
+
+      <!-- Plan Seleccionado -->
+      <div id="planInfo" class="mb-6 p-4 bg-neutral-800 rounded-xl">
+        <div class="flex justify-between items-center">
+          <div>
+            <h3 id="planName" class="font-semibold text-lg">Pro Mensual</h3>
+            <p id="planDescription" class="text-neutral-400 text-sm">Acceso completo a todas las funciones</p>
+          </div>
+          <div class="text-right">
+            <p id="planPrice" class="text-2xl font-bold text-lime-400">9,99 €</p>
+            <p id="planPeriod" class="text-neutral-400 text-sm">por mes</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulario de Pago -->
+      <form id="payment-form">
+        <div class="mb-6">
+          <label class="block text-sm font-medium mb-2">Información de Pago</label>
+          <div id="payment-element" style="background: #1f2937; border: 1px solid #374151; border-radius: 8px; padding: 12px; color: white;">
+            <!-- Stripe Elements se cargará aquí -->
+          </div>
+        </div>
+
+        <!-- Botón de Pago -->
+        <button id="submit-payment" class="w-full bg-lime-400 text-black font-bold py-3 px-4 rounded-xl hover:bg-lime-300 transition disabled:opacity-50 disabled:cursor-not-allowed">
+          <span id="button-text">Pagar Ahora</span>
+          <div id="spinner" class="hidden">
+            <div class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-black"></div>
+          </div>
+        </button>
+      </form>
+
+      <!-- Mensajes de Error -->
+      <div id="payment-message" class="hidden mt-4 p-3 rounded-lg text-sm"></div>
+
+      <!-- Seguridad -->
+      <div class="mt-6 text-center">
+        <p class="text-xs text-neutral-500">
+          🔒 Pago seguro procesado por Stripe
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { API_BASE } from "./config.js";
+    import { getAuthHeaders } from "./auth.js";
+
+    // Variables globales para Stripe
+    let stripe;
+    let elements;
+    let paymentElement;
+    let stripeConfig;
+
+    // Cargar configuración de Stripe de forma segura
+    async function loadStripeConfig() {
+      try {
+        const response = await fetch(`${API_BASE}/stripe-config`);
+        if (!response.ok) {
+          throw new Error('Error al cargar configuración de Stripe');
+        }
+        stripeConfig = await response.json();
+        
+        // Inicializar Stripe con la clave pública del servidor
+        stripe = Stripe(stripeConfig.publishable_key);
+        console.log('Stripe inicializado correctamente');
+      } catch (error) {
+        console.error('Error al cargar configuración de Stripe:', error);
+        showError('Error al cargar configuración de pago. Por favor, recarga la página.');
+      }
+    }
+
+    // Cargar configuración al iniciar
+    await loadStripeConfig();
+
+    // Función para mostrar errores
+    function showError(message) {
+      const errorDiv = document.getElementById('paymentError');
+      if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.classList.remove('hidden');
+      }
+      console.error(message);
+    }
+
+    // Función para ocultar errores
+    function hideError() {
+      const errorDiv = document.getElementById('paymentError');
+      if (errorDiv) {
+        errorDiv.classList.add('hidden');
+      }
+    }
+
+    // Función para mostrar el modal
+    window.showPaymentModal = function(planType = 'monthly') {
+      if (!stripe || !stripeConfig) {
+        showError('Stripe no está cargado. Por favor, espera un momento e inténtalo de nuevo.');
+        return;
+      }
+
+      const modal = document.getElementById('paymentModal');
+      hideError(); // Limpiar errores anteriores
+      
+      // Configurar información del plan
+      if (planType === 'monthly') {
+        document.getElementById('planName').textContent = 'Pro Mensual';
+        document.getElementById('planDescription').textContent = 'Acceso completo a todas las funciones';
+        document.getElementById('planPrice').textContent = '9,99 €';
+        document.getElementById('planPeriod').textContent = 'por mes';
+      } else {
+        document.getElementById('planName').textContent = 'Pro Anual';
+        document.getElementById('planDescription').textContent = 'Ahorra más de 35€ al año';
+        document.getElementById('planPrice').textContent = '79,99 €';
+        document.getElementById('planPeriod').textContent = 'por año';
+      }
+      
+      modal.classList.remove('hidden');
+      initializePayment(planType);
+    };
+
+    // Función para cerrar el modal
+    document.getElementById('closeModal').addEventListener('click', () => {
+      document.getElementById('paymentModal').classList.add('hidden');
+    });
+
+    // Cerrar modal al hacer clic fuera
+    document.getElementById('paymentModal').addEventListener('click', (e) => {
+      if (e.target.id === 'paymentModal') {
+        document.getElementById('paymentModal').classList.add('hidden');
+      }
+    });
+
+    // Inicializar pago
+    async function initializePayment(planType) {
+      try {
+        if (!stripeConfig) {
+          throw new Error('Configuración de Stripe no cargada');
+        }
+
+        const priceId = planType === 'monthly' ? stripeConfig.price_ids.monthly : stripeConfig.price_ids.yearly;
+        
+        // Crear intent de pago en el backend
+        const response = await fetch(`${API_BASE}/create-payment-intent`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ 
+            plan_type: planType,
+            price_id: priceId
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.detail || 'Error al crear intent de pago');
+        }
+
+        const { client_secret } = await response.json();
+
+        // Crear elementos de Stripe
+        elements = stripe.elements({
+          clientSecret: client_secret,
+          appearance: {
+            theme: 'dark',
+            variables: {
+              colorPrimary: '#84cc16',
+              colorBackground: '#1f2937',
+              colorText: '#ffffff',
+              colorDanger: '#ef4444',
+              fontFamily: 'system-ui, sans-serif',
+              spacingUnit: '4px',
+              borderRadius: '8px'
+            }
+          }
+        });
+
+        paymentElement = elements.create('payment');
+        paymentElement.mount('#payment-element');
+
+      } catch (error) {
+        console.error('Error inicializando pago:', error);
+        showError(error.message || 'Error al inicializar el pago. Inténtalo de nuevo.');
+      }
+    }
+
+    // Manejar envío del formulario
+    document.getElementById('payment-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const submitButton = document.getElementById('submit-payment');
+      const buttonText = document.getElementById('button-text');
+      const spinner = document.getElementById('spinner');
+      
+      // Mostrar loading
+      submitButton.disabled = true;
+      buttonText.classList.add('hidden');
+      spinner.classList.remove('hidden');
+
+      try {
+        const { error } = await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: `${window.location.origin}/dashboard.html`,
+          },
+        });
+
+        if (error) {
+          showMessage(error.message, 'error');
+        } else {
+          // El pago fue exitoso
+          showMessage('¡Pago exitoso! Actualizando tu cuenta...', 'success');
+          
+          // Actualizar estado del usuario a premium
+          await updateUserToPremium();
+          
+          // Cerrar modal y recargar
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        }
+      } catch (error) {
+        console.error('Error procesando pago:', error);
+        showMessage('Error procesando el pago. Inténtalo de nuevo.', 'error');
+      } finally {
+        // Restaurar botón
+        submitButton.disabled = false;
+        buttonText.classList.remove('hidden');
+        spinner.classList.add('hidden');
+      }
+    });
+
+    // Actualizar usuario a premium
+    async function updateUserToPremium() {
+      try {
+        const response = await fetch(`${API_BASE}/upgrade-to-premium`, {
+          method: 'POST',
+          headers: getAuthHeaders()
+        });
+
+        if (response.ok) {
+          // Actualizar localStorage
+          localStorage.setItem('plan', 'premium');
+          console.log('Usuario actualizado a premium');
+        }
+      } catch (error) {
+        console.error('Error actualizando usuario:', error);
+      }
+    }
+
+    // Mostrar mensajes
+    function showMessage(message, type) {
+      const messageDiv = document.getElementById('payment-message');
+      messageDiv.textContent = message;
+      messageDiv.className = `mt-4 p-3 rounded-lg text-sm ${type === 'error' ? 'bg-red-900 text-red-200' : 'bg-green-900 text-green-200'}`;
+      messageDiv.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
