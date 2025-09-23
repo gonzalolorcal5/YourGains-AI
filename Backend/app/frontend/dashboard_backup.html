@@ -21,16 +21,16 @@
           
           .logo {
               position: absolute;
-              top: 45px;
-              left: 40px;
+              top: 60px;
+              left: 100px;
               display: flex;
               align-items: center;
-              gap: 3px;
+              gap: 6px;
           }
           
           .dna-icon {
-              width: 40px;
-              height: 40px;
+              width: 50px;
+              height: 50px;
               border-radius: 8px;
               display: flex;
               align-items: center;
@@ -45,7 +45,7 @@
           }
           
           .logo-text {
-              font-size: 24px;
+              font-size: 28px;
               font-weight: bold;
           }
           
@@ -54,7 +54,7 @@
           }
           
           .ai {
-              color: #84cc16;
+              color: #a3e635;
           }
           
           .chat-container {
@@ -198,7 +198,6 @@
             padding: 8px 16px;
               border-radius: 8px;
               transition: all 0.3s ease;
-              cursor: pointer;
           }
           
           .nav-item:hover {
@@ -707,7 +706,7 @@
             </svg>
         </div>
         <div class="logo-text">
-            <span class="your-gains">YourGains</span><span class="ai"> AI</span>
+            <span class="your-gains">Your</span><span class="ai">Gains</span>
         </div>
     </div>
 
@@ -949,12 +948,9 @@
                     if (plans && plans.length > 0) {
                         // Usar el último plan
                         const lastPlan = plans[0];
-                        // Guardar en localStorage para futuras consultas
+                        // Guardar en localStorage para consistencia
                         localStorage.setItem("userPlan", JSON.stringify(lastPlan));
-                        const premium = isPremiumUser();
-                        displayRoutineContent(lastPlan, premium);
-                        displayDietContent(lastPlan, premium);
-                        return;
+                        displayPlan(lastPlan);
                     }
                 } else {
                     console.error('Error al cargar planes:', response.status);
@@ -962,15 +958,14 @@
             } catch (error) {
                 console.error('Error al cargar planes:', error);
             }
-            
-            // Si no se pudo cargar ningún plan, mostrar mensaje
-            showNoContentMessages();
         }
 
         // Función para mostrar el plan en los overlays
         function displayPlan(plan) {
-            // Mostrar rutina (aplicar recorte si es free)
-            const rutinaContent = document.getElementById('rutinaContent');
+            const premium = isPremiumUser();
+            displayRoutineContent(plan, premium);
+            displayDietContent(plan, premium);
+        }
             if (plan.rutina && plan.rutina.dias) {
                 const dias = plan.rutina.dias;
                 const total = dias.length;
@@ -1111,11 +1106,11 @@
                     displayDietContent(plan, premium);
                 } catch (e) {
                     console.error('Error parsing stored plan:', e);
-                    // Intentar cargar desde la base de datos
+                    // Si hay error, intentar cargar desde la base de datos
                     loadUserPlans();
                 }
             } else {
-                // Intentar cargar desde la base de datos
+                // Si no hay plan en localStorage, intentar cargar desde la base de datos
                 loadUserPlans();
             }
         }
@@ -1134,7 +1129,7 @@
                 // Mostrar días visibles
                 dias.slice(0, visibles).forEach(dia => {
                     routineHTML += `<div class="routine-item">`;
-                    routineHTML += `<div class="routine-day">${dia.dia || dia.nombre}</div>`;
+                    routineHTML += `<div class="routine-day">${dia.dia}</div>`;
                     (dia.ejercicios || []).forEach(ejercicio => {
                         routineHTML += `<div class="exercise">`;
                         routineHTML += `<div class="exercise-name">${ejercicio.nombre}</div>`;
@@ -1151,7 +1146,7 @@
                     // Agregar días censurados
                     dias.slice(visibles, visibles + Math.min(ocultos, 2)).forEach(dia => {
                         routineHTML += `<div class="routine-item premium-overlay">`;
-                        routineHTML += `<div class="routine-day">${dia.dia || dia.nombre}</div>`;
+                        routineHTML += `<div class="routine-day">${dia.dia}</div>`;
                         (dia.ejercicios || []).forEach(ejercicio => {
                             routineHTML += `<div class="exercise">`;
                             routineHTML += `<div class="exercise-name">${ejercicio.nombre}</div>`;
@@ -1190,7 +1185,7 @@
                     dietHTML += `<div class="macro-card"><span class="macro-value">${plan.dieta.macros.proteinas}g</span><span class="macro-label">Proteínas</span></div>`;
                     dietHTML += `<div class="macro-card"><span class="macro-value">${plan.dieta.macros.hidratos}g</span><span class="macro-label">Carbohidratos</span></div>`;
                     dietHTML += `<div class="macro-card"><span class="macro-value">${plan.dieta.macros.grasas}g</span><span class="macro-label">Grasas</span></div>`;
-                    dietHTML += `<div class="macro-card"><span class="macro-value">${plan.dieta.macros.calorias || plan.dieta.kcal_objetivo || ''}</span><span class="macro-label">Calorías</span></div>`;
+                    dietHTML += `<div class="macro-card"><span class="macro-value">${plan.dieta.macros.calorias}</span><span class="macro-label">Calorías</span></div>`;
                     dietHTML += `</div>`;
                 }
 
@@ -1198,20 +1193,13 @@
                 comidas.slice(0, visibles).forEach(comida => {
                     dietHTML += `<div class="meal-card">`;
                     dietHTML += `<div class="meal-header">`;
-                    dietHTML += `<span class="meal-time">${comida.kcal || ''} kcal</span>`;
+                    dietHTML += `<span class="meal-time">${comida.hora}</span>`;
                     dietHTML += `<span class="meal-name">${comida.nombre}</span>`;
                     dietHTML += `</div>`;
                     if (comida.alimentos) {
                         comida.alimentos.forEach(alimento => {
                             dietHTML += `<div class="food-item">`;
-                            if (typeof alimento === 'string') {
-                                dietHTML += `<span>${alimento}</span>`;
-                            } else {
-                                dietHTML += `<span>${alimento.nombre || alimento}</span>`;
-                                if (alimento.cantidad) {
-                                    dietHTML += `<span>${alimento.cantidad}</span>`;
-                                }
-                            }
+                            dietHTML += `<span>${alimento}</span>`;
                             dietHTML += `</div>`;
                         });
                     }
@@ -1226,20 +1214,13 @@
                     comidas.slice(visibles, visibles + Math.min(ocultos, 2)).forEach(comida => {
                         dietHTML += `<div class="meal-card premium-overlay">`;
                         dietHTML += `<div class="meal-header">`;
-                        dietHTML += `<span class="meal-time">${comida.kcal || ''} kcal</span>`;
+                        dietHTML += `<span class="meal-time">${comida.hora}</span>`;
                         dietHTML += `<span class="meal-name">${comida.nombre}</span>`;
                         dietHTML += `</div>`;
                         if (comida.alimentos) {
                             comida.alimentos.forEach(alimento => {
                                 dietHTML += `<div class="food-item">`;
-                                if (typeof alimento === 'string') {
-                                    dietHTML += `<span>${alimento}</span>`;
-                                } else {
-                                    dietHTML += `<span>${alimento.nombre || alimento}</span>`;
-                                    if (alimento.cantidad) {
-                                        dietHTML += `<span>${alimento.cantidad}</span>`;
-                                    }
-                                }
+                                dietHTML += `<span>${alimento}</span>`;
                                 dietHTML += `</div>`;
                             });
                         }

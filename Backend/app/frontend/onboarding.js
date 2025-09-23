@@ -71,8 +71,9 @@ form.addEventListener('submit', async (e) => {
             throw new Error(data.detail || 'Error al crear el plan');
         }
 
-        // Éxito - marcar onboarding como completado y redirigir al dashboard
+        // Éxito - marcar onboarding como completado y guardar el plan
         localStorage.setItem("onboarding_completed", "true");
+        localStorage.setItem("userPlan", JSON.stringify(data));
         msg.textContent = '¡Plan creado exitosamente! Redirigiendo...';
         msg.style.color = '#84cc16';
         
