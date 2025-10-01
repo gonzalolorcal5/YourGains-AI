@@ -203,7 +203,6 @@
           
           .nav-item:hover {
               color: #84cc16;
-              background: rgba(132, 204, 22, 0.1);
           }
 
           .nav-text {
@@ -277,14 +276,21 @@
           }
           
           .upgrade-btn {
-              background: #84cc16;
-              color: white;
-              border: none;
+              background: transparent;
+              color: #84cc16;
+              border: 1px solid #84cc16;
             padding: 10px 20px;
             border-radius: 5px;
               cursor: pointer;
               font-weight: bold;
               margin-top: 10px;
+              transition: all 0.3s ease;
+          }
+          
+          .upgrade-btn:hover {
+              background: #84cc16;
+              color: white;
+              transform: translateY(-1px);
           }
           
           .download-btn {
@@ -315,18 +321,25 @@
           }
           
           .logout-btn {
-            background: #dc2626;
+            background: #333333;
               color: white;
-              border: none;
+              border: 1px solid #666;
             padding: 6px 12px;
             border-radius: 6px;
               cursor: pointer;
               font-size: 12px;
               font-weight: bold;
+              transition: all 0.3s ease;
           }
           
           .logout-btn:hover {
-              background: #dc2626;
+              background: #444444;
+              border-color: #777;
+          }
+
+          /* Controles móviles - ocultos en desktop */
+          .mobile-controls {
+              display: none;
           }
 
           /* Gym Image Container */
@@ -339,27 +352,23 @@
               height: 450px;
               border-radius: 20px;
               overflow: hidden;
-              box-shadow: 0 15px 50px rgba(132, 204, 22, 0.25);
-              backdrop-filter: blur(15px);
-              background: rgba(0, 0, 0, 0.9);
-              border: 3px solid rgba(132, 204, 22, 0.4);
+              background: transparent;
+              border: none;
           }
 
           .gym-image {
               width: 100%;
               height: 100%;
               object-fit: contain;
-              border-radius: 17px;
-              filter: brightness(1.0) contrast(1.4) saturate(1.2);
+              border-radius: 20px;
+              filter: brightness(0.9) contrast(1.6) saturate(1.3);
               transition: all 0.4s ease;
               background: transparent;
-              mix-blend-mode: screen;
           }
 
           .gym-image:hover {
-              transform: scale(1.08);
-              filter: brightness(1.2) contrast(1.6) saturate(1.4);
-              box-shadow: 0 0 40px rgba(132, 204, 22, 0.5);
+              transform: scale(1.05);
+              filter: brightness(1.1) contrast(1.7) saturate(1.4);
           }
 
           /* Responsive adjustments */
@@ -697,6 +706,420 @@
               }
           }
 
+          /* ========== RESPONSIVE DESIGN - SOLO MÓVIL ========== */
+          @media (max-width: 768px) {
+              /* Layout general - cambiar a una columna */
+              body {
+                  overflow-x: hidden;
+              }
+
+              /* PASO 1: Estructura superior móvil */
+              /* Logo - centrado en la parte superior */
+              .logo {
+                  position: absolute;
+                  top: 40px;
+                  left: 50%;
+                  transform: translateX(-50%);
+                  gap: 3px;
+                  z-index: 3;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+              }
+
+              .dna-icon {
+                  width: 56px;
+                  height: 56px;
+                  flex-shrink: 0;
+              }
+
+              .logo-text {
+                  font-size: 36px;
+                  line-height: 1;
+                  display: flex;
+                  align-items: center;
+                  white-space: nowrap;
+              }
+
+              .logo-text .your-gains {
+                  margin-right: 8px;
+              }
+
+              .logo-text .ai {
+                  margin-left: 0;
+              }
+
+              /* Navegación - debajo del logo, centrada y compacta */
+              .navigation {
+                  position: absolute;
+                  top: 140px;
+                  left: 50%;
+                  transform: translateX(-50%);
+                  gap: 2px;
+                  flex-wrap: nowrap;
+                  justify-content: center;
+                  width: auto;
+                  z-index: 3;
+              }
+
+              .nav-item {
+                  padding: 16px 24px;
+                  font-size: 18px;
+                  min-height: 60px; /* Mucho más grande y táctil */
+                  display: flex;
+                  align-items: center;
+                  white-space: nowrap;
+                  flex-shrink: 0;
+                  font-weight: 600;
+                  transition: all 0.3s ease;
+              }
+
+              .nav-separator {
+                  display: inline;
+                  color: rgba(255, 255, 255, 0.6);
+                  font-size: 16px;
+                  margin: 0 8px;
+                  font-weight: 600;
+              }
+
+              /* Controles móviles - mostrar y posicionar */
+              .mobile-controls {
+                  display: flex;
+                  position: fixed;
+                  bottom: 15px;
+                  right: 15px;
+                  gap: 8px;
+                  z-index: 1000;
+              }
+
+              .mobile-controls .upgrade-btn,
+              .mobile-controls .logout-btn {
+                  padding: 8px 12px;
+                  font-size: 12px;
+                  border-radius: 8px;
+                  min-height: 36px;
+                  white-space: nowrap;
+              }
+
+              /* Estilos específicos para botones móviles */
+              .mobile-controls .upgrade-btn {
+                  background: transparent;
+                  color: #84cc16;
+                  border: 1px solid #84cc16;
+                  transition: all 0.3s ease;
+              }
+
+              .mobile-controls .upgrade-btn:hover {
+                  background: #84cc16;
+                  color: white;
+                  transform: translateY(-1px);
+              }
+
+              .mobile-controls .logout-btn {
+                  padding: 8px 12px;
+                  font-size: 12px;
+                  color: rgba(255, 255, 255, 0.8);
+                  cursor: pointer;
+                  border-radius: 8px;
+                  min-height: 36px;
+                  white-space: nowrap;
+                  display: flex;
+                  align-items: center;
+                  transition: all 0.3s ease;
+                  background: rgba(255, 255, 255, 0.1);
+                  border: 1px solid rgba(255, 255, 255, 0.2);
+              }
+
+              .mobile-controls .logout-btn:hover {
+                  color: #84cc16;
+                  background: rgba(255, 255, 255, 0.2);
+                  transform: translateY(-1px);
+              }
+
+              .mobile-controls .nav-item {
+                  padding: 8px 12px;
+                  font-size: 12px;
+                  color: rgba(255, 255, 255, 0.8);
+                  cursor: pointer;
+                  border-radius: 8px;
+                  min-height: 36px;
+                  white-space: nowrap;
+                  display: flex;
+                  align-items: center;
+                  transition: all 0.3s ease;
+                  background: rgba(255, 255, 255, 0.1);
+                  border: 1px solid rgba(255, 255, 255, 0.2);
+              }
+
+              .mobile-controls .nav-item:hover {
+                  color: #84cc16;
+                  background: rgba(255, 255, 255, 0.2);
+                  transform: translateY(-1px);
+              }
+
+              /* PASO 1: Fondo negro con imagen del entrenador */
+              body {
+                  background-color: #000000 !important;
+                  background-image: url('./images/gym-training-new.jpg');
+                  background-size: 180% auto;
+                  background-position: center -200px;
+                  background-repeat: no-repeat;
+                  z-index: 0;
+              }
+
+              /* Ocultar el contenedor de imagen original */
+              .gym-image-container {
+                  display: none;
+              }
+
+              /* Chat Container - diseño profesional oscuro */
+              .chat-container {
+                  position: fixed;
+                  top: 62.5%;
+                  left: 50%;
+                  transform: translate(-50%, -50%);
+                  width: 85%;
+                  max-width: 280px;
+                  height: 35vh;
+                  max-height: 240px;
+                  min-height: 200px;
+                  z-index: 2;
+                  background: #000000;
+                  border-radius: 20px;
+                  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+                  overflow: hidden;
+                  display: flex;
+                  flex-direction: column;
+                  border: none;
+              }
+
+              .chat-header {
+                  padding: 20px 20px 10px 20px;
+                  background: #000000;
+                  flex-shrink: 0;
+              }
+
+              .chat-header h2 {
+                  font-size: 16px;
+                  color: #ffffff;
+                  margin: 0;
+                  font-weight: 600;
+                  line-height: 1.3;
+                  text-align: center;
+              }
+
+              .chat-content {
+                  flex: 1;
+                  display: flex;
+                  flex-direction: column;
+                  background: #000000;
+                  position: relative;
+              }
+
+              .chat-messages {
+                  padding: 10px 20px;
+                  font-size: 14px;
+                  background: #000000;
+                  flex: 1;
+                  overflow-y: auto;
+                  min-height: 0;
+                  line-height: 1.4;
+                  scrollbar-width: thin;
+                  scrollbar-color: #555 transparent;
+              }
+              
+              .chat-messages::-webkit-scrollbar {
+                  width: 3px;
+              }
+              
+              .chat-messages::-webkit-scrollbar-track {
+                  background: transparent;
+              }
+              
+              .chat-messages::-webkit-scrollbar-thumb {
+                  background: #555;
+                  border-radius: 2px;
+              }
+              
+              .chat-messages::-webkit-scrollbar-thumb:hover {
+                  background: #777;
+              }
+
+              .input-placeholder {
+                  color: #666;
+                  font-style: italic;
+                  text-align: center;
+                  padding: 40px 20px;
+                  font-size: 14px;
+                  cursor: pointer;
+                  transition: color 0.3s ease;
+              }
+
+              .input-placeholder:hover {
+                  color: #888;
+              }
+
+              .input-row {
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                  padding: 0 20px;
+                  margin-bottom: 10px;
+              }
+
+              .chat-input {
+                  flex: 1;
+                  padding: 12px 16px;
+                  font-size: 14px;
+                  background: transparent;
+                  border: none;
+                  outline: none;
+                  color: #ffffff;
+                  font-family: inherit;
+                  line-height: 1.4;
+                  text-align: left;
+              }
+
+              .chat-input::placeholder {
+                  color: #666;
+                  font-weight: 400;
+              }
+
+              .send-btn {
+                  font-size: 20px;
+                  width: 40px;
+                  height: 40px;
+                  background: transparent;
+                  border: none;
+                  border-radius: 0;
+                  color: #84cc16;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  opacity: 0.6;
+                  transform: scale(0.9);
+              }
+
+              .send-btn.ready {
+                  opacity: 1;
+                  transform: scale(1);
+                  background: transparent;
+                  color: #84cc16;
+              }
+
+              .send-btn:hover {
+                  background: transparent;
+                  color: #84cc16;
+                  transform: scale(1.05);
+              }
+
+
+              /* Estilos para mensajes */
+              .message {
+                  margin-bottom: 8px;
+                  padding: 10px 12px;
+                  border-radius: 12px;
+                  font-size: 14px;
+                  line-height: 1.4;
+                  max-width: 85%;
+                  word-wrap: break-word;
+              }
+
+              .user-message {
+                  background: #84cc16;
+                  color: #000000;
+                  margin-left: auto;
+                  font-weight: 500;
+              }
+
+              .ai-message {
+                  background: #111111;
+                  color: #ffffff;
+                  margin-right: auto;
+                  border: 1px solid #333;
+              }
+
+
+              /* Overlays - ajustar para móvil */
+              .overlay {
+                  padding: 20px;
+              }
+
+              .overlay-content {
+                  padding: 20px;
+                  border-radius: 16px;
+                  max-width: 95%;
+                  max-height: 90%;
+              }
+
+              .close-btn {
+                  top: 15px;
+                  right: 20px;
+                  width: 36px;
+                  height: 36px;
+                  min-height: 44px; /* Táctil */
+                  min-width: 44px;
+              }
+
+              /* Contenido de overlays - más compacto */
+              .tab-content-grid {
+                  grid-template-columns: 1fr;
+                  gap: 15px;
+              }
+
+              .content-column {
+                  padding: 15px;
+              }
+
+              .routine-item, .meal-card, .advice-card, .study-card {
+                  padding: 12px;
+                  margin-bottom: 10px;
+                  border-radius: 8px;
+              }
+
+              .routine-day, .meal-header, .advice-title, .study-title {
+                  font-size: 14px;
+                  margin-bottom: 8px;
+              }
+
+              .exercise-name, .meal-name {
+                  font-size: 13px;
+              }
+
+              .exercise-details, .food-item {
+                  font-size: 12px;
+              }
+
+              .macros-grid {
+                  grid-template-columns: repeat(2, 1fr);
+                  gap: 8px;
+                  margin-bottom: 15px;
+              }
+
+              .macro-card {
+                  padding: 8px;
+                  border-radius: 6px;
+              }
+
+              .macro-value {
+                  font-size: 16px;
+              }
+
+              .macro-label {
+                  font-size: 11px;
+              }
+
+              .premium-btn {
+                  padding: 10px 16px;
+                  border-radius: 8px;
+                  font-size: 12px;
+                  min-height: 44px; /* Táctil */
+                  margin-top: 10px;
+              }
+          }
+
       </style>
   </head>
   <body>
@@ -715,27 +1138,29 @@
         <div class="nav-item" id="rutinaDieta">Rutina y Dieta</div>
         <div class="nav-separator">|</div>
         <div class="nav-item" id="consejosEstudios">Consejos y Estudios</div>
-        <div class="nav-separator">|</div>
-        <div class="nav-item" id="terminosPrivacidad">Términos y Privacidad</div>
-        <div class="nav-separator">|</div>
-        <button class="upgrade-btn" onclick="window.location.href='./tarifas.html'">Upgrade</button>
-        <div class="nav-separator">|</div>
-        <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
 
     <div class="chat-container">
         <div class="chat-header">
             <h2>¡Hola! Soy tu entrenador personal de IA</h2>
-            <p>Pregúntame lo que necesites sobre tu rutina, nutrición o consejos de fitness</p>
                   </div>
-        <div class="chat-messages" id="chatMessages">
-            <div class="placeholder">Escribe tu primera pregunta aquí...</div>
-              </div>
-        <div class="chat-input-area">
-            <input type="text" id="chatInput" class="chat-input" placeholder="Escribe tu pregunta aquí..." maxlength="500">
-            <button id="sendBtn" class="send-btn">Enviar</button>
-          </div>
+        <div class="chat-content">
+            <div class="chat-messages" id="chatMessages">
+                <div class="input-placeholder" id="inputPlaceholder">Escribe aquí tu pregunta...</div>
+                <div class="input-row" style="display: none;">
+                    <input type="text" id="chatInput" class="chat-input" maxlength="500">
+                    <button id="sendBtn" class="send-btn">↑</button>
+                </div>
+            </div>
+        </div>
       </div>
+
+    <!-- Botones de Upgrade y Logout para móvil -->
+    <div class="mobile-controls">
+        <div class="nav-item" id="terminosPrivacidad">Términos y Privacidad</div>
+        <button class="upgrade-btn" onclick="window.location.href='./tarifas.html'">Upgrade</button>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
 
     <!-- Overlay para Rutina y Dieta -->
     <div class="overlay" id="rutinaDietaOverlay">
@@ -745,8 +1170,8 @@
             <div class="tab-content-grid">
                 <div class="content-column">
                     <h3>Rutina de Entrenamiento</h3>
-                    <div id="rutinaContent">
-                        <p>Cargando rutina...</p>
+            <div id="rutinaContent">
+                <p>Cargando rutina...</p>
                     </div>
                 </div>
                 <div class="content-column">
@@ -755,7 +1180,7 @@
                         <p>Cargando dieta...</p>
                     </div>
                 </div>
-            </div>
+              </div>
           </div>
       </div>
 
@@ -767,7 +1192,7 @@
             <div class="tab-content-grid">
                 <div class="content-column">
                     <h3>Consejos Técnicos</h3>
-                    <div id="consejosContent">
+            <div id="consejosContent">
                         <p>Cargando consejos...</p>
                     </div>
                 </div>
@@ -777,7 +1202,7 @@
                         <p>Cargando estudios...</p>
                     </div>
                 </div>
-            </div>
+          </div>
           </div>
       </div>
 
@@ -794,7 +1219,7 @@
 
       <!-- Gym Image Container -->
       <div class="gym-image-container">
-          <img src="./images/gym-training.jpg" alt="Gimnasio moderno con persona entrenando - Your Gains AI" class="gym-image">
+          <img src="./images/gym-training-new.jpg" alt="Gimnasio moderno con persona entrenando - Your Gains AI" class="gym-image">
       </div>
 
       <script type="module">
@@ -839,10 +1264,7 @@
         // Función principal
         function initDashboard() {
             // Verificar autenticación al cargar la página
-            if (!checkAuthOrRedirect()) {
-                // Si no está autenticado, la función checkAuthOrRedirect ya redirige
-                return;
-            }
+            checkAuthOrRedirect();
           
             const chatMessages = document.getElementById('chatMessages');
             const chatInput = document.getElementById('chatInput');
@@ -868,7 +1290,10 @@
                 if (!message) return;
 
                 // Verificar autenticación antes de enviar
-                if (!checkAuthOrRedirect()) return;
+                if (!checkAuthOrRedirect()) {
+                    window.location.href = './login.html';
+                    return;
+                }
 
                 // Freemium limit: block after 2 prompts if not premium
                 if (!isPremiumUser() && !canUseChat()) {
@@ -880,7 +1305,8 @@
                 chatInput.value = '';
                 
                 sendBtn.disabled = true;
-                sendBtn.textContent = 'Enviando...';
+                sendBtn.style.opacity = '0.6';
+                sendBtn.textContent = '...';
 
                 try {
                     const response = await fetch(`${API_BASE}/chat`, {
@@ -915,22 +1341,58 @@
                     addMessage('Error de conexión. Verifica que el servidor esté funcionando.');
                 } finally {
                     sendBtn.disabled = false;
-                    sendBtn.textContent = 'Enviar';
+                    sendBtn.style.opacity = '';
+                    sendBtn.textContent = '→';
+                    updateSendButton();
                 }
             }
 
+            // Manejar el estado del botón de envío
+            function updateSendButton() {
+                const hasText = chatInput.value.trim().length > 0;
+                if (hasText) {
+                    sendBtn.classList.add('ready');
+                } else {
+                    sendBtn.classList.remove('ready');
+                }
+            }
+
+            // Hacer clickeable el placeholder para activar el input
+            const inputPlaceholder = document.getElementById('inputPlaceholder');
+            const inputRow = document.querySelector('.input-row');
+            
+            inputPlaceholder.addEventListener('click', () => {
+                inputPlaceholder.style.display = 'none';
+                inputRow.style.display = 'flex';
+                chatInput.focus();
+            });
+
             sendBtn.addEventListener('click', sendMessage);
+            chatInput.addEventListener('input', updateSendButton);
             chatInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') sendMessage();
             });
+            
+            // Inicializar estado del botón
+            updateSendButton();
 
             // Cargar planes del usuario al iniciar
             loadUserPlans();
 
             // Event listeners para los overlays
-            document.getElementById('rutina').addEventListener('click', () => openOverlay('rutinaOverlay'));
-            document.getElementById('consejos').addEventListener('click', () => openOverlay('consejosOverlay'));
-            document.getElementById('terminos').addEventListener('click', () => openOverlay('terminosOverlay'));
+            const rutinaBtn = document.getElementById('rutinaDieta');
+            const consejosBtn = document.getElementById('consejosEstudios');
+            const terminosBtn = document.getElementById('terminosPrivacidad');
+            
+            if (rutinaBtn) {
+                rutinaBtn.addEventListener('click', () => openOverlay('rutinaDietaOverlay'));
+            }
+            if (consejosBtn) {
+                consejosBtn.addEventListener('click', () => openOverlay('consejosEstudiosOverlay'));
+            }
+            if (terminosBtn) {
+                terminosBtn.addEventListener('click', () => openOverlay('terminosPrivacidadOverlay'));
+            }
 
             // Hacer logout disponible globalmente
             window.logout = logout;
@@ -1091,12 +1553,22 @@
 
         // Función para abrir overlays
         function openOverlay(overlayId) {
-            document.getElementById(overlayId).style.display = 'flex';
+            const overlay = document.getElementById(overlayId);
+            if (!overlay) {
+                console.error('Overlay no encontrado:', overlayId);
+                return;
+            }
+            overlay.style.display = 'flex';
         }
 
         // Función para cerrar overlays
         function closeOverlay(overlayId) {
-            document.getElementById(overlayId).style.display = 'none';
+            const overlay = document.getElementById(overlayId);
+            if (!overlay) {
+                console.error('Overlay no encontrado:', overlayId);
+                return;
+            }
+            overlay.style.display = 'none';
         }
 
         // Función para cargar contenido de rutina y dieta

@@ -793,7 +793,7 @@
 
       <!-- Gym Image Container -->
       <div class="gym-image-container">
-          <img src="./images/gym-training.jpg" alt="Gimnasio moderno con persona entrenando - Your Gains AI" class="gym-image">
+          <img src="./images/gym-training-new.jpg" alt="Gimnasio moderno con persona entrenando - Your Gains AI" class="gym-image">
       </div>
 
       <script type="module">
@@ -838,10 +838,7 @@
         // Función principal
         function initDashboard() {
             // Verificar autenticación al cargar la página
-            if (!checkAuthOrRedirect()) {
-                // Si no está autenticado, la función checkAuthOrRedirect ya redirige
-                return;
-            }
+            checkAuthOrRedirect();
           
             const chatMessages = document.getElementById('chatMessages');
             const chatInput = document.getElementById('chatInput');
@@ -867,7 +864,10 @@
                 if (!message) return;
 
                 // Verificar autenticación antes de enviar
-                if (!checkAuthOrRedirect()) return;
+                if (!checkAuthOrRedirect()) {
+                    window.location.href = './login.html';
+                    return;
+                }
 
                 // Freemium limit: block after 2 prompts if not premium
                 if (!isPremiumUser() && !canUseChat()) {

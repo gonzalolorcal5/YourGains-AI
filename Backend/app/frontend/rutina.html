@@ -105,9 +105,7 @@
     import { checkAuthOrRedirect, getAuthHeaders, logout } from "./auth.js";
 
     // Verificar autenticación al cargar la página
-    if (!checkAuthOrRedirect()) {
-      return;
-    }
+    checkAuthOrRedirect();
 
     const form = document.getElementById("rutina-form");
     const resultado = document.getElementById("resultado");
@@ -116,7 +114,10 @@
       e.preventDefault();
 
       // Verificar autenticación antes de enviar
-      if (!checkAuthOrRedirect()) return;
+      if (!checkAuthOrRedirect()) {
+        window.location.href = './login.html';
+        return;
+      }
 
       // Construir el JSON con el formato correcto para el backend
       const datos = {

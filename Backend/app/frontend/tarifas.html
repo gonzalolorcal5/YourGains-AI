@@ -10,9 +10,7 @@
     import { checkAuthOrRedirect } from "./auth.js";
     
     // Verificar autenticación
-    if (!checkAuthOrRedirect()) {
-      return;
-    }
+    checkAuthOrRedirect();
   </script>
 </head>
 <body class="min-h-screen bg-neutral-950 text-white">

@@ -17,9 +17,7 @@
     import { checkAuthOrRedirect, getAuthHeaders } from "./auth.js";
     
     // Verificar autenticación
-    if (!checkAuthOrRedirect()) {
-      return;
-    }
+    checkAuthOrRedirect();
 
     async function iniciarPago() {
       // ✅ Sacamos el price_id de la URL (ej: pago.html?price_id=...)
