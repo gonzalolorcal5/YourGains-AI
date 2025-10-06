@@ -16,7 +16,6 @@ parts/
 sdist/
 var/
 wheels/
-pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
@@ -27,6 +26,13 @@ MANIFEST
 venv/
 env/
 ENV/
+env.bak/
+venv.bak/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
 
 # Environment variables
 .env
@@ -34,11 +40,6 @@ ENV/
 .env.development.local
 .env.test.local
 .env.production.local
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
 
 # IDE
 .vscode/
@@ -63,6 +64,12 @@ logs/
 # Temporary files
 *.tmp
 *.temp
+temp/
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
 
 # Node modules (if any)
 node_modules/
@@ -113,9 +120,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Archives
-*.zip
-*.rar
-*.7z
-*.tar.gz
-*.tar.bz2
+# FastAPI specific
+.pytest_cache/
