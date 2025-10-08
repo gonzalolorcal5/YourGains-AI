@@ -98,7 +98,7 @@
           
           .chat-messages {
               flex: 1;
-              padding: 16px;
+            padding: 16px;
               overflow-y: auto;
               color: black;
               background: white;
@@ -113,7 +113,7 @@
           }
           
           .chat-input-area {
-              padding: 14px 18px;
+            padding: 14px 18px;
               background: #f8f9fa;
               border-radius: 0 0 14px 14px;
               border-top: 1px solid #e9ecef;
@@ -130,7 +130,7 @@
               flex: 1;
               padding: 12px 16px;
               border: 2px solid #e9ecef;
-              border-radius: 18px;
+            border-radius: 18px;
               outline: none;
               color: #333;
               font-size: 13px;
@@ -224,6 +224,21 @@
               }
               30% { 
                   transform: translateY(-10px); 
+                  opacity: 1;
+              }
+          }
+          
+          @keyframes pulse {
+              0% {
+                  transform: scale(1);
+                  opacity: 1;
+              }
+              50% {
+                  transform: scale(1.05);
+                  opacity: 0.8;
+              }
+              100% {
+                  transform: scale(1);
                   opacity: 1;
               }
           }
@@ -325,7 +340,7 @@
           }
           
           .overlay h2 {
-              color: #84cc16;
+              color: #ffffff;
               margin-bottom: 20px;
               font-size: 24px;
           }
@@ -336,7 +351,7 @@
               margin-bottom: 10px;
           }
           
-          .premium-lock {
+          .isPremium-lock {
             position: relative;
               opacity: 0.5;
               pointer-events: none;
@@ -513,11 +528,11 @@
           }
 
           .content-column h3 {
-              color: #84cc16;
+              color: #ffffff;
               margin-bottom: 1rem;
               font-size: 1.2rem;
               font-weight: 600;
-              border-bottom: 1px solid rgba(132, 204, 22, 0.2);
+              border-bottom: 1px solid rgba(255, 255, 255, 0.2);
               padding-bottom: 0.5rem;
           }
 
@@ -540,7 +555,7 @@
           }
 
           .overlay-content h2 {
-              color: #84cc16;
+              color: #ffffff;
               margin-bottom: 1rem;
               font-size: 1.5rem;
           }
@@ -706,12 +721,12 @@
           }
 
           /* Premium overlay */
-          .premium-overlay {
+          .isPremium-overlay {
               position: relative;
               overflow: hidden;
           }
 
-          .premium-overlay::after {
+          .isPremium-overlay::after {
               content: '';
               position: absolute;
               top: 0;
@@ -723,7 +738,7 @@
               border-radius: 8px;
           }
 
-          .premium-badge {
+          .isPremium-badge {
               position: absolute;
               top: 50%;
               left: 50%;
@@ -738,17 +753,17 @@
               box-shadow: 0 8px 32px rgba(132, 204, 22, 0.3);
           }
 
-          .premium-badge h4 {
+          .isPremium-badge h4 {
               margin-bottom: 0.5rem;
           }
 
-          .premium-badge p {
+          .isPremium-badge p {
               font-size: 0.9rem;
               opacity: 0.9;
               margin-bottom: 1rem;
           }
 
-          .premium-btn {
+          .isPremium-btn {
               background: rgba(255, 255, 255, 0.2);
               color: white;
               border: 1px solid rgba(255, 255, 255, 0.3);
@@ -759,7 +774,7 @@
               transition: all 0.3s ease;
           }
 
-          .premium-btn:hover {
+          .isPremium-btn:hover {
               background: rgba(255, 255, 255, 0.3);
               transform: translateY(-1px);
           }
@@ -1196,7 +1211,7 @@
                   font-size: 11px;
               }
 
-              .premium-btn {
+              .isPremium-btn {
                   padding: 10px 16px;
                   border-radius: 8px;
                   font-size: 12px;
@@ -1228,11 +1243,11 @@
     <div class="chat-container">
         <div class="chat-header">
             <h2>¡Hola! Soy tu entrenador personal de IA</h2>
-        </div>
+                  </div>
         
         <!-- Área de mensajes scrolleable -->
-        <div class="chat-messages" id="chatMessages">
-        </div>
+            <div class="chat-messages" id="chatMessages">
+                </div>
         
         <!-- Área de input fija abajo -->
         <div class="chat-input-area">
@@ -1245,7 +1260,7 @@
               </button>
             </div>
         </div>
-    </div>
+      </div>
 
     <!-- Botones de Upgrade y Logout para móvil -->
     <div class="mobile-controls">
@@ -1258,16 +1273,13 @@
     <div class="overlay" id="rutinaDietaOverlay">
           <div class="overlay-content large">
             <button class="close-btn" onclick="closeOverlay('rutinaDietaOverlay')">&times;</button>
-            <h2>Tu Plan Personalizado</h2>
             <div class="tab-content-grid">
                 <div class="content-column">
-                    <h3>Rutina de Entrenamiento</h3>
             <div id="rutinaContent">
                 <p>Cargando rutina...</p>
                     </div>
                 </div>
                 <div class="content-column">
-                    <h3>Plan Nutricional</h3>
                     <div id="dietaContent">
                         <p>Cargando dieta...</p>
                     </div>
@@ -1319,7 +1331,7 @@
                     Has alcanzado el límite de mensajes gratuitos
                 </p>
                 <p style="margin-bottom: 30px; color: #ccc; line-height: 1.6;">
-                    Para continuar chateando de forma ilimitada y desbloquear todas las funciones premium, mejora tu plan ahora.
+                    Para continuar chateando de forma ilimitada y desbloquear todas las funciones isPremium, mejora tu plan ahora.
                 </p>
                 <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                     <button onclick="window.location.href='./tarifas.html'" 
@@ -1336,12 +1348,12 @@
                     </button>
                 </div>
             </div>
-        </div>
-    </div>
+          </div>
+      </div>
 
       <!-- Gym Image Container -->
       <div class="gym-image-container">
-          <img src="./images/gym-training-new.jpg" alt="Gimnasio moderno con persona entrenando - Your Gains AI" class="gym-image">
+          <img src="./images/gym-training-dark.jpg" alt="Gimnasio moderno con persona entrenando - Your Gains AI" class="gym-image">
       </div>
 
       <script type="module">
@@ -1349,7 +1361,45 @@
           import { checkAuthOrRedirect, getAuthHeaders, logout, isTokenExpired, decodeJwt } from "./auth.js";
 
         // Freemium helpers (frontend-only)
+        // Variable global para cachear el estado isPremium
+        let userPremiumStatus = null;
+        
+        async function checkPremiumStatus() {
+            try {
+                const userId = getCurrentUserId();
+                if (!userId) return false;
+                
+                const response = await fetch(`${API_BASE}/user-status?user_id=${userId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    userPremiumStatus = data.is_premium === true || data.plan_type === 'PREMIUM';
+                    return userPremiumStatus;
+                }
+            } catch (error) {
+                console.error('Error verificando isPremium:', error);
+            }
+            
+            // Fallback al método anterior
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                const payload = decodeJwt(token) || {};
+                if (payload.plan === 'isPremium' || payload.tier === 'isPremium' || payload.isPremium === true) {
+                    userPremiumStatus = true;
+                    return true;
+                }
+            }
+            const storedPlan = localStorage.getItem('plan');
+            userPremiumStatus = storedPlan === 'isPremium';
+            return userPremiumStatus;
+        }
+        
         function isPremiumUser() {
+            // Si ya tenemos el estado, devolverlo
+            if (userPremiumStatus !== null) {
+                return userPremiumStatus;
+            }
+            
+            // Si no, usar fallback
             const token = localStorage.getItem('accessToken');
             if (token) {
                 const payload = decodeJwt(token) || {};
@@ -1407,14 +1457,14 @@
                         </button>
                     `;
                 } else {
-                    messageDiv.textContent = content;
+                messageDiv.textContent = content;
                 }
                 
                 chatMessages.appendChild(messageDiv);
                 
                 // Auto-scroll al final del chat
                 setTimeout(() => {
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
                 }, 100);
             }
 
@@ -1465,9 +1515,29 @@
                 const message = chatInput.value.trim();
                 if (!message) return;
 
+                // RATE LIMITING: Prevenir envío excesivo de mensajes
+                const now = Date.now();
+                const lastMessageTime = window.lastMessageTime || 0;
+                const timeSinceLastMessage = now - lastMessageTime;
+                
+                if (timeSinceLastMessage < 2000) { // 2 segundos de debounce
+                    console.log('⚠️ Rate limit: Espera 2 segundos entre mensajes');
+                    return;
+                }
+                
+                // Verificar si ya hay un mensaje procesándose
+                if (window.isProcessingMessage) {
+                    console.log('⚠️ Ya hay un mensaje procesándose, espera...');
+                    return;
+                }
+                
+                window.lastMessageTime = now;
+                window.isProcessingMessage = true;
+
                 // Verificar autenticación antes de enviar
                 if (!checkAuthOrRedirect()) {
                     window.location.href = './login.html';
+                    window.isProcessingMessage = false;
                     return;
                 }
 
@@ -1489,38 +1559,94 @@
                 sendBtn.classList.remove('active');
 
                 try {
-                    const response = await fetch(`${API_BASE}/chat`, {
+                    // Preparar payload para logging
+                    const userId = getCurrentUserId();
+                    const conversationHistory = getConversationHistory();
+                    const token = localStorage.getItem('accessToken');
+                    
+                    const payload = {
+                        message: message,
+                        user_id: userId,
+                        conversation_history: conversationHistory
+                    };
+
+                    console.log('=== PAYLOAD ENVIADO ===');
+                    console.log('Payload:', JSON.stringify(payload, null, 2));
+                    console.log('User ID:', userId);
+                    console.log('Message:', message);
+                    console.log('Conversation History:', conversationHistory);
+                    console.log('Token exists:', !!token);
+                    console.log('======================');
+
+                    // Usar nuevo endpoint de function calling
+                    const response = await fetch(`${API_BASE}/api/chat/modify`, {
                         method: 'POST',
-                        headers: getAuthHeaders(),
-                        body: JSON.stringify({ message })
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(payload)
                     });
 
-                    const data = await response.json();
-
-                    // Ocultar indicador de escritura
-                    hideTypingIndicator();
-
-                    if (response.ok) {
-                        addMessage(data.answer);
-                        if (!isPremiumUser()) {
-                            incrementChatUsage();
-                        }
-                    } else {
-                        if (response.status === 401) {
+                    // Logging del error 422
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.error('=== ERROR HTTP ===');
+                        console.error('Status:', response.status);
+                        console.error('Status Text:', response.statusText);
+                        console.error('Error detail:', errorData);
+                        console.error('================');
+                        
+                        if (response.status === 422) {
+                            addMessage(`Error de validación: ${JSON.stringify(errorData)}`);
+                        } else if (response.status === 401) {
                             addMessage('Sesión expirada. Redirigiendo al login...');
                             setTimeout(() => {
                                 localStorage.clear();
                                 window.location.href = './login.html';
                             }, 2000);
                         } else {
-                            addMessage(`Error: ${data.detail || 'Error desconocido'}`);
+                            addMessage(`Error del servidor: ${errorData.detail || 'Error desconocido'}`);
                         }
+                        return;
+                    }
+
+                    const data = await response.json();
+
+                    // Ocultar indicador de escritura
+                    hideTypingIndicator();
+
+                    // Añadir respuesta del chat
+                    addMessage(data.response);
+                    
+                    // Si se realizaron modificaciones, mostrar notificación
+                    if (data.modified) {
+                        showModificationNotification({
+                            modified: true,
+                            changes: data.changes || [],
+                            function_used: data.function_used || 'unknown'
+                        });
+                        
+                        // Añadir badge visual al mensaje
+                        addModificationBadge();
+                        
+                        // ✨ NUEVO: Recargar plan después de modificación
+                        console.log('🔄 Plan modificado, recargando dashboard...');
+                        setTimeout(async () => {
+                            await reloadPlanFromServer();
+                        }, 1000); // Esperar 1 segundo para que la IA termine de guardar
+                    }
+                    
+                    if (!isPremiumUser()) {
+                        incrementChatUsage();
                     }
                 } catch (error) {
                     console.error('Error en chat:', error);
                     hideTypingIndicator();
                     addMessage('Error de conexión. Verifica que el servidor esté funcionando.');
                 } finally {
+                    // Resetear rate limiting
+                    window.isProcessingMessage = false;
                     updateSendButton();
                 }
             }
@@ -1534,7 +1660,7 @@
                 sendBtn.style.cursor = 'not-allowed';
             }
 
-            // Función para habilitar el input (para usuarios premium)
+            // Función para habilitar el input (para usuarios isPremium)
             function enableChatInput() {
                 chatInput.disabled = false;
                 chatInput.placeholder = 'Escribe tu mensaje...';
@@ -1593,98 +1719,588 @@
             window.closeUpgradeModal = closeUpgradeModal;
         }
 
-        // Función para cargar planes del usuario
-        async function loadUserPlans() {
+        // ✨ NUEVA FUNCIÓN: Recargar plan desde servidor después de modificación
+        async function reloadPlanFromServer() {
             try {
-                const response = await fetch(`${API_BASE}/planes`, {
-                    method: 'GET',
-                    headers: getAuthHeaders()
+                console.log('🔄 Recargando plan desde servidor...');
+                
+                const userId = getCurrentUserId();
+                if (!userId) {
+                    console.error('❌ No se pudo obtener user_id para recargar plan');
+                    return;
+                }
+
+                // Obtener datos actualizados del servidor
+                const response = await fetch(`${API_BASE}/user/current-routine?user_id=${userId}`, {
+                    method: 'GET'
                 });
 
-                if (response.ok) {
-                    const plans = await response.json();
-                    if (plans && plans.length > 0) {
-                        // Usar el último plan
-                        const lastPlan = plans[0];
-                        // Guardar en localStorage para futuras consultas
-                        localStorage.setItem("userPlan", JSON.stringify(lastPlan));
-                        const premium = isPremiumUser();
-                        displayRoutineContent(lastPlan, premium);
-                        displayDietContent(lastPlan, premium);
-                        return;
-                    }
+                if (!response.ok) {
+                    console.error('❌ Error obteniendo plan actualizado:', response.status);
+                    return;
+                }
+
+                const data = await response.json();
+                console.log('📊 Datos recibidos del servidor:', data);
+
+                if (data.success && data.current_routine) {
+                    // Crear objeto plan compatible con displayPlan
+                    const plan = {
+                        rutina: data.current_routine,
+                        dieta: data.current_diet,
+                        motivacion: "Rutina actualizada dinámicamente"
+                    };
+
+                    // Actualizar visualización con datos frescos
+                    const isPremium = data.is_premium || false;
+                    console.log('🎨 Actualizando visualización con isPremium:', isPremium);
+                    
+                    displayPlan(plan, isPremium);
+                    
+                    console.log('✅ Plan recargado exitosamente');
+                    
+                    // Mostrar notificación de éxito
+                    showReloadNotification('Plan actualizado correctamente');
                 } else {
-                    console.error('Error al cargar planes:', response.status);
+                    console.error('❌ No se pudo obtener plan actualizado');
                 }
             } catch (error) {
-                console.error('Error al cargar planes:', error);
+                console.error('❌ Error recargando plan:', error);
             }
-            
-            // Si no se pudo cargar ningún plan, mostrar mensaje
-            showNoContentMessages();
         }
 
-        // Función para mostrar el plan en los overlays
-        function displayPlan(plan) {
-            // Mostrar rutina (aplicar recorte si es free)
-            const rutinaContent = document.getElementById('rutinaContent');
-            if (plan.rutina && plan.rutina.dias) {
-                const dias = plan.rutina.dias;
-                const total = dias.length;
-                const premium = isPremiumUser();
-                const visibles = premium ? total : Math.max(1, Math.ceil(total * 0.25));
+        // ✨ NUEVA FUNCIÓN: Mostrar notificación de recarga
+        function showReloadNotification(message) {
+            // Crear notificación temporal
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #39ff14;
+                color: #000000;
+                padding: 15px 25px;
+                border-radius: 8px;
+                font-weight: 700;
+                z-index: 10000;
+                animation: slideInNotification 0.3s ease;
+                box-shadow: 0 4px 12px rgba(57, 255, 20, 0.3);
+                border: 2px solid #000000;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Remover después de 3 segundos
+            setTimeout(() => {
+                notification.style.animation = 'slideOutNotification 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 300);
+            }, 3000);
+        }
 
-                let rutinaHTML = '<h3>Rutina de Entrenamiento</h3>';
+        // Función para cargar planes del usuario - CORREGIDA PARA USAR current_routine
+        async function loadUserPlans() {
+            try {
+                // Obtener user_id del token
+                const userId = getCurrentUserId();
+                if (!userId) {
+                    console.error('No se pudo obtener user_id');
+                    return;
+                }
 
-                dias.slice(0, visibles).forEach(dia => {
-                    rutinaHTML += `<div style="margin-bottom: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px;">`;
-                    rutinaHTML += `<h4 style=\"color: #84cc16; margin-bottom: 10px;\">${dia.dia}</h4>`;
-                    (dia.ejercicios || []).forEach(ejercicio => {
-                        rutinaHTML += `<div style=\"margin-bottom: 10px;\">`;
-                        rutinaHTML += `<strong>${ejercicio.nombre}</strong><br>`;
-                        rutinaHTML += `Series: ${ejercicio.series} | Reps: ${ejercicio.repeticiones} | Descanso: ${ejercicio.descanso}`;
+                console.log(`🔍 Frontend: Solicitando rutina para user_id: ${userId}`);
+
+                // Usar el endpoint corregido que devuelve current_routine
+                const response = await fetch(`${API_BASE}/user/current-routine?user_id=${userId}`, {
+                    method: 'GET'
+                });
+
+                console.log(`📡 Frontend: Respuesta del servidor: ${response.status}`);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(`📊 Frontend: Datos recibidos:`, data);
+                    console.log(`🔍 Frontend: data.success = ${data.success}`);
+                    console.log(`🔍 Frontend: data.current_routine existe = ${!!data.current_routine}`);
+                    if (data.current_routine) {
+                        console.log(`🔍 Frontend: exercises count = ${data.current_routine.exercises?.length || 0}`);
+                    }
+                    
+                    if (data.success && data.current_routine) {
+                        console.log(`✅ Frontend: Rutina encontrada con ${data.current_routine.exercises?.length || 0} ejercicios`);
+                        console.log(`💎 Frontend: Usuario premium según servidor: ${data.is_premium}`);
+                        
+                        // Crear un plan compatible con el formato esperado
+                        const plan = {
+                            rutina: data.current_routine,
+                            dieta: data.current_diet || {},
+                            motivacion: "Rutina actualizada dinámicamente"
+                        };
+                        
+                        // Guardar en localStorage para futuras consultas
+                        localStorage.setItem("userPlan", JSON.stringify(plan));
+                        
+                        // Usar el estado premium del servidor en lugar del local
+                        const isPremium = data.is_premium;
+                        
+                        console.log(`🎯 Frontend: Mostrando plan para usuario premium: ${isPremium}`);
+                        
+                        // Mostrar el plan actualizado
+                        console.log('🚀 Llamando displayPlan() con:', { plan, isPremium });
+                        displayPlan(plan, isPremium);
+                        return;
+                    } else {
+                        console.log('❌ Frontend: No se encontró rutina en la respuesta');
+                        showNoContentMessages();
+                    }
+                } else {
+                    console.error('Error al cargar rutina actual:', response.status);
+                    showNoContentMessages();
+                }
+            } catch (error) {
+                console.error('Error al cargar rutina actual:', error);
+                // Si no se pudo cargar, mostrar mensaje
+            showNoContentMessages();
+            }
+        }
+
+        // Función auxiliar para reintentar displayPlan cuando el elemento no existe
+        function displayPlanRetry(plan, userPremiumStatus, rutinaContent) {
+            console.log('🔄 displayPlanRetry() llamado');
+            if (plan.rutina && plan.rutina.exercises) {
+                const exercises = plan.rutina.exercises;
+                const total = exercises.length;
+                const isPremium = userPremiumStatus !== null ? userPremiumStatus : isPremiumUser();
+                const visibles = isPremium ? total : Math.max(3, Math.ceil(total * 0.25));
+
+                let rutinaHTML = '';
+
+                // Mostrar ejercicios con censura para usuarios FREE (retry)
+                exercises.forEach((exercise, index) => {
+                    const exerciseName = typeof exercise === 'object' ? exercise.name : exercise;
+                    const sets = typeof exercise === 'object' ? (exercise.sets || 'N/A') : 'N/A';
+                    const reps = typeof exercise === 'object' ? (exercise.reps || 'N/A') : 'N/A';
+                    const weight = typeof exercise === 'object' ? (exercise.weight || 'N/A') : 'N/A';
+                    const notes = typeof exercise === 'object' ? (exercise.notes || '') : '';
+                    
+                    // 🔒 CENSURA: Solo mostrar primeros 2 ejercicios para usuarios FREE (retry)
+                    if (!isPremium && index >= 2) {
+                        // Ejercicio censurado
+                        rutinaHTML += `<div style="margin-bottom: 15px; padding: 12px; background: #f8fafc; border-radius: 8px; position: relative; overflow: hidden; border-left: 4px solid #cbd5e1;">`;
+                        rutinaHTML += `<div style="filter: blur(5px); color: #64748b; user-select: none; pointer-events: none;">`;
+                        rutinaHTML += `<strong>${exerciseName}</strong><br>`;
+                        rutinaHTML += `<span>Series: ${sets} | Reps: ${reps} | Peso: ${weight}</span>`;
                         rutinaHTML += `</div>`;
-                    });
+                        rutinaHTML += `<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(132, 204, 22, 0.9); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">PRO</div>`;
+                        rutinaHTML += `</div>`;
+                        
+                        // Mostrar mensaje de upgrade después del segundo ejercicio censurado
+                        if (index === 2) {
+                            rutinaHTML += `
+                                <div style="margin: 20px 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; text-align: center;">
+                                    <h3 style="color: white; margin-bottom: 10px;">🔒 Desbloquea tu rutina completa</h3>
+                                    <p style="color: rgba(255,255,255,0.9); margin-bottom: 15px;">
+                                        Accede a tu plan personalizado completo, modificaciones ilimitadas y seguimiento de progreso
+                                    </p>
+                                    <button onclick="window.location.href='./tarifas.html'" 
+                                            style="background: white; color: #667eea; padding: 12px 30px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                                        Mejorar a Premium - €9.99/mes
+                                    </button>
+                                </div>
+                            `;
+                        }
+                        return; // No mostrar más ejercicios para usuarios FREE
+                    }
+                    
+                    // Ejercicio visible (premium o primeros 2 para free)
+                    rutinaHTML += `<div style="margin-bottom: 15px; padding: 12px; background: #f5f5f5; border-radius: 8px; border-left: 4px solid #84cc16;">`;
+                    rutinaHTML += `<strong style="color: #2d5016;">${exerciseName}</strong><br>`;
+                    rutinaHTML += `<span style="color: #365314;">Series: ${sets} | Reps: ${reps} | Peso: ${weight}</span>`;
+                    if (notes) {
+                        rutinaHTML += `<br><em style="color: #84cc16; font-size: 12px;">${notes}</em>`;
+                    }
                     rutinaHTML += `</div>`;
                 });
 
-                if (!premium && visibles < total) {
-                    const ocultos = total - visibles;
+                console.log('🎨 Insertando HTML en DOM (retry)');
+                console.log('   Container found:', !!rutinaContent);
+                console.log('   HTML length:', rutinaHTML.length);
+                
+                if (rutinaContent) {
+                    // 🔥 FORZAR VISIBILIDAD DEL CONTAINER (retry)
+                    rutinaContent.style.display = 'block';
+                    rutinaContent.style.visibility = 'visible';
+                    rutinaContent.style.opacity = '1';
+                    rutinaContent.style.zIndex = '10';
+                    rutinaContent.style.position = 'relative';
                     
-                    // Días censurados con efecto blur
-                    const diasCensurados = [
-                        { dia: "Día 3: Tren Superior", ejercicios: [
-                            { nombre: "Press de banca", series: "4", repeticiones: "8-10", descanso: "2 min" },
-                            { nombre: "Remo con barra", series: "4", repeticiones: "8-10", descanso: "2 min" }
-                        ]},
-                        { dia: "Día 4: Tren Inferior", ejercicios: [
-                            { nombre: "Sentadilla búlgara", series: "3", repeticiones: "12-15", descanso: "90 seg" },
-                            { nombre: "Peso muerto rumano", series: "3", repeticiones: "10-12", descanso: "2 min" }
-                        ]}
-                    ];
-
-                    diasCensurados.slice(0, Math.min(ocultos, 2)).forEach(dia => {
-                        rutinaHTML += `<div style=\"margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; position: relative; overflow: hidden;\">`;
-                        rutinaHTML += `<div style=\"filter: blur(1.5px); color: #64748b; user-select: none; pointer-events: none;\">`;
-                        rutinaHTML += `<h4 style=\"color: #84cc16; margin-bottom: 10px;\">${dia.dia}</h4>`;
-                        dia.ejercicios.forEach(ejercicio => {
-                            rutinaHTML += `<div style=\"margin-bottom: 10px;\">`;
-                            rutinaHTML += `<strong>${ejercicio.nombre}</strong><br>`;
-                            rutinaHTML += `Series: ${ejercicio.series} | Reps: ${ejercicio.repeticiones} | Descanso: ${ejercicio.descanso}`;
-                            rutinaHTML += `</div>`;
-                        });
-                        rutinaHTML += `</div>`;
-                        rutinaHTML += `<div style=\"position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(132, 204, 22, 0.9); color: white; padding: 6px 12px; border-radius: 6px; font-size: 14px; font-weight: 600;\">PRO</div>`;
-                        rutinaHTML += `</div>`;
+                    // 🔥 OCULTAR MENSAJES DE ERROR (retry)
+                    const noContentMessages = rutinaContent.querySelectorAll('p');
+                    noContentMessages.forEach(p => {
+                        if (p.textContent.includes('No tienes una rutina generada')) {
+                            p.style.display = 'none';
+                            console.log('🚫 Ocultando mensaje de error encontrado (retry)');
+                        }
                     });
-
-                    rutinaHTML += `<div style=\"margin-top: 10px; padding: 14px; border: 1px dashed #94a3b8; border-radius: 8px; background: rgba(148,163,184,0.08); color: #cbd5e1;\">`;
-                    rutinaHTML += `${ocultos} día(s) restantes ocultos en el plan gratuito. `;
-                    rutinaHTML += `<a href=\"./tarifas.html\" style=\"color:#84cc16; font-weight:600; text-decoration: underline;\">Mejora a Pro</a> para ver el 100% de tu rutina.`;
-                    rutinaHTML += `</div>`;
+                    
+                    // 🔥 INSERTAR HTML (retry)
+                    rutinaContent.innerHTML = rutinaHTML;
+                    console.log('✅ HTML insertado correctamente (retry)');
+                    console.log('✅ Container forzado a ser visible (retry)');
+                } else {
+                    console.error('❌ rutinaContent es NULL en retry');
                 }
+            }
+        }
 
-                rutinaContent.innerHTML = rutinaHTML;
+        // Función para mostrar el plan en los overlays - DISEÑO MINIMALISTA
+        function displayPlan(plan, userPremiumStatus = null) {
+            console.log('🎨 displayPlan() llamado con:', plan);
+            console.log('🎨 userPremiumStatus:', userPremiumStatus);
+            
+            const rutinaContent = document.getElementById('rutinaContent');
+            const dietaContent = document.getElementById('dietaContent');
+            const isPremium = userPremiumStatus !== null ? userPremiumStatus : isPremiumUser();
+            
+            // Si el elemento no existe, esperar un poco y reintentar
+            if (!rutinaContent) {
+                console.log('⚠️ rutinaContent no encontrado, reintentando en 100ms...');
+                setTimeout(() => {
+                    const retryRutinaContent = document.getElementById('rutinaContent');
+                    if (retryRutinaContent) {
+                        console.log('✅ rutinaContent encontrado en reintento');
+                        displayPlanRetry(plan, userPremiumStatus, retryRutinaContent);
+                    } else {
+                        console.error('❌ rutinaContent sigue sin existir después del reintento');
+                    }
+                }, 100);
+                return;
+            }
+            
+            if (plan.rutina && plan.rutina.exercises) {
+                // RUTINA - DISEÑO MINIMALISTA (SIN DUPLICADOS)
+                let rutinaHtml = `
+                    <style>
+                        #rutinaContent, #dietaContent {
+                            background: #000000;
+                            color: #ffffff;
+                            padding: 30px;
+                            font-family: 'Inter', -apple-system, sans-serif;
+                        }
+                        .section-title {
+                            font-size: 32px;
+                            font-weight: 700;
+                            margin-bottom: 10px;
+                            color: #ffffff;
+                        }
+                        .section-subtitle {
+                            font-size: 18px;
+                            color: #888888;
+                            margin-bottom: 30px;
+                            font-weight: 500;
+                        }
+                        .day-title {
+                            font-size: 20px;
+                            font-weight: 600;
+                            margin-top: 25px;
+                            margin-bottom: 15px;
+                            color: #ffffff;
+                        }
+                        .exercise-item {
+                            font-size: 16px;
+                            color: #cccccc;
+                            margin-left: 20px;
+                            margin-bottom: 8px;
+                            line-height: 1.5;
+                        }
+                        .meal-title {
+                            font-size: 20px;
+                            font-weight: 600;
+                            margin-top: 25px;
+                            margin-bottom: 15px;
+                            color: #ffffff;
+                        }
+                        .food-item {
+                            font-size: 16px;
+                            color: #cccccc;
+                            margin-left: 20px;
+                            margin-bottom: 6px;
+                        }
+                        .censored-content {
+                            filter: blur(8px);
+                            background: #1a1a1a;
+                            padding: 20px;
+                            margin: 20px 0;
+                            border-radius: 8px;
+                            pointer-events: none;
+                            user-select: none;
+                        }
+                        .upgrade-overlay {
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            padding: 30px;
+                            border-radius: 12px;
+                            text-align: center;
+                            margin: 30px 0;
+                        }
+                        .upgrade-overlay h3 {
+                            color: white;
+                            font-size: 24px;
+                            margin-bottom: 10px;
+                        }
+                        .upgrade-overlay p {
+                            color: rgba(255,255,255,0.9);
+                            font-size: 16px;
+                            margin-bottom: 20px;
+                        }
+                        .upgrade-button {
+                            background: white;
+                            color: #667eea;
+                            padding: 12px 30px;
+                            border: none;
+                            border-radius: 8px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            font-size: 16px;
+                        }
+                    </style>
+                    <h1 class="section-title">Rutina</h1>
+                    <p class="section-subtitle">${plan.rutina.titulo || 'Plan personalizado'}</p>
+                `;
+                
+                // Agrupar ejercicios por día
+                const exercisesByDay = {};
+                plan.rutina.exercises.forEach(exercise => {
+                    const day = exercise.day || 'Sin día';
+                    if (!exercisesByDay[day]) {
+                        exercisesByDay[day] = [];
+                    }
+                    exercisesByDay[day].push(exercise);
+                });
+                
+                const days = Object.keys(exercisesByDay);
+                let upgradeShown = false;
+                
+                days.forEach((day, index) => {
+                    // Primer día siempre visible
+                    if (index === 0) {
+                        rutinaHtml += `<div class="day-title">${day}</div>`;
+                        exercisesByDay[day].forEach(ej => {
+                            rutinaHtml += `<div class="exercise-item">• ${ej.name} ${ej.sets}x${ej.reps}</div>`;
+                        });
+                    } 
+                    // Resto censurado para FREE
+                    else if (!isPremium) {
+                        if (index === 1 && !upgradeShown) {
+                            rutinaHtml += `
+                                <div class="censored-content">
+                                    <div class="day-title">${day}</div>
+                                    ${exercisesByDay[day].map(ej => 
+                                        `<div class="exercise-item">• ${ej.name} ${ej.sets}x${ej.reps}</div>`
+                                    ).join('')}
+                                </div>
+                            `;
+                            
+                            // Overlay de upgrade después del primer día censurado
+                            rutinaHtml += `
+                                <div style="
+                                    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+                                    border: 2px solid #39ff14;
+                                    padding: 40px 30px;
+                                    border-radius: 16px;
+                                    text-align: center;
+                                    margin: 30px 0;
+                                    box-shadow: 0 0 30px rgba(57, 255, 20, 0.15);
+                                ">
+                                    <h3 style="color: #39ff14; font-size: 24px; font-weight: 700; margin-bottom: 12px;">
+                                        Desbloquea la Rutina Completa
+                                    </h3>
+                                    <p style="color: #cccccc; font-size: 15px; margin-bottom: 25px;">
+                                        Accede a todos los días, modificaciones ilimitadas con IA y seguimiento de progreso
+                                    </p>
+                                    <button onclick="window.location.href='./tarifas.html'" style="
+                                        background: #39ff14;
+                                        color: #000000;
+                                        padding: 14px 40px;
+                                        border: none;
+                                        border-radius: 10px;
+                                        font-weight: 700;
+                                        cursor: pointer;
+                                        font-size: 16px;
+                                        text-transform: uppercase;
+                                        letter-spacing: 0.5px;
+                                        transition: all 0.3s ease;
+                                    ">
+                                        Mejorar a Premium - €9.99/mes
+                                    </button>
+                                </div>
+                            `;
+                            upgradeShown = true;
+                        } else if (index > 1) {
+                            rutinaHtml += `
+                                <div class="censored-content">
+                                    <div class="day-title">${day}</div>
+                                    <div class="exercise-item">• ████████ ████</div>
+                                    <div class="exercise-item">• ████████ ████</div>
+                                </div>
+                            `;
+                        }
+                    }
+                    // Todo visible para PREMIUM
+                    else {
+                        rutinaHtml += `<div class="day-title">${day}</div>`;
+                        exercisesByDay[day].forEach(ej => {
+                            rutinaHtml += `<div class="exercise-item">• ${ej.name} ${ej.sets}x${ej.reps}</div>`;
+                        });
+                    }
+                });
+                
+                // Insertar rutina
+                if (rutinaContent) {
+                    rutinaContent.style.display = 'block';
+                    rutinaContent.style.visibility = 'visible';
+                    rutinaContent.style.opacity = '1';
+                    rutinaContent.innerHTML = rutinaHtml;
+                    console.log('✅ Rutina insertada con diseño minimalista');
+                }
+            }
+            
+            // DIETA - DISEÑO MINIMALISTA
+            console.log('🍽️ Verificando dieta:', plan.dieta);
+            console.log('🍽️ Tiene meals?', plan.dieta?.meals);
+            console.log('🍽️ Meals count:', plan.dieta?.meals?.length);
+            
+            if (dietaContent && plan.dieta && plan.dieta.meals && plan.dieta.meals.length > 0) {
+                const totalKcal = plan.dieta.total_kcal || 2215;
+                let dietaHtml = `
+                    <h1 class="section-title" style="margin-top: 50px;">Dieta</h1>
+                    <p class="section-subtitle">${plan.dieta.titulo || 'Plan personalizado'} - ${totalKcal} kcal diarias</p>
+                `;
+                
+                let upgradeShown = false;
+                
+                plan.dieta.meals.forEach((comida, index) => {
+                    console.log(`🍽️ Comida ${index}:`, comida);
+                    // Primera comida siempre visible
+                    if (index === 0) {
+                        dietaHtml += `<div class="meal-title">${comida.nombre}</div>`;
+                        if (comida.alimentos) {
+                            comida.alimentos.forEach(alimento => {
+                                if (typeof alimento === 'string') {
+                                    dietaHtml += `<div class="food-item">• ${alimento}</div>`;
+                                } else if (typeof alimento === 'object' && alimento.alimento) {
+                                    dietaHtml += `<div class="food-item">• ${alimento.alimento} - ${alimento.cantidad}</div>`;
+                                } else {
+                                    dietaHtml += `<div class="food-item">• ${alimento}</div>`;
+                                }
+                            });
+                        }
+                    }
+                    // Resto censurado para FREE
+                    else if (!isPremium) {
+                        dietaHtml += `
+                            <div class="censored-content">
+                                <div class="meal-title">${comida.nombre}</div>
+                                <div class="food-item">• ████████ ████</div>
+                                <div class="food-item">• ████████ ████</div>
+                            </div>
+                        `;
+                        
+                        // Mostrar overlay después de la primera comida censurada
+                        if (index === 1 && !upgradeShown) {
+                            dietaHtml += `
+                                <div style="
+                                    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+                                    border: 2px solid #39ff14;
+                                    padding: 40px 30px;
+                                    border-radius: 16px;
+                                    text-align: center;
+                                    margin: 30px 0;
+                                    box-shadow: 0 0 30px rgba(57, 255, 20, 0.15);
+                                ">
+                                    <h3 style="color: #39ff14; font-size: 24px; font-weight: 700; margin-bottom: 12px;">
+                                        Desbloquea la Dieta Completa
+                                    </h3>
+                                    <p style="color: #cccccc; font-size: 15px; margin-bottom: 25px;">
+                                        Accede a todas las comidas, ajustes personalizados según tu progreso y recetas exclusivas
+                                    </p>
+                                    <button onclick="window.location.href='./tarifas.html'" style="
+                                        background: #39ff14;
+                                        color: #000000;
+                                        padding: 14px 40px;
+                                        border: none;
+                                        border-radius: 10px;
+                                        font-weight: 700;
+                                        cursor: pointer;
+                                        font-size: 16px;
+                                        text-transform: uppercase;
+                                        letter-spacing: 0.5px;
+                                        transition: all 0.3s ease;
+                                    ">
+                                        Mejorar a Premium - €9.99/mes
+                                    </button>
+                                </div>
+                            `;
+                            upgradeShown = true;
+                        }
+                    }
+                    // Todo visible para PREMIUM
+                    else {
+                        dietaHtml += `<div class="meal-title">${comida.nombre}</div>`;
+                        if (comida.alimentos) {
+                            comida.alimentos.forEach(alimento => {
+                                if (typeof alimento === 'string') {
+                                    dietaHtml += `<div class="food-item">• ${alimento}</div>`;
+                                } else if (typeof alimento === 'object' && alimento.alimento) {
+                                    dietaHtml += `<div class="food-item">• ${alimento.alimento} - ${alimento.cantidad}</div>`;
+                                } else {
+                                    dietaHtml += `<div class="food-item">• ${alimento}</div>`;
+                                }
+                            });
+                        }
+                    }
+                });
+                
+                // Insertar dieta
+                if (dietaContent) {
+                    // 🔥 LIMPIAR MENSAJES DE ERROR QUE TAPAN LA DIETA
+                    const noContentMessages = dietaContent.querySelectorAll('p');
+                    noContentMessages.forEach(p => {
+                        if (p.textContent.includes('No tienes') || p.textContent.includes('nutricional')) {
+                            p.style.display = 'none';
+                            p.remove(); // Eliminarlo completamente
+                            console.log('🚫 Eliminando mensaje de error que tapa la dieta');
+                        }
+                    });
+                    
+                    // 🔥 FORZAR VISIBILIDAD
+                    dietaContent.style.display = 'block';
+                    dietaContent.style.visibility = 'visible';
+                    dietaContent.style.opacity = '1';
+                    dietaContent.style.zIndex = '10';
+                    dietaContent.style.position = 'relative';
+                    
+                    // 🔥 INSERTAR DIETA
+                    dietaContent.innerHTML = dietaHtml;
+                    console.log('✅ Dieta insertada con diseño minimalista');
+                }
+            } else {
+                console.error('❌ No se pudo renderizar dieta:');
+                console.error('  - dietaContent existe:', !!dietaContent);
+                console.error('  - plan.dieta existe:', !!plan.dieta);
+                console.error('  - plan.dieta.meals existe:', !!plan.dieta?.meals);
+                console.error('  - plan.dieta.meals.length:', plan.dieta?.meals?.length);
+                
+                // Forzar mostrar mensaje de error
+                if (dietaContent) {
+                    dietaContent.innerHTML = `
+                        <h1 class="section-title" style="margin-top: 50px;">Dieta</h1>
+                        <p style="color: #ff4444;">Error: No se pudo cargar el plan nutricional</p>
+                        <pre style="color: #888; font-size: 12px;">${JSON.stringify(plan.dieta, null, 2)}</pre>
+                    `;
+                }
             }
 
             // Mostrar consejos (aplicar recorte si es free)
@@ -1692,8 +2308,8 @@
             if (plan.rutina && plan.rutina.consejos) {
                 const consejos = plan.rutina.consejos;
                 const total = consejos.length;
-                const premium = isPremiumUser();
-                const visibles = premium ? total : Math.max(2, Math.ceil(total * 0.33)); // Mostrar 33% (mínimo 2)
+                const isPremium = isPremiumUser();
+                const visibles = isPremium ? total : Math.max(2, Math.ceil(total * 0.33)); // Mostrar 33% (mínimo 2)
 
                 let consejosHTML = '<h3>Consejos de Entrenamiento</h3>';
                 
@@ -1710,8 +2326,8 @@
                     consejosHTML += `</div>`;
                 });
 
-                // Consejos censurados para usuarios no premium
-                if (!premium && visibles < total) {
+                // Consejos censurados para usuarios no isPremium
+                if (!isPremium && visibles < total) {
                     const ocultos = total - visibles;
                     const consejosCensurados = [
                         "NUTRICIÓN PRE-ENTRENAMIENTO: Consume carbohidratos complejos 2-3 horas antes del entrenamiento para tener energía sostenida. Avena, arroz integral o patata son excelentes opciones. Evita comidas pesadas que puedan causar molestias digestivas durante el ejercicio.",
@@ -1769,13 +2385,13 @@
         // Función para cargar contenido de rutina y dieta
         function loadRoutineAndDietContent() {
             const storedPlan = localStorage.getItem('userPlan');
-            const premium = isPremiumUser();
+            const isPremium = isPremiumUser();
             
             if (storedPlan) {
                 try {
                     const plan = JSON.parse(storedPlan);
-                    displayRoutineContent(plan, premium);
-                    displayDietContent(plan, premium);
+                    displayRoutineContent(plan, isPremium);
+                    displayDietContent(plan, isPremium);
                 } catch (e) {
                     console.error('Error parsing stored plan:', e);
                     // Intentar cargar desde la base de datos
@@ -1788,13 +2404,13 @@
         }
 
         // Función para mostrar contenido de rutina
-        function displayRoutineContent(plan, premium) {
+        function displayRoutineContent(plan, isPremium) {
             const contentArea = document.getElementById('rutinaContent');
             
             if (plan.rutina && plan.rutina.dias) {
                 const dias = plan.rutina.dias;
                 const total = dias.length;
-                const visibles = premium ? total : Math.max(1, Math.ceil(total * 0.2)); // 20% para usuarios básicos
+                const visibles = isPremium ? total : Math.max(1, Math.ceil(total * 0.2)); // 20% para usuarios básicos
 
                 let routineHTML = '';
                 
@@ -1811,13 +2427,13 @@
                     routineHTML += `</div>`;
                 });
 
-                // Mostrar días censurados para usuarios no premium
-                if (!premium && visibles < total) {
+                // Mostrar días censurados para usuarios no isPremium
+                if (!isPremium && visibles < total) {
                     const ocultos = total - visibles;
                     
                     // Agregar días censurados
                     dias.slice(visibles, visibles + Math.min(ocultos, 2)).forEach(dia => {
-                        routineHTML += `<div class="routine-item premium-overlay">`;
+                        routineHTML += `<div class="routine-item isPremium-overlay">`;
                         routineHTML += `<div class="routine-day">${dia.dia || dia.nombre}</div>`;
                         (dia.ejercicios || []).forEach(ejercicio => {
                             routineHTML += `<div class="exercise">`;
@@ -1825,10 +2441,10 @@
                             routineHTML += `<div class="exercise-details">Series: ${ejercicio.series} | Reps: ${ejercicio.repeticiones} | Descanso: ${ejercicio.descanso}</div>`;
                             routineHTML += `</div>`;
                         });
-                        routineHTML += `<div class="premium-badge">`;
+                        routineHTML += `<div class="isPremium-badge">`;
                         routineHTML += `<h4>Desbloquea contenido completo con Pro</h4>`;
                         routineHTML += `<p>${ocultos} días adicionales disponibles</p>`;
-                        routineHTML += `<button class="premium-btn" onclick="window.location.href='./tarifas.html'">Mejorar a Pro</button>`;
+                        routineHTML += `<button class="isPremium-btn" onclick="window.location.href='./tarifas.html'">Mejorar a Pro</button>`;
                         routineHTML += `</div>`;
                         routineHTML += `</div>`;
                     });
@@ -1836,18 +2452,20 @@
 
                 contentArea.innerHTML = routineHTML;
             } else {
-                contentArea.innerHTML = '<p>No tienes una rutina generada. Usa el chat para crear tu plan personalizado.</p>';
+                // COMENTADO: No insertar mensaje de error para evitar conflictos con displayPlan()
+                // contentArea.innerHTML = '<p>No tienes una rutina generada. Usa el chat para crear tu plan personalizado.</p>';
+                console.log('⚠️ No hay rutina para mostrar en función alternativa');
             }
         }
 
         // Función para mostrar contenido de dieta
-        function displayDietContent(plan, premium) {
+        function displayDietContent(plan, isPremium) {
             const contentArea = document.getElementById('dietaContent');
             
             if (plan.dieta && plan.dieta.comidas) {
                 const comidas = plan.dieta.comidas;
                 const total = comidas.length;
-                const visibles = premium ? total : Math.max(2, Math.ceil(total * 0.5)); // 50% para usuarios básicos
+                const visibles = isPremium ? total : Math.max(2, Math.ceil(total * 0.5)); // 50% para usuarios básicos
 
                 let dietHTML = '';
                 
@@ -1885,13 +2503,13 @@
                     dietHTML += `</div>`;
                 });
 
-                // Mostrar comidas censuradas para usuarios no premium
-                if (!premium && visibles < total) {
+                // Mostrar comidas censuradas para usuarios no isPremium
+                if (!isPremium && visibles < total) {
                     const ocultos = total - visibles;
                     
                     // Agregar comidas censuradas
                     comidas.slice(visibles, visibles + Math.min(ocultos, 2)).forEach(comida => {
-                        dietHTML += `<div class="meal-card premium-overlay">`;
+                        dietHTML += `<div class="meal-card isPremium-overlay">`;
                         dietHTML += `<div class="meal-header">`;
                         dietHTML += `<span class="meal-time">${comida.kcal || ''} kcal</span>`;
                         dietHTML += `<span class="meal-name">${comida.nombre}</span>`;
@@ -1910,10 +2528,10 @@
                                 dietHTML += `</div>`;
                             });
                         }
-                        dietHTML += `<div class="premium-badge">`;
+                        dietHTML += `<div class="isPremium-badge">`;
                         dietHTML += `<h4>Desbloquea contenido completo con Pro</h4>`;
                         dietHTML += `<p>${ocultos} comidas adicionales disponibles</p>`;
-                        dietHTML += `<button class="premium-btn" onclick="window.location.href='./tarifas.html'">Mejorar a Pro</button>`;
+                        dietHTML += `<button class="isPremium-btn" onclick="window.location.href='./tarifas.html'">Mejorar a Pro</button>`;
                         dietHTML += `</div>`;
                         dietHTML += `</div>`;
                     });
@@ -1921,21 +2539,23 @@
 
                 contentArea.innerHTML = dietHTML;
             } else {
-                contentArea.innerHTML = '<p>No tienes un plan nutricional generado. Usa el chat para crear tu dieta personalizada.</p>';
+                // COMENTADO: Conflicto con displayPlan() que inserta la dieta genérica
+                // contentArea.innerHTML = '<p>No tienes un plan nutricional generado. Usa el chat para crear tu dieta personalizada.</p>';
+                console.log('⚠️ No hay dieta en localStorage, pero displayPlan() debería insertarla');
             }
         }
 
         // Función para cargar contenido de consejos y estudios
         function loadAdviceAndStudiesContent() {
             const storedPlan = localStorage.getItem('userPlan');
-            const premium = isPremiumUser();
+            const isPremium = isPremiumUser();
             
-            loadAdviceContent(storedPlan, premium);
+            loadAdviceContent(storedPlan, isPremium);
             loadStudiesContent();
         }
 
         // Función para mostrar consejos
-        function loadAdviceContent(storedPlan, premium) {
+        function loadAdviceContent(storedPlan, isPremium) {
             const contentArea = document.getElementById('consejosContent');
             
             const consejosTecnicos = [
@@ -1957,8 +2577,8 @@
                 adviceHTML += `</div>`;
             });
 
-            // Consejos censurados para usuarios no premium
-            if (!premium) {
+            // Consejos censurados para usuarios no isPremium
+            if (!isPremium) {
                 const consejosCensurados = [
                     {
                         title: "TÉCNICA Y ACTIVACIÓN MUSCULAR",
@@ -1971,13 +2591,13 @@
                 ];
 
                 consejosCensurados.forEach(consejo => {
-                    adviceHTML += `<div class="advice-card premium-overlay">`;
+                    adviceHTML += `<div class="advice-card isPremium-overlay">`;
                     adviceHTML += `<div class="advice-title">${consejo.title}</div>`;
                     adviceHTML += `<div class="advice-content">${consejo.content}</div>`;
-                    adviceHTML += `<div class="premium-badge">`;
+                    adviceHTML += `<div class="isPremium-badge">`;
                     adviceHTML += `<h4>Consejos Avanzados Disponibles</h4>`;
                     adviceHTML += `<p>Contenido técnico adicional para usuarios Pro</p>`;
-                    adviceHTML += `<button class="premium-btn" onclick="window.location.href='./tarifas.html'">Mejorar a Pro</button>`;
+                    adviceHTML += `<button class="isPremium-btn" onclick="window.location.href='./tarifas.html'">Mejorar a Pro</button>`;
                     adviceHTML += `</div>`;
                     adviceHTML += `</div>`;
                 });
@@ -2053,10 +2673,12 @@
             contentArea.innerHTML = termsHTML;
         }
 
-        // Función para mostrar mensajes de no contenido
+        // Función para mostrar mensajes de no contenido - COMENTADA PARA EVITAR CONFLICTOS
         function showNoContentMessages() {
-            document.getElementById('rutinaContent').innerHTML = '<p>No tienes una rutina generada. Usa el chat para crear tu plan personalizado.</p>';
-            document.getElementById('dietaContent').innerHTML = '<p>No tienes un plan nutricional generado. Usa el chat para crear tu dieta personalizada.</p>';
+            console.log('⚠️ showNoContentMessages() llamada - pero no insertando mensaje de error');
+            // COMENTADO: No insertar mensajes de error para evitar conflictos con displayPlan()
+            // document.getElementById('rutinaContent').innerHTML = '<p>No tienes una rutina generada. Usa el chat para crear tu plan personalizado.</p>';
+            // document.getElementById('dietaContent').innerHTML = '<p>No tienes un plan nutricional generado. Usa el chat para crear tu dieta personalizada.</p>';
         }
 
         // Hacer funciones globales
@@ -2064,7 +2686,10 @@
         window.closeOverlay = closeOverlay;
 
         // Event listeners para los botones de navegación
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
+            // ✅ Verificar estado isPremium al cargar
+            await checkPremiumStatus();
+            
             document.getElementById('rutinaDieta').addEventListener('click', function() {
                 openOverlay('rutinaDietaOverlay');
                 loadRoutineAndDietContent();
@@ -2083,6 +2708,850 @@
 
         // Inicializar el dashboard cuando se carga la página
         initDashboard();
+
+        // FUNCIONES AUXILIARES PARA FUNCTION CALLING
+        // =========================================
+
+        /**
+         * Obtiene el ID del usuario actual
+         */
+        function getCurrentUserId() {
+            try {
+                // Buscar token con la clave correcta (accessToken, no token)
+                const token = localStorage.getItem('accessToken');
+                if (!token) {
+                    console.error('❌ No se encontró accessToken en localStorage');
+                    return null;
+                }
+                
+                // Decodificar JWT para obtener user_id
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const userId = payload.user_id || payload.sub;
+                console.log('✅ User ID obtenido:', userId);
+                return userId;
+            } catch (error) {
+                console.error('❌ Error obteniendo user ID:', error);
+                return null;
+            }
+        }
+
+        /**
+         * Obtiene el historial de conversación actual
+         */
+        function getConversationHistory() {
+            const messages = document.querySelectorAll('.message');
+            const history = [];
+            
+            messages.forEach(msg => {
+                const isUser = msg.classList.contains('user-message');
+                const content = msg.textContent.trim();
+                
+                if (content) {
+                    history.push({
+                        role: isUser ? 'user' : 'assistant',
+                        content: content
+                    });
+                }
+            });
+            
+            return history;
+        }
+
+        /**
+         * Añade badge visual a mensaje que generó modificaciones
+         */
+        function addModificationBadge() {
+            const lastMessage = document.querySelector('.ai-message:last-child');
+            if (lastMessage) {
+                const badge = document.createElement('div');
+                badge.style.cssText = `
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 4px;
+                    background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+                    color: white;
+                    padding: 4px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-top: 8px;
+                    animation: pulse 2s infinite;
+                `;
+                badge.innerHTML = '✓ Plan modificado';
+                lastMessage.appendChild(badge);
+            }
+        }
+
+        // getAuthHeaders ya está importado desde auth.js
+
+
+        // SISTEMA DE NOTIFICACIONES INLINE
+        // =================================
+        // Evita el error 404 del archivo externo
+
+        // Configuración de la API
+        const NOTIFICATION_API_BASE = 'http://127.0.0.1:8000';
+
+        // Elementos del DOM
+        let notificationContainer = null;
+
+        /**
+         * Inicializa el sistema de notificaciones
+         */
+        function initNotificationSystem() {
+            // Crear contenedor de notificaciones si no existe
+            if (!notificationContainer) {
+                notificationContainer = document.createElement('div');
+                notificationContainer.id = 'notification-container';
+                notificationContainer.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    z-index: 10000;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    max-width: 400px;
+                `;
+                document.body.appendChild(notificationContainer);
+            }
+        }
+
+        /**
+         * Muestra notificación de modificación de plan
+         * @param {Object} result - Resultado de la modificación
+         * @param {boolean} result.modified - Si se realizaron modificaciones
+         * @param {Array} result.changes - Lista de cambios realizados
+         * @param {string} result.function_used - Función utilizada
+         */
+        function showModificationNotification(result) {
+            if (!result.modified) return;
+            
+            initNotificationSystem();
+            
+            // Crear notificación
+            const notification = document.createElement('div');
+            notification.className = 'modification-notification';
+            notification.style.cssText = `
+                background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
+                color: #ffffff;
+                padding: 20px;
+                border-radius: 16px;
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 4px 16px rgba(0, 0, 0, 0.3);
+                backdrop-filter: blur(0px);
+                border: 2px solid rgba(255, 255, 255, 0.15);
+                animation: slideInRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                position: relative;
+                overflow: hidden;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                font-weight: 500;
+                letter-spacing: 0.025em;
+                text-rendering: optimizeLegibility;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            `;
+            
+            // Contenido de la notificación
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                    <div style="
+                        width: 24px;
+                        height: 24px;
+                        background: rgba(255, 255, 255, 0.2);
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin-right: 12px;
+                        font-size: 14px;
+                    ">✓</div>
+                    <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #ffffff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);">Plan Actualizado</h3>
+                    <button onclick="this.parentElement.parentElement.remove()" style="
+                        background: none;
+                        border: none;
+                        color: white;
+                        font-size: 18px;
+                        cursor: pointer;
+                        margin-left: auto;
+                        opacity: 0.7;
+                        transition: opacity 0.2s;
+                    " onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">&times;</button>
+                </div>
+                
+                <div style="margin-bottom: 12px;">
+                    <p style="margin: 0 0 12px 0; font-size: 15px; color: #e5e5e5; font-weight: 500; line-height: 1.4;">
+                        Tu plan ha sido modificado automáticamente:
+                    </p>
+                    <div id="changes-list-${Date.now()}" style="max-height: 120px; overflow-y: auto;">
+                        ${result.changes.map(change => `
+                            <div style="
+                                background: rgba(255, 255, 255, 0.08);
+                                padding: 10px 14px;
+                                margin: 6px 0;
+                                border-radius: 8px;
+                                font-size: 14px;
+                                font-weight: 500;
+                                color: #f0f0f0;
+                                border-left: 3px solid #84cc16;
+                                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                                transition: all 0.2s ease;
+                            " onmouseover="this.style.background='rgba(255, 255, 255, 0.12)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.08)'">• ${change}</div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 8px; margin-top: 12px;">
+                    <button onclick="goToRoutineAndDiet()" style="
+                        background: rgba(255, 255, 255, 0.12);
+                        border: 2px solid rgba(255, 255, 255, 0.25);
+                        color: #ffffff;
+                        padding: 12px 20px;
+                        border-radius: 10px;
+                        font-size: 14px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                        flex: 1;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+                    " onmouseover="this.style.background='#84cc16'; this.style.borderColor='#84cc16'; this.style.color='#000000'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(132, 204, 22, 0.4)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.12)'; this.style.borderColor='rgba(255, 255, 255, 0.25)'; this.style.color='#ffffff'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)'">
+                        Ver Rutina
+                    </button>
+                    <button onclick="this.parentElement.parentElement.parentElement.remove()" style="
+                        background: rgba(255, 255, 255, 0.12);
+                        border: 2px solid rgba(255, 255, 255, 0.25);
+                        color: #ffffff;
+                        padding: 12px 20px;
+                        border-radius: 10px;
+                        font-size: 14px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                        flex: 1;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+                    " onmouseover="this.style.background='#ef4444'; this.style.borderColor='#ef4444'; this.style.color='#ffffff'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(239, 68, 68, 0.4)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.12)'; this.style.borderColor='rgba(255, 255, 255, 0.25)'; this.style.color='#ffffff'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.2)'">
+                        Descartar
+                    </button>
+                </div>
+                
+                <div style="
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    height: 3px;
+                    background: rgba(255, 255, 255, 0.3);
+                    animation: progressBar 8s linear forwards;
+                    border-radius: 0 0 12px 12px;
+                "></div>
+            `;
+            
+            // Añadir al contenedor
+            notificationContainer.appendChild(notification);
+            
+            // Auto-dismiss después de 8 segundos
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.style.animation = 'slideOutRight 0.3s ease-in forwards';
+                    setTimeout(() => notification.remove(), 300);
+                }
+            }, 8000);
+            
+            // Añadir animaciones CSS si no existen
+            addNotificationStyles();
+        }
+
+        /**
+         * Añade estilos CSS para las animaciones
+         */
+        function addNotificationStyles() {
+            if (document.getElementById('notification-styles')) return;
+            
+            const style = document.createElement('style');
+            style.id = 'notification-styles';
+            style.textContent = `
+                @keyframes slideInRight {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+                
+                @keyframes slideOutRight {
+                    from {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                    to {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                }
+                
+                @keyframes progressBar {
+                    from {
+                        width: 100%;
+                    }
+                    to {
+                        width: 0%;
+                    }
+                }
+                
+                @keyframes slideInNotification {
+                    from {
+                        transform: translateX(400px);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+                
+                @keyframes slideOutNotification {
+                    from {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                    to {
+                        transform: translateX(400px);
+                        opacity: 0;
+                    }
+                }
+                
+                .modification-notification {
+                    transition: all 0.3s ease;
+                }
+                
+                .modification-notification:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 12px 40px rgba(132, 204, 22, 0.4);
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        /**
+         * Muestra modal con detalles de los cambios
+         * @param {string} functionUsed - Función utilizada
+         * @param {Array} changes - Lista de cambios
+         */
+        // Event listener para botones de ver cambios
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('view-changes-btn')) {
+                const functionUsed = e.target.getAttribute('data-function');
+                const changes = JSON.parse(e.target.getAttribute('data-changes'));
+                showChangesModal(functionUsed, changes);
+            }
+        });
+
+        // Funciones para recargar secciones de rutina y dieta
+        async function reloadRoutineSection() {
+            console.log('🔄 Recargando sección de rutina...');
+            
+            try {
+                // Obtener token JWT
+                const token = localStorage.getItem('accessToken') || getCookie('access_token') || getCookie('token');
+                if (!token) {
+                    console.error('No hay token para recargar rutina');
+                    return;
+                }
+                
+                // Fetch nueva rutina desde backend
+                const response = await fetch('http://127.0.0.1:8000/user/current-routine?user_id=' + userId, {
+                    method: 'GET'
+                });
+                
+                if (!response.ok) {
+                    console.error('Error al obtener rutina:', response.status);
+                    return;
+                }
+                
+                const data = await response.json();
+                console.log('Nueva rutina obtenida:', data);
+                
+                // Buscar contenedor de rutina en el DOM
+                const routineContainer = document.querySelector('#routine-content') || 
+                                         document.querySelector('.routine-section') ||
+                                         document.querySelector('[data-section="routine"]') ||
+                                         document.querySelector('.routine-container');
+                
+                if (routineContainer) {
+                    // Renderizar nueva rutina
+                    routineContainer.innerHTML = renderRoutine(data.current_routine);
+                    console.log('✅ Rutina actualizada en DOM');
+                } else {
+                    console.warn('No se encontró contenedor de rutina');
+                    // Si estamos en otra página, marcar para recargar cuando vuelvan
+                    sessionStorage.setItem('routineNeedsReload', 'true');
+                }
+                
+            } catch (error) {
+                console.error('Error recargando rutina:', error);
+            }
+        }
+
+        async function reloadDietSection() {
+            console.log('🔄 Recargando sección de dieta...');
+            
+            try {
+                const token = localStorage.getItem('accessToken') || getCookie('access_token') || getCookie('token');
+                if (!token) {
+                    console.error('No hay token para recargar dieta');
+                    return;
+                }
+                
+                const response = await fetch('http://127.0.0.1:8000/api/user/current-diet', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    console.error('Error al obtener dieta:', response.status);
+                    return;
+                }
+                
+                const data = await response.json();
+                console.log('Nueva dieta obtenida:', data);
+                
+                const dietContainer = document.querySelector('#diet-content') || 
+                                      document.querySelector('.diet-section') ||
+                                      document.querySelector('[data-section="diet"]') ||
+                                      document.querySelector('.diet-container');
+                
+                if (dietContainer) {
+                    dietContainer.innerHTML = renderDiet(data.current_diet);
+                    console.log('✅ Dieta actualizada en DOM');
+                } else {
+                    console.warn('No se encontró contenedor de dieta');
+                    sessionStorage.setItem('dietNeedsReload', 'true');
+                }
+                
+            } catch (error) {
+                console.error('Error recargando dieta:', error);
+            }
+        }
+
+        // Helper para obtener cookies
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Funciones para renderizar rutina y dieta
+        function renderRoutine(routine) {
+            if (!routine || !routine.exercises) {
+                return '<div class="no-routine">No hay rutina disponible</div>';
+            }
+            
+            let html = '<div class="routine-display">';
+            html += '<h3>Tu Rutina Actualizada</h3>';
+            
+            // Agrupar ejercicios por día si hay schedule
+            if (routine.schedule) {
+                Object.keys(routine.schedule).forEach(day => {
+                    html += `<div class="day-section"><h4>${day}</h4>`;
+                    routine.schedule[day].forEach(exercise => {
+                        html += `<div class="exercise-item">${exercise}</div>`;
+                    });
+                    html += '</div>';
+                });
+            } else {
+                // Mostrar ejercicios sin agrupar
+                routine.exercises.forEach(exercise => {
+                    if (typeof exercise === 'object') {
+                        html += `<div class="exercise-item">${exercise.name || exercise}</div>`;
+                    } else {
+                        html += `<div class="exercise-item">${exercise}</div>`;
+                    }
+                });
+            }
+            
+            html += '</div>';
+            return html;
+        }
+
+        function renderDiet(diet) {
+            if (!diet || !diet.meals) {
+                return '<div class="no-diet">No hay dieta disponible</div>';
+            }
+            
+            let html = '<div class="diet-display">';
+            html += '<h3>Tu Dieta Actualizada</h3>';
+            
+            diet.meals.forEach(meal => {
+                html += `<div class="meal-section">`;
+                html += `<h4>${meal.name || 'Comida'}</h4>`;
+                if (meal.alimentos) {
+                    meal.alimentos.forEach(food => {
+                        html += `<div class="food-item">${food}</div>`;
+                    });
+                }
+                html += '</div>';
+            });
+            
+            html += '</div>';
+            return html;
+        }
+
+        // Función para ir a rutina y dieta
+        function goToRoutineAndDiet() {
+            console.log('🔄 Ejecutando goToRoutineAndDiet...');
+            
+            try {
+                // Remover la notificación
+                const notification = document.querySelector('.modification-notification');
+                if (notification) {
+                    notification.remove();
+                    console.log('✅ Notificación removida');
+                }
+                
+                // Recargar las secciones con datos actualizados
+                if (typeof reloadRoutineSection === 'function') {
+                    reloadRoutineSection();
+                    console.log('✅ Rutina recargada');
+                }
+                
+                if (typeof reloadDietSection === 'function') {
+                    reloadDietSection();
+                    console.log('✅ Dieta recargada');
+                }
+                
+                // Intentar navegar a las secciones
+                const routineSection = document.getElementById('routine-section');
+                const dietSection = document.getElementById('diet-section');
+                
+                if (routineSection) {
+                    console.log('✅ Navegando a sección de rutina');
+                    routineSection.scrollIntoView({ behavior: 'smooth' });
+                } else if (dietSection) {
+                    console.log('✅ Navegando a sección de dieta');
+                    dietSection.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    console.log('⚠️ No se encontraron secciones, recargando página');
+                    window.location.reload();
+                }
+                
+            } catch (error) {
+                console.error('❌ Error en goToRoutineAndDiet:', error);
+                // Fallback: recargar la página
+                window.location.reload();
+            }
+        }
+
+        function showChangesModal(functionUsed, changes) {
+            // Crear modal si no existe
+            let modal = document.getElementById('changes-modal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'changes-modal';
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 20000;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                `;
+                document.body.appendChild(modal);
+            }
+            
+            // Función de mapeo de funciones a nombres legibles
+            const functionNames = {
+                'modify_routine_injury': 'Adaptación por Lesión',
+                'modify_routine_focus': 'Enfoque en Área Específica',
+                'adjust_routine_difficulty': 'Ajuste de Dificultad',
+                'adjust_for_menstrual_cycle': 'Adaptación Menstrual',
+                'recalculate_diet_macros': 'Recálculo de Macros',
+                'substitute_disliked_food': 'Sustitución de Alimentos',
+                'generate_meal_alternatives': 'Alternativas de Comidas',
+                'simplify_diet_plan': 'Simplificación de Dieta',
+                'revert_last_modification': 'Reversión de Cambios'
+            };
+            
+            const functionName = functionNames[functionUsed] || functionUsed;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: white;
+                    color: #333;
+                    padding: 24px;
+                    border-radius: 16px;
+                    max-width: 500px;
+                    width: 90%;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                    transform: scale(0.9);
+                    transition: transform 0.3s ease;
+                ">
+                    <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                        <div style="
+                            width: 40px;
+                            height: 40px;
+                            background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin-right: 16px;
+                            color: white;
+                            font-size: 18px;
+                        ">✓</div>
+                        <div>
+                            <h2 style="margin: 0; font-size: 20px; color: #333;">${functionName}</h2>
+                            <p style="margin: 4px 0 0 0; font-size: 14px; color: #666;">
+                                Cambios realizados automáticamente
+                            </p>
+                        </div>
+                        <button onclick="closeChangesModal()" style="
+                            background: none;
+                            border: none;
+                            font-size: 24px;
+                            color: #999;
+                            cursor: pointer;
+                            margin-left: auto;
+                            padding: 4px;
+                            transition: color 0.2s;
+                        " onmouseover="this.style.color='#333'" onmouseout="this.style.color='#999'">&times;</button>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #333;">Cambios Realizados:</h3>
+                        <div style="
+                            background: #f8f9fa;
+                            border-radius: 8px;
+                            padding: 16px;
+                            border-left: 4px solid #84cc16;
+                        ">
+                            ${changes.map(change => `
+                                <div style="
+                                    padding: 8px 0;
+                                    border-bottom: 1px solid #e9ecef;
+                                    font-size: 14px;
+                                    color: #333;
+                                ">• ${change}</div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                        <button onclick="closeChangesModal()" style="
+                            background: #6c757d;
+                            color: white;
+                            border: none;
+                            padding: 10px 20px;
+                            border-radius: 8px;
+                            font-size: 14px;
+                            cursor: pointer;
+                            transition: background 0.2s;
+                        " onmouseover="this.style.background='#5a6268'" onmouseout="this.style.background='#6c757d'">
+                            Cerrar
+                        </button>
+                        <button onclick="revertLastModification(); closeChangesModal();" style="
+                            background: #dc3545;
+                            color: white;
+                            border: none;
+                            padding: 10px 20px;
+                            border-radius: 8px;
+                            font-size: 14px;
+                            cursor: pointer;
+                            transition: background 0.2s;
+                        " onmouseover="this.style.background='#c82333'" onmouseout="this.style.background='#dc3545'">
+                            Deshacer Cambios
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Mostrar modal
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.style.opacity = '1';
+                modal.querySelector('div').style.transform = 'scale(1)';
+            }, 10);
+        }
+
+        /**
+         * Cierra el modal de cambios
+         */
+        function closeChangesModal() {
+            const modal = document.getElementById('changes-modal');
+            if (modal) {
+                modal.style.opacity = '0';
+                modal.querySelector('div').style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        /**
+         * Revierte la última modificación
+         */
+        async function revertLastModification() {
+            try {
+                console.log('🔄 Revirtiendo última modificación...');
+                
+                // Obtener token JWT
+                const token = localStorage.getItem('accessToken');
+                if (!token) {
+                    console.error('No hay token para revertir cambios');
+                    return;
+                }
+                
+                const response = await fetch('http://127.0.0.1:8000/api/chat/modify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ 
+                        message: "deshaz el último cambio",
+                        user_id: getCurrentUserId(),
+                        conversation_history: []
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success !== false) {
+                    console.log('✅ Cambios deshechos correctamente');
+                    
+                    // Recargar secciones afectadas
+                    reloadRoutineSection();
+                    reloadDietSection();
+                    
+                    // Mostrar notificación de éxito
+                    alert('Cambios deshechos correctamente');
+                } else {
+                    throw new Error(result.message || 'Error deshaciendo cambios');
+                }
+            } catch (error) {
+                console.error('Error reverting modification:', error);
+                alert('Error deshaciendo cambios: ' + error.message);
+            }
+        }
+
+        /**
+         * Recarga las secciones afectadas por modificaciones
+         */
+        async function reloadAffectedSections() {
+            try {
+                // Recargar rutina si es necesario
+                await reloadRoutineSection();
+                
+                // Recargar dieta si es necesario
+                await reloadDietSection();
+            } catch (error) {
+                console.error('Error reloading sections:', error);
+            }
+        }
+
+
+        /**
+         * Muestra notificación de loading
+         */
+        function showLoadingNotification(message) {
+            showSimpleNotification(message, 'loading');
+        }
+
+        /**
+         * Muestra notificación de éxito
+         */
+        function showSuccessNotification(message) {
+            showSimpleNotification(message, 'success');
+        }
+
+        /**
+         * Muestra notificación de error
+         */
+        function showErrorNotification(message) {
+            showSimpleNotification(message, 'error');
+        }
+
+        /**
+         * Muestra notificación simple
+         */
+        function showSimpleNotification(message, type = 'info') {
+            initNotificationSystem();
+            
+            const colors = {
+                loading: '#3b82f6',
+                success: '#10b981',
+                error: '#ef4444',
+                info: '#84cc16'
+            };
+            
+            const icons = {
+                loading: '⟳',
+                success: '✓',
+                error: '✗',
+                info: 'i'
+            };
+            
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                background: ${colors[type]};
+                color: white;
+                padding: 12px 16px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                animation: slideInRight 0.3s ease-out;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            `;
+            
+            notification.innerHTML = `
+                <span style="font-size: 16px;">${icons[type]}</span>
+                <span style="font-size: 14px;">${message}</span>
+            `;
+            
+            notificationContainer.appendChild(notification);
+            
+            // Auto-dismiss después de 3 segundos (excepto loading)
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.style.animation = 'slideOutRight 0.3s ease-in forwards';
+                        setTimeout(() => notification.remove(), 300);
+                    }
+                }, 3000);
+            }
+            
+            return notification;
+        }
+
+        // Verificar si hay cambios pendientes al cargar la página
+        window.addEventListener('load', () => {
+            if (sessionStorage.getItem('routineNeedsReload') === 'true') {
+                reloadRoutineSection();
+                sessionStorage.removeItem('routineNeedsReload');
+            }
+            if (sessionStorage.getItem('dietNeedsReload') === 'true') {
+                reloadDietSection();
+                sessionStorage.removeItem('dietNeedsReload');
+            }
+        });
+
+        // Inicializar sistema al cargar
+        document.addEventListener('DOMContentLoaded', initNotificationSystem);
       </script>
   </body>
   </html>

@@ -12,8 +12,9 @@ router = APIRouter(tags=["stripe"])
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), '.env'))
 STRIPE_SECRET = os.getenv("STRIPE_SECRET_KEY")
 if not STRIPE_SECRET:
-    # Fallamos rápido si no hay clave secreta, para evitar pagos mal configurados
-    raise RuntimeError("Falta STRIPE_SECRET_KEY en .env")
+    # 🛠️ MODO DESARROLLO: Permitir continuar sin Stripe configurado
+    print("⚠️ STRIPE no configurado - Modo desarrollo activado")
+    STRIPE_SECRET = "sk_test_placeholder"
 stripe.api_key = STRIPE_SECRET
 
 # Donde está tu frontend
@@ -33,6 +34,7 @@ class CheckoutSessionRequest(BaseModel):
 class PaymentIntentRequest(BaseModel):
     plan_type: str  # 'monthly' o 'yearly'
     price_id: str
+    user_id: int  # ID del usuario que está pagando
 
 @router.post("/create-checkout-session")
 async def create_checkout_session(data: CheckoutSessionRequest):
@@ -88,7 +90,8 @@ async def create_payment_intent(data: PaymentIntentRequest):
             currency='eur',
             metadata={
                 'plan_type': data.plan_type,
-                'price_id': data.price_id
+                'price_id': data.price_id,
+                'user_id': str(data.user_id)  # Añadir user_id a metadata
             }
         )
         
@@ -100,14 +103,64 @@ async def create_payment_intent(data: PaymentIntentRequest):
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.post("/upgrade-to-premium")
-async def upgrade_to_premium():
+async def upgrade_to_premium(user_id: int = None):
     """
     Actualiza el usuario actual a premium.
     En un entorno real, esto se haría desde el webhook de Stripe.
     """
-    # TODO: Implementar actualización real en base de datos
-    # Por ahora solo devolvemos éxito
-    return {"message": "Usuario actualizado a premium", "plan": "premium"}
+    from sqlalchemy.orm import Session
+    from app.database import get_db
+    from app.models import Usuario
+    
+    try:
+        # Para desarrollo, usar user_id del parámetro o del header
+        if not user_id:
+            # Intentar obtener del header Authorization
+            from fastapi import Request
+            # Por ahora, usar un ID fijo para testing
+            user_id = 63  # Tu user_id del log
+        
+        # Actualizar a premium en la base de datos
+        db = next(get_db())
+        result = db.query(Usuario).filter(Usuario.id == user_id).update({
+            "plan_type": "PREMIUM",
+            "is_premium": True,
+            "chat_uses_free": 999
+        })
+        db.commit()
+        
+        if result == 0:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+        
+        return {"message": "Usuario actualizado a premium", "plan": "premium", "user_id": user_id}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error actualizando usuario: {str(e)}")
+
+@router.get("/user-status")
+async def get_user_status(user_id: int):
+    """
+    Devuelve el estado premium del usuario.
+    """
+    from sqlalchemy.orm import Session
+    from app.database import get_db
+    from app.models import Usuario
+    
+    try:
+        db = next(get_db())
+        user = db.query(Usuario).filter(Usuario.id == user_id).first()
+        
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+        
+        return {
+            "user_id": user.id,
+            "email": user.email,
+            "plan_type": user.plan_type,
+            "is_premium": user.is_premium,
+            "chat_uses_free": user.chat_uses_free
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error obteniendo estado: {str(e)}")
 
 @router.get("/stripe-config")
 async def get_stripe_config():

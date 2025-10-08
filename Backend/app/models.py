@@ -20,6 +20,14 @@ class Usuario(Base):
     
     # Onboarding
     onboarding_completed = Column(Boolean, default=False, nullable=False)
+    
+    # Campos dinámicos para rutina y dieta
+    current_routine = Column(Text, default='{}', nullable=False)
+    current_diet = Column(Text, default='{}', nullable=False)
+    injuries = Column(Text, default='[]', nullable=False)
+    focus_areas = Column(Text, default='[]', nullable=False)
+    disliked_foods = Column(Text, default='[]', nullable=False)
+    modification_history = Column(Text, default='[]', nullable=False)
 
     planes = relationship("Plan", back_populates="usuario")
 

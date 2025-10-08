@@ -161,6 +161,29 @@
             }
         });
 
+        /**
+         * Obtiene el ID del usuario actual
+         */
+        function getCurrentUserId() {
+            try {
+                // Buscar token con la clave correcta (accessToken, no token)
+                const token = localStorage.getItem('accessToken');
+                if (!token) {
+                    console.error('❌ No se encontró accessToken en localStorage');
+                    return null;
+                }
+                
+                // Decodificar JWT para obtener user_id
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const userId = payload.user_id || payload.sub;
+                console.log('✅ User ID obtenido:', userId);
+                return userId;
+            } catch (error) {
+                console.error('❌ Error obteniendo user ID:', error);
+                return null;
+            }
+        }
+
         // Inicializar pago
         async function initializePayment(planType) {
             try {
@@ -170,13 +193,20 @@
 
                 const priceId = planType === 'monthly' ? stripeConfig.price_ids.monthly : stripeConfig.price_ids.yearly;
                 
+                // Obtener user_id del token
+                const userId = getCurrentUserId();
+                if (!userId) {
+                    throw new Error('No se pudo obtener el ID del usuario');
+                }
+
                 // Crear intent de pago en el backend
                 const response = await fetch(`${API_BASE}/create-payment-intent`, {
                     method: 'POST',
                     headers: getAuthHeaders(),
                     body: JSON.stringify({ 
                         plan_type: planType,
-                        price_id: priceId
+                        price_id: priceId,
+                        user_id: parseInt(userId)  // Convertir a int
                     })
                 });
 

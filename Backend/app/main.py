@@ -14,6 +14,7 @@ from app.routes import (
     user_status,
     chat,
     onboarding,
+    chat_modify_optimized,
 )
 
 load_dotenv()
@@ -35,12 +36,14 @@ app.include_router(analisis_cuerpo.router)
 app.include_router(user_status.router)
 app.include_router(chat.router)
 app.include_router(onboarding.router)
+app.include_router(chat_modify_optimized.router)
 
 # Stripe (protegido por si faltan variables)
 try:
-    from app.routes import stripe_routes, stripe_webhook
+    from app.routes import stripe_routes, stripe_webhook, stripe_webhook_cli
     app.include_router(stripe_routes.router)
     app.include_router(stripe_webhook.router)
+    app.include_router(stripe_webhook_cli.router, prefix="/stripe", tags=["stripe-cli"])
     print("[INFO] Stripe routes enabled")
 except Exception as e:
     print("[WARN] Stripe routes disabled:", e)

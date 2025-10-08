@@ -10,6 +10,7 @@ from fastapi.security import HTTPBearer
 from typing import List
 import json
 from app.utils.pdf_generator import generate_routine_pdf
+from app.utils.json_helpers import deserialize_json
 
 # 👇 importa tu generador GPT
 from app.utils.gpt import generar_plan_personalizado
@@ -166,15 +167,182 @@ def obtener_planes(
     db: Session = Depends(get_db),
     usuario: Usuario = Depends(get_current_user)
 ):
-    planes = db.query(Plan).filter(Plan.user_id == usuario.id).order_by(Plan.fecha_creacion.desc()).all()
-    return [
-        PlanResponse(
-            rutina=json.loads(plan.rutina),
-            dieta=json.loads(plan.dieta),
-            motivacion=plan.motivacion if isinstance(plan.motivacion, str) else json.dumps(plan.motivacion)
-        )
-        for plan in planes
-    ]
+    """
+    Obtiene los datos actuales del usuario desde current_routine y current_diet
+    NO devuelve planes antiguos, sino la rutina y dieta actuales
+    """
+    try:
+        # Obtener datos actuales del usuario
+        current_routine = deserialize_json(usuario.current_routine or "{}", "current_routine")
+        current_diet = deserialize_json(usuario.current_diet or "{}", "current_diet")
+        
+        # Si no hay datos actuales, obtener el último plan como fallback
+        if not current_routine.get("exercises") and not current_diet.get("meals"):
+            planes = db.query(Plan).filter(Plan.user_id == usuario.id).order_by(Plan.fecha_creacion.desc()).limit(1).all()
+            if planes:
+                plan = planes[0]
+                current_routine = json.loads(plan.rutina)
+                current_diet = json.loads(plan.dieta)
+        
+        # Devolver como si fuera un plan (manteniendo compatibilidad)
+        return [
+            PlanResponse(
+                rutina=current_routine,
+                dieta=current_diet,
+                motivacion="Rutina y dieta actualizadas dinámicamente"
+            )
+        ]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error obteniendo datos actuales: {str(e)}")
+
+
+@router.get("/user/current-routine")
+def obtener_rutina_actual(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Obtiene la rutina actual del usuario desde current_routine o planes (para usuarios free)
+    """
+    try:
+        print(f"📥 Solicitando rutina para user_id: {user_id}")
+        usuario = db.query(Usuario).filter(Usuario.id == user_id).first()
+        if not usuario:
+            print(f"❌ Usuario {user_id} no encontrado")
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+        
+        # 🔍 LOGGING CRÍTICO: Verificar estado del usuario
+        print(f"🔍 Usuario encontrado: ID={usuario.id}, Email={usuario.email}")
+        print(f"🔍 Onboarding completado: {usuario.onboarding_completed}")
+        print(f"🔍 current_routine existe: {bool(usuario.current_routine)}")
+        if usuario.current_routine:
+            print(f"🔍 current_routine length: {len(usuario.current_routine)} chars")
+            print(f"🔍 Primeros 100 chars: {usuario.current_routine[:100]}")
+        else:
+            print(f"❌ current_routine es NULL o vacío")
+        
+        # Verificar si es premium
+        is_premium = usuario.is_premium or usuario.plan_type == "PREMIUM"
+        print(f"💎 Usuario premium: {is_premium}")
+        print(f"💎 is_premium raw: {usuario.is_premium}")
+        print(f"💎 plan_type raw: {usuario.plan_type}")
+        print(f"💎 Resultado final is_premium: {is_premium}")
+        
+        # Si es premium, usar current_routine
+        if is_premium and usuario.current_routine:
+            print(f"📤 Usando current_routine para usuario premium")
+            current_routine = deserialize_json(usuario.current_routine, "current_routine")
+            current_diet = deserialize_json(usuario.current_diet or "{}", "current_diet")
+        else:
+            # Si es free, usar template genérico
+            print(f"📤 Usando template genérico para usuario free")
+            
+            # Obtener datos del usuario desde la tabla planes para personalizar el template
+            plan_data = db.query(Plan).filter(Plan.user_id == user_id).first()
+            if plan_data:
+                user_data = {
+                    "sexo": plan_data.sexo or 'masculino',
+                    "altura": float(plan_data.altura) / 100 if plan_data.altura else 1.75,  # Convertir cm a metros
+                    "peso": float(plan_data.peso) if plan_data.peso else 75.0,
+                    "edad": int(plan_data.edad) if plan_data.edad else 25,
+                    "objetivo": plan_data.objetivo or 'ganar músculo'
+                }
+            else:
+                # Datos por defecto si no hay plan
+                user_data = {
+                    "sexo": 'masculino',
+                    "altura": 1.75,
+                    "peso": 75.0,
+                    "edad": 25,
+                    "objetivo": 'ganar músculo'
+                }
+            
+            # Importar y usar template genérico
+            from app.utils.routine_templates import get_generic_plan
+            generic_plan = get_generic_plan(user_data)
+            
+            # Convertir rutina genérica al formato esperado por el frontend
+            exercises = []
+            if "dias" in generic_plan["rutina"]:
+                for dia in generic_plan["rutina"]["dias"]:
+                    if "ejercicios" in dia:  # Solo días con ejercicios
+                        for ejercicio in dia["ejercicios"]:
+                            exercises.append({
+                                "name": ejercicio.get("nombre", ""),
+                                "sets": ejercicio.get("series", 3),
+                                "reps": ejercicio.get("reps", "10-12"),
+                                "weight": ejercicio.get("peso", "moderado"),
+                                "day": dia.get("dia", "")
+                            })
+            
+            current_routine = {
+                "exercises": exercises,
+                "schedule": {},
+                "created_at": "2024-01-01T00:00:00",
+                "version": "generic-1.0.0",
+                "is_generic": True,  # Marcar como genérico
+                "titulo": generic_plan["rutina"]["titulo"]  # Incluir título personalizado
+            }
+            
+            # Convertir dieta genérica al formato esperado
+            meals = []
+            for comida in generic_plan["dieta"]["comidas"]:
+                meals.append({
+                    "nombre": comida.get("tipo", ""),
+                    "kcal": sum([alimento.get("calorias", 0) for alimento in comida.get("alimentos", [])]),
+                    "alimentos": [f"{alimento['nombre']} - {alimento['cantidad']}" for alimento in comida.get("alimentos", [])],
+                    "total": comida.get("total", "0 kcal")
+                })
+            
+            current_diet = {
+                "meals": meals,
+                "total_kcal": sum([meal["kcal"] for meal in meals]),
+                "macros": {},
+                "objetivo": user_data["objetivo"],
+                "created_at": "2024-01-01T00:00:00",
+                "version": "generic-1.0.0",
+                "is_generic": True,  # Marcar como genérico
+                "titulo": generic_plan["dieta"]["titulo"]  # Incluir título personalizado
+            }
+        
+        print(f"📊 Rutina preparada: {len(current_routine.get('exercises', []))} ejercicios")
+        print(f"📊 Dieta preparada: {len(current_diet.get('meals', []))} comidas")
+        
+        # 🔍 LOGGING FINAL: Verificar qué se devuelve
+        print(f"🚀 Devolviendo respuesta para user_id: {user_id}")
+        print(f"🚀 is_premium que se devuelve: {is_premium}")
+        print(f"🚀 success: True")
+        print(f"🚀 current_routine existe: {bool(current_routine)}")
+        print(f"🚀 current_diet existe: {bool(current_diet)}")
+        
+        return {
+            "success": True,
+            "current_routine": current_routine,
+            "current_diet": current_diet,
+            "user_id": usuario.id,
+            "is_premium": is_premium
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error obteniendo rutina actual: {str(e)}")
+
+
+@router.get("/user/current-diet", dependencies=[Depends(security)])
+def obtener_dieta_actual(
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(get_current_user)
+):
+    """
+    Obtiene la dieta actual del usuario desde current_diet
+    """
+    try:
+        current_diet = deserialize_json(usuario.current_diet or "{}", "current_diet")
+        return {
+            "success": True,
+            "current_diet": current_diet,
+            "user_id": usuario.id
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error obteniendo dieta actual: {str(e)}")
 
 
 @router.get("/planes/{plan_id}/pdf", dependencies=[Depends(security)])
