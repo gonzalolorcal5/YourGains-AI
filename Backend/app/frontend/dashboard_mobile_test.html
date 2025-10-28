@@ -1750,7 +1750,11 @@
             console.log('🍽️ Meals count:', plan.dieta?.meals?.length);
             
             if (dietaContent && plan.dieta && plan.dieta.meals && plan.dieta.meals.length > 0) {
-                const totalKcal = plan.dieta.total_kcal || 2215;
+                const totalKcal = (typeof plan.dieta.total_kcal === 'number')
+                    ? plan.dieta.total_kcal
+                    : (Array.isArray(plan.dieta.meals)
+                        ? plan.dieta.meals.reduce((acc, m) => acc + (Number(m.kcal) || 0), 0)
+                        : 0);
                 let dietaHtml = `
                     <h1 class="section-title" style="margin-top: 50px;">Dieta</h1>
                     <p class="section-subtitle">${plan.dieta.titulo || 'Plan personalizado'} - ${totalKcal} kcal diarias</p>

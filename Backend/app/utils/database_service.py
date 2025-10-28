@@ -36,17 +36,25 @@ class DatabaseService:
             Diccionario completo con todos los datos del usuario
         """
         try:
+            # VALIDACIÓN CRÍTICA: Asegurar que db no sea None
+            if db is None:
+                logger.error(f"❌ CRÍTICO: Sesión de BD es None para usuario {user_id}")
+                raise ValueError("Sesión de base de datos no inicializada. Contacta soporte.")
+            
             # UNA SOLA consulta optimizada con todos los campos
             result = db.query(Usuario).filter(Usuario.id == user_id).first()
             
             if not result:
                 raise ValueError(f"Usuario {user_id} no encontrado")
             
+            # Obtener el plan más reciente del usuario para datos físicos
+            from app.models import Plan
+            plan_actual = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
+            
             # Deserializar JSON de manera eficiente
-            return {
+            user_data = {
                 "user_id": result.id,
                 "email": result.email,
-                "sexo": "hombre",  # Default, se puede obtener de planes si necesario
                 "current_routine": deserialize_json(result.current_routine, "current_routine"),
                 "current_diet": deserialize_json(result.current_diet, "current_diet"),
                 "injuries": deserialize_json(result.injuries, "injuries"),
@@ -56,6 +64,42 @@ class DatabaseService:
                 "created_at": None,  # No disponible en el modelo actual
                 "updated_at": None   # No disponible en el modelo actual
             }
+            
+            # Añadir datos físicos del plan más reciente (si existe)
+            if plan_actual:
+                # Limpiar peso (quitar "kg" si existe)
+                peso_limpio = plan_actual.peso
+                if isinstance(peso_limpio, str) and 'kg' in peso_limpio.lower():
+                    peso_limpio = peso_limpio.lower().replace('kg', '').strip()
+                
+                user_data.update({
+                    "peso": peso_limpio,
+                    "altura": plan_actual.altura,
+                    "edad": plan_actual.edad,
+                    "sexo": plan_actual.sexo,
+                    "nivel_actividad": plan_actual.nivel_actividad or 'moderado',
+                    "objetivo_gym": plan_actual.objetivo_gym or 'ganar_musculo',
+                    "objetivo_nutricional": plan_actual.objetivo_nutricional or 'mantenimiento'
+                })
+                logger.info(f"✅ Datos físicos obtenidos del Plan ID: {plan_actual.id}")
+                logger.info(f"   Peso: {peso_limpio}, Altura: {plan_actual.altura}, Edad: {plan_actual.edad}")
+                logger.info(f"   Sexo: {plan_actual.sexo}, Nivel: {plan_actual.nivel_actividad}")
+                logger.info(f"   Objetivo Gym: {plan_actual.objetivo_gym or 'ganar_musculo'}")
+                logger.info(f"   Objetivo Nutricional: {plan_actual.objetivo_nutricional or 'mantenimiento'}")
+            else:
+                # Si no hay plan, usar valores por defecto
+                logger.warning(f"⚠️ No se encontró plan para usuario {user_id}, usando valores por defecto")
+                user_data.update({
+                    "peso": "75",
+                    "altura": 175,
+                    "edad": 25,
+                    "sexo": "masculino",
+                    "nivel_actividad": "moderado",
+                    "objetivo_gym": "ganar_musculo",
+                    "objetivo_nutricional": "mantenimiento"
+                })
+            
+            return user_data
             
         except Exception as e:
             logger.error(f"Error obteniendo datos completos del usuario {user_id}: {e}")
@@ -79,6 +123,11 @@ class DatabaseService:
             True si se actualizó exitosamente
         """
         try:
+            # VALIDACIÓN CRÍTICA: Asegurar que db no sea None
+            if db is None:
+                logger.error(f"❌ CRÍTICO: Sesión de BD es None al actualizar usuario {user_id}")
+                raise ValueError("Sesión de base de datos no inicializada. Contacta soporte.")
+            
             # Obtener usuario
             user = db.query(Usuario).filter(Usuario.id == user_id).first()
             
@@ -140,6 +189,11 @@ class DatabaseService:
             True si se añadió exitosamente
         """
         try:
+            # VALIDACIÓN CRÍTICA: Asegurar que db no sea None
+            if db is None:
+                logger.error(f"❌ CRÍTICO: Sesión de BD es None al añadir modificación para usuario {user_id}")
+                raise ValueError("Sesión de base de datos no inicializada. Contacta soporte.")
+            
             # Obtener usuario
             user = db.query(Usuario).filter(Usuario.id == user_id).first()
             
@@ -246,6 +300,51 @@ class DatabaseService:
             logger.error(f"Error eliminando última modificación para usuario {user_id}: {e}")
             db.rollback()
             raise ValueError(f"Error eliminando modificación: {e}")
+
+    async def update_user_weight(self, user_id: int, new_weight: float, db: Session) -> bool:
+        """
+        Actualiza el peso del usuario en la base de datos.
+        
+        Args:
+            user_id: ID del usuario
+            new_weight: Nuevo peso en kg
+            db: Sesión de SQLAlchemy
+            
+        Returns:
+            bool: True si se actualizó correctamente
+        """
+        try:
+            # VALIDACIÓN CRÍTICA: Asegurar que db no sea None
+            if db is None:
+                logger.error(f"❌ CRÍTICO: Sesión de BD es None para usuario {user_id}")
+                raise ValueError("Sesión de base de datos no inicializada. Contacta soporte.")
+            
+            # Buscar usuario
+            user = db.query(Usuario).filter(Usuario.id == user_id).first()
+            if not user:
+                logger.error(f"❌ Usuario {user_id} no encontrado para actualizar peso")
+                return False
+            
+            # Obtener peso anterior para logging
+            old_weight = user.peso
+            if old_weight is None:
+                old_weight = 70.0  # Valor por defecto si no hay peso
+            
+            # Actualizar peso
+            user.peso = new_weight
+            user.updated_at = datetime.utcnow()
+            
+            # Commit de la transacción
+            db.commit()
+            db.refresh(user)
+            
+            logger.info(f"✅ Peso actualizado para usuario {user_id}: {old_weight}kg → {new_weight}kg")
+            return True
+            
+        except Exception as e:
+            logger.error(f"❌ Error actualizando peso para usuario {user_id}: {str(e)}")
+            db.rollback()
+            return False
 
 # Instancia global del servicio
 db_service = DatabaseService()

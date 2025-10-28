@@ -233,13 +233,48 @@ async def handle_modify_routine_injury(
 
 async def handle_recalculate_macros(
     user_id: int,
-    weight_change_kg: float,
-    goal: str,
-    db: Session
+    weight_change_kg: float = None,
+    goal: str = None,
+    calorie_adjustment: int = None,
+    is_incremental: bool = None,
+    adjustment_type: str = None,
+    target_calories: int = None,
+    db: Session = None
 ) -> Dict[str, Any]:
     """
     Recalcula los macronutrientes de la dieta - VERSIÓN OPTIMIZADA
+    
+    Args:
+        user_id: ID del usuario
+        weight_change_kg: Cambio de peso en kg (opcional)
+        goal: Nuevo objetivo nutricional (opcional)
+        calorie_adjustment: Ajuste calórico específico (opcional)
+        is_incremental: Si el ajuste es incremental o absoluto (opcional)
+        adjustment_type: Tipo de ajuste ('deficit', 'surplus', etc.) (opcional)
+        db: Sesión de base de datos
+    
+    Returns:
+        dict: Resultado de la operación
     """
+    
+    logger.info(f"{'='*60}")
+    logger.info(f"🔧 RECALCULANDO MACROS PARA USUARIO {user_id}")
+    logger.info(f"{'='*60}")
+    logger.info(f"📊 Parámetros recibidos:")
+    logger.info(f"   weight_change_kg: {weight_change_kg}")
+    logger.info(f"   goal: {goal}")
+    logger.info(f"   calorie_adjustment: {calorie_adjustment}")
+    logger.info(f"   is_incremental: {is_incremental}")
+    logger.info(f"   adjustment_type: {adjustment_type}")
+    
+    # Validar que al menos un parámetro esté presente
+    if all(param is None for param in [weight_change_kg, goal, calorie_adjustment]):
+        logger.error("❌ No se proporcionó ningún parámetro para modificar")
+        return {
+            "success": False,
+            "message": "Debes especificar al menos un cambio (peso, objetivo o calorías)"
+        }
+    
     try:
         # Obtener datos del usuario en UNA sola consulta
         user_data = await db_service.get_user_complete_data(user_id, db)
@@ -253,6 +288,162 @@ async def handle_recalculate_macros(
                 "changes": []
             }
         
+        # ==========================================
+        # PASO CRÍTICO: ACTUALIZAR PESO EN BD
+        # ==========================================
+        
+        from app.models import Plan
+        
+        # Obtener plan actual
+        current_plan = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
+        
+        if not current_plan:
+            logger.error(f"❌ No se encontró plan para usuario {user_id}")
+            return {
+                "success": False,
+                "message": "No se encontró tu plan actual"
+            }
+        
+        # Extraer peso actual del plan
+        peso_actual = current_plan.peso
+        if isinstance(peso_actual, str):
+            # Limpiar peso (quitar "kg" si existe)
+            peso_actual = float(peso_actual.replace("kg", "").strip()) if peso_actual.replace("kg", "").strip() else float(peso_actual)
+        
+        logger.info(f"📊 Peso actual en BD: {peso_actual}kg")
+        
+        # Calcular nuevo peso si hay cambio
+        nuevo_peso = peso_actual
+        if weight_change_kg is not None and weight_change_kg != 0:
+            nuevo_peso = peso_actual + float(weight_change_kg)
+            logger.info(f"⚖️ Cambio de peso: {peso_actual}kg + {weight_change_kg}kg = {nuevo_peso}kg")
+            
+            # ACTUALIZAR PESO EN BD
+            current_plan.peso = str(nuevo_peso)  # Guardar como string
+            db.commit()
+            try:
+                db.refresh(current_plan)
+            except Exception:
+                pass
+            logger.info(f"✅ Peso actualizado en BD: {nuevo_peso}kg")
+        
+        # Obtener objetivo actual del plan
+        objetivo_actual = current_plan.objetivo_nutricional or user_data.get("objetivo_nutricional", "mantenimiento")
+        
+        # Determinar nuevo objetivo
+        nuevo_objetivo = objetivo_actual
+        if goal is not None:
+            goal_map = {
+                'definicion': 'definicion',
+                'definición': 'definicion',
+                'volumen': 'volumen',
+                'mantenimiento': 'mantenimiento',
+                'mantener': 'mantenimiento',
+                'perder': 'definicion',
+                'ganar': 'volumen'
+            }
+            nuevo_objetivo = goal_map.get(goal.lower(), goal.lower())
+            logger.info(f"🎯 Cambio de objetivo: {objetivo_actual} → {nuevo_objetivo}")
+            
+            # ACTUALIZAR OBJETIVO EN BD
+            current_plan.objetivo_nutricional = nuevo_objetivo
+            db.commit()
+            try:
+                db.refresh(current_plan)
+            except Exception:
+                pass
+            logger.info(f"✅ Objetivo actualizado en BD: {nuevo_objetivo}")
+        
+        # ==========================================
+        # PASO: RECALCULAR TMB Y TDEE CON NUEVO PESO
+        # ==========================================
+        
+        from app.utils.nutrition_calculator import calculate_tmb, calculate_tdee
+        
+        altura_cm = current_plan.altura
+        edad = current_plan.edad
+        sexo = current_plan.sexo
+        nivel_actividad = current_plan.nivel_actividad or 'moderado'
+        
+        # Recalcular TMB y TDEE con el NUEVO peso
+        tmb = calculate_tmb(float(nuevo_peso), int(altura_cm), int(edad), sexo)
+        tdee = calculate_tdee(tmb, nivel_actividad)
+        
+        logger.info(f"📊 Recalculado con NUEVO peso ({nuevo_peso}kg):")
+        logger.info(f"   TMB: {tmb:.0f} kcal/día")
+        logger.info(f"   TDEE: {tdee:.0f} kcal/día")
+        
+        # Resolver ambigüedad si corresponde
+        if calorie_adjustment is not None and is_incremental is None:
+            # Preparar opciones A/B y devolver solicitud de confirmación
+            # Opción A: establecer ajuste absoluto
+            option_a = {
+                "is_incremental": False,
+                "calorie_adjustment": int(calorie_adjustment)
+            }
+            # Opción B: añadir al ajuste actual (diferencia actual vs TDEE)
+            current_adjustment = 0
+            try:
+                current_adjustment = int((current_diet.get("total_kcal", tdee)) - tdee)
+            except Exception:
+                current_adjustment = 0
+            option_b = {
+                "is_incremental": True,
+                "calorie_adjustment": int(calorie_adjustment)
+            }
+            message = (
+                "Tu solicitud es ambigua. ¿Qué prefieres?\n"
+                "Opción A: fijar el ajuste total en "
+                f"{calorie_adjustment:+d} kcal (resultado ≈ {int(tdee + calorie_adjustment)} kcal).\n"
+                "Opción B: añadir "
+                f"{calorie_adjustment:+d} kcal al ajuste actual ({current_adjustment:+d}), "
+                f"resultado ≈ {int(tdee + current_adjustment + calorie_adjustment)} kcal.\n"
+                "Responde 'Opción A' o 'Opción B'."
+            )
+            return {
+                "success": False,
+                "needs_clarification": True,
+                "message": message,
+                "pending_params": {
+                    "weight_change_kg": weight_change_kg,
+                    "goal": goal,
+                },
+                "options": {"A": option_a, "B": option_b},
+            }
+
+        # Aplicar ajuste por objetivo o usar calorie_adjustment/target_calories si se proporcionan
+        AJUSTES_OBJETIVO = {
+            'definicion': -300,
+            'volumen': 300,
+            'mantenimiento': 0
+        }
+        
+        # Prioridad 1: target_calories absolutas
+        if target_calories is not None:
+            target_calories = int(target_calories)
+            logger.info(f"🎯 Usando target_calories absoluto: {target_calories} kcal")
+        # Prioridad 2: calorie_adjustment
+        elif calorie_adjustment is not None:
+            # Si es incremental, sumar a las calorías actuales
+            if is_incremental:
+                current_cal = current_diet.get("total_kcal", tdee)
+                target_calories = current_cal + calorie_adjustment
+                logger.info(f"🎯 Ajuste incremental: {current_cal:.0f} + {calorie_adjustment:+d} = {target_calories:.0f} kcal/día")
+            else:
+                # Ajuste absoluto: sumar al TDEE
+                target_calories = tdee + calorie_adjustment
+                logger.info(f"🎯 Ajuste absoluto: TDEE ({tdee:.0f}) + {calorie_adjustment:+d} = {target_calories:.0f} kcal/día")
+        else:
+            # Usar ajuste estándar del objetivo
+            ajuste = AJUSTES_OBJETIVO.get(nuevo_objetivo, 0)
+            target_calories = tdee + ajuste
+            logger.info(f"🎯 Ajuste por objetivo ({nuevo_objetivo}): {ajuste:+d} kcal")
+            logger.info(f"🎯 Calorías objetivo FINALES: {target_calories:.0f} kcal/día")
+        
+        # ==========================================
+        # PASO: ESCALAR DIETA PROPORCIONALMENTE
+        # ==========================================
+        
         # Crear snapshot antes de modificar
         previous_diet = json.loads(json.dumps(current_diet))
         
@@ -262,73 +453,81 @@ async def handle_recalculate_macros(
         current_calories = current_diet.get("total_kcal", 2000)
         original_calories = current_calories
         
-        # Calcular nuevo objetivo de calorías de manera eficiente
-        calorie_adjustments = {
-            "volumen": 250 if weight_change_kg > 0 else 0,
-            "definicion": -250 if weight_change_kg < 0 else 0,
-            "mantenimiento": int(weight_change_kg * 200),
-            "fuerza": 150,
-            "resistencia": 100
-        }
+        logger.info(f"📊 Calorías ANTERIORES: {original_calories:.0f} kcal/día")
+        logger.info(f"📊 Calorías NUEVAS: {target_calories:.0f} kcal/día")
         
-        adjustment = calorie_adjustments.get(goal, 0)
+        # Calcular factor de escalado
+        calorie_factor = target_calories / original_calories if original_calories > 0 else 1.0
         
-        if goal == "mantenimiento":
-            new_calories = max(current_calories + adjustment, 1200)
-            changes.append(f"Mantenimiento: {adjustment:+.0f} kcal")
-        else:
-            new_calories = max(current_calories + adjustment, 1200)
-            changes.append(f"Objetivo {goal}: {adjustment:+d} kcal")
-        
-        # Calcular factor de ajuste
-        calorie_factor = new_calories / original_calories if original_calories > 0 else 1.0
+        logger.info(f"📊 Factor de escalado: {calorie_factor:.3f}x")
         
         # Ajustar cantidades de alimentos de manera eficiente
         for comida in current_diet.get("meals", []):
-            for alimento in comida.get("alimentos", []):
-                # Ajustar cantidad
-                cantidad_str = alimento.get("cantidad", "100g")
-                if "g" in cantidad_str:
-                    cantidad_num = int(cantidad_str.replace("g", ""))
-                    nueva_cantidad = max(int(cantidad_num * calorie_factor), 10)
-                    alimento["cantidad"] = f"{nueva_cantidad}g"
-                elif "ml" in cantidad_str:
-                    cantidad_num = int(cantidad_str.replace("ml", ""))
-                    nueva_cantidad = max(int(cantidad_num * calorie_factor), 50)
-                    alimento["cantidad"] = f"{nueva_cantidad}ml"
-                
-                # Ajustar macros proporcionalmente
-                alimento["proteina"] = max(int(alimento.get("proteina", 0) * calorie_factor), 1)
-                alimento["carbos"] = max(int(alimento.get("carbos", 0) * calorie_factor), 0)
-                alimento["grasas"] = max(int(alimento.get("grasas", 0) * calorie_factor), 0)
+            alimentos_list = comida.get("alimentos", []) if isinstance(comida, dict) else []
+            for alimento in alimentos_list:
+                # Si es string (caso dieta genérica), no tiene estructura para escalar cantidades por alimento
+                if isinstance(alimento, str):
+                    continue
+                if not isinstance(alimento, dict):
+                    continue
+                # Ajustar cantidad si viene como string con unidad
+                cantidad_str = alimento.get("cantidad", "")
+                if isinstance(cantidad_str, str) and cantidad_str:
+                    if "g" in cantidad_str:
+                        try:
+                            cantidad_num = int(cantidad_str.replace("g", "").strip())
+                            nueva_cantidad = max(int(cantidad_num * calorie_factor), 10)
+                            alimento["cantidad"] = f"{nueva_cantidad}g"
+                        except Exception:
+                            pass
+                    elif "ml" in cantidad_str:
+                        try:
+                            cantidad_num = int(cantidad_str.replace("ml", "").strip())
+                            nueva_cantidad = max(int(cantidad_num * calorie_factor), 50)
+                            alimento["cantidad"] = f"{nueva_cantidad}ml"
+                        except Exception:
+                            pass
+                # Ajustar macros proporcionalmente si existen
+                try:
+                    alimento["proteina"] = max(int(alimento.get("proteina", 0) * calorie_factor), 0)
+                    alimento["carbos"] = max(int(alimento.get("carbos", 0) * calorie_factor), 0)
+                    alimento["grasas"] = max(int(alimento.get("grasas", 0) * calorie_factor), 0)
+                except Exception:
+                    pass
         
         # Recalcular macros totales de manera eficiente
-        total_proteina = sum(
-            sum(alimento.get("proteina", 0) for alimento in comida.get("alimentos", [])) 
-            for comida in current_diet.get("meals", [])
-        )
-        total_carbos = sum(
-            sum(alimento.get("carbos", 0) for alimento in comida.get("alimentos", [])) 
-            for comida in current_diet.get("meals", [])
-        )
-        total_grasas = sum(
-            sum(alimento.get("grasas", 0) for alimento in comida.get("alimentos", [])) 
-            for comida in current_diet.get("meals", [])
-        )
+        def safe_sum_macro(meals, macro):
+            total = 0
+            for comida in meals:
+                alimentos = comida.get("alimentos", []) if isinstance(comida, dict) else []
+                for alimento in alimentos:
+                    if isinstance(alimento, dict):
+                        total += int(alimento.get(macro, 0) or 0)
+            return total
+        total_proteina = safe_sum_macro(current_diet.get("meals", []), "proteina")
+        total_carbos = safe_sum_macro(current_diet.get("meals", []), "carbos")
+        total_grasas = safe_sum_macro(current_diet.get("meals", []), "grasas")
         
         # Actualizar valores en la dieta
-        current_diet["total_kcal"] = new_calories
+        current_diet["total_kcal"] = target_calories  # ← USAR target_calories (TDEE + ajuste)
         current_diet["macros"] = {
             "proteina": total_proteina,
             "carbohidratos": total_carbos,
             "grasas": total_grasas
         }
-        current_diet["objetivo"] = goal
+        current_diet["objetivo"] = nuevo_objetivo
         current_diet["version"] = increment_diet_version(current_diet.get("version", "1.0.0"))
         current_diet["updated_at"] = datetime.utcnow().isoformat()
         
+        # Construir lista de cambios
+        if weight_change_kg is not None and weight_change_kg != 0:
+            changes.append(f"Peso: {peso_actual:.1f}kg → {nuevo_peso:.1f}kg ({weight_change_kg:+.1f}kg)")
+        
+        if goal is not None and objetivo_actual != nuevo_objetivo:
+            changes.append(f"Objetivo: {objetivo_actual} → {nuevo_objetivo}")
+        
         changes.extend([
-            f"Calorías: {original_calories} → {new_calories} kcal/día",
+            f"Calorías: {int(original_calories)} → {int(target_calories)} kcal/día ({int(target_calories - original_calories):+d})",
             f"Proteína: {total_proteina}g/día",
             f"Carbohidratos: {total_carbos}g/día", 
             f"Grasas: {total_grasas}g/día"
@@ -353,14 +552,55 @@ async def handle_recalculate_macros(
             db
         )
         
+        # Calcular macros directamente con los valores ya calculados
+        from app.utils.nutrition_calculator import calculate_macros_distribution
+        
+        macros_obj = calculate_macros_distribution(
+            calorias_totales=target_calories,
+            peso_kg=float(nuevo_peso),
+            goal=nuevo_objetivo
+        )
+
+        delta_payload = {
+            "weight": {
+                "old": float(peso_actual),
+                "new": float(nuevo_peso),
+                "change": float(weight_change_kg) if weight_change_kg else 0.0,
+            },
+            "goal": {
+                "old": objetivo_actual,
+                "new": nuevo_objetivo,
+            },
+            "calories": {
+                "old": int(original_calories),
+                "new": int(target_calories),
+                "change": int(target_calories - original_calories),
+            },
+            "macros": {
+                "protein": int(macros_obj.get("proteina", 0) or 0),
+                "carbs": int(macros_obj.get("carbohidratos", 0) or 0),
+                "fats": int(macros_obj.get("grasas", 0) or 0),
+            },
+        }
+
+        logger.info(f"✅ Cambios guardados en BD y dieta actualizada")
+        
         return {
             "success": True,
-            "message": f"Macros recalculados para objetivo {goal}. Calorías ajustadas a {new_calories} kcal/día",
-            "changes": changes
+            "message": f"Plan actualizado correctamente",
+            "summary": "\n".join(changes),
+            "plan_updated": True,
+            "changes": changes,
+            "delta": delta_payload,
         }
         
     except Exception as e:
         logger.error(f"Error en handle_recalculate_macros: {e}")
+        try:
+            if db is not None:
+                db.rollback()
+        except Exception:
+            pass
         return {
             "success": False,
             "message": f"Error recalculando macros: {str(e)}",

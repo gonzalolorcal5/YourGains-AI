@@ -120,6 +120,53 @@
                 text-overflow: ellipsis;
             }
         }
+
+        /* Grid de días de la semana */
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .day-checkbox {
+            display: block;
+            padding: 14px 10px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #2a2a2a;
+            user-select: none;
+        }
+
+        .day-checkbox:hover {
+            border-color: #84cc16;
+            transform: translateY(-2px);
+        }
+
+        .day-checkbox input[type="checkbox"] {
+            display: none;
+        }
+
+        .day-checkbox span {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: #fff;
+            transition: color 0.3s;
+        }
+
+        .day-checkbox:has(input:checked) {
+            background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+            border-color: #84cc16;
+            transform: scale(1.05);
+        }
+
+        .day-checkbox:has(input:checked) span {
+            color: white;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-neutral-950 text-white flex items-center justify-center">
@@ -160,17 +207,76 @@
                 </div>
             </div>
 
-            <!-- Objetivo -->
+            <!-- Objetivo de Gimnasio -->
             <div>
-                <label class="block text-sm mb-2">Objetivo principal</label>
-                <select id="objetivo" required class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
-                    <option value="">Selecciona tu objetivo</option>
-                    <option value="perder_peso">Perder peso</option>
-                    <option value="ganar_musculo">Ganar músculo</option>
-                    <option value="definir">Definir</option>
-                    <option value="mantener">Mantener forma</option>
-                    <option value="fuerza">Aumentar fuerza</option>
+                <label class="block text-sm mb-2">Objetivo de Gimnasio <span class="text-red-400">*</span></label>
+                <select id="gym_goal" name="gym_goal" required class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+                    <option value="">Selecciona tu objetivo de gimnasio</option>
+                    <option value="ganar_musculo">Ganar masa muscular</option>
+                    <option value="ganar_fuerza">Ganar fuerza</option>
                 </select>
+            </div>
+
+            <!-- Objetivo Nutricional -->
+            <div>
+                <label class="block text-sm mb-2">Objetivo Nutricional <span class="text-red-400">*</span></label>
+                <select id="nutrition_goal" name="nutrition_goal" required class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+                    <option value="">Selecciona tu objetivo nutricional</option>
+                    <option value="volumen">Volumen</option>
+                    <option value="definicion">Definición</option>
+                    <option value="mantenimiento">Mantenimiento</option>
+                </select>
+            </div>
+
+            <!-- Frecuencia de entrenamiento -->
+            <div>
+                <label class="block text-sm mb-2">¿Cuántos días a la semana entrenarás? <span class="text-red-400">*</span></label>
+                <select id="training_frequency" name="training_frequency" required class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+                    <option value="">Selecciona frecuencia</option>
+                    <option value="3">3 días/semana</option>
+                    <option value="4">4 días/semana</option>
+                    <option value="5">5 días/semana</option>
+                    <option value="6">6 días/semana</option>
+                </select>
+            </div>
+
+            <!-- Días específicos de entrenamiento -->
+            <div id="specific_days_container">
+                <label class="block text-sm mb-2">Días de entrenamiento <span class="text-red-400">*</span></label>
+                <p class="text-xs text-neutral-400 mb-3">Selecciona los días que entrenarás (debe coincidir con la frecuencia elegida)</p>
+                <div class="days-grid">
+                    <label class="day-checkbox">
+                        <input type="checkbox" id="day_lunes" name="training_days" value="lunes">
+                        <span>Lunes</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" id="day_martes" name="training_days" value="martes">
+                        <span>Martes</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" id="day_miercoles" name="training_days" value="miércoles">
+                        <span>Miércoles</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" id="day_jueves" name="training_days" value="jueves">
+                        <span>Jueves</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" id="day_viernes" name="training_days" value="viernes">
+                        <span>Viernes</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" id="day_sabado" name="training_days" value="sábado">
+                        <span>Sábado</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" id="day_domingo" name="training_days" value="domingo">
+                        <span>Domingo</span>
+                    </label>
+                </div>
+                <p id="days-error" style="display: none; color: #ff6b6b; font-size: 14px; margin-top: 10px;">
+                    ⚠️ Debes seleccionar exactamente <span id="required-days"></span> días
+                </p>
             </div>
 
             <!-- Experiencia -->
@@ -226,6 +332,20 @@
                 </select>
             </div>
 
+            <!-- Nivel de actividad diaria -->
+            <div>
+                <label class="block text-sm mb-2">Nivel de actividad diaria <span class="text-red-400">*</span></label>
+                <select id="nivel_actividad" name="nivel_actividad" required class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400">
+                    <option value="">Selecciona tu nivel de actividad</option>
+                    <option value="sedentario">Sedentario (poco o ningún ejercicio)</option>
+                    <option value="ligero">Ligero (ejercicio 1-3 días/semana)</option>
+                    <option value="moderado">Moderado (ejercicio 3-5 días/semana)</option>
+                    <option value="activo">Activo (ejercicio 6-7 días/semana)</option>
+                    <option value="muy_activo">Muy activo (ejercicio intenso + trabajo físico)</option>
+                </select>
+                <p class="text-xs text-neutral-400 mt-1">Esto nos ayuda a calcular tus calorías de forma más precisa</p>
+            </div>
+
             <!-- Alergias y restricciones -->
             <div>
                 <label class="block text-sm mb-2">Alergias alimentarias</label>
@@ -262,7 +382,7 @@
         </form>
     </div>
 
-    <script type="module" src="./onboarding.js"></script>
+    <script type="module" src="./onboarding.js?v=2"></script>
 </body>
 </html>
 

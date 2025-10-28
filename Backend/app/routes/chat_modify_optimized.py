@@ -34,6 +34,10 @@ from app.utils.function_handlers_optimized import (
     handle_modify_routine_equipment,
     handle_revert_modification
 )
+
+# Diccionario para guardar confirmaciones pendientes
+# En producción, usar Redis o base de datos
+pending_confirmations: Dict[int, Dict[str, Any]] = {}
 from app.utils.simple_injury_handler import handle_modify_routine_injury_simple
 from app.utils.database_service import db_service
 from app.utils.allergy_detection import process_user_allergies, validate_food_against_allergies, get_allergy_safe_alternatives
@@ -138,6 +142,35 @@ DETECCIÓN AUTOMÁTICA:
 🎯 ENFOQUE EN ÁREAS → modify_routine_focus(focus_area="X", intensity="medium/high")
 🏥 LESIONES → modify_routine_injury(body_part="X", injury_type="Y")
 
+🎯 DETECCIÓN DE AJUSTES CALÓRICOS:
+Cuando el usuario mencione cambios en déficit/superávit calórico, debes identificar:
+
+1. **La cantidad del ajuste** (ej: 500 kcal, 300 kcal)
+2. **Si es déficit (-) o superávit (+)**
+3. **Si es ABSOLUTO, INCREMENTAL o AMBIGUO**
+
+### 🔍 REGLAS DE DETECCIÓN:
+
+**ABSOLUTO (reemplazar déficit/superávit total):**
+Palabras clave: "de", "total de", "cambiar a", "quiero un déficit de"
+- "Quiero un déficit de 500 kcal" → calorie_adjustment=-500, is_incremental=false
+- "Cambiar a superávit de 300 kcal" → calorie_adjustment=300, is_incremental=false
+- "Definición de 400 kcal" → calorie_adjustment=-400, is_incremental=false
+- "Superávit de 250" → calorie_adjustment=250, is_incremental=false
+
+**INCREMENTAL (añadir al déficit/superávit actual):**
+Palabras clave: "más", "adicional", "extra", "añade", "incrementa", "aumenta en", "reduce en"
+- "Añade 100 kcal más al déficit" → calorie_adjustment=-100, is_incremental=true
+- "Incrementa el superávit 50 kcal" → calorie_adjustment=50, is_incremental=true
+- "Reduce 200 kcal adicionales" → calorie_adjustment=-200, is_incremental=true
+- "100 kcal más de déficit" → calorie_adjustment=-100, is_incremental=true
+
+**AMBIGUO (pedir confirmación):**
+Palabras clave: "aumenta a", "sube a", "baja a" (la preposición "a" es ambigua)
+- "Aumenta el déficit a 500 kcal" → calorie_adjustment=-500, is_incremental=null
+- "Sube el superávit a 400" → calorie_adjustment=400, is_incremental=null
+- "Cambia el déficit a 600" → calorie_adjustment=-600, is_incremental=null
+
 PALABRAS CLAVE:
 🔥 Peso: "subí", "bajé", "gané", "perdí", "kg", "kilo", "peso"
 🎯 Objetivo: "fuerza", "hipertrofia", "volumen", "definir", "mantener"
@@ -187,7 +220,37 @@ async def execute_function_handler(
         logger.info(f"📝 Argumentos recibidos: {arguments}")
         logger.info(f"📊 Tipo de argumentos: {type(arguments)}")
         
-        # Validar argumentos
+        # Log detallado de cada argumento individual
+        for key, value in arguments.items():
+            value_str = str(value)[:100] if value else "None"  # Limitar a 100 chars
+            logger.info(f"  ➤ {key}: {value_str} (type: {type(value).__name__})")
+        
+        # Normalizar argumentos: filtrar None para funciones que aceptan parámetros opcionales
+        if function_name == "recalculate_diet_macros":
+            clean_arguments = {
+                k: v for k, v in arguments.items()
+                if v is not None and k in [
+                    "weight_change_kg",
+                    "goal",
+                    "target_calories",
+                    "calorie_adjustment",
+                    "is_incremental",
+                    "adjustment_type"
+                ]
+            }
+            logger.info(f"✅ Argumentos válidos para {function_name}")
+            logger.info(f"   Originales: {arguments}")
+            logger.info(f"   Limpios: {clean_arguments}")
+            if not clean_arguments:
+                logger.error("❌ No hay argumentos válidos después de filtrar")
+                return {
+                    "success": False,
+                    "message": "No se detectó ningún cambio válido en tu mensaje",
+                    "changes": []
+                }
+            arguments = clean_arguments
+
+        # Validar argumentos (después de limpieza)
         if not validate_function_arguments(function_name, arguments):
             logger.error(f"❌ Argumentos inválidos para {function_name}: {arguments}")
             raise ValueError(f"Argumentos inválidos para función {function_name}")
@@ -217,11 +280,11 @@ async def execute_function_handler(
         if function_name == "revert_last_modification":
             result = await handler(user_id, db)
         else:
-            # Extraer argumentos específicos en el orden correcto, filtrando None
-            handler_args = [user_id] + [arguments.get(arg) for arg in arguments.keys() if arguments.get(arg) is not None]
-            # Añadir db como último parámetro
-            handler_args.append(db)
-            result = await handler(*handler_args)
+            # Pasar TODOS los argumentos como keyword arguments para evitar mapeo incorrecto
+            # Esto es crítico cuando las funciones tienen parámetros con valores por defecto
+            # Añadir db a los argumentos antes de pasarlos
+            arguments_with_db = {**arguments, 'db': db}
+            result = await handler(user_id=user_id, **arguments_with_db)
         
         return result
         
@@ -243,6 +306,62 @@ async def chat_with_modifications(
     """
     try:
         logger.info(f"Procesando chat para usuario {request.user_id}: {request.message[:50]}...")
+        
+        # ════════════════════════════════════════════════════════════
+        # VERIFICAR SI HAY CONFIRMACIÓN PENDIENTE
+        # ════════════════════════════════════════════════════════════
+        
+        if request.user_id in pending_confirmations:
+            logger.info(f"🔍 Confirmación pendiente detectada para usuario {request.user_id}")
+            pending = pending_confirmations[request.user_id]
+            
+            # Detectar si eligió opción A o B
+            message_lower = request.message.lower()
+            
+            chosen_option = None
+            if any(word in message_lower for word in ["opción a", "opcion a", "a)", "total", "primera", "absoluto"]):
+                chosen_option = "A"
+            elif any(word in message_lower for word in ["opción b", "opcion b", "b)", "añadir", "anadir", "mas", "más", "incremental", "adicional"]):
+                chosen_option = "B"
+            
+            if chosen_option:
+                logger.info(f"✅ Usuario eligió opción {chosen_option}")
+                
+                # Aplicar la opción elegida
+                params = pending["params"].copy()
+                option_data = pending["options"][chosen_option]
+                
+                params["is_incremental"] = option_data["is_incremental"]
+                params["calorie_adjustment"] = option_data["calorie_adjustment"]
+                
+                # Ejecutar el recálculo
+                result = await handle_recalculate_macros(request.user_id, **params, db=db)
+                
+                # Limpiar confirmación pendiente
+                del pending_confirmations[request.user_id]
+                
+                if result.get("success"):
+                    return ChatResponse(
+                        response=f"✅ Plan actualizado correctamente.\n\n{result.get('summary', '')}",
+                        modified=True,
+                        changes=result.get("changes", []),
+                        function_used="recalculate_diet_macros"
+                    )
+                else:
+                    return ChatResponse(
+                        response=f"❌ Error al actualizar: {result.get('message', 'Error desconocido')}",
+                        modified=False,
+                        changes=[],
+                        function_used="recalculate_diet_macros"
+                    )
+            else:
+                # No entendió la respuesta, volver a preguntar
+                return ChatResponse(
+                    response="No entendí tu respuesta. Por favor responde:\n• 'Opción A' para déficit total\n• 'Opción B' para añadir al déficit actual",
+                    modified=False,
+                    changes=[],
+                    function_used="recalculate_diet_macros"
+                )
         
         # 1. Obtener contexto del usuario (optimizado)
         user_context = await get_user_context(request.user_id, db)
@@ -309,6 +428,12 @@ async def chat_with_modifications(
         changes = []
         modified = False
         
+        # Log de la respuesta del LLM
+        logger.info(f"📝 Contenido de la respuesta: {message.content[:200] if message.content else 'None'}")
+        logger.info(f"🔧 Tool calls: {len(message.tool_calls) if message.tool_calls else 0}")
+        if message.tool_calls:
+            logger.info(f"🔧 Función detectada: {message.tool_calls[0].function.name if message.tool_calls else 'None'}")
+        
         # 4. Verificar si hay function call
         if message.tool_calls:
             function_call = message.tool_calls[0]
@@ -329,6 +454,23 @@ async def chat_with_modifications(
                 
                 changes = handler_result.get("changes", [])
                 modified = handler_result.get("success", False)
+                
+                # Verificar si necesita confirmación
+                if handler_result.get("needs_clarification"):
+                    logger.info(f"🤔 Handler necesita confirmación para usuario {request.user_id}")
+                    
+                    # Guardar confirmación pendiente
+                    pending_confirmations[request.user_id] = {
+                        "params": handler_result.get("pending_params", {}),
+                        "options": handler_result.get("options", {})
+                    }
+                    
+                    return ChatResponse(
+                        response=handler_result.get("message", "Necesito aclarar tu solicitud."),
+                        modified=False,
+                        changes=[],
+                        function_used=function_name
+                    )
                 
                 # Construir respuesta final
                 if handler_result.get("success"):

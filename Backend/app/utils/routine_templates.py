@@ -2,30 +2,91 @@
 Templates de rutinas y dietas genéricas para usuarios FREE
 """
 
+import logging
+logger = logging.getLogger(__name__)
+
 def get_generic_plan(user_data):
     """
-    Devuelve plan genérico con SOLO el título personalizado.
-    La rutina y dieta son siempre las mismas.
+    Devuelve plan genérico con cálculos nutricionales idénticos al plan premium.
     """
     # Extraer datos del usuario
     genero = "hombre" if user_data.get('sexo', '').lower() in ['masculino', 'hombre', 'm'] else "mujer"
-    altura = float(user_data.get('altura', 1.75))
+    altura_raw = user_data.get('altura', 175)
+    
+    # Manejar altura (puede venir en cm o metros)
+    if altura_raw > 10:  # Si es mayor que 10, asumir que está en cm
+        altura_cm = int(altura_raw)
+        altura_m = altura_cm / 100
+    else:  # Si es menor que 10, asumir que está en metros
+        altura_m = float(altura_raw)
+        altura_cm = int(altura_m * 100)
+    
     peso = float(user_data.get('peso', 75))
     edad = int(user_data.get('edad', 25))
     objetivo = user_data.get('objetivo', 'ganar músculo')
+    nivel_actividad = user_data.get('nivel_actividad', 'moderado')
     
-    # Calcular TMB (solo para mostrarlo)
-    altura_cm = altura * 100
-    tmb = 10 * peso + 6.25 * altura_cm - 5 * edad
+    # ════════════════════════════════════════════════════════════
+    # CÁLCULOS NUTRICIONALES IDÉNTICOS AL PLAN PREMIUM
+    # ════════════════════════════════════════════════════════════
+    
+    # Calcular TMB con Mifflin-St Jeor (mismo que premium)
     if genero == "hombre":
-        tmb += 5
+        tmb = (10 * peso) + (6.25 * altura_cm) - (5 * edad) + 5
     else:
-        tmb -= 161
-    tmb = int(tmb)
+        tmb = (10 * peso) + (6.25 * altura_cm) - (5 * edad) - 161
+    
+    logger.info(f"📊 TMB calculada: {tmb} kcal/día (peso={peso}kg, altura={altura_cm}cm, edad={edad}, sexo={genero})")
+    
+    # Factor de actividad (mismo que premium)
+    factores_actividad = {
+        'sedentario': 1.2,
+        'ligero': 1.375,
+        'moderado': 1.55,
+        'activo': 1.725,
+        'muy_activo': 1.9
+    }
+    
+    factor = factores_actividad.get(nivel_actividad.lower(), 1.55)
+    tdee = tmb * factor
+    
+    logger.info(f"🏃 Nivel actividad: {nivel_actividad} → Factor: {factor}x")
+    logger.info(f"🔢 TDEE = TMB ({tmb}) × {factor} = {tdee} kcal/día")
+    logger.info(f"⚖️ TDEE (calorías de mantenimiento): {tdee} kcal/día")
+    
+    # Ajuste según objetivo nutricional (mismo que premium)
+    # Extraer objetivo nutricional del objetivo combinado
+    objetivo_nutricional = "mantenimiento"  # Por defecto
+    if "definicion" in objetivo.lower() or "definir" in objetivo.lower() or "perder" in objetivo.lower():
+        objetivo_nutricional = "definicion"
+    elif "volumen" in objetivo.lower() or "ganar" in objetivo.lower():
+        objetivo_nutricional = "volumen"
+    
+    ajustes_objetivo = {
+        'definicion': -300,
+        'perder_peso': -300,
+        'mantenimiento': 0,
+        'volumen': 300,
+        'ganar_musculo': 300
+    }
+    
+    ajuste = ajustes_objetivo.get(objetivo_nutricional.lower(), 0)
+    calorias_objetivo = tdee + ajuste
+    
+    logger.info(f"🎯 Objetivo nutricional detectado: {objetivo_nutricional}")
+    logger.info(f"📊 Ajuste calórico: {ajuste:+d} kcal")
+    logger.info(f"🎯 Calorías objetivo ({objetivo_nutricional}): {calorias_objetivo} kcal/día")
+    
+    # Calcular macros objetivo (mismo que premium)
+    proteinas_objetivo = int(peso * 2.0)  # 2g por kg de peso
+    carbohidratos_objetivo = int((calorias_objetivo - (proteinas_objetivo * 4)) * 0.5 / 4)  # 50% de calorías restantes
+    grasas_objetivo = int((calorias_objetivo - (proteinas_objetivo * 4) - (carbohidratos_objetivo * 4)) / 9)  # Resto en grasas
+    
+    logger.info(f"📊 Macros objetivo: P={proteinas_objetivo}g, C={carbohidratos_objetivo}g, G={grasas_objetivo}g")
     
     # RUTINA GENÉRICA (siempre la misma)
     rutina = {
-        "titulo": f"Plan personalizado para {genero} de {edad} años, {altura}m, {peso}kg - Objetivo: {objetivo}",
+        "titulo": f"Plan personalizado para {genero} de {edad} años, {altura_cm}cm, {peso}kg - Objetivo: {objetivo}",
         "dias": [
             {
                 "dia": "Lunes - Pecho y Tríceps",
@@ -80,60 +141,107 @@ def get_generic_plan(user_data):
         ]
     }
     
-    # DIETA GENÉRICA (siempre la misma)
+    # ════════════════════════════════════════════════════════════
+    # DIETA GENÉRICA CON CALORÍAS CALCULADAS DINÁMICAMENTE
+    # ════════════════════════════════════════════════════════════
+    
+    # Calcular distribución de calorías por comida (mismo que premium)
+    calorias_por_comida = [
+        int(calorias_objetivo * 0.20),  # Desayuno: 20%
+        int(calorias_objetivo * 0.10),  # Media mañana: 10%
+        int(calorias_objetivo * 0.30),  # Comida: 30%
+        int(calorias_objetivo * 0.15),  # Merienda: 15%
+        int(calorias_objetivo * 0.25)   # Cena: 25%
+    ]
+    
+    # Ajustar la última comida para que sume exactamente las calorías objetivo
+    calorias_por_comida[4] = calorias_objetivo - sum(calorias_por_comida[:4])
+    
+    logger.info(f"📊 Distribución de calorías por comida: {calorias_por_comida}")
+    logger.info(f"📊 Total calculado: {sum(calorias_por_comida)} kcal (objetivo: {calorias_objetivo})")
+    
+    # DIETA GENÉRICA CON CALORÍAS DINÁMICAS
     dieta = {
-        "titulo": f"Plan personalizado para {genero} de {edad} años, {altura}m, {peso}kg - TMB: {tmb} kcal",
-        "tmb": tmb,
-        "descripcion": "Plan nutricional balanceado para entrenamiento",
+        "resumen": f"Plan nutricional para {genero} de {edad} años, {peso}kg - Objetivo: {objetivo_nutricional} ({calorias_objetivo} kcal/día)",
         "comidas": [
             {
-                "tipo": "Desayuno (7:00-8:00)",
+                "nombre": "Desayuno",
+                "kcal": calorias_por_comida[0],
+                "macros": {"proteinas": int(proteinas_objetivo * 0.25), "hidratos": int(carbohidratos_objetivo * 0.25), "grasas": int(grasas_objetivo * 0.25)},
                 "alimentos": [
-                    {"nombre": "Avena", "cantidad": "60g", "calorias": 225},
-                    {"nombre": "Plátano", "cantidad": "1 unidad", "calorias": 105},
-                    {"nombre": "Proteína en polvo", "cantidad": "30g", "calorias": 120},
-                    {"nombre": "Almendras", "cantidad": "20g", "calorias": 120}
+                    f"Avena 60g - {int(calorias_por_comida[0] * 0.4)}kcal",
+                    f"Plátano 1 unidad - {int(calorias_por_comida[0] * 0.2)}kcal",
+                    f"Proteína en polvo 30g - {int(calorias_por_comida[0] * 0.25)}kcal",
+                    f"Almendras 20g - {int(calorias_por_comida[0] * 0.15)}kcal"
                 ],
-                "total": "470 kcal"
+                "alternativas": ["Yogur griego + frutos secos", "Tostadas integrales + aguacate"]
             },
             {
-                "tipo": "Media mañana (10:30)",
+                "nombre": "Media mañana",
+                "kcal": calorias_por_comida[1],
+                "macros": {"proteinas": int(proteinas_objetivo * 0.1), "hidratos": int(carbohidratos_objetivo * 0.1), "grasas": int(grasas_objetivo * 0.1)},
                 "alimentos": [
-                    {"nombre": "Yogur griego", "cantidad": "200g", "calorias": 130},
-                    {"nombre": "Arándanos", "cantidad": "50g", "calorias": 30}
+                    f"Yogur griego 200g - {int(calorias_por_comida[1] * 0.8)}kcal",
+                    f"Arándanos 50g - {int(calorias_por_comida[1] * 0.2)}kcal"
                 ],
-                "total": "160 kcal"
+                "alternativas": ["Fruta + frutos secos", "Batido de proteínas"]
             },
             {
-                "tipo": "Comida (13:30-14:30)",
+                "nombre": "Comida",
+                "kcal": calorias_por_comida[2],
+                "macros": {"proteinas": int(proteinas_objetivo * 0.35), "hidratos": int(carbohidratos_objetivo * 0.35), "grasas": int(grasas_objetivo * 0.35)},
                 "alimentos": [
-                    {"nombre": "Pechuga de pollo", "cantidad": "180g", "calorias": 300},
-                    {"nombre": "Arroz integral", "cantidad": "80g en crudo", "calorias": 280},
-                    {"nombre": "Brócoli", "cantidad": "150g", "calorias": 50},
-                    {"nombre": "Aceite de oliva", "cantidad": "10ml", "calorias": 90}
+                    f"Pechuga de pollo 180g - {int(calorias_por_comida[2] * 0.4)}kcal",
+                    f"Arroz integral 80g - {int(calorias_por_comida[2] * 0.4)}kcal",
+                    f"Brócoli 150g - {int(calorias_por_comida[2] * 0.1)}kcal",
+                    f"Aceite de oliva 10ml - {int(calorias_por_comida[2] * 0.1)}kcal"
                 ],
-                "total": "720 kcal"
+                "alternativas": ["Salmón + quinoa + verduras", "Ternera + patata + ensalada"]
             },
             {
-                "tipo": "Merienda (17:00)",
+                "nombre": "Merienda",
+                "kcal": calorias_por_comida[3],
+                "macros": {"proteinas": int(proteinas_objetivo * 0.15), "hidratos": int(carbohidratos_objetivo * 0.15), "grasas": int(grasas_objetivo * 0.15)},
                 "alimentos": [
-                    {"nombre": "Pan integral", "cantidad": "2 rebanadas", "calorias": 160},
-                    {"nombre": "Atún", "cantidad": "80g", "calorias": 120},
-                    {"nombre": "Aguacate", "cantidad": "1/2 unidad", "calorias": 120}
+                    f"Pan integral 2 rebanadas - {int(calorias_por_comida[3] * 0.4)}kcal",
+                    f"Atún 80g - {int(calorias_por_comida[3] * 0.3)}kcal",
+                    f"Aguacate 1/2 unidad - {int(calorias_por_comida[3] * 0.3)}kcal"
                 ],
-                "total": "400 kcal"
+                "alternativas": ["Frutos secos + fruta", "Yogur + miel + nueces"]
             },
             {
-                "tipo": "Cena (20:30-21:00)",
+                "nombre": "Cena",
+                "kcal": calorias_por_comida[4],
+                "macros": {"proteinas": int(proteinas_objetivo * 0.15), "hidratos": int(carbohidratos_objetivo * 0.15), "grasas": int(grasas_objetivo * 0.15)},
                 "alimentos": [
-                    {"nombre": "Salmón", "cantidad": "150g", "calorias": 300},
-                    {"nombre": "Patata cocida", "cantidad": "150g", "calorias": 135},
-                    {"nombre": "Espárragos", "cantidad": "150g", "calorias": 30}
+                    f"Salmón 150g - {int(calorias_por_comida[4] * 0.6)}kcal",
+                    f"Patata cocida 150g - {int(calorias_por_comida[4] * 0.3)}kcal",
+                    f"Espárragos 150g - {int(calorias_por_comida[4] * 0.1)}kcal"
                 ],
-                "total": "465 kcal"
+                "alternativas": ["Pollo + quinoa + verduras", "Tofu + boniato + ensalada"]
             }
         ],
-        "total_calorias": "~2,215 kcal"
+        "consejos_finales": [
+            "Beber al menos 3L de agua al día.",
+            "Añade una pizca de sal a las comidas. Si sudas mucho, repón electrolitos.",
+            "La comida preentreno debe incluir hidratos rápidos como dátiles, plátano o pan.",
+            "La comida postentreno debe incluir hidratos + proteínas.",
+            "Si tienes proteína en polvo, úsala para cuadrar macros y facilitar el aporte proteico."
+        ],
+        "metadata": {
+            "nutrition_goal": objetivo_nutricional,
+            "tmb": int(tmb),
+            "tdee": int(tdee),
+            "calorias_objetivo": calorias_objetivo,
+            "macros_objetivo": {
+                "proteina": proteinas_objetivo,
+                "carbohidratos": carbohidratos_objetivo,
+                "grasas": grasas_objetivo
+            },
+            "nivel_actividad": nivel_actividad,
+            "metodo_calculo": "Mifflin-St Jeor",
+            "diferencia_mantenimiento": ajuste
+        }
     }
     
     return {

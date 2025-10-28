@@ -108,23 +108,113 @@ OPENAI_FUNCTIONS: List[Dict[str, Any]] = [
     
     {
         "name": "recalculate_diet_macros",
-        "description": "Recalcula calorías y macronutrientes del plan dietético basado en cambio de peso o objetivos",
+        "description": """
+        Recalcula los macros de la dieta cuando:
+        - El usuario cambia de peso (subió/bajó kilos)
+        - El usuario cambia su objetivo (volumen, definición, mantenimiento)
+        - El usuario especifica calorías totales deseadas
+        - El usuario especifica ajuste calórico personalizado
+        
+        🔥 DETECCIÓN DE CAMBIO DE PESO (CRÍTICO):
+        - "Subí 2kg" / "He subido 2kg" / "Aumenté 2kg" → weight_change_kg=2
+        - "Bajé 3kg" / "He bajado 3kg" / "Adelgacé 3kg" / "He adelgazado 3kg" → weight_change_kg=-3
+        - "Perdí 4kg" / "He perdido 4kg" / "Perdí peso" → weight_change_kg=-4
+        - "Engordé 2kg" / "He engordado 2kg" → weight_change_kg=2
+        - "Gané 5kg" / "He ganado 5kg" → weight_change_kg=5
+        
+        ⚠️ IMPORTANTE: Cuando el usuario mencione OBJETIVO + CALORÍAS en el mismo mensaje, 
+        debes extraer AMBOS parámetros:
+        - "Quiero hacer definición de 500 kcal" → goal="definicion", calorie_adjustment=-500, is_incremental=false
+        - "Quiero volumen con 3800 kcal" → goal="volumen", target_calories=3800
+        - "Cambiar a mantenimiento con 3000 kcal" → goal="mantenimiento", target_calories=3000
+        
+        🎯 DETECCIÓN DE OBJETIVOS SIMPLES (CRÍTICO):
+        - "Quiero hacer mantenimiento" → goal="mantenimiento"
+        - "Quiero mantenimiento" → goal="mantenimiento"
+        - "Mantenimiento" → goal="mantenimiento"
+        - "Quiero hacer definición" → goal="definicion"
+        - "Quiero hacer volumen" → goal="volumen"
+        
+        DETECCIÓN DE AJUSTES CALÓRICOS:
+        🔍 ABSOLUTO (establecer déficit/superávit total):
+        - "Quiero un déficit de 500 kcal" → calorie_adjustment=-500, is_incremental=false
+        - "Cambiar a superávit de 300 kcal" → calorie_adjustment=300, is_incremental=false
+        - "Definición de 400 kcal" → goal="definicion", calorie_adjustment=-400, is_incremental=false
+        - "Quiero que el volumen sea de 200 kcal" → goal="volumen", calorie_adjustment=200, is_incremental=false
+        - "Quiero que la definición sea de 500 kcal" → goal="definicion", calorie_adjustment=-500, is_incremental=false
+        - "Quiero que el superávit sea de 200 kcal" → calorie_adjustment=200, is_incremental=false
+        - "Quiero que el déficit sea de 400 kcal" → calorie_adjustment=-400, is_incremental=false
+        
+        🔍 INCREMENTAL (añadir al déficit/superávit actual):
+        - "Añade 100 kcal más al déficit" → calorie_adjustment=-100, is_incremental=true
+        - "Incrementa el superávit 50 kcal" → calorie_adjustment=50, is_incremental=true
+        - "Reduce 200 kcal adicionales" → calorie_adjustment=-200, is_incremental=true
+        - "Aumenta el superávit en 200 kcal más" → calorie_adjustment=200, is_incremental=true
+        - "Sube el déficit en 100 kcal más" → calorie_adjustment=-100, is_incremental=true
+        
+        ⚠️ AMBIGUO (pedir confirmación):
+        - "Aumenta el déficit a 500 kcal" → calorie_adjustment=-500, is_incremental=null
+        - "Aumenta el superávit a 200 kcal" → calorie_adjustment=200, is_incremental=null
+        - "Sube el superávit a 400" → calorie_adjustment=400, is_incremental=null
+        - "Cambia el déficit a 600" → calorie_adjustment=-600, is_incremental=null
+        REGLA CLARA: si la frase usa la preposición "a" ("a X kcal") con verbos
+        como aumentar/subir/incrementar, TRÁTALO COMO AMBIGUO (is_incremental=null).
+        Solo marca incremental cuando diga explícitamente "en X", "+X", "más X" o
+        "añade X". Marca absoluto cuando diga "de X", "sea de X" o "quiero un déficit/superávit de X".
+        
+        Ejemplos completos:
+        - "Subí 2kg" → weight_change_kg=2, goal=null
+        - "He adelgazado 3kg" / "Bajé 3kg" / "Perdí 3kg" → weight_change_kg=-3, goal=null
+        - "Quiero hacer volumen" → goal="volumen"
+        - "Quiero hacer volumen de 500 kcal" → goal="volumen", calorie_adjustment=500, is_incremental=false
+        - "Quiero que el volumen sea de 200 kcal" → goal="volumen", calorie_adjustment=200, is_incremental=false
+        - "Quiero un déficit de 400 calorías" → calorie_adjustment=-400, is_incremental=false
+        - "Añade 100 kcal más al déficit" → calorie_adjustment=-100, is_incremental=true
+        - "Aumenta el déficit a 500 kcal" → calorie_adjustment=-500, is_incremental=null
+        """,
         "parameters": {
             "type": "object",
             "properties": {
                 "weight_change_kg": {
-                    "type": "number",
-                    "description": "Cambio de peso en kilogramos (positivo = ganancia, negativo = pérdida)",
+                    "type": ["number", "null"],
+                    "description": "Cambio de peso en kg (positivo = subió, negativo = bajó)",
                     "minimum": -10.0,
                     "maximum": 10.0
                 },
                 "goal": {
-                    "type": "string",
-                    "description": "Objetivo del usuario",
-                    "enum": ["volumen", "definicion", "mantenimiento", "fuerza", "resistencia"]
+                    "type": ["string", "null"],
+                    "enum": ["volumen", "definicion", "mantenimiento", "fuerza", "resistencia"],
+                    "description": """
+                    Nuevo objetivo nutricional del usuario. 
+                    
+                    DETECCIÓN CRÍTICA:
+                    - Si el usuario dice "definición", "definicion", "hacer definición", "hacer definicion", 
+                      "quiero definición", "quiero definicion" → devolver "definicion"
+                    - Si el usuario dice "volumen", "hacer volumen", "quiero volumen", "bulking" → devolver "volumen"
+                    - Si el usuario dice "mantenimiento", "mantener peso" → devolver "mantenimiento"
+                    
+                    Valores permitidos: "definicion", "volumen", "mantenimiento", "fuerza", "resistencia"
+                    """
+                },
+                "target_calories": {
+                    "type": ["integer", "null"],
+                    "description": "Calorías totales objetivo especificadas por el usuario (ej: 3500, 2800)"
+                },
+                "calorie_adjustment": {
+                    "type": ["integer", "null"],
+                    "description": "Ajuste calórico en kcal (negativo para déficit, positivo para superávit)"
+                },
+                "is_incremental": {
+                    "type": ["boolean", "null"],
+                    "description": "true=añadir al ajuste actual, false=reemplazar total, null=ambiguo (pedir confirmación)"
+                },
+                "adjustment_type": {
+                    "type": ["string", "null"],
+                    "enum": ["deficit", "surplus"],
+                    "description": "Tipo de ajuste calórico"
                 }
             },
-            "required": ["weight_change_kg", "goal"]
+            "required": []
         }
     },
     
@@ -304,11 +394,46 @@ SYSTEM_PROMPTS = {
     """,
     
     "recalculate_diet_macros": """
-    Eres un nutricionista deportivo. Cuando el usuario mencione cambios de peso u objetivos:
-    1. Identifica el cambio de peso o nuevo objetivo
-    2. Recalcula las calorías necesarias
-    3. Ajusta macronutrientes (proteínas, carbohidratos, grasas)
-    4. Mantén el equilibrio nutricional
+    Eres un nutricionista deportivo experto. Cuando el usuario mencione cambios de peso, objetivos o calorías:
+    1. Identifica el cambio de peso, nuevo objetivo, calorías específicas o ajuste personalizado
+    2. ⚠️ CRÍTICO: Si el usuario menciona OBJETIVO + CALORÍAS en el mismo mensaje, extrae AMBOS parámetros
+    3. ⚠️ CRÍTICO: "Quiero que el volumen sea de X kcal" → goal="volumen", calorie_adjustment=X, is_incremental=false
+    4. ⚠️ CRÍTICO: "Quiero que la definición sea de X kcal" → goal="definicion", calorie_adjustment=-X, is_incremental=false
+    5. ⚠️ CRÍTICO: "Quiero que el superávit sea de X kcal" → calorie_adjustment=X, is_incremental=false
+    6. ⚠️ CRÍTICO: "Quiero que el déficit sea de X kcal" → calorie_adjustment=-X, is_incremental=false
+    7. Prioriza: calorías totales > ajuste personalizado > cálculo automático
+    8. Recalcula las calorías necesarias según la prioridad
+    9. Ajusta macronutrientes (proteínas, carbohidratos, grasas) proporcionalmente
+    10. Mantén el equilibrio nutricional y valida rangos saludables (1200-5000 kcal)
+    
+    🎯 DETECCIÓN DE OBJETIVOS (CRÍTICO):
+    - "Quiero hacer mantenimiento" → goal="mantenimiento"
+    - "Quiero una dieta de mantenimiento" → goal="mantenimiento"
+    - "Cambiar a mantenimiento" → goal="mantenimiento"
+    - "Quiero mantenimiento" → goal="mantenimiento"
+    - "Mantenimiento" → goal="mantenimiento"
+    - "Quiero hacer definición" → goal="definicion"
+    - "Quiero hacer volumen" → goal="volumen"
+    - "Quiero definición" → goal="definicion"
+    - "Quiero volumen" → goal="volumen"
+    
+    Ejemplos de detección CRÍTICOS:
+    - "Quiero hacer definición de 500 kcal" → goal="definicion", calorie_adjustment=-500, is_incremental=false
+    - "Quiero hacer volumen de 500 kcal" → goal="volumen", calorie_adjustment=500, is_incremental=false
+    - "Quiero que el volumen sea de 200 kcal" → goal="volumen", calorie_adjustment=200, is_incremental=false
+    - "Quiero que la definición sea de 400 kcal" → goal="definicion", calorie_adjustment=-400, is_incremental=false
+    - "Quiero volumen con 3800 kcal" → goal="volumen", target_calories=3800
+    - "Cambiar a mantenimiento con 3000 kcal" → goal="mantenimiento", target_calories=3000
+    - "Quiero volumen pero solo +150 kcal" → goal="volumen", calorie_adjustment=150, is_incremental=false
+    - "Quiero que el superávit sea de 200 kcal" → calorie_adjustment=200, is_incremental=false
+    - "Quiero que el déficit sea de 400 kcal" → calorie_adjustment=-400, is_incremental=false
+    
+    Ejemplos simples:
+    - "Quiero 3500 calorías" → target_calories=3500
+    - "Súbeme 200 calorías" → calorie_adjustment=200, is_incremental=true
+    - "Subí 2kg" → weight_change_kg=2
+    - "Quiero hacer definición" → goal="definicion"
+    - "Quiero hacer mantenimiento" → goal="mantenimiento"
     """,
     
     "substitute_disliked_food": """

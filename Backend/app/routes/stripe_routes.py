@@ -1,11 +1,17 @@
 # app/routes/stripe_routes.py
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request, Depends
+from sqlalchemy.orm import Session
+import traceback
+import logging
+from app.database import get_db
+from app.models import Usuario
 from pydantic import BaseModel
 import os
 import stripe
 from dotenv import load_dotenv
 
 router = APIRouter(tags=["stripe"])
+logger = logging.getLogger(__name__)
 
 # === Config Stripe / Entorno ===
 # Cargar .env desde la raíz del proyecto Backend
@@ -178,3 +184,72 @@ async def get_stripe_config():
             "yearly": PRICE_ID_ANUAL
         }
     }
+
+# ================= FALLBACK PREMIUM (DEV) =================
+@router.post("/stripe/activate-premium")
+async def activate_premium_fallback(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    """
+    Fallback para activar premium cuando el usuario vuelve de Stripe y el webhook
+    no llegó (entornos de desarrollo sin Stripe CLI). En producción, el webhook
+    debe encargarse de esto.
+    """
+    try:
+        body = await request.json()
+        user_id = body.get("user_id")
+        session_id = body.get("session_id")
+
+        if not user_id:
+            return {"success": False, "error": "user_id requerido"}
+
+        logger.info(f"🔄 Fallback premium: user_id={user_id}, session_id={session_id}")
+
+        user = db.query(Usuario).filter(Usuario.id == int(user_id)).first()
+        if not user:
+            logger.error(f"❌ Usuario {user_id} no encontrado")
+            return {"success": False, "error": "Usuario no encontrado"}
+
+        # Si ya es premium, no hacer nada
+        if user.is_premium or user.plan_type == "PREMIUM":
+            logger.info(f"✅ Usuario {user_id} ya es premium (probable webhook)")
+            return {"success": True, "is_premium": True, "activated_by": "webhook"}
+
+        # Intentar verificar con Stripe si tenemos session_id
+        if session_id:
+            try:
+                session = stripe.checkout.Session.retrieve(session_id)
+                status = getattr(session, "payment_status", None)
+                if status == "paid":
+                    logger.info(f"💳 Pago verificado para user_id={user_id}")
+                    user.is_premium = True
+                    user.plan_type = "PREMIUM"
+                    if getattr(session, "customer", None):
+                        user.stripe_customer_id = session.customer
+                    db.commit()
+                    db.refresh(user)
+                    return {"success": True, "is_premium": True, "activated_by": "fallback"}
+                else:
+                    logger.warning(f"⚠️ Pago no completado: {status}")
+                    return {"success": False, "error": f"Pago no completado: {status}"}
+            except Exception as e:
+                logger.error(f"❌ Error verificando con Stripe: {e}")
+                # En desarrollo, activar igualmente
+                user.is_premium = True
+                user.plan_type = "PREMIUM"
+                db.commit()
+                db.refresh(user)
+                return {"success": True, "is_premium": True, "activated_by": "fallback_dev"}
+
+        # Sin session_id: activar directamente (modo dev)
+        user.is_premium = True
+        user.plan_type = "PREMIUM"
+        db.commit()
+        db.refresh(user)
+        return {"success": True, "is_premium": True, "activated_by": "fallback_direct"}
+
+    except Exception as e:
+        logger.error(f"❌ Error en activate_premium_fallback: {e}")
+        logger.error(traceback.format_exc())
+        return {"success": False, "error": str(e)}

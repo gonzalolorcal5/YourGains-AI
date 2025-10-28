@@ -9,7 +9,7 @@ import json
 from app.database import get_db
 from app.models import Usuario, Plan
 from app.auth_utils import get_current_user
-from app.utils.gpt import generar_plan_personalizado
+from app.utils.gpt import generar_plan_safe
 from app.utils.json_helpers import serialize_json
 
 router = APIRouter()
@@ -19,10 +19,10 @@ class OnboardingRequest(BaseModel):
     peso: float
     edad: int
     sexo: str
-    objetivo: str
     experiencia: str
     materiales: List[str]
     tipo_cuerpo: str
+    nivel_actividad: str  # NUEVO - Para cálculo TMB: sedentario, ligero, moderado, activo, muy_activo
     alergias: Optional[str] = None
     restricciones_dieta: Optional[str] = None
     lesiones: Optional[str] = None
@@ -30,9 +30,15 @@ class OnboardingRequest(BaseModel):
     puntos_fuertes: Optional[str] = None
     puntos_debiles: Optional[str] = None
     entrenar_fuerte: bool = True
+    
+    # NUEVOS CAMPOS - Onboarding avanzado
+    gym_goal: str  # ganar_musculo, ganar_fuerza
+    nutrition_goal: str  # volumen, definicion, mantenimiento
+    training_frequency: int  # 3, 4, 5, 6
+    training_days: List[str]  # ["lunes", "martes", "miércoles", ...]
 
 @router.post("/onboarding")
-def process_onboarding(
+async def process_onboarding(
     data: OnboardingRequest,
     db: Session = Depends(get_db),
     usuario: Usuario = Depends(get_current_user)
@@ -64,19 +70,25 @@ def process_onboarding(
             'peso': data.peso,
             'edad': data.edad,
             'sexo': data.sexo,
-            'objetivo': data.objetivo,
             'experiencia': data.experiencia,
             'materiales': data.materiales,
             'tipo_cuerpo': data.tipo_cuerpo,
+            'nivel_actividad': data.nivel_actividad,  # NUEVO - Para cálculo TMB
             'alergias': data.alergias or 'Ninguna',
             'restricciones': data.restricciones_dieta or 'Ninguna',
             'lesiones': data.lesiones or 'Ninguna',
             'idioma': data.idioma,
             'puntos_fuertes': data.puntos_fuertes or 'Ninguno',
             'puntos_debiles': data.puntos_debiles or 'Ninguno',
-            'entrenar_fuerte': data.entrenar_fuerte
+            'entrenar_fuerte': data.entrenar_fuerte,
+            
+            # NUEVOS CAMPOS - Onboarding avanzado
+            'gym_goal': data.gym_goal,
+            'nutrition_goal': data.nutrition_goal,
+            'training_frequency': data.training_frequency,
+            'training_days': data.training_days
         }
-        plan_data = generar_plan_personalizado(user_data)
+        plan_data = await generar_plan_safe(user_data, usuario.id)
         
         # 🛡️ PROTECCIÓN 3: Logging detallado del plan generado
         print(f"🔍 Plan generado:")
@@ -84,7 +96,26 @@ def process_onboarding(
         print(f"   - Dieta: {plan_data.get('dieta', 'NO EXISTE')}")
         print(f"✅ Plan generado para usuario {usuario.id}")
         
-        # Guardar plan en la base de datos
+        # Añadir metadata a rutina y dieta
+        rutina_json = plan_data["rutina"]
+        dieta_json = plan_data["dieta"]
+        
+        # Asegurar que la metadata esté presente
+        if 'metadata' not in rutina_json:
+            rutina_json['metadata'] = {}
+        rutina_json['metadata'].update({
+            'gym_goal': data.gym_goal,
+            'training_frequency': data.training_frequency,
+            'training_days': data.training_days
+        })
+        
+        if 'metadata' not in dieta_json:
+            dieta_json['metadata'] = {}
+        dieta_json['metadata'].update({
+            'nutrition_goal': data.nutrition_goal
+        })
+        
+        # Guardar plan en la base de datos (tabla histórica)
         nuevo_plan = Plan(
             user_id=usuario.id,
             altura=data.altura,
@@ -92,9 +123,10 @@ def process_onboarding(
             edad=data.edad,
             sexo=data.sexo,
             experiencia=data.experiencia,
-            objetivo=data.objetivo,
+            objetivo=f"{data.gym_goal} + {data.nutrition_goal}",  # Combinar objetivos para compatibilidad
             materiales=",".join(data.materiales),
             tipo_cuerpo=data.tipo_cuerpo,
+            nivel_actividad=data.nivel_actividad,  # NUEVO - Para cálculo TMB
             idioma=data.idioma,
             puntos_fuertes=data.puntos_fuertes,
             puntos_debiles=data.puntos_debiles,
@@ -102,21 +134,24 @@ def process_onboarding(
             lesiones=data.lesiones,
             alergias=data.alergias,
             restricciones_dieta=data.restricciones_dieta,
-            rutina=json.dumps(plan_data["rutina"], ensure_ascii=False),
-            dieta=json.dumps(plan_data["dieta"], ensure_ascii=False),
+            rutina=json.dumps(rutina_json, ensure_ascii=False),
+            dieta=json.dumps(dieta_json, ensure_ascii=False),
             motivacion=plan_data["motivacion"],
             fecha_creacion=datetime.utcnow()
         )
 
         db.add(nuevo_plan)
+        # Asegurar que se asigne el ID antes del commit y guardar una copia segura
+        db.flush()
+        plan_id = nuevo_plan.id
         
         # 🛡️ PROTECCIÓN 4: Guardar también en current_routine y current_diet para modificaciones dinámicas
         from app.utils.json_helpers import serialize_json
         
         # Convertir rutina de formato "dias" a formato "exercises" para current_routine
         exercises = []
-        if "dias" in plan_data["rutina"]:
-            for dia in plan_data["rutina"]["dias"]:
+        if "dias" in rutina_json:
+            for dia in rutina_json["dias"]:
                 for ejercicio in dia.get("ejercicios", []):
                     exercises.append({
                         "name": ejercicio.get("nombre", ""),
@@ -130,17 +165,24 @@ def process_onboarding(
             "exercises": exercises,
             "schedule": {},
             "created_at": datetime.utcnow().isoformat(),
-            "version": "1.0.0"
+            "version": "1.0.0",
+            "metadata": {
+                "gym_goal": data.gym_goal,
+                "training_frequency": data.training_frequency,
+                "training_days": data.training_days
+            }
         }
         
         # Convertir dieta al formato current_diet
         current_diet = {
-            "meals": plan_data["dieta"].get("comidas", []),
-            "total_kcal": sum([meal.get("kcal", 0) for meal in plan_data["dieta"].get("comidas", [])]),
+            "meals": dieta_json.get("comidas", []),
+            "total_kcal": sum([meal.get("kcal", 0) for meal in dieta_json.get("comidas", [])]),
             "macros": {},
-            "objetivo": user_data['objetivo'],
             "created_at": datetime.utcnow().isoformat(),
-            "version": "1.0.0"
+            "version": "1.0.0",
+            "metadata": {
+                "nutrition_goal": data.nutrition_goal
+            }
         }
         
         # Marcar onboarding como completado y guardar current_routine/current_diet
@@ -150,9 +192,53 @@ def process_onboarding(
             "current_diet": serialize_json(current_diet, "current_diet")
         })
         
+        # ════════════════════════════════════════════════════════════
+        # CREAR REGISTRO EN TABLA PLANES (TANTO PARA FREE COMO PREMIUM)
+        # ════════════════════════════════════════════════════════════
+        
+        # Crear registro en tabla planes con datos reales del usuario
+        nuevo_plan = Plan(
+            user_id=usuario.id,
+            altura=data.altura,
+            peso=str(int(data.peso)),  # Guardar SIN "kg" para evitar problemas
+            edad=data.edad,
+            sexo=data.sexo,
+            experiencia=data.experiencia,
+            objetivo=f"{data.gym_goal} + {data.nutrition_goal}",  # Combinar objetivos (legacy)
+            objetivo_gym=data.gym_goal,  # Objetivo de gimnasio separado
+            objetivo_dieta=data.nutrition_goal,  # Objetivo nutricional separado (legacy)
+            objetivo_nutricional=data.nutrition_goal,  # Objetivo nutricional separado (nuevo)
+            materiales=", ".join(data.materiales),
+            tipo_cuerpo=data.tipo_cuerpo if hasattr(data, 'tipo_cuerpo') else None,
+            nivel_actividad=data.nivel_actividad,  # ✅ Campo obligatorio del onboarding
+            idioma="es",
+            puntos_fuertes=None,
+            puntos_debiles=None,
+            entrenar_fuerte=None,
+            lesiones=data.lesiones if hasattr(data, 'lesiones') else None,
+            alergias=data.alergias if hasattr(data, 'alergias') else None,
+            restricciones_dieta=data.restricciones_dieta if hasattr(data, 'restricciones_dieta') else None,
+            rutina=serialize_json(rutina_json, "rutina"),
+            dieta=serialize_json(dieta_json, "dieta"),
+            motivacion=plan_data.get("motivacion", ""),
+            fecha_creacion=datetime.utcnow()
+        )
+        
+        db.add(nuevo_plan)
+        db.flush()  # Para obtener el ID del plan
+        
+        print(f"✅ Plan creado en tabla planes (ID: {nuevo_plan.id}) para usuario {usuario.id}")
+        print(f"📊 Datos guardados en planes:")
+        print(f"   - Altura: {data.altura}cm")
+        print(f"   - Peso: {data.peso}kg")
+        print(f"   - Edad: {data.edad} años")
+        print(f"   - Sexo: {data.sexo}")
+        print(f"   - Objetivo Gym: {data.gym_goal}")
+        print(f"   - Objetivo Nutricional: {data.nutrition_goal}")
+        print(f"   - Objetivo Combinado: {data.gym_goal} + {data.nutrition_goal}")
+        
         # 🛡️ PROTECCIÓN 5: Commit y return inmediato
         db.commit()
-        db.refresh(nuevo_plan)
         
         print(f"✅ Plan guardado en BD para usuario {usuario.id}")
         print(f"📊 Resumen guardado:")
@@ -173,9 +259,9 @@ def process_onboarding(
 
         return {
             "message": "Plan personalizado creado exitosamente",
-            "plan_id": nuevo_plan.id,
-            "rutina": plan_data["rutina"],
-            "dieta": plan_data["dieta"],
+            "plan_id": plan_id,
+            "rutina": rutina_json,
+            "dieta": dieta_json,
             "motivacion": plan_data["motivacion"]
         }
 

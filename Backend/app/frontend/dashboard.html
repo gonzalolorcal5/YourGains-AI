@@ -1411,6 +1411,42 @@
             return storedPlan === 'premium';
         }
 
+        // Función auxiliar para renderizar un alimento (maneja strings y objetos)
+        function renderAlimento(alimento) {
+            // CASO 1: String directo
+            if (typeof alimento === 'string') {
+                return alimento;
+            }
+            
+            // CASO 2: Objeto - intentar varias estructuras posibles
+            if (typeof alimento === 'object' && alimento !== null) {
+                // Opción A: {nombre, cantidad, calorias}
+                if (alimento.nombre && alimento.cantidad && alimento.calorias) {
+                    return `${alimento.cantidad} ${alimento.nombre} - ${alimento.calorias}kcal`;
+                }
+                // Opción B: {alimento, cantidad}
+                else if (alimento.alimento) {
+                    return `${alimento.alimento}${alimento.cantidad ? ' - ' + alimento.cantidad : ''}`;
+                }
+                // Opción C: {descripcion}
+                else if (alimento.descripcion) {
+                    return alimento.descripcion;
+                }
+                // Opción D: Solo {nombre}
+                else if (alimento.nombre) {
+                    return alimento.nombre;
+                }
+                // Fallback: mostrar como JSON
+                else {
+                    console.warn('⚠️ Estructura de alimento desconocida:', alimento);
+                    return JSON.stringify(alimento);
+                }
+            }
+            
+            // Fallback final
+            return String(alimento);
+        }
+
         function getChatUsageKey() {
             const email = localStorage.getItem('email') || 'anonymous';
             return `chat_usage_count_${email}`;
@@ -1612,6 +1648,12 @@
                     }
 
                     const data = await response.json();
+                    
+                    // DEBUG: Log de la respuesta completa
+                    console.log('🔍 Respuesta completa del chat:', data);
+                    console.log('🔍 Campo modified:', data.modified);
+                    console.log('🔍 Campo changes:', data.changes);
+                    console.log('🔍 Campo function_used:', data.function_used);
 
                     // Ocultar indicador de escritura
                     hideTypingIndicator();
@@ -1620,7 +1662,11 @@
                     addMessage(data.response);
                     
                     // Si se realizaron modificaciones, mostrar notificación
+                    console.log('🔍 Verificando si hay modificaciones...');
+                    console.log('🔍 data.modified es:', data.modified, 'tipo:', typeof data.modified);
+                    
                     if (data.modified) {
+                        console.log('✅ Modificaciones detectadas, mostrando notificación...');
                         showModificationNotification({
                             modified: true,
                             changes: data.changes || [],
@@ -1633,8 +1679,11 @@
                         // ✨ NUEVO: Recargar plan después de modificación
                         console.log('🔄 Plan modificado, recargando dashboard...');
                         setTimeout(async () => {
+                            console.log('⏰ Ejecutando reloadPlanFromServer después de 1 segundo...');
                             await reloadPlanFromServer();
                         }, 1000); // Esperar 1 segundo para que la IA termine de guardar
+                    } else {
+                        console.log('❌ No se detectaron modificaciones');
                     }
                     
                     if (!isPremiumUser()) {
@@ -1730,10 +1779,15 @@
                     return;
                 }
 
+                console.log('🔍 User ID obtenido:', userId);
+                console.log('🔍 URL de la petición:', `${API_BASE}/user/current-routine?user_id=${userId}`);
+
                 // Obtener datos actualizados del servidor
                 const response = await fetch(`${API_BASE}/user/current-routine?user_id=${userId}`, {
                     method: 'GET'
                 });
+
+                console.log('📡 Respuesta del servidor:', response.status, response.statusText);
 
                 if (!response.ok) {
                     console.error('❌ Error obteniendo plan actualizado:', response.status);
@@ -1742,14 +1796,21 @@
 
                 const data = await response.json();
                 console.log('📊 Datos recibidos del servidor:', data);
+                console.log('📊 current_routine existe:', !!data.current_routine);
+                console.log('📊 current_diet existe:', !!data.current_diet);
 
                 if (data.success && data.current_routine) {
+                    console.log('✅ Datos válidos recibidos, creando objeto plan...');
+                    
                     // Crear objeto plan compatible con displayPlan
                     const plan = {
                         rutina: data.current_routine,
                         dieta: data.current_diet,
                         motivacion: "Rutina actualizada dinámicamente"
                     };
+
+                    console.log('📋 Plan creado:', plan);
+                    console.log('📋 Dieta en el plan:', plan.dieta);
 
                     // Actualizar visualización con datos frescos
                     const isPremium = data.is_premium || false;
@@ -1763,6 +1824,8 @@
                     showReloadNotification('Plan actualizado correctamente');
                 } else {
                     console.error('❌ No se pudo obtener plan actualizado');
+                    console.error('❌ data.success:', data.success);
+                    console.error('❌ data.current_routine:', !!data.current_routine);
                 }
             } catch (error) {
                 console.error('❌ Error recargando plan:', error);
@@ -2173,7 +2236,11 @@
             console.log('🍽️ Meals count:', plan.dieta?.meals?.length);
             
             if (dietaContent && plan.dieta && plan.dieta.meals && plan.dieta.meals.length > 0) {
-                const totalKcal = plan.dieta.total_kcal || 2215;
+                const totalKcal = (typeof plan.dieta.total_kcal === 'number')
+                    ? plan.dieta.total_kcal
+                    : (Array.isArray(plan.dieta.meals)
+                        ? plan.dieta.meals.reduce((acc, m) => acc + (Number(m.kcal) || 0), 0)
+                        : 0);
                 let dietaHtml = `
                     <h1 class="section-title" style="margin-top: 50px;">Dieta</h1>
                     <p class="section-subtitle">${plan.dieta.titulo || 'Plan personalizado'} - ${totalKcal} kcal diarias</p>
@@ -2187,14 +2254,15 @@
                     if (index === 0) {
                         dietaHtml += `<div class="meal-title">${comida.nombre}</div>`;
                         if (comida.alimentos) {
+                            // Debug: log del primer alimento para ver estructura
+                            if (comida.alimentos.length > 0) {
+                                console.log('🍎 Estructura del primer alimento:', comida.alimentos[0]);
+                                console.log('🔍 Tipo:', typeof comida.alimentos[0]);
+                            }
+                            
                             comida.alimentos.forEach(alimento => {
-                                if (typeof alimento === 'string') {
-                                    dietaHtml += `<div class="food-item">• ${alimento}</div>`;
-                                } else if (typeof alimento === 'object' && alimento.alimento) {
-                                    dietaHtml += `<div class="food-item">• ${alimento.alimento} - ${alimento.cantidad}</div>`;
-                                } else {
-                                    dietaHtml += `<div class="food-item">• ${alimento}</div>`;
-                                }
+                                const alimentoText = renderAlimento(alimento);
+                                dietaHtml += `<div class="food-item">• ${alimentoText}</div>`;
                             });
                         }
                     }
@@ -2251,13 +2319,8 @@
                         dietaHtml += `<div class="meal-title">${comida.nombre}</div>`;
                         if (comida.alimentos) {
                             comida.alimentos.forEach(alimento => {
-                                if (typeof alimento === 'string') {
-                                    dietaHtml += `<div class="food-item">• ${alimento}</div>`;
-                                } else if (typeof alimento === 'object' && alimento.alimento) {
-                                    dietaHtml += `<div class="food-item">• ${alimento.alimento} - ${alimento.cantidad}</div>`;
-                                } else {
-                                    dietaHtml += `<div class="food-item">• ${alimento}</div>`;
-                                }
+                                const alimentoText = renderAlimento(alimento);
+                                dietaHtml += `<div class="food-item">• ${alimentoText}</div>`;
                             });
                         }
                     }
@@ -2489,14 +2552,8 @@
                     if (comida.alimentos) {
                         comida.alimentos.forEach(alimento => {
                             dietHTML += `<div class="food-item">`;
-                            if (typeof alimento === 'string') {
-                                dietHTML += `<span>${alimento}</span>`;
-                            } else {
-                                dietHTML += `<span>${alimento.nombre || alimento}</span>`;
-                                if (alimento.cantidad) {
-                                    dietHTML += `<span>${alimento.cantidad}</span>`;
-                                }
-                            }
+                            const alimentoText = renderAlimento(alimento);
+                            dietHTML += `<span>${alimentoText}</span>`;
                             dietHTML += `</div>`;
                         });
                     }
@@ -2684,6 +2741,115 @@
         // Hacer funciones globales
         window.openOverlay = openOverlay;
         window.closeOverlay = closeOverlay;
+
+        // ═══════════════════════════════════════════════════════════
+        // DETECCIÓN AUTOMÁTICA DE PAGO PREMIUM
+        // ═══════════════════════════════════════════════════════════
+        (async function checkPremiumActivation() {
+            console.log('🔍 Iniciando detección de pago premium...');
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const redirectStatus = urlParams.get('redirect_status');
+                const paymentIntent = urlParams.get('payment_intent');
+                const sessionId = urlParams.get('session_id');
+
+                console.log('📋 Parámetros URL:', {
+                    redirectStatus,
+                    paymentIntent: paymentIntent ? 'presente' : 'ausente',
+                    sessionId: sessionId ? 'presente' : 'ausente'
+                });
+
+                if (redirectStatus !== 'succeeded' || (!paymentIntent && !sessionId)) {
+                    console.log('ℹ️ No es un redirect de pago, continuando normal');
+                    return;
+                }
+
+                console.log('💳 Detectado pago exitoso - Activando premium automáticamente...');
+
+                // 1) Intentar localStorage
+                let userId = localStorage.getItem('user_id');
+                console.log('📦 user_id en localStorage:', userId);
+
+                // 2) Desde token JWT
+                if (!userId) {
+                    console.log('⚠️ user_id no en localStorage, buscando en token...');
+                    const token = localStorage.getItem('accessToken') || localStorage.getItem('token');
+                    if (token) {
+                        try {
+                            const payload = JSON.parse(atob(token.split('.')[1]));
+                            userId = payload.user_id || payload.sub;
+                            console.log('🔑 user_id obtenido de token JWT:', userId);
+                        } catch (e) {
+                            console.error('❌ Error parseando token:', e);
+                        }
+                    }
+                }
+
+                // 3) /user-status como último recurso
+                if (!userId) {
+                    try {
+                        console.log('🔄 Intentando obtener user_id desde /user-status...');
+                        const statusResp = await fetch('/user-status?user_id=0', { credentials: 'include' });
+                        if (statusResp.ok) {
+                            const statusData = await statusResp.json();
+                            userId = statusData.user_id;
+                            console.log('✅ user_id obtenido de /user-status:', userId);
+                            if (userId) localStorage.setItem('user_id', userId);
+                        }
+                    } catch (e) {
+                        console.error('❌ Error obteniendo /user-status:', e);
+                    }
+                }
+
+                if (!userId) {
+                    console.error('❌ No se pudo obtener user_id de ninguna fuente');
+                    alert('Error: No se pudo verificar tu identidad. Por favor, inicia sesión.');
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                console.log('✅ user_id confirmado:', userId);
+
+                // 4) Activar premium
+                console.log('🔄 Llamando a /stripe/activate-premium...');
+                const resp = await fetch('/stripe/activate-premium', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: parseInt(userId), session_id: sessionId || paymentIntent })
+                });
+                const result = await resp.json();
+                console.log('📊 Resultado activación premium:', result);
+
+                if (result.success) {
+                    if (result.is_premium) {
+                        console.log(`✅ Premium activado (${result.activated_by})`);
+                        localStorage.setItem('is_premium', 'true');
+                        localStorage.setItem('user_id', userId);
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                        setTimeout(() => window.location.reload(), 500);
+                    } else {
+                        console.log('⚠️ Usuario aún no premium, reintentando...');
+                        setTimeout(async () => {
+                            const retry = await fetch('/stripe/activate-premium', {
+                                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ user_id: parseInt(userId), session_id: sessionId || paymentIntent })
+                            });
+                            const retryResult = await retry.json();
+                            if (retryResult.success && retryResult.is_premium) {
+                                localStorage.setItem('is_premium', 'true');
+                                localStorage.setItem('user_id', userId);
+                                window.location.href = '/dashboard.html';
+                            }
+                        }, 2000);
+                    }
+                } else {
+                    console.error('❌ Error activando premium:', result.error);
+                }
+
+            } catch (e) {
+                console.error('❌ Error en detección automática de pago:', e);
+            }
+        })();
 
         // Event listeners para los botones de navegación
         document.addEventListener('DOMContentLoaded', async function() {
@@ -2883,7 +3049,10 @@
                         Tu plan ha sido modificado automáticamente:
                     </p>
                     <div id="changes-list-${Date.now()}" style="max-height: 120px; overflow-y: auto;">
-                        ${result.changes.map(change => `
+                        ${result.changes.map(change => {
+                            // Si change es un objeto, convertirlo a string legible
+                            const changeText = typeof change === 'object' ? JSON.stringify(change) : String(change);
+                            return `
                             <div style="
                                 background: rgba(255, 255, 255, 0.08);
                                 padding: 10px 14px;
@@ -2895,8 +3064,9 @@
                                 border-left: 3px solid #84cc16;
                                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
                                 transition: all 0.2s ease;
-                            " onmouseover="this.style.background='rgba(255, 255, 255, 0.12)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.08)'">• ${change}</div>
-                        `).join('')}
+                                " onmouseover="this.style.background='rgba(255, 255, 255, 0.12)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.08)'">• ${changeText}</div>
+                            `;
+                        }).join('')}
                     </div>
                 </div>
                 
@@ -3190,10 +3360,11 @@
             
             diet.meals.forEach(meal => {
                 html += `<div class="meal-section">`;
-                html += `<h4>${meal.name || 'Comida'}</h4>`;
+                html += `<h4>${meal.name || meal.nombre || 'Comida'}</h4>`;
                 if (meal.alimentos) {
                     meal.alimentos.forEach(food => {
-                        html += `<div class="food-item">${food}</div>`;
+                        const foodText = renderAlimento(food);
+                        html += `<div class="food-item">• ${foodText}</div>`;
                     });
                 }
                 html += '</div>';

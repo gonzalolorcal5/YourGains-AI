@@ -6,6 +6,13 @@ const form = document.getElementById('onboardingForm');
 const submitBtn = document.getElementById('submitBtn');
 const msg = document.getElementById('msg');
 
+// Elementos para manejo de días de entrenamiento
+const frequencySelect = document.getElementById('training_frequency');
+const daysContainer = document.getElementById('specific_days_container');
+const daysCheckboxes = document.querySelectorAll('input[name="training_days"]');
+const daysError = document.getElementById('days-error');
+const requiredDaysSpan = document.getElementById('required-days');
+
 // Verificar si hay sesión activa
 window.addEventListener('load', () => {
     if (!checkAuthOrRedirect()) {
@@ -13,8 +20,97 @@ window.addEventListener('load', () => {
     }
 });
 
+// Utilidad segura para obtener valores y detectar elementos faltantes
+function getFieldValueById(elementId) {
+    const element = document.getElementById(elementId);
+    if (!element) {
+        console.error(`[Onboarding] Elemento no encontrado en DOM: #${elementId}`);
+        throw new Error(`Falta el campo del formulario: ${elementId}`);
+    }
+    return element.value;
+}
+
+// Actualizar número requerido cuando se elige frecuencia
+if (frequencySelect && requiredDaysSpan) {
+    frequencySelect.addEventListener('change', function() {
+        const frequency = parseInt(this.value);
+        
+        if (frequency > 0) {
+            // Actualizar número requerido
+            requiredDaysSpan.textContent = frequency;
+            
+            // Limpiar selección previa
+            daysCheckboxes.forEach(cb => {
+                cb.checked = false;
+            });
+            
+            // Ocultar error
+            if (daysError) {
+                daysError.style.display = 'none';
+            }
+        }
+    });
+}
+
+// Validar número de días seleccionados
+daysCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const frequency = parseInt((frequencySelect && typeof frequencySelect.value !== 'undefined') ? frequencySelect.value : '0');
+        const selectedDays = document.querySelectorAll('input[name="training_days"]:checked').length;
+        
+        // Si se intenta seleccionar más días de los permitidos
+        if (selectedDays > frequency) {
+            // Desmarcar el último checkbox
+            this.checked = false;
+            
+            // Mostrar error
+            if (daysError) {
+                daysError.style.display = 'block';
+            }
+        } else if (selectedDays === frequency) {
+            // Si se seleccionaron exactamente los días correctos, ocultar error
+            if (daysError) {
+                daysError.style.display = 'none';
+            }
+        }
+    });
+});
+
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+    // Validar que se haya seleccionado frecuencia
+    const frequency = parseInt(getFieldValueById('training_frequency'));
+    if (!frequency || frequency === 0) {
+        msg.textContent = '⚠️ Debes seleccionar la frecuencia de entrenamiento';
+        msg.style.color = '#ef4444';
+        document.getElementById('training_frequency').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+    
+    // Validar días seleccionados
+    const selectedDays = document.querySelectorAll('input[name="training_days"]:checked').length;
+    
+    if (selectedDays === 0) {
+        msg.textContent = '⚠️ Debes seleccionar al menos un día de entrenamiento';
+        msg.style.color = '#ef4444';
+        if (daysContainer) {
+            daysContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+    }
+    
+    if (selectedDays !== frequency) {
+        if (daysError) {
+            daysError.style.display = 'block';
+        }
+        if (daysContainer) {
+            daysContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        msg.textContent = `⚠️ Debes seleccionar exactamente ${frequency} días de entrenamiento (seleccionaste ${selectedDays})`;
+        msg.style.color = '#ef4444';
+        return; // No enviar formulario
+    }
     
     // Deshabilitar botón
     submitBtn.disabled = true;
@@ -23,22 +119,31 @@ form.addEventListener('submit', async (e) => {
     try {
         // Recopilar datos del formulario
         const formData = {
-            altura: parseInt(document.getElementById('altura').value),
-            peso: parseFloat(document.getElementById('peso').value),
-            edad: parseInt(document.getElementById('edad').value),
-            sexo: document.getElementById('sexo').value,
-            objetivo: document.getElementById('objetivo').value,
-            experiencia: document.getElementById('experiencia').value,
+            altura: parseInt(getFieldValueById('altura')),
+            peso: parseFloat(getFieldValueById('peso')),
+            edad: parseInt(getFieldValueById('edad')),
+            sexo: getFieldValueById('sexo'),
+            experiencia: getFieldValueById('experiencia'),
             materiales: getSelectedMaterials(),
-            tipo_cuerpo: document.getElementById('tipo_cuerpo').value,
-            alergias: document.getElementById('alergias').value || null,
-            restricciones_dieta: document.getElementById('restricciones_dieta').value || null,
-            lesiones: document.getElementById('lesiones').value || null,
+            tipo_cuerpo: getFieldValueById('tipo_cuerpo'),
+            nivel_actividad: getFieldValueById('nivel_actividad'),  // NUEVO CAMPO - Para cálculo TMB
+            alergias: (document.getElementById('alergias') ? document.getElementById('alergias').value : null) || null,
+            restricciones_dieta: (document.getElementById('restricciones_dieta') ? document.getElementById('restricciones_dieta').value : null) || null,
+            lesiones: (document.getElementById('lesiones') ? document.getElementById('lesiones').value : null) || null,
             idioma: 'es',
             puntos_fuertes: null,
             puntos_debiles: null,
-            entrenar_fuerte: true
+            entrenar_fuerte: true,
+            
+            // NUEVOS CAMPOS - Onboarding avanzado
+            gym_goal: getFieldValueById('gym_goal'),
+            nutrition_goal: getFieldValueById('nutrition_goal'),
+            training_frequency: frequency,
+            training_days: Array.from(document.querySelectorAll('input[name="training_days"]:checked')).map(cb => cb.value)
         };
+        
+        // Debug: mostrar datos en consola
+        console.log('📤 Datos de onboarding:', formData);
 
         // Validaciones básicas
         if (formData.altura < 120 || formData.altura > 250) {
@@ -92,7 +197,8 @@ form.addEventListener('submit', async (e) => {
 });
 
 function getSelectedMaterials() {
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
-    return Array.from(checkboxes).map(cb => cb.value);
+    // Obtener solo checkboxes de materiales (excluir training_days)
+    const materialCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked:not([name="training_days"])');
+    return Array.from(materialCheckboxes).map(cb => cb.value);
 }
 

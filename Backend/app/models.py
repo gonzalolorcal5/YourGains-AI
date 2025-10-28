@@ -43,9 +43,13 @@ class Plan(Base):
     edad = Column(Integer, nullable=False)
     sexo = Column(String, nullable=False)
     experiencia = Column(String, nullable=False)
-    objetivo = Column(String, nullable=False)
+    objetivo = Column(String, nullable=False)  # Legacy field
+    objetivo_gym = Column(String, nullable=True)  # ganar_musculo, ganar_fuerza, mantener_forma, etc.
+    objetivo_dieta = Column(String, nullable=True)  # Legacy field
+    objetivo_nutricional = Column(String, nullable=True)  # volumen, definicion, mantenimiento, recomposicion
     materiales = Column(String, nullable=False)
     tipo_cuerpo = Column(String, nullable=True)
+    nivel_actividad = Column(String, default="moderado", nullable=False)  # sedentario, ligero, moderado, activo, muy_activo
     idioma = Column(String, default="es")
     puntos_fuertes = Column(String, nullable=True)
     puntos_debiles = Column(String, nullable=True)

@@ -1,14 +1,23 @@
 import os
 import json
 import regex as re
+import asyncio
 from dotenv import load_dotenv
 from app.schemas import PlanRequest
-from openai import OpenAI
+from openai import AsyncOpenAI
 import logging
+from app.utils.nutrition_calculator import get_complete_nutrition_plan
+from fastapi import HTTPException
 
 # Cargar .env desde la raíz del proyecto Backend
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), '.env'))
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+# Cliente OpenAI con timeout configurado
+client = AsyncOpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
+    timeout=120.0,  # 2 minutos para todas las llamadas
+    max_retries=2    # Reintentar 2 veces automáticamente
+)
 
 # 💰 MODELO DINÁMICO: Usar modelo barato en desarrollo, caro en producción
 ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
@@ -25,31 +34,113 @@ if ENVIRONMENT != 'production':
     MODEL = "gpt-3.5-turbo"
     print("🔒 FORZANDO GPT-3.5 Turbo para desarrollo")
 
+async def generar_plan_safe(user_data, user_id):
+    """Genera plan con GPT, con fallback a plan genérico"""
+    
+    try:
+        # Intentar con GPT
+        logger.info(f"🤖 Intentando generar plan con GPT para usuario {user_id}")
+        
+        plan_data = await generar_plan_personalizado(user_data)
+        
+        logger.info(f"✅ Plan GPT generado exitosamente")
+        return plan_data
+        
+    except (asyncio.CancelledError, asyncio.TimeoutError) as e:
+        # Si falla GPT, usar plan genérico
+        logger.warning(f"⚠️ GPT falló ({type(e).__name__}), usando plan genérico")
+        
+        from app.utils.routine_templates import get_generic_plan
+        plan_data = get_generic_plan(user_data)
+        
+        logger.info(f"✅ Plan genérico generado como fallback")
+        return plan_data
+        
+    except Exception as e:
+        # Para otros errores, también usar plan genérico
+        logger.error(f"❌ Error inesperado: {str(e)}, usando plan genérico")
+        logger.exception(e)
+        
+        from app.utils.routine_templates import get_generic_plan
+        plan_data = get_generic_plan(user_data)
+        
+        return plan_data
+
 logger = logging.getLogger(__name__)
 
-def generar_plan_personalizado(datos):
-    if datos['sexo'].lower() in ["hombre", "masculino", "male"]:
-        tmb = 10 * datos['peso'] + 6.25 * datos['altura'] - 5 * datos['edad'] + 5
-    else:
-        tmb = 10 * datos['peso'] + 6.25 * datos['altura'] - 5 * datos['edad'] - 161
-
-    mantenimiento = round(tmb * 1.55)
-    if "def" in datos['objetivo'].lower():
-        ajuste_kcal = -300
-    elif "vol" in datos['objetivo'].lower() or "gan" in datos['objetivo'].lower():
-        ajuste_kcal = +300
-    else:
-        ajuste_kcal = 0
-    kcal_objetivo = mantenimiento + ajuste_kcal
+async def generar_plan_personalizado(datos):
+    # ═══════════════════════════════════════════════════════
+    # CALCULAR NUTRICIÓN CIENTÍFICAMENTE CON TMB/TDEE
+    # ═══════════════════════════════════════════════════════
+    
+    nutrition_goal = datos.get('nutrition_goal', 'mantenimiento')
+    
+    logger.info("=" * 70)
+    logger.info("🧮 CALCULANDO PLAN NUTRICIONAL CIENTÍFICO")
+    logger.info("=" * 70)
+    logger.info(f"📊 Objetivo nutricional: {nutrition_goal}")
+    
+    # Calcular plan nutricional con función científica (TMB + TDEE)
+    nutrition_plan = get_complete_nutrition_plan(datos, nutrition_goal)
+    
+    tmb = nutrition_plan['tmb']
+    tdee = nutrition_plan['tdee']
+    kcal_objetivo = nutrition_plan['calorias_objetivo']
+    macros = nutrition_plan['macros']
+    
+    # Calcular diferencia vs mantenimiento para logging
+    diferencia_mantenimiento = kcal_objetivo - tdee
+    
+    logger.info("✅ RESULTADOS DEL CÁLCULO CIENTÍFICO:")
+    logger.info(f"   🔥 TMB (Metabolismo Basal): {tmb} kcal/día")
+    logger.info(f"   ⚖️ TDEE (Mantenimiento): {tdee} kcal/día")
+    logger.info(f"   🎯 Calorías objetivo ({nutrition_goal}): {kcal_objetivo} kcal/día")
+    logger.info(f"   📊 Diferencia vs mantenimiento: {diferencia_mantenimiento:+d} kcal")
+    logger.info(f"   🥩 Macros objetivo:")
+    logger.info(f"      - Proteína: {macros['proteina']}g/día")
+    logger.info(f"      - Carbohidratos: {macros['carbohidratos']}g/día")
+    logger.info(f"      - Grasas: {macros['grasas']}g/día")
+    logger.info("=" * 70)
+    
+    # Mantener compatibilidad con código antiguo
+    mantenimiento = tdee
 
     idioma = datos.get('idioma', 'es').lower()
 
+    # Obtener objetivos separados
+    gym_goal = datos.get('gym_goal', 'ganar_musculo')
+    nutrition_goal = datos.get('nutrition_goal', 'mantenimiento')
+    training_frequency = datos.get('training_frequency', 4)
+    training_days = datos.get('training_days', ['lunes', 'martes', 'jueves', 'viernes'])
+    
     texto_dieta = f"""
-Quiero que ahora generes una dieta hiperpersonalizada. Comienza explicando:
+Quiero que ahora generes una dieta hiperpersonalizada basada en cálculos científicos (fórmula Mifflin-St Jeor).
 
-1. La Tasa Metabólica Basal calculada es: {round(tmb)} kcal/día.
-2. Las calorías de mantenimiento aproximadas son: {mantenimiento} kcal/día.
-3. Como el objetivo del usuario es {datos['objetivo']}, se ajustarán las kcal a: {kcal_objetivo} kcal/día.
+CÁLCULOS NUTRICIONALES CIENTÍFICOS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. TMB (Tasa Metabólica Basal): {tmb} kcal/día
+   - Calorías que el cuerpo necesita en reposo absoluto
+   
+2. TDEE (Gasto Energético Total Diario): {tdee} kcal/día
+   - Calorías de mantenimiento (TMB × factor actividad)
+   - Nivel de actividad: {datos.get('nivel_actividad', 'moderado')}
+   
+3. Calorías objetivo ({nutrition_goal}): {kcal_objetivo} kcal/día
+   - Ajuste: {diferencia_mantenimiento:+d} kcal vs mantenimiento
+
+MACRONUTRIENTES OBJETIVO (CALCULADOS CIENTÍFICAMENTE):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Proteína: {macros['proteina']}g/día ({macros['proteina'] * 4} kcal)
+- Carbohidratos: {macros['carbohidratos']}g/día ({macros['carbohidratos'] * 4} kcal)
+- Grasas: {macros['grasas']}g/día ({macros['grasas'] * 9} kcal)
+
+INSTRUCCIONES CRÍTICAS PARA LA DIETA:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. La dieta DEBE cumplir EXACTAMENTE con {kcal_objetivo} kcal/día total
+2. Los macros deben aproximarse lo máximo posible a los valores calculados arriba
+3. Distribuir en 5 comidas balanceadas al día
+4. Cada comida debe especificar cantidades exactas en gramos/ml
+5. Los macros totales deben sumar aproximadamente los valores objetivo
 
 Ahora, crea una dieta estructurada en 5 comidas al día. Usa los siguientes alimentos de preferencia:
 - Frutas: dátiles (preentreno), sandía, plátano, manzana.
@@ -120,42 +211,86 @@ IMPORTANTE: Las repeticiones deben ser strings como "8-10", "12-15", etc. NO nú
 """
 
     prompt = f"""
-Eres un entrenador profesional de fuerza y nutrición. Genera un plan completo.
+Eres un entrenador profesional de fuerza y nutrición. Genera un plan completo y personalizado.
 
-Perfil del usuario:
-- Edad: {datos['edad']}
+═══════════════════════════════════════════════
+PERFIL DEL USUARIO:
+═══════════════════════════════════════════════
+- Edad: {datos['edad']} años
 - Altura: {datos['altura']} cm
 - Peso: {datos['peso']} kg
 - Sexo: {datos['sexo']}
-- Nivel: {datos['experiencia']}
-- Objetivo: {datos['objetivo']}
+- Nivel de experiencia: {datos['experiencia']}
 - Tipo de cuerpo: {datos.get('tipo_cuerpo', 'ninguno')}
 - Puntos fuertes: {datos.get('puntos_fuertes', 'ninguno')}
 - Puntos débiles: {datos.get('puntos_debiles', 'ninguno')}
 - Lesiones: {datos.get('lesiones', 'ninguna')}
 - Intensidad deseada: {datos.get('entrenar_fuerte', 'media')}
-- Materiales disponibles: {datos['materiales']}
+
+═══════════════════════════════════════════════
+OBJETIVOS SEPARADOS:
+═══════════════════════════════════════════════
+🏋️ OBJETIVO DE GIMNASIO: {gym_goal}
+   (Enfoca los ejercicios, volumen y estructura de la rutina hacia este objetivo)
+
+🍎 OBJETIVO NUTRICIONAL: {nutrition_goal}
+   (Ajusta las calorías y distribución de macros según este objetivo)
+
+═══════════════════════════════════════════════
+DISPONIBILIDAD Y EQUIPAMIENTO:
+═══════════════════════════════════════════════
+- Días disponibles: {training_frequency} días/semana
+- Días específicos: {', '.join(training_days)}
+- Equipamiento disponible: {', '.join(datos['materiales'])}
+
+═══════════════════════════════════════════════
+RESTRICCIONES:
+═══════════════════════════════════════════════
 - Alergias: {datos.get('alergias', 'ninguna')}
-- Restricciones dieta: {datos.get('restricciones', 'ninguna')}
+- Restricciones dietéticas: {datos.get('restricciones', 'ninguna')}
 - Idioma: {idioma}
 
 {texto_dieta}
 {texto_rutina}
 
-IMPORTANTE: 
-1. Genera una rutina COMPLETA con al menos 4 días de entrenamiento
-2. Cada día debe tener al menos 4-6 ejercicios diferentes
-3. Genera una dieta COMPLETA con exactamente 5 comidas al día
-4. Devuelve únicamente un JSON válido, con esta estructura exacta:
+INSTRUCCIONES CRÍTICAS:
+
+1. RUTINA DE ENTRENAMIENTO:
+   - Diseña la rutina para EXACTAMENTE {training_frequency} días
+   - Distribuye los entrenamientos en los días: {', '.join(training_days)}
+   - Cada día debe tener su nombre específico (ej: "Lunes - Pecho y Tríceps")
+   - Ajusta los ejercicios y volumen según el objetivo de gym: {gym_goal}
+     * Si es "ganar_musculo": Hipertrofia - 8-12 reps, 3-4 series, descansos 60-90s
+     * Si es "ganar_fuerza": Fuerza - 4-6 reps, 4-5 series, descansos 2-3min
+   - Considera el equipamiento disponible
+   - Cada día debe tener 4-6 ejercicios diferentes
+
+2. PLAN NUTRICIONAL:
+   - Calcula calorías según objetivo nutricional: {nutrition_goal}
+     * Si "volumen": Superávit de ~300 kcal → {kcal_objetivo} kcal/día
+     * Si "definicion": Déficit de ~300 kcal → {kcal_objetivo} kcal/día
+     * Si "mantenimiento": Calorías de mantenimiento → {kcal_objetivo} kcal/día
+   
+   - Distribución de macros:
+     * Proteína: 1.8-2.2g por kg de peso corporal
+     * Ajustar carbohidratos y grasas según objetivo
+   
+   - Respetar restricciones: {datos.get('restricciones', 'ninguna')}
+   - Evitar alergias: {datos.get('alergias', 'ninguna')}
+   - Generar exactamente 5 comidas al día
+
+3. FORMATO DE RESPUESTA:
+   Devuelve únicamente un JSON válido, con esta estructura exacta:
 
 {{
   "rutina": {{
     "dias": [
       {{
         "dia": "Lunes",
+        "grupos_musculares": "Pecho y Tríceps",
         "ejercicios": [
           {{
-            "nombre": "Sentadillas",
+            "nombre": "Press banca",
             "series": 4,
             "repeticiones": "8-10",
             "descanso": "90 segundos"
@@ -163,7 +298,12 @@ IMPORTANTE:
         ]
       }}
     ],
-    "consejos": ["Consejo 1", "Consejo 2"]
+    "consejos": ["Consejo 1", "Consejo 2"],
+    "metadata": {{
+      "gym_goal": "{gym_goal}",
+      "training_frequency": {training_frequency},
+      "training_days": {json.dumps(training_days)}
+    }}
   }},
   "dieta": {{
     "resumen": "Explicación de TMB y ajuste calórico",
@@ -180,7 +320,10 @@ IMPORTANTE:
         "alternativas": ["alternativa 1", "alternativa 2"]
       }}
     ],
-    "consejos_finales": ["Consejo 1", "Consejo 2"]
+    "consejos_finales": ["Consejo 1", "Consejo 2"],
+    "metadata": {{
+      "nutrition_goal": "{nutrition_goal}"
+    }}
   }},
   "motivacion": "Frase motivacional breve y personalizada para el usuario"
 }}
@@ -197,12 +340,12 @@ REGLAS CRÍTICAS:
     logger.info(f"🔄 Generando plan personalizado para usuario (modelo: {MODEL})")
     
     try:
-        response = client.chat.completions.create(
+        response = await client.chat.completions.create(
             model=MODEL,  # ✅ Usa modelo dinámico según ambiente
             messages=[{"role": "user", "content": prompt}],
             temperature=0.85,
             max_tokens=2500,  # 🛡️ Limitar tokens para evitar excesos
-            timeout=30  # 🛡️ Timeout para evitar cuelgues
+            timeout=120.0  # 🛡️ Timeout aumentado a 2 minutos
         )
         
         # 📊 Logging de tokens usados
@@ -216,9 +359,26 @@ REGLAS CRÍTICAS:
         logger.info(f"✅ Plan generado exitosamente (modelo: {MODEL})")
         print("Respuesta cruda de GPT:", contenido[:200] + "...")  # Solo mostrar primeros 200 chars
         
+    except asyncio.TimeoutError:
+        logger.error("❌ GPT timeout después de 120s")
+        raise HTTPException(
+            status_code=504,
+            detail="La generación del plan tardó demasiado. Intenta de nuevo."
+        )
+        
+    except asyncio.CancelledError:
+        logger.warning("⚠️ Generación de plan cancelada por el cliente")
+        raise HTTPException(
+            status_code=499,  # Client Closed Request
+            detail="Generación cancelada por el cliente"
+        )
+        
     except Exception as e:
         logger.error(f"❌ Error generando plan: {e}")
-        raise
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error al generar plan: {str(e)}"
+        )
 
     # 🧹 LIMPIAR MARKDOWN SI EXISTE
     response_text = contenido.strip()
@@ -253,6 +413,34 @@ REGLAS CRÍTICAS:
         logger.error(f"❌ Error parseando JSON: {e}")
         logger.error(f"JSON problemático: {json_str[:500]}")
         raise
+
+    # ═══════════════════════════════════════════════════════
+    # AÑADIR METADATOS CIENTÍFICOS A LA DIETA
+    # ═══════════════════════════════════════════════════════
+    
+    from datetime import datetime
+    
+    # Asegurar que la dieta tenga metadata
+    if 'metadata' not in data['dieta']:
+        data['dieta']['metadata'] = {}
+    
+    # Añadir valores calculados científicamente
+    data['dieta']['metadata'].update({
+        'tmb': tmb,
+        'tdee': tdee,
+        'calorias_objetivo': kcal_objetivo,
+        'macros_objetivo': macros,
+        'fecha_calculo': datetime.now().isoformat(),
+        'nivel_actividad': datos.get('nivel_actividad', 'moderado'),
+        'metodo_calculo': 'Mifflin-St Jeor',
+        'diferencia_mantenimiento': diferencia_mantenimiento
+    })
+    
+    logger.info("📦 Metadatos científicos añadidos a la dieta:")
+    logger.info(f"   TMB: {tmb} kcal/día")
+    logger.info(f"   TDEE: {tdee} kcal/día")
+    logger.info(f"   Calorías objetivo: {kcal_objetivo} kcal/día")
+    logger.info(f"   Método: Mifflin-St Jeor")
 
     return {
         "rutina": data["rutina"],

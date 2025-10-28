@@ -206,12 +206,27 @@ def obtener_rutina_actual(
     """
     try:
         print(f"📥 Solicitando rutina para user_id: {user_id}")
+        
+        # Validar user_id
+        if not user_id or user_id <= 0:
+            print(f"❌ user_id inválido: {user_id}")
+            raise HTTPException(status_code=400, detail="ID de usuario inválido")
+        
+        # Validar sesión de BD
+        if db is None:
+            print(f"❌ Sesión de BD es None")
+            raise HTTPException(status_code=500, detail="Error de conexión a la base de datos")
+        
         usuario = db.query(Usuario).filter(Usuario.id == user_id).first()
         if not usuario:
             print(f"❌ Usuario {user_id} no encontrado")
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
         
         # 🔍 LOGGING CRÍTICO: Verificar estado del usuario
+        try:
+            db.refresh(usuario)
+        except Exception:
+            pass
         print(f"🔍 Usuario encontrado: ID={usuario.id}, Email={usuario.email}")
         print(f"🔍 Onboarding completado: {usuario.onboarding_completed}")
         print(f"🔍 current_routine existe: {bool(usuario.current_routine)}")
@@ -237,16 +252,33 @@ def obtener_rutina_actual(
             # Si es free, usar template genérico
             print(f"📤 Usando template genérico para usuario free")
             
-            # Obtener datos del usuario desde la tabla planes para personalizar el template
-            plan_data = db.query(Plan).filter(Plan.user_id == user_id).first()
+            # Obtener datos del usuario desde el Plan más reciente para personalizar el template
+            plan_data = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
             if plan_data:
+                # Obtener datos físicos del plan más reciente
+                peso = float(plan_data.peso) if plan_data.peso else 75.0
+                altura_cm = float(plan_data.altura) if plan_data.altura else 175.0
+                altura_m = altura_cm / 100  # Convertir cm a metros
+                edad = int(plan_data.edad) if plan_data.edad else 25
+                sexo = plan_data.sexo or 'masculino'
+                objetivo = plan_data.objetivo or 'ganar músculo'
+                
                 user_data = {
-                    "sexo": plan_data.sexo or 'masculino',
-                    "altura": float(plan_data.altura) / 100 if plan_data.altura else 1.75,  # Convertir cm a metros
-                    "peso": float(plan_data.peso) if plan_data.peso else 75.0,
-                    "edad": int(plan_data.edad) if plan_data.edad else 25,
-                    "objetivo": plan_data.objetivo or 'ganar músculo'
+                    "sexo": sexo,
+                    "altura": altura_cm,  # Pasar altura en cm directamente
+                    "peso": peso,
+                    "edad": edad,
+                    "objetivo": objetivo,
+                    "nivel_actividad": plan_data.nivel_actividad  # Campo obligatorio del onboarding, siempre tiene valor
                 }
+                
+                print(f"📊 Datos usuario para rutina FREE:")
+                print(f"   Peso: {peso}kg")
+                print(f"   Altura: {altura_cm}cm ({altura_m}m)")
+                print(f"   Edad: {edad} años")
+                print(f"   Sexo: {sexo}")
+                print(f"   Objetivo: {objetivo}")
+                print(f"   Nivel actividad: {plan_data.nivel_actividad}")  # Campo obligatorio del onboarding
             else:
                 # Datos por defecto si no hay plan
                 user_data = {
@@ -254,56 +286,81 @@ def obtener_rutina_actual(
                     "altura": 1.75,
                     "peso": 75.0,
                     "edad": 25,
-                    "objetivo": 'ganar músculo'
+                    "objetivo": 'ganar músculo',
+                    "nivel_actividad": 'ligero'  # ✅ AÑADIDO: nivel_actividad en fallback
                 }
+                print(f"⚠️ No se encontró plan para usuario {user_id}, usando datos por defecto")
+                print(f"   Nivel actividad por defecto: ligero")
             
             # Importar y usar template genérico
-            from app.utils.routine_templates import get_generic_plan
-            generic_plan = get_generic_plan(user_data)
+            try:
+                from app.utils.routine_templates import get_generic_plan
+                print(f"📦 Generando plan genérico con datos: {user_data}")
+                generic_plan = get_generic_plan(user_data)
+                print(f"✅ Plan genérico generado exitosamente")
+            except Exception as e:
+                print(f"❌ Error generando plan genérico: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"Error generando rutina genérica: {str(e)}")
             
             # Convertir rutina genérica al formato esperado por el frontend
-            exercises = []
-            if "dias" in generic_plan["rutina"]:
-                for dia in generic_plan["rutina"]["dias"]:
-                    if "ejercicios" in dia:  # Solo días con ejercicios
-                        for ejercicio in dia["ejercicios"]:
-                            exercises.append({
-                                "name": ejercicio.get("nombre", ""),
-                                "sets": ejercicio.get("series", 3),
-                                "reps": ejercicio.get("reps", "10-12"),
-                                "weight": ejercicio.get("peso", "moderado"),
-                                "day": dia.get("dia", "")
-                            })
-            
-            current_routine = {
-                "exercises": exercises,
-                "schedule": {},
-                "created_at": "2024-01-01T00:00:00",
-                "version": "generic-1.0.0",
-                "is_generic": True,  # Marcar como genérico
-                "titulo": generic_plan["rutina"]["titulo"]  # Incluir título personalizado
-            }
-            
-            # Convertir dieta genérica al formato esperado
-            meals = []
-            for comida in generic_plan["dieta"]["comidas"]:
-                meals.append({
-                    "nombre": comida.get("tipo", ""),
-                    "kcal": sum([alimento.get("calorias", 0) for alimento in comida.get("alimentos", [])]),
-                    "alimentos": [f"{alimento['nombre']} - {alimento['cantidad']}" for alimento in comida.get("alimentos", [])],
-                    "total": comida.get("total", "0 kcal")
-                })
-            
-            current_diet = {
-                "meals": meals,
-                "total_kcal": sum([meal["kcal"] for meal in meals]),
-                "macros": {},
-                "objetivo": user_data["objetivo"],
-                "created_at": "2024-01-01T00:00:00",
-                "version": "generic-1.0.0",
-                "is_generic": True,  # Marcar como genérico
-                "titulo": generic_plan["dieta"]["titulo"]  # Incluir título personalizado
-            }
+            try:
+                print(f"🔄 Convirtiendo rutina genérica al formato del frontend...")
+                exercises = []
+                if "dias" in generic_plan["rutina"]:
+                    print(f"📋 Procesando {len(generic_plan['rutina']['dias'])} días de rutina")
+                    for dia in generic_plan["rutina"]["dias"]:
+                        if "ejercicios" in dia:  # Solo días con ejercicios
+                            for ejercicio in dia["ejercicios"]:
+                                exercises.append({
+                                    "name": ejercicio.get("nombre", ""),
+                                    "sets": ejercicio.get("series", 3),
+                                    "reps": ejercicio.get("reps", "10-12"),
+                                    "weight": ejercicio.get("peso", "moderado"),
+                                    "day": dia.get("dia", "")
+                                })
+                
+                current_routine = {
+                    "exercises": exercises,
+                    "schedule": {},
+                    "created_at": "2024-01-01T00:00:00",
+                    "version": "generic-1.0.0",
+                    "is_generic": True,  # Marcar como genérico
+                    "titulo": generic_plan["rutina"]["titulo"]  # Incluir título personalizado
+                }
+                
+                # Convertir dieta genérica al formato esperado
+                meals = []
+                for comida in generic_plan["dieta"]["comidas"]:
+                    # Los alimentos ya vienen como strings en el formato correcto
+                    alimentos_lista = comida.get("alimentos", [])
+                    kcal_comida = comida.get("kcal", 0)
+                    
+                    meals.append({
+                        "nombre": comida.get("nombre", ""),
+                        "kcal": kcal_comida,
+                        "alimentos": alimentos_lista,  # Ya están en formato string correcto
+                        "total": f"{kcal_comida} kcal"
+                    })
+                
+                # Obtener el resumen de la dieta genérica (ya contiene las calorías correctas)
+                resumen_dieta = generic_plan["dieta"].get("resumen", f"Plan nutricional para {user_data['objetivo']}")
+                print(f"📊 Resumen de dieta genérica: {resumen_dieta}")
+                
+                current_diet = {
+                    "meals": meals,
+                    "total_kcal": sum([meal["kcal"] for meal in meals]),
+                    "macros": {},
+                    "objetivo": user_data["objetivo"],
+                    "created_at": "2024-01-01T00:00:00",
+                    "version": "generic-1.0.0",
+                    "is_generic": True,  # Marcar como genérico
+                    "titulo": resumen_dieta  # Usar resumen como título (ya contiene calorías correctas)
+                }
+                
+                print(f"✅ Conversión completada: {len(exercises)} ejercicios, {len(meals)} comidas")
+            except Exception as e:
+                print(f"❌ Error convirtiendo plan genérico: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"Error convirtiendo plan genérico: {str(e)}")
         
         print(f"📊 Rutina preparada: {len(current_routine.get('exercises', []))} ejercicios")
         print(f"📊 Dieta preparada: {len(current_diet.get('meals', []))} comidas")
