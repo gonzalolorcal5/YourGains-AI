@@ -217,16 +217,24 @@ def obtener_rutina_actual(
             print(f"❌ Sesión de BD es None")
             raise HTTPException(status_code=500, detail="Error de conexión a la base de datos")
         
+        # IMPORTANTE: Invalidar cache de SQLAlchemy y hacer query fresca
+        db.expire_all()
+        
         usuario = db.query(Usuario).filter(Usuario.id == user_id).first()
         if not usuario:
             print(f"❌ Usuario {user_id} no encontrado")
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
         
         # 🔍 LOGGING CRÍTICO: Verificar estado del usuario
+        # Forzar refresh del objeto desde BD para obtener datos frescos
         try:
             db.refresh(usuario)
         except Exception:
-            pass
+            # Si refresh falla, hacer query nueva
+            db.expire_all()
+            usuario = db.query(Usuario).filter(Usuario.id == user_id).first()
+            if not usuario:
+                raise HTTPException(status_code=404, detail="Usuario no encontrado después de refresh")
         print(f"🔍 Usuario encontrado: ID={usuario.id}, Email={usuario.email}")
         print(f"🔍 Onboarding completado: {usuario.onboarding_completed}")
         print(f"🔍 current_routine existe: {bool(usuario.current_routine)}")
@@ -248,6 +256,104 @@ def obtener_rutina_actual(
             print(f"📤 Usando current_routine para usuario premium")
             current_routine = deserialize_json(usuario.current_routine, "current_routine")
             current_diet = deserialize_json(usuario.current_diet or "{}", "current_diet")
+            
+            # 🔍 DEBUG: Verificar contenido de current_diet después de deserializar
+            print(f"🔍 DEBUG current_diet después de deserializar:")
+            print(f"   Tipo: {type(current_diet)}")
+            print(f"   Tiene 'macros': {'macros' in current_diet if isinstance(current_diet, dict) else 'N/A'}")
+            if isinstance(current_diet, dict) and 'macros' in current_diet:
+                macros = current_diet['macros']
+                print(f"   macros['proteina']: {macros.get('proteina', 'NO ENCONTRADO')}")
+                print(f"   macros['carbohidratos']: {macros.get('carbohidratos', 'NO ENCONTRADO')}")
+                print(f"   macros['grasas']: {macros.get('grasas', 'NO ENCONTRADO')}")
+                print(f"   total_kcal: {current_diet.get('total_kcal', 'NO ENCONTRADO')}")
+            else:
+                print(f"   ❌ current_diet no tiene macros o no es dict")
+            
+            # Si current_diet está vacío o no tiene macros, intentar leer desde Plan.dieta como respaldo
+            if (not current_diet or 
+                not isinstance(current_diet, dict) or 
+                not current_diet.get('macros') or 
+                not any(current_diet.get('macros', {}).values())):
+                print(f"⚠️ current_diet vacío o sin macros, intentando leer desde Plan.dieta...")
+                plan_data = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
+                if plan_data and plan_data.dieta:
+                    try:
+                        dieta_plan = json.loads(plan_data.dieta)
+                        print(f"✅ Leyendo desde Plan.dieta (Plan ID: {plan_data.id})")
+                        # Actualizar current_diet con los datos del Plan
+                        if isinstance(dieta_plan, dict):
+                            current_diet = dieta_plan
+                            print(f"✅ current_diet actualizado desde Plan.dieta")
+                            print(f"   macros: {current_diet.get('macros', {})}")
+                            print(f"   total_kcal: {current_diet.get('total_kcal', 'N/A')}")
+                    except Exception as e:
+                        print(f"❌ Error leyendo Plan.dieta: {e}")
+        elif is_premium and not usuario.current_routine:
+            # Usuario premium pero sin current_routine → intentar generar o usar plan de tabla
+            print(f"⚠️ Usuario premium sin current_routine, intentando usar plan de tabla planes...")
+            plan_data = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
+            if plan_data and plan_data.rutina and plan_data.dieta:
+                try:
+                    # Usar el plan guardado en tabla planes
+                    print(f"✅ Usando plan de tabla planes (ID: {plan_data.id})")
+                    rutina_plan = json.loads(plan_data.rutina)
+                    dieta_plan = json.loads(plan_data.dieta)
+                    
+                    # Convertir a formato current_routine/current_diet
+                    exercises = []
+                    if "dias" in rutina_plan:
+                        for dia in rutina_plan["dias"]:
+                            for ejercicio in dia.get("ejercicios", []):
+                                exercises.append({
+                                    "name": ejercicio.get("nombre", ""),
+                                    "sets": ejercicio.get("series", 3),
+                                    "reps": ejercicio.get("repeticiones", "10-12"),
+                                    "weight": "moderado",
+                                    "day": dia.get("dia", "")
+                                })
+                    
+                    current_routine = {
+                        "exercises": exercises,
+                        "schedule": {},
+                        "created_at": "2024-01-01T00:00:00",
+                        "version": "1.0.0",
+                        "is_generic": False
+                    }
+                    
+                    # Obtener macros de dieta_plan (ya calculados)
+                    macros_dieta = dieta_plan.get("macros", {})
+                    # Si no existen, calcular desde comidas
+                    if not macros_dieta or all(v == 0 for v in macros_dieta.values()):
+                        proteina_total = sum(int(comida.get("macros", {}).get("proteinas", 0) or 0) for comida in dieta_plan.get("comidas", []))
+                        carbohidratos_total = sum(int(comida.get("macros", {}).get("hidratos", 0) or 0) for comida in dieta_plan.get("comidas", []))
+                        grasas_total = sum(int(comida.get("macros", {}).get("grasas", 0) or 0) for comida in dieta_plan.get("comidas", []))
+                        macros_dieta = {
+                            "proteina": round(proteina_total, 1),
+                            "carbohidratos": round(carbohidratos_total, 1),
+                            "grasas": round(grasas_total, 1)
+                        }
+                    
+                    current_diet = {
+                        "meals": dieta_plan.get("comidas", []),
+                        "total_kcal": dieta_plan.get("total_calorias", 2200),
+                        "macros": macros_dieta,
+                        "objetivo": plan_data.objetivo_nutricional or plan_data.objetivo or "mantenimiento",
+                        "created_at": "2024-01-01T00:00:00",
+                        "version": "1.0.0",
+                        "is_generic": False
+                    }
+                    
+                    print(f"✅ Plan convertido: {len(exercises)} ejercicios, {len(current_diet.get('meals', []))} comidas")
+                except Exception as e:
+                    print(f"❌ Error usando plan de tabla: {e}, cayendo a template genérico")
+                    plan_data = None  # Forzar usar template genérico
+            
+            if not plan_data or not plan_data.rutina:
+                # Fallback: template genérico (pero aún es premium, solo muestra template)
+                print(f"📤 Usando template genérico para usuario premium (sin plan disponible)")
+                plan_data = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
+                # Continuar al bloque de template genérico abajo (línea ~302)
         else:
             # Si es free, usar template genérico
             print(f"📤 Usando template genérico para usuario free")
@@ -346,10 +452,23 @@ def obtener_rutina_actual(
                 resumen_dieta = generic_plan["dieta"].get("resumen", f"Plan nutricional para {user_data['objetivo']}")
                 print(f"📊 Resumen de dieta genérica: {resumen_dieta}")
                 
+                # Obtener macros de generic_plan (ya calculados en get_generic_plan)
+                macros_dieta = generic_plan["dieta"].get("macros", {})
+                # Si no existen, calcular desde comidas
+                if not macros_dieta or all(v == 0 for v in macros_dieta.values()):
+                    proteina_total = sum(int(comida.get("macros", {}).get("proteinas", 0) or 0) for comida in generic_plan["dieta"].get("comidas", []))
+                    carbohidratos_total = sum(int(comida.get("macros", {}).get("hidratos", 0) or 0) for comida in generic_plan["dieta"].get("comidas", []))
+                    grasas_total = sum(int(comida.get("macros", {}).get("grasas", 0) or 0) for comida in generic_plan["dieta"].get("comidas", []))
+                    macros_dieta = {
+                        "proteina": round(proteina_total, 1),
+                        "carbohidratos": round(carbohidratos_total, 1),
+                        "grasas": round(grasas_total, 1)
+                    }
+                
                 current_diet = {
                     "meals": meals,
                     "total_kcal": sum([meal["kcal"] for meal in meals]),
-                    "macros": {},
+                    "macros": macros_dieta,
                     "objetivo": user_data["objetivo"],
                     "created_at": "2024-01-01T00:00:00",
                     "version": "generic-1.0.0",
@@ -372,6 +491,27 @@ def obtener_rutina_actual(
         print(f"🚀 current_routine existe: {bool(current_routine)}")
         print(f"🚀 current_diet existe: {bool(current_diet)}")
         
+        # 🔍 LOGGING CRÍTICO: Verificar macros en current_diet antes de devolver
+        if isinstance(current_diet, dict):
+            print(f"🔍 VERIFICACIÓN FINAL DE MACROS:")
+            print(f"   current_diet.tipo: {type(current_diet)}")
+            print(f"   current_diet tiene 'macros': {'macros' in current_diet}")
+            if 'macros' in current_diet:
+                macros = current_diet['macros']
+                print(f"   macros.tipo: {type(macros)}")
+                print(f"   macros contenido: {macros}")
+                if isinstance(macros, dict):
+                    print(f"   ✅ Macros válidos encontrados:")
+                    print(f"      proteina: {macros.get('proteina', 'NO ENCONTRADO')}")
+                    print(f"      carbohidratos: {macros.get('carbohidratos', 'NO ENCONTRADO')}")
+                    print(f"      grasas: {macros.get('grasas', 'NO ENCONTRADO')}")
+                else:
+                    print(f"   ❌ macros no es dict, es: {type(macros)}")
+            else:
+                print(f"   ❌ current_diet NO tiene 'macros'")
+                print(f"   current_diet keys: {list(current_diet.keys())}")
+            print(f"   total_kcal: {current_diet.get('total_kcal', 'NO ENCONTRADO')}")
+        
         return {
             "success": True,
             "current_routine": current_routine,
@@ -392,7 +532,18 @@ def obtener_dieta_actual(
     Obtiene la dieta actual del usuario desde current_diet
     """
     try:
+        # CRÍTICO: Refrescar datos del usuario desde BD para obtener la versión más reciente
+        db.refresh(usuario)
+        
         current_diet = deserialize_json(usuario.current_diet or "{}", "current_diet")
+        
+        # Si no hay current_diet, intentar obtener del último plan como fallback
+        if not current_diet or not current_diet.get("meals") and not current_diet.get("comidas"):
+            planes = db.query(Plan).filter(Plan.user_id == usuario.id).order_by(Plan.fecha_creacion.desc()).limit(1).all()
+            if planes:
+                plan = planes[0]
+                current_diet = json.loads(plan.dieta)
+        
         return {
             "success": True,
             "current_diet": current_diet,

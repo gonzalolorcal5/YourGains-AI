@@ -1661,6 +1661,24 @@
                     // Añadir respuesta del chat
                     addMessage(data.response);
                     
+                    // Si se actualizó el plan, forzar recarga completa
+                    if (data.success && data.plan_updated) {
+                        console.log('✅ Plan actualizado, recargando página...');
+                        
+                        // Mostrar el mensaje de respuesta
+                        if (data.response) {
+                            addMessage(data.response, 'assistant');
+                        }
+                        
+                        // FORZAR RECARGA INMEDIATA
+                        setTimeout(() => {
+                            console.log('🔄 Ejecutando location.reload()...');
+                            location.reload(true);
+                        }, 1500);
+                        
+                        return; // No continuar con el flujo normal
+                    }
+                    
                     // Si se realizaron modificaciones, mostrar notificación
                     console.log('🔍 Verificando si hay modificaciones...');
                     console.log('🔍 data.modified es:', data.modified, 'tipo:', typeof data.modified);
@@ -1886,6 +1904,21 @@
                 if (response.ok) {
                     const data = await response.json();
                     console.log(`📊 Frontend: Datos recibidos:`, data);
+                    
+                    console.log('🔍 DEBUG COMPLETO DE MACROS:');
+                    console.log('   data.current_diet:', data.current_diet);
+                    console.log('   data.current_diet.macros:', data.current_diet?.macros);
+                    console.log('   data.current_diet.total_kcal:', data.current_diet?.total_kcal);
+
+                    if (data.current_diet?.macros) {
+                        console.log('   🎯 MACROS ENCONTRADOS:');
+                        console.log('      proteina:', data.current_diet.macros.proteina);
+                        console.log('      carbohidratos:', data.current_diet.macros.carbohidratos);
+                        console.log('      grasas:', data.current_diet.macros.grasas);
+                    } else {
+                        console.error('   ❌ NO HAY MACROS EN current_diet');
+                    }
+                    
                     console.log(`🔍 Frontend: data.success = ${data.success}`);
                     console.log(`🔍 Frontend: data.current_routine existe = ${!!data.current_routine}`);
                     if (data.current_routine) {
@@ -2243,7 +2276,7 @@
                         : 0);
                 let dietaHtml = `
                     <h1 class="section-title" style="margin-top: 50px;">Dieta</h1>
-                    <p class="section-subtitle">${plan.dieta.titulo || 'Plan personalizado'} - ${totalKcal} kcal diarias</p>
+                    <p class="section-subtitle">Plan personalizado - ${totalKcal} kcal diarias<br><span style="color:#00ff00;font-size:14px">Proteínas: ${plan.dieta?.macros?.proteina||0}g | Carbos: ${plan.dieta?.macros?.carbohidratos||0}g | Grasas: ${plan.dieta?.macros?.grasas||0}g</span></p>
                 `;
                 
                 let upgradeShown = false;
