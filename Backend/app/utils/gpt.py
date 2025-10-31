@@ -254,6 +254,11 @@ PERFIL DEL USUARIO:
 - Generar ejercicios alternativos seguros
 - Adaptar el volumen e intensidad según la severidad de la lesión
 
+🎯 ENFOQUE ESPECIAL: {f"- ÁREA DE ENFOQUE: {datos.get('focus_area', 'ninguna')} - DEBES darle PRIORIDAD y MAYOR VOLUMEN a esta zona" if datos.get('focus_area') else "- No hay área de enfoque específica"}
+{f"- AUMENTAR FRECUENCIA: {'Sí' if datos.get('increase_frequency') else 'No'} - Incluir esta zona en más días de entrenamiento" if datos.get('focus_area') else ""}
+{f"- CAMBIO DE VOLUMEN: {datos.get('volume_change', 'ninguno')} - Ajustar series y repeticiones según este cambio" if datos.get('focus_area') else ""}
+{f"⚠️ CRÍTICO: La rutina DEBE estar ENFOCADA en {datos.get('focus_area')} con MAYOR VOLUMEN, MÁS EJERCICIOS y MÁS FRECUENCIA para esta zona específica" if datos.get('focus_area') else ""}
+
 ═══════════════════════════════════════════════
 OBJETIVOS SEPARADOS:
 ═══════════════════════════════════════════════
@@ -268,7 +273,46 @@ DISPONIBILIDAD Y EQUIPAMIENTO:
 ═══════════════════════════════════════════════
 - Días disponibles: {training_frequency} días/semana
 - Días específicos: {', '.join(training_days)}
-- Equipamiento disponible: {', '.join(datos['materiales'])}
+- Equipamiento disponible: {', '.join(datos['materiales']) if isinstance(datos['materiales'], list) else datos['materiales']}
+
+{f"""
+⚠️⚠️⚠️ RESTRICCIÓN DE EQUIPAMIENTO CRÍTICA ⚠️⚠️⚠️
+🚫 EQUIPAMIENTO NO DISPONIBLE: {datos.get('missing_equipment', 'ninguno')}
+✅ EQUIPAMIENTO DISPONIBLE: {datos.get('available_equipment', 'ninguno')}
+
+REGLAS OBLIGATORIAS:
+1. ❌ PROHIBIDO: NO incluir NINGÚN ejercicio que requiera {datos.get('missing_equipment')}
+2. ✅ OBLIGATORIO: Usar SOLO ejercicios con {datos.get('available_equipment', 'equipamiento disponible')}
+3. ✅ OBLIGATORIO: Generar una rutina COMPLETA nueva que NO dependa de {datos.get('missing_equipment')}
+4. ✅ OBLIGATORIO: Cada grupo muscular debe tener alternativas usando {datos.get('available_equipment', 'equipamiento disponible')}
+
+EJERCICIOS A EVITAR ABSOLUTAMENTE:
+{datos.get('affected_exercises', f'TODOS los ejercicios que mencionen o requieran {datos.get("missing_equipment")} en su nombre o ejecución')}
+
+EJEMPLOS ESPECÍFICOS DE SUSTITUCIÓN:
+- Si falta "barras olímpicas":
+  ❌ PROHIBIDO: Dominadas, Remo con barra, Press de banca con barra, Curl con barra, Press militar con barra, Peso muerto con barra
+  ✅ USAR: Remo con mancuernas, Flexiones, Remo invertido, Curl con mancuernas, Press con mancuernas, Peso muerto con mancuernas, Remo con bandas
+
+- Si falta "banco de press":
+  ❌ PROHIBIDO: Press de banca, Press inclinado, Press declinado, Press banca con barra, Press banca con mancuernas
+  ✅ USAR: Flexiones, Flexiones inclinadas, Flexiones con pies elevados, Press con mancuernas en suelo, Dips
+
+- Si falta "mancuernas":
+  ❌ PROHIBIDO: Cualquier ejercicio que mencione "mancuernas" o "dumbbells"
+  ✅ USAR: Ejercicios con peso corporal, bandas elásticas, barras (si están disponibles), kettlebells (si están disponibles)
+
+- Si falta "rack de sentadillas":
+  ❌ PROHIBIDO: Sentadillas con barra, Squat con barra, Sentadillas frontales con barra
+  ✅ USAR: Sentadillas con peso corporal, Sentadillas con mancuernas, Sentadillas con kettlebell, Zancadas, Prensa de piernas (si hay máquina)
+
+VALIDACIÓN ANTES DE GENERAR LA RUTINA:
+- Revisa CADA ejercicio generado y verifica que NO requiera {datos.get('missing_equipment')}
+- Si un ejercicio requiere {datos.get('missing_equipment')}, REEMPLÁZALO inmediatamente por una alternativa
+- Asegúrate de que TODOS los ejercicios usen {datos.get('available_equipment', 'equipamiento disponible')}
+
+⚠️⚠️⚠️ CRÍTICO: Si incluyes CUALQUIER ejercicio que requiera {datos.get('missing_equipment')}, la rutina será INVÁLIDA ⚠️⚠️⚠️
+""" if datos.get('missing_equipment') else ""}
 
 ═══════════════════════════════════════════════
 RESTRICCIONES:
@@ -282,6 +326,20 @@ RESTRICCIONES:
 
 INSTRUCCIONES CRÍTICAS:
 
+{f"""
+⚠️⚠️⚠️ VALIDACIÓN FINAL DE EQUIPAMIENTO ⚠️⚠️⚠️
+ANTES de generar CADA ejercicio de la rutina, verifica:
+1. ¿Este ejercicio requiere {datos.get('missing_equipment')}? → Si SÍ, NO LO INCLUYAS
+2. ¿Este ejercicio puede hacerse con {datos.get('available_equipment')}? → Si NO, CÁMBIALO
+3. ¿El nombre del ejercicio menciona {datos.get('missing_equipment')}? → Si SÍ, SUSTITÚYELO
+
+REVISA LA RUTINA COMPLETA antes de devolverla y asegúrate de que:
+- NINGÚN ejercicio requiera {datos.get('missing_equipment')}
+- TODOS los ejercicios usen {datos.get('available_equipment')} o equipamiento compatible
+- La rutina sea completa y funcional SIN {datos.get('missing_equipment')}
+
+""" if datos.get('missing_equipment') else ""}
+
 1. RUTINA DE ENTRENAMIENTO:
    - Diseña la rutina para EXACTAMENTE {training_frequency} días
    - Distribuye los entrenamientos en los días: {', '.join(training_days)}
@@ -289,8 +347,31 @@ INSTRUCCIONES CRÍTICAS:
    - Ajusta los ejercicios y volumen según el objetivo de gym: {gym_goal}
      * Si es "ganar_musculo": Hipertrofia - 8-12 reps, 3-4 series, descansos 60-90s
      * Si es "ganar_fuerza": Fuerza - 4-6 reps, 4-5 series, descansos 2-3min
-   - Considera el equipamiento disponible
+   - Considera el equipamiento disponible: {', '.join(datos['materiales']) if isinstance(datos['materiales'], list) else datos['materiales']}
+   {f"- ⚠️ CRÍTICO: NO uses {datos.get('missing_equipment')} - Usa SOLO {datos.get('available_equipment')}" if datos.get('missing_equipment') else ""}
    - Cada día debe tener 4-6 ejercicios diferentes
+   
+   {f"""
+   ⚠️⚠️⚠️ INSTRUCCIÓN CRÍTICA DE ENFOQUE ⚠️⚠️⚠️
+   El usuario quiere ENFOCAR la rutina en: {datos.get('focus_area', 'ninguna')}
+   
+   DEBES:
+   1. PRIORIZAR ejercicios de {datos.get('focus_area')} en MÁS días de la semana
+   2. Si hay {training_frequency} días, INCLUYE {datos.get('focus_area')} en AL MENOS {training_frequency - 1} días
+   3. Cada día que incluya {datos.get('focus_area')} debe tener MÍNIMO 2 ejercicios específicos para esa zona
+   4. {"INCREMENTA la frecuencia: Incluye esta zona en más días de lo normal" if datos.get('increase_frequency') else "Mantén frecuencia normal pero aumenta volumen"}
+   5. Cambio de volumen: {datos.get('volume_change', 'ninguno')} - 
+      * Si es "aumento_significativo": 5-6 series por ejercicio, más ejercicios totales
+      * Si es "aumento_moderado": 4-5 series por ejercicio
+      * Si es "ligero_aumento": 3-4 series por ejercicio
+   
+   EJEMPLOS:
+   - Si el enfoque es "brazos" y hay 4 días: Lunes (Brazos y Pecho), Martes (Brazos y Espalda), Jueves (Brazos y Piernas), Viernes (Solo Brazos)
+   - Si el enfoque es "piernas" y hay 4 días: Lunes (Piernas), Martes (Piernas y Espalda), Jueves (Piernas), Viernes (Piernas y Brazos)
+   - Cada día con enfoque debe tener MÍNIMO 2 ejercicios de la zona enfocada
+   
+   ⚠️ CRÍTICO: La rutina DEBE reflejar claramente el enfoque en {datos.get('focus_area')} con más frecuencia y volumen que otras zonas
+   """ if datos.get('focus_area') else ""}
 
 2. PLAN NUTRICIONAL:
    - Calcula calorías según objetivo nutricional: {nutrition_goal}

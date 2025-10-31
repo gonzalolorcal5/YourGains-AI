@@ -1160,10 +1160,11 @@ async def handle_modify_routine_focus(
     db: Session
 ) -> Dict[str, Any]:
     """
-    Modifica la rutina para enfocar más un área específica - VERSIÓN CORREGIDA
+    Modifica la rutina para enfocar más un área específica - VERSIÓN CON GPT
+    🔧 NUEVO: Ahora GPT genera una rutina completamente nueva enfocada en el área solicitada
     """
     try:
-        # Obtener datos del usuario
+        # Obtener datos del usuario en UNA sola consulta
         user_data = await db_service.get_user_complete_data(user_id, db)
         current_routine = user_data["current_routine"]
         
@@ -1175,44 +1176,9 @@ async def handle_modify_routine_focus(
                 "changes": []
             }
         
-        # 🔧 FIX: Guardar versión antes de modificar
+        # 🔧 FIX: Guardar versión ANTES de modificar
+        previous_routine = json.loads(json.dumps(current_routine))
         old_routine_version = current_routine.get("version", "1.0.0")
-        
-        changes = []
-        
-        # Ejercicios específicos por área de enfoque
-        focus_exercises = {
-            "brazos": [
-                {"name": "Curl de bíceps", "sets": 4, "reps": "10-12", "weight": "moderado"},
-                {"name": "Tríceps press", "sets": 4, "reps": "10-12", "weight": "moderado"},
-                {"name": "Martillo", "sets": 3, "reps": "12-15", "weight": "ligero"}
-            ],
-            "pecho": [
-                {"name": "Press banca", "sets": 4, "reps": "8-10", "weight": "moderado"},
-                {"name": "Flexiones", "sets": 3, "reps": "12-15", "weight": "cuerpo"},
-                {"name": "Aperturas", "sets": 3, "reps": "12-15", "weight": "ligero"}
-            ],
-            "piernas": [
-                {"name": "Sentadillas", "sets": 4, "reps": "12-15", "weight": "moderado"},
-                {"name": "Zancadas", "sets": 3, "reps": "10-12", "weight": "moderado"},
-                {"name": "Prensa", "sets": 4, "reps": "12-15", "weight": "moderado"}
-            ],
-            "gluteos": [
-                {"name": "Hip thrust", "sets": 4, "reps": "12-15", "weight": "moderado"},
-                {"name": "Puente de glúteos", "sets": 3, "reps": "15-20", "weight": "cuerpo"},
-                {"name": "Patadas", "sets": 3, "reps": "15", "weight": "cuerpo"}
-            ],
-            "espalda": [
-                {"name": "Remo con barra", "sets": 4, "reps": "8-10", "weight": "moderado"},
-                {"name": "Dominadas", "sets": 3, "reps": "8-12", "weight": "cuerpo"},
-                {"name": "Pulldown", "sets": 3, "reps": "10-12", "weight": "moderado"}
-            ],
-            "hombros": [
-                {"name": "Press militar", "sets": 4, "reps": "8-10", "weight": "moderado"},
-                {"name": "Elevaciones laterales", "sets": 3, "reps": "12-15", "weight": "ligero"},
-                {"name": "Facepulls", "sets": 3, "reps": "15-20", "weight": "ligero"}
-            ]
-        }
         
         # Mapear sinónimos de focus_area
         area_mapping = {
@@ -1234,35 +1200,176 @@ async def handle_modify_routine_focus(
             "tríceps": "brazos",
             "arms": "brazos",
             "glutes": "gluteos",
-            "glúteos": "gluteos"
+            "glúteos": "gluteos",
+            "core": "core",
+            "abdomen": "core",
+            "abs": "core"
         }
         
         # Mapear el área de enfoque
         mapped_focus_area = area_mapping.get(focus_area.lower(), focus_area.lower())
         
-        # Añadir ejercicios de enfoque
-        if mapped_focus_area in focus_exercises:
-            new_exercises = focus_exercises[mapped_focus_area]
-            
-            # Ajustar volumen según volume_change
-            if volume_change == "aumento_significativo":
-                for exercise in new_exercises:
-                    exercise["sets"] = min(exercise["sets"] + 2, 6)
-            elif volume_change == "aumento_moderado":
-                for exercise in new_exercises:
-                    exercise["sets"] = min(exercise["sets"] + 1, 5)
-            elif volume_change == "ligero_aumento":
-                for exercise in new_exercises:
-                    exercise["sets"] = min(exercise["sets"], 4)
-            
-            # Añadir a la rutina
-            current_routine["exercises"].extend(new_exercises)
-            
-            for exercise in new_exercises:
-                changes.append(f"Añadido: {exercise['name']} ({exercise['sets']} series)")
+        logger.info(f"🎯 GENERANDO RUTINA CON GPT PARA ENFOQUE:")
+        logger.info(f"   Área de enfoque: {mapped_focus_area}")
+        logger.info(f"   Aumentar frecuencia: {increase_frequency}")
+        logger.info(f"   Cambio de volumen: {volume_change}")
         
-        # Actualizar versión y timestamp
-        current_routine["version"] = increment_routine_version(old_routine_version)  # 🔧 FIX
+        # Obtener datos del Plan para pasar a GPT
+        from app.models import Plan
+        plan_actual = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
+        
+        if not plan_actual:
+            logger.error(f"❌ No se encontró Plan para usuario {user_id}")
+            return {
+                "success": False,
+                "message": "No se encontró plan del usuario. Completa el onboarding primero.",
+                "changes": []
+            }
+        
+        # Preparar datos para GPT con información del enfoque
+        datos_gpt = {
+            'altura': plan_actual.altura or 175,
+            'peso': float(plan_actual.peso) if plan_actual.peso else 75.0,
+            'edad': plan_actual.edad or 25,
+            'sexo': plan_actual.sexo or 'masculino',
+            'objetivo': plan_actual.objetivo_gym or (plan_actual.objetivo or 'ganar_musculo'),
+            'gym_goal': plan_actual.objetivo_gym or 'ganar_musculo',
+            'nutrition_goal': plan_actual.objetivo_nutricional or (plan_actual.objetivo_dieta or 'mantenimiento'),
+            'experiencia': plan_actual.experiencia or 'principiante',
+            'materiales': plan_actual.materiales or 'gym_completo',
+            'tipo_cuerpo': plan_actual.tipo_cuerpo or 'mesomorfo',
+            'alergias': plan_actual.alergias or 'Ninguna',
+            'restricciones': plan_actual.restricciones_dieta or 'Ninguna',
+            'lesiones': plan_actual.lesiones or 'Ninguna',
+            'nivel_actividad': plan_actual.nivel_actividad or 'moderado',
+            'training_frequency': 4,
+            'training_days': ['lunes', 'martes', 'jueves', 'viernes'],
+            # 🔧 NUEVO: Información específica del enfoque
+            'focus_area': mapped_focus_area,
+            'increase_frequency': increase_frequency,
+            'volume_change': volume_change
+        }
+        
+        # Llamar a GPT para generar rutina nueva con enfoque
+        from app.utils.gpt import generar_plan_personalizado
+        
+        exercises_nuevos = None  # Variable para controlar si GPT funcionó
+        
+        try:
+            logger.info(f"🤖 Generando rutina con GPT enfocada en {mapped_focus_area}...")
+            plan_generado = await generar_plan_personalizado(datos_gpt)
+            
+            # Extraer solo la rutina (no necesitamos regenerar dieta)
+            rutina_gpt = plan_generado.get("rutina", {})
+            dias_rutina = rutina_gpt.get("dias", [])
+            
+            if not dias_rutina:
+                raise ValueError("GPT no generó rutina válida")
+            
+            # Convertir formato de "dias" a "exercises" (formato que usa current_routine)
+            exercises_nuevos = []
+            for dia in dias_rutina:
+                nombre_dia = dia.get("dia", "")
+                grupos_musculares = dia.get("grupos_musculares", "")
+                ejercicios_dia = dia.get("ejercicios", [])
+                
+                for ejercicio in ejercicios_dia:
+                    exercises_nuevos.append({
+                        "name": ejercicio.get("nombre", ""),
+                        "sets": ejercicio.get("series", 3),
+                        "reps": ejercicio.get("repeticiones", "10-12"),
+                        "weight": "moderado",
+                        "day": nombre_dia
+                    })
+            
+            logger.info(f"✅ Rutina generada con GPT enfocada en {mapped_focus_area}: {len(exercises_nuevos)} ejercicios")
+            
+            # Preparar cambios para el registro
+            changes = [
+                f"Rutina regenerada con GPT enfocada en {mapped_focus_area}",
+                f"Volumen: {volume_change}",
+                f"Total ejercicios: {len(exercises_nuevos)}"
+            ]
+            
+        except Exception as e_gpt:
+            logger.error(f"❌ Error generando rutina con GPT: {e_gpt}")
+            logger.warning(f"⚠️ Fallando a método tradicional de añadir ejercicios...")
+            exercises_nuevos = None  # GPT falló, usar fallback
+        
+        # FALLBACK: Si GPT falló, usar método tradicional de añadir ejercicios
+        if exercises_nuevos is None:
+            logger.info(f"📋 Usando método tradicional de enfoque...")
+            changes = []
+            
+            # Ejercicios específicos por área de enfoque (fallback)
+            focus_exercises = {
+                "brazos": [
+                    {"name": "Curl de bíceps", "sets": 4, "reps": "10-12", "weight": "moderado"},
+                    {"name": "Tríceps press", "sets": 4, "reps": "10-12", "weight": "moderado"},
+                    {"name": "Martillo", "sets": 3, "reps": "12-15", "weight": "ligero"}
+                ],
+                "pecho": [
+                    {"name": "Press banca", "sets": 4, "reps": "8-10", "weight": "moderado"},
+                    {"name": "Flexiones", "sets": 3, "reps": "12-15", "weight": "cuerpo"},
+                    {"name": "Aperturas", "sets": 3, "reps": "12-15", "weight": "ligero"}
+                ],
+                "piernas": [
+                    {"name": "Sentadillas", "sets": 4, "reps": "12-15", "weight": "moderado"},
+                    {"name": "Zancadas", "sets": 3, "reps": "10-12", "weight": "moderado"},
+                    {"name": "Prensa", "sets": 4, "reps": "12-15", "weight": "moderado"}
+                ],
+                "gluteos": [
+                    {"name": "Hip thrust", "sets": 4, "reps": "12-15", "weight": "moderado"},
+                    {"name": "Puente de glúteos", "sets": 3, "reps": "15-20", "weight": "cuerpo"},
+                    {"name": "Patadas", "sets": 3, "reps": "15", "weight": "cuerpo"}
+                ],
+                "espalda": [
+                    {"name": "Remo con barra", "sets": 4, "reps": "8-10", "weight": "moderado"},
+                    {"name": "Dominadas", "sets": 3, "reps": "8-12", "weight": "cuerpo"},
+                    {"name": "Pulldown", "sets": 3, "reps": "10-12", "weight": "moderado"}
+                ],
+                "hombros": [
+                    {"name": "Press militar", "sets": 4, "reps": "8-10", "weight": "moderado"},
+                    {"name": "Elevaciones laterales", "sets": 3, "reps": "12-15", "weight": "ligero"},
+                    {"name": "Facepulls", "sets": 3, "reps": "15-20", "weight": "ligero"}
+                ],
+                "core": [
+                    {"name": "Plancha", "sets": 3, "reps": "30-60s", "weight": "cuerpo"},
+                    {"name": "Crunch", "sets": 3, "reps": "15-20", "weight": "cuerpo"},
+                    {"name": "Mountain climbers", "sets": 3, "reps": "20", "weight": "cuerpo"}
+                ]
+            }
+            
+            # Añadir ejercicios de enfoque
+            if mapped_focus_area in focus_exercises:
+                new_exercises = focus_exercises[mapped_focus_area].copy()
+                
+                # Ajustar volumen según volume_change
+                if volume_change == "aumento_significativo":
+                    for exercise in new_exercises:
+                        exercise["sets"] = min(exercise["sets"] + 2, 6)
+                elif volume_change == "aumento_moderado":
+                    for exercise in new_exercises:
+                        exercise["sets"] = min(exercise["sets"] + 1, 5)
+                elif volume_change == "ligero_aumento":
+                    for exercise in new_exercises:
+                        exercise["sets"] = min(exercise["sets"], 4)
+                
+                # Añadir a la rutina
+                current_routine["exercises"].extend(new_exercises)
+                
+                for exercise in new_exercises:
+                    changes.append(f"Añadido: {exercise['name']} ({exercise['sets']} series)")
+            else:
+                changes.append(f"Área '{mapped_focus_area}' no reconocida, no se añadieron ejercicios")
+            
+            exercises_nuevos = current_routine["exercises"]
+        
+        # Actualizar rutina con el método que funcionó
+        if exercises_nuevos is not None:
+            current_routine["exercises"] = exercises_nuevos
+        
+        current_routine["version"] = increment_routine_version(old_routine_version)
         current_routine["updated_at"] = datetime.utcnow().isoformat()
         
         # Guardar cambios
@@ -1276,17 +1383,19 @@ async def handle_modify_routine_focus(
             "routine_focus_modification",
             {
                 "focus_area": focus_area,
+                "mapped_focus_area": mapped_focus_area,
                 "increase_frequency": increase_frequency,
                 "volume_change": volume_change,
+                "previous_routine": previous_routine,
                 "changes": changes
             },
-            f"Enfoque en {focus_area}",
+            f"Enfoque en {mapped_focus_area}",
             db
         )
         
         return {
             "success": True,
-            "message": f"Rutina enfocada en {focus_area} con {volume_change}",
+            "message": f"Rutina regenerada enfocada en {mapped_focus_area} con {volume_change}",
             "changes": changes
         }
         
@@ -1635,14 +1744,15 @@ async def handle_modify_routine_equipment(
     db: Session = None
 ) -> Dict[str, Any]:
     """
-    Adapta la rutina cuando falta equipamiento específico - VERSIÓN CORREGIDA
+    Adapta la rutina cuando falta equipamiento específico - VERSIÓN CON GPT
+    🔧 NUEVO: Ahora GPT genera una rutina completamente nueva evitando el equipamiento faltante
     """
     try:
-        logger.info(f"Adaptando rutina por falta de equipamiento: {missing_equipment}")
-        
+        # Obtener datos del usuario en UNA sola consulta
         user_data = await db_service.get_user_complete_data(user_id, db)
         current_routine = user_data["current_routine"]
         
+        # Validar estructura de rutina
         if not isinstance(current_routine, dict) or "exercises" not in current_routine:
             return {
                 "success": False,
@@ -1650,65 +1760,273 @@ async def handle_modify_routine_equipment(
                 "changes": []
             }
         
-        # 🔧 FIX: Guardar versión antes de modificar
+        # 🔧 FIX: Guardar versión ANTES de modificar
+        previous_routine = json.loads(json.dumps(current_routine))
         old_routine_version = current_routine.get("version", "1.0.0")
         
-        changes = []
-        exercises = current_routine.get("exercises", [])
-        
-        # Mapeo de equipamiento faltante a alternativas
-        equipment_substitutions = {
-            "press_banca": ["Press de pecho con mancuernas", "Flexiones"],
-            "sentadilla_rack": ["Sentadillas con mancuernas", "Sentadillas"],
-            "barras": ["Mancuernas", "Peso corporal"],
-            "mancuernas": ["Peso corporal", "Bandas elásticas"],
-            "maquinas": ["Peso libre", "Peso corporal"]
+        # Mapear equipamiento faltante a descripción legible
+        equipment_mapping = {
+            "press_banca": "banco de press",
+            "sentadilla_rack": "rack de sentadillas",
+            "pesas_libres": "pesas libres",
+            "maquinas": "máquinas",
+            "cables": "poleas y cables",
+            "poleas": "poleas y cables",
+            "smith_machine": "máquina Smith",
+            "rack_multiuso": "rack multipropósito",
+            "barras": "barras olímpicas",
+            "discos": "discos de peso",
+            "mancuernas": "mancuernas",
+            "kettlebells": "kettlebells",
+            "bandas_elasticas": "bandas elásticas",
+            "step": "step o plataforma",
+            "banco": "banco de ejercicios",
+            "colchoneta": "colchoneta"
         }
         
-        # Obtener alternativas
-        alternatives = equipment_substitutions.get(missing_equipment, [])
+        # Mapear equipamiento disponible a descripción legible
+        available_mapping = {
+            "peso_libre": "peso libre (mancuernas, barras si están disponibles)",
+            "cuerpo_libre": "solo peso corporal",
+            "bandas": "bandas elásticas",
+            "kettlebell": "kettlebells",
+            "maquinas_basicas": "máquinas básicas",
+            "cables": "poleas y cables",
+            "step": "step o plataforma",
+            "banco": "banco de ejercicios",
+            "colchoneta": "colchoneta",
+            "cualquiera": "cualquier equipamiento disponible"
+        }
         
-        # Buscar ejercicios que usen el equipamiento faltante
-        modified_exercises = 0
-        for i, exercise in enumerate(exercises):
-            if isinstance(exercise, dict):
-                exercise_name = exercise.get("name", "")
-            else:
-                exercise_name = str(exercise)
+        missing_equipment_readable = equipment_mapping.get(missing_equipment, missing_equipment)
+        available_equipment_readable = available_mapping.get(available_equipment, available_equipment)
+        
+        logger.info(f"🏋️ GENERANDO RUTINA CON GPT PARA EQUIPAMIENTO:")
+        logger.info(f"   Equipamiento faltante: {missing_equipment_readable}")
+        logger.info(f"   Equipamiento disponible: {available_equipment_readable}")
+        logger.info(f"   Ejercicios afectados: {affected_exercises or 'todos los que requieran el equipamiento faltante'}")
+        
+        # Obtener datos del Plan para pasar a GPT
+        from app.models import Plan
+        plan_actual = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
+        
+        if not plan_actual:
+            logger.error(f"❌ No se encontró Plan para usuario {user_id}")
+            return {
+                "success": False,
+                "message": "No se encontró plan del usuario. Completa el onboarding primero.",
+                "changes": []
+            }
+        
+        # Preparar materiales actualizados (sin el faltante, con el disponible)
+        materiales_originales = plan_actual.materiales or 'gym_completo'
+        # Si materiales_originales es una lista, convertirla a string
+        if isinstance(materiales_originales, list):
+            materiales_originales = ', '.join(materiales_originales)
+        
+        # Mapeo de equipamiento faltante a palabras clave para filtrar
+        equipment_keywords_remove = {
+            "press_banca": ["banco", "press banca", "bench"],
+            "sentadilla_rack": ["rack", "sentadilla rack"],
+            "barras": ["barra", "bar"],
+            "mancuernas": ["mancuernas", "dumbbells"],
+            "maquinas": ["máquina", "machine", "maquinas"],
+            "cables": ["cable", "polea", "cables"],
+            "kettlebells": ["kettlebell", "kettlebells"],
+            "bandas_elasticas": ["bandas", "elasticas"],
+            "smith_machine": ["smith", "smith machine"],
+            "rack_multiuso": ["rack", "multiuso"]
+        }
+        
+        # Filtrar el equipamiento faltante del string de materiales
+        materiales_actualizados = materiales_originales.lower()
+        
+        # Remover palabras clave relacionadas con el equipamiento faltante
+        keywords_to_remove = equipment_keywords_remove.get(missing_equipment, [missing_equipment.lower()])
+        for keyword in keywords_to_remove:
+            materiales_actualizados = materiales_actualizados.replace(keyword, '').replace(',,', ',').strip()
+        
+        # Limpiar espacios y comas dobles
+        materiales_actualizados = materiales_actualizados.replace('  ', ' ').replace(', ,', ',').strip(', ')
+        
+        # Si quedó vacío o es muy corto, usar el equipamiento disponible como base
+        if not materiales_actualizados or len(materiales_actualizados) < 3:
+            materiales_actualizados = available_equipment_readable
+        else:
+            # Añadir el equipamiento disponible si no está ya presente
+            if available_equipment_readable.lower() not in materiales_actualizados.lower():
+                materiales_actualizados = f"{materiales_actualizados}, {available_equipment_readable}"
+        
+        logger.info(f"📦 Materiales actualizados: '{materiales_originales}' → '{materiales_actualizados}'")
+        
+        # Preparar datos para GPT con información del equipamiento
+        datos_gpt = {
+            'altura': plan_actual.altura or 175,
+            'peso': float(plan_actual.peso) if plan_actual.peso else 75.0,
+            'edad': plan_actual.edad or 25,
+            'sexo': plan_actual.sexo or 'masculino',
+            'objetivo': plan_actual.objetivo_gym or (plan_actual.objetivo or 'ganar_musculo'),
+            'gym_goal': plan_actual.objetivo_gym or 'ganar_musculo',
+            'nutrition_goal': plan_actual.objetivo_nutricional or (plan_actual.objetivo_dieta or 'mantenimiento'),
+            'experiencia': plan_actual.experiencia or 'principiante',
+            'materiales': materiales_actualizados,  # 🔧 NUEVO: Materiales actualizados sin el faltante
+            'tipo_cuerpo': plan_actual.tipo_cuerpo or 'mesomorfo',
+            'alergias': plan_actual.alergias or 'Ninguna',
+            'restricciones': plan_actual.restricciones_dieta or 'Ninguna',
+            'lesiones': plan_actual.lesiones or 'Ninguna',
+            'nivel_actividad': plan_actual.nivel_actividad or 'moderado',
+            'training_frequency': 4,
+            'training_days': ['lunes', 'martes', 'jueves', 'viernes'],
+            # 🔧 NUEVO: Información específica del equipamiento
+            'missing_equipment': missing_equipment_readable,
+            'available_equipment': available_equipment_readable,
+            'affected_exercises': affected_exercises or f"Ejercicios que requieren {missing_equipment_readable}"
+        }
+        
+        # Llamar a GPT para generar rutina nueva sin el equipamiento faltante
+        from app.utils.gpt import generar_plan_personalizado
+        
+        exercises_nuevos = None  # Variable para controlar si GPT funcionó
+        
+        try:
+            logger.info(f"🤖 Generando rutina con GPT evitando {missing_equipment_readable}...")
+            plan_generado = await generar_plan_personalizado(datos_gpt)
             
-            # Verificar si el ejercicio usa el equipamiento
-            equipment_keywords = {
-                "press_banca": ["press banca", "bench press"],
-                "sentadilla_rack": ["sentadilla", "squat"],
-                "barras": ["barra", "bar"],
-                "mancuernas": ["mancuernas", "dumbbells"],
-                "maquinas": ["máquina", "machine"]
+            # Extraer solo la rutina (no necesitamos regenerar dieta)
+            rutina_gpt = plan_generado.get("rutina", {})
+            dias_rutina = rutina_gpt.get("dias", [])
+            
+            if not dias_rutina:
+                raise ValueError("GPT no generó rutina válida")
+            
+            # Convertir formato de "dias" a "exercises" (formato que usa current_routine)
+            exercises_nuevos = []
+            ejercicios_rechazados = []
+            
+            # Keywords a evitar según el equipamiento faltante
+            equipment_keywords_to_avoid = {
+                "press_banca": ["press banca", "bench press", "press con barra"],
+                "sentadilla_rack": ["sentadilla con barra", "squat con barra", "rack"],
+                "barras": ["barra", "bar", "press con barra", "remo con barra", "curl con barra", "dominadas", "pull ups"],
+                "mancuernas": ["mancuernas", "dumbbells", "press con mancuernas", "remo con mancuernas"],
+                "maquinas": ["máquina", "machine", "prensa", "extensión de cuádriceps"],
+                "cables": ["cable", "polea", "cruce de cables"],
+                "kettlebells": ["kettlebell", "kettle bell"]
             }
             
-            keywords = equipment_keywords.get(missing_equipment, [])
-            needs_substitution = any(kw in exercise_name.lower() for kw in keywords)
+            keywords_to_avoid = equipment_keywords_to_avoid.get(missing_equipment, [missing_equipment_readable.lower()])
             
-            if needs_substitution and alternatives:
-                new_exercise = alternatives[0]
+            for dia in dias_rutina:
+                nombre_dia = dia.get("dia", "")
+                grupos_musculares = dia.get("grupos_musculares", "")
+                ejercicios_dia = dia.get("ejercicios", [])
                 
-                if isinstance(exercise, dict):
-                    exercises[i] = {
-                        "name": new_exercise,
-                        "sets": exercise.get("sets", 3),
-                        "reps": exercise.get("reps", "10-12"),
-                        "weight": exercise.get("weight", "moderado")
-                    }
+                for ejercicio in ejercicios_dia:
+                    nombre_ejercicio = ejercicio.get("nombre", "")
+                    nombre_ejercicio_lower = nombre_ejercicio.lower()
+                    
+                    # Validar que el ejercicio NO requiera el equipamiento faltante
+                    requires_missing_equipment = any(kw in nombre_ejercicio_lower for kw in keywords_to_avoid)
+                    
+                    if requires_missing_equipment:
+                        ejercicios_rechazados.append(nombre_ejercicio)
+                        logger.warning(f"⚠️ GPT generó ejercicio que requiere {missing_equipment_readable}: {nombre_ejercicio} - Omitiendo")
+                        continue  # Omitir este ejercicio
+                    
+                    exercises_nuevos.append({
+                        "name": nombre_ejercicio,
+                        "sets": ejercicio.get("series", 3),
+                        "reps": ejercicio.get("repeticiones", "10-12"),
+                        "weight": "moderado",
+                        "day": nombre_dia
+                    })
+            
+            if ejercicios_rechazados:
+                logger.warning(f"⚠️ Se omitieron {len(ejercicios_rechazados)} ejercicios que requerían {missing_equipment_readable}: {ejercicios_rechazados}")
+            
+            if not exercises_nuevos or len(exercises_nuevos) < 10:
+                logger.warning(f"⚠️ Rutina generada tiene muy pocos ejercicios ({len(exercises_nuevos)}), forzando fallback...")
+                raise ValueError(f"Rutina generada tiene muy pocos ejercicios ({len(exercises_nuevos)})")
+            
+            logger.info(f"✅ Rutina generada con GPT evitando {missing_equipment_readable}: {len(exercises_nuevos)} ejercicios válidos")
+            
+            # Preparar cambios para el registro
+            changes = [
+                f"Rutina regenerada con GPT evitando {missing_equipment_readable}",
+                f"Equipamiento disponible: {available_equipment_readable}",
+                f"Total ejercicios: {len(exercises_nuevos)}"
+            ]
+            
+        except Exception as e_gpt:
+            logger.error(f"❌ Error generando rutina con GPT: {e_gpt}")
+            logger.warning(f"⚠️ Fallando a método tradicional de filtrado...")
+            exercises_nuevos = None  # GPT falló, usar fallback
+        
+        # FALLBACK: Si GPT falló, usar método tradicional de filtrado
+        if exercises_nuevos is None:
+            logger.info(f"📋 Usando método tradicional de filtrado...")
+            changes = []
+            exercises = current_routine.get("exercises", [])
+            
+            # Mapeo de equipamiento faltante a keywords de ejercicios a evitar
+            equipment_keywords_to_avoid = {
+                "press_banca": ["press banca", "bench press", "press con barra"],
+                "sentadilla_rack": ["sentadilla con barra", "squat con barra", "rack"],
+                "barras": ["barra", "bar", "press con barra", "remo con barra", "curl con barra"],
+                "mancuernas": ["mancuernas", "dumbbells", "press con mancuernas", "remo con mancuernas"],
+                "maquinas": ["máquina", "machine", "prensa", "extensión de cuádriceps"],
+                "cables": ["cable", "polea", "cruce de cables"],
+                "kettlebells": ["kettlebell", "kettle bell"]
+            }
+            
+            # Alternativas básicas por equipamiento disponible
+            equipment_alternatives = {
+                "cuerpo_libre": ["Flexiones", "Sentadillas", "Dominadas", "Fondos", "Plancha"],
+                "bandas": ["Curl con bandas", "Remo con bandas", "Press con bandas"],
+                "mancuernas": ["Press con mancuernas", "Curl con mancuernas", "Remo con mancuernas"]
+            }
+            
+            keywords_to_avoid = equipment_keywords_to_avoid.get(missing_equipment, [])
+            alternatives = equipment_alternatives.get(available_equipment, [])
+            
+            ejercicios_filtrados = []
+            ejercicios_eliminados = []
+            
+            # Filtrar ejercicios que requieren el equipamiento faltante
+            for ejercicio in exercises:
+                if isinstance(ejercicio, dict):
+                    exercise_name = ejercicio.get("name", "")
                 else:
-                    exercises[i] = new_exercise
+                    exercise_name = str(ejercicio)
                 
-                changes.append(f"Adaptado: {exercise_name} → {new_exercise}")
-                modified_exercises += 1
+                exercise_name_lower = exercise_name.lower()
+                needs_removal = any(kw in exercise_name_lower for kw in keywords_to_avoid)
+                
+                if needs_removal:
+                    ejercicios_eliminados.append(exercise_name)
+                    changes.append(f"Eliminado: {exercise_name} (requiere {missing_equipment_readable})")
+                else:
+                    ejercicios_filtrados.append(ejercicio)
+            
+            # Añadir alternativas si se eliminaron ejercicios
+            if ejercicios_eliminados and alternatives:
+                for alt in alternatives[:min(len(ejercicios_eliminados), 3)]:
+                    ejercicios_filtrados.append({
+                        "name": alt,
+                        "sets": 3,
+                        "reps": "10-12",
+                        "weight": "moderado",
+                        "notes": f"Alternativa usando {available_equipment_readable}"
+                    })
+                    changes.append(f"Añadido: {alt}")
+            
+            exercises_nuevos = ejercicios_filtrados
         
-        if modified_exercises == 0:
-            changes.append(f"No se encontraron ejercicios que requieran {missing_equipment}")
+        # Actualizar rutina con el método que funcionó
+        if exercises_nuevos is not None:
+            current_routine["exercises"] = exercises_nuevos
         
-        # Actualizar versión y timestamp
-        current_routine["version"] = increment_routine_version(old_routine_version)  # 🔧 FIX
+        current_routine["version"] = increment_routine_version(old_routine_version)
         current_routine["updated_at"] = datetime.utcnow().isoformat()
         
         # Guardar cambios
@@ -1716,21 +2034,24 @@ async def handle_modify_routine_equipment(
             "current_routine": current_routine
         }, db)
         
+        # Añadir registro de modificación
         await db_service.add_modification_record(
             user_id,
             "equipment_adaptation",
             {
                 "missing_equipment": missing_equipment,
                 "available_equipment": available_equipment,
+                "affected_exercises": affected_exercises,
+                "previous_routine": previous_routine,
                 "changes": changes
             },
-            f"Adaptación por equipamiento: {missing_equipment}",
+            f"Adaptación por equipamiento: {missing_equipment_readable}",
             db
         )
         
         return {
             "success": True,
-            "message": f"Rutina adaptada por falta de {missing_equipment}",
+            "message": f"Rutina regenerada evitando {missing_equipment_readable}",
             "changes": changes
         }
         
