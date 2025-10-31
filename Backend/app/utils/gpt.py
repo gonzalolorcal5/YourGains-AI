@@ -35,36 +35,58 @@ if ENVIRONMENT != 'production':
     print("🔒 FORZANDO GPT-3.5 Turbo para desarrollo")
 
 async def generar_plan_safe(user_data, user_id):
-    """Genera plan con GPT, con fallback a plan genérico"""
+    """
+    Genera plan con GPT - SIN fallback silencioso
+    🔧 FIX: Ya no devuelve template genérico. Debe propagar excepciones.
+    """
+    
+    logger.info(f"🤖 Intentando generar plan con GPT para usuario {user_id}")
     
     try:
-        # Intentar con GPT
-        logger.info(f"🤖 Intentando generar plan con GPT para usuario {user_id}")
-        
         plan_data = await generar_plan_personalizado(user_data)
         
-        logger.info(f"✅ Plan GPT generado exitosamente")
+        # 🔧 FIX: Validar que GPT devolvió dieta válida (no template genérico)
+        if not plan_data or 'dieta' not in plan_data:
+            logger.error(f"❌ GPT no devolvió dieta válida")
+            raise ValueError("GPT no devolvió dieta válida")
+        
+        # 🔧 FIX: Detectar si GPT devolvió template genérico por error
+        dieta = plan_data.get('dieta', {})
+        comidas = dieta.get('comidas', [])
+        
+        if not comidas or len(comidas) == 0:
+            logger.error(f"❌ GPT devolvió dieta sin comidas")
+            raise ValueError("GPT devolvió dieta sin comidas")
+        
+        # Verificar que los alimentos no sean exactamente del template genérico
+        # Template genérico siempre tiene: "300ml leche semidesnatada - 150kcal"
+        primer_alimento = None
+        for comida in comidas:
+            alimentos = comida.get('alimentos', [])
+            if alimentos and len(alimentos) > 0:
+                primer_alimento = alimentos[0]
+                break
+        
+        if primer_alimento and isinstance(primer_alimento, str):
+            # Si el primer alimento es exactamente el del template, algo falló
+            if "300ml leche semidesnatada - 150kcal" in primer_alimento:
+                logger.warning(f"⚠️ Posible template genérico detectado en respuesta GPT")
+                logger.warning(f"   Primer alimento: {primer_alimento}")
+                # NO lanzar error aquí, solo loguear - puede ser coincidencia
+        
+        logger.info(f"✅ Plan GPT generado exitosamente ({len(comidas)} comidas)")
         return plan_data
         
-    except (asyncio.CancelledError, asyncio.TimeoutError) as e:
-        # Si falla GPT, usar plan genérico
-        logger.warning(f"⚠️ GPT falló ({type(e).__name__}), usando plan genérico")
-        
-        from app.utils.routine_templates import get_generic_plan
-        plan_data = get_generic_plan(user_data)
-        
-        logger.info(f"✅ Plan genérico generado como fallback")
-        return plan_data
+    except (asyncio.CancelledError, asyncio.TimeoutError, HTTPException) as e:
+        # 🔧 FIX: NO usar fallback silencioso - propagar excepción
+        logger.error(f"❌ GPT falló ({type(e).__name__}): {e}")
+        raise  # Lanzar para que function_handlers use estrategia 2
         
     except Exception as e:
-        # Para otros errores, también usar plan genérico
-        logger.error(f"❌ Error inesperado: {str(e)}, usando plan genérico")
+        # 🔧 FIX: NO usar fallback silencioso - propagar excepción
+        logger.error(f"❌ Error inesperado en GPT: {e}")
         logger.exception(e)
-        
-        from app.utils.routine_templates import get_generic_plan
-        plan_data = get_generic_plan(user_data)
-        
-        return plan_data
+        raise  # Lanzar para que function_handlers use estrategia 2
 
 logger = logging.getLogger(__name__)
 
@@ -359,18 +381,16 @@ REGLAS CRÍTICAS:
         logger.info(f"✅ Plan generado exitosamente (modelo: {MODEL})")
         print("Respuesta cruda de GPT:", contenido[:200] + "...")  # Solo mostrar primeros 200 chars
         
+    except asyncio.CancelledError:
+        # 🔧 FIX: Manejar cancelación limpia (shutdown del servidor)
+        logger.warning("⚠️ Generación de plan cancelada (posible shutdown)")
+        raise  # Propagar CancelledError para manejo correcto
+        
     except asyncio.TimeoutError:
         logger.error("❌ GPT timeout después de 120s")
         raise HTTPException(
             status_code=504,
             detail="La generación del plan tardó demasiado. Intenta de nuevo."
-        )
-        
-    except asyncio.CancelledError:
-        logger.warning("⚠️ Generación de plan cancelada por el cliente")
-        raise HTTPException(
-            status_code=499,  # Client Closed Request
-            detail="Generación cancelada por el cliente"
         )
         
     except Exception as e:
@@ -441,6 +461,23 @@ REGLAS CRÍTICAS:
     logger.info(f"   TDEE: {tdee} kcal/día")
     logger.info(f"   Calorías objetivo: {kcal_objetivo} kcal/día")
     logger.info(f"   Método: Mifflin-St Jeor")
+    
+    # ═══════════════════════════════════════════════════════
+    # AÑADIR MACROS A NIVEL RAIZ DE LA DIETA (CRÍTICO)
+    # ═══════════════════════════════════════════════════════
+    # Los macros calculados científicamente deben estar en plan.dieta.macros
+    # para que el frontend pueda acceder a ellos fácilmente
+    data['dieta']['macros'] = {
+        'proteina': macros['proteina'],
+        'carbohidratos': macros['carbohidratos'],
+        'grasas': macros['grasas'],
+        'calorias': kcal_objetivo
+    }
+    
+    logger.info(f"✅ Macros añadidos a plan.dieta.macros:")
+    logger.info(f"   Proteína: {macros['proteina']}g")
+    logger.info(f"   Carbohidratos: {macros['carbohidratos']}g")
+    logger.info(f"   Grasas: {macros['grasas']}g")
 
     return {
         "rutina": data["rutina"],

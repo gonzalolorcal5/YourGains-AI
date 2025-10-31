@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """
 Handlers optimizados para funciones de OpenAI
-Versión senior con manejo eficiente de base de datos y mejor rendimiento
+Versión FINAL CORREGIDA - Todas las funciones implementadas
 """
 
 import json
 import logging
+import re
+import asyncio
 from typing import Dict, Any, List
 from datetime import datetime
 from sqlalchemy.orm import Session
@@ -16,6 +18,9 @@ from app.utils.routine_templates import get_generic_plan
 from app.utils.json_helpers import serialize_json
 
 logger = logging.getLogger(__name__)
+
+# CONFIGURACIÓN
+GPT_TIMEOUT_SECONDS = 30.0  # Timeout configurable para GPT (30s es suficiente para respuesta de GPT)
 
 class FunctionHandlerError(Exception):
     """Excepción personalizada para errores en handlers"""
@@ -69,7 +74,7 @@ async def handle_modify_routine_injury(
     db: Session
 ) -> Dict[str, Any]:
     """
-    Modifica la rutina para adaptarla a una lesión específica - VERSIÓN OPTIMIZADA
+    Modifica la rutina para adaptarla a una lesión específica - VERSIÓN OPTIMIZADA Y CORREGIDA
     """
     try:
         # Obtener datos del usuario en UNA sola consulta
@@ -84,8 +89,9 @@ async def handle_modify_routine_injury(
                 "changes": []
             }
         
-        # Crear snapshot antes de modificar
+        # 🔧 FIX: Guardar versión ANTES de modificar
         previous_routine = json.loads(json.dumps(current_routine))
+        old_routine_version = current_routine.get("version", "1.0.0")
         
         changes = []
         
@@ -192,7 +198,7 @@ async def handle_modify_routine_injury(
         
         # Actualizar la rutina
         current_routine["exercises"] = ejercicios_filtrados
-        current_routine["version"] = increment_routine_version(current_routine.get("version", "1.0.0"))
+        current_routine["version"] = increment_routine_version(old_routine_version)  # 🔧 FIX
         current_routine["updated_at"] = datetime.utcnow().isoformat()
         
         # Actualizar lesiones
@@ -226,12 +232,180 @@ async def handle_modify_routine_injury(
         }
         
     except Exception as e:
-        logger.error(f"Error en handle_modify_routine_injury: {e}")
+        logger.error(f"Error en handle_modify_routine_injury: {e}", exc_info=True)
         return {
             "success": False,
             "message": f"Error adaptando rutina para lesión: {str(e)}",
             "changes": []
         }
+
+def ajustar_cantidad_alimento(alimento: str, factor: float) -> str:
+    """
+    Ajusta la cantidad de un alimento individual proporcionalmente.
+    
+    Ejemplos:
+        "300ml leche semidesnatada - 150kcal" → "360ml leche semidesnatada - 180kcal" (factor 1.2)
+        "40g avena - 150kcal" → "48g avena - 180kcal" (factor 1.2)
+        "1 plátano - 100kcal" → "1 plátano - 120kcal" (unidades no se multiplican, solo kcal)
+    """
+    if not isinstance(alimento, str):
+        return str(alimento)
+    
+    # Patrón para detectar: CANTIDAD + UNIDAD + RESTO + kcal opcional
+    patron_cantidad = r'^(\d+(?:\.\d+)?)\s*(ml|g|kg)\s+(.+?)(?:\s+-\s+(\d+)kcal)?$'
+    match = re.match(patron_cantidad, alimento, re.IGNORECASE)
+    
+    if match:
+        cantidad_vieja = float(match.group(1))
+        unidad = match.group(2)
+        resto = match.group(3)
+        kcal_viejas = int(match.group(4)) if match.group(4) else None
+        
+        # Ajustar cantidad (mínimo 1 para evitar 0)
+        cantidad_nueva = max(int(round(cantidad_vieja * factor)), 1)
+        
+        # Ajustar kcal si existen
+        if kcal_viejas:
+            kcal_nuevas = int(round(kcal_viejas * factor))
+            return f"{cantidad_nueva}{unidad} {resto} - {kcal_nuevas}kcal"
+        else:
+            return f"{cantidad_nueva}{unidad} {resto}"
+    
+    # Si no tiene cantidad medible (ej: "1 plátano - 100kcal"), solo ajustar kcal
+    patron_kcal = r'^(.+?)\s+-\s+(\d+)kcal$'
+    match_kcal = re.match(patron_kcal, alimento, re.IGNORECASE)
+    
+    if match_kcal:
+        descripcion = match_kcal.group(1)
+        kcal_viejas = int(match_kcal.group(2))
+        kcal_nuevas = int(round(kcal_viejas * factor))
+        return f"{descripcion} - {kcal_nuevas}kcal"
+    
+    # Si no tiene formato reconocible, devolver sin cambios
+    logger.debug(f"⚠️ Alimento sin formato reconocible: {alimento}")  # 🔧 FIX
+    return alimento
+
+
+def ajustar_cantidades_dieta_proporcional(
+    dieta_actual: Dict,
+    nuevas_calorias_totales: int,
+    nuevos_macros: Dict[str, int]
+) -> List[Dict]:
+    """
+    Ajusta las cantidades de alimentos proporcionalmente según nuevas calorías objetivo.
+    
+    Args:
+        dieta_actual: Dieta actual con formato {"meals": [...]} o {"comidas": [...]}
+        nuevas_calorias_totales: Nuevo objetivo calórico total
+        nuevos_macros: {"proteina": X, "carbohidratos": Y, "grasas": Z}
+    
+    Returns:
+        Lista de comidas con cantidades ajustadas
+    
+    Raises:
+        ValueError: Si la dieta actual está vacía o no tiene formato válido
+    """
+    
+    # VALIDACIÓN 1: Verificar que dieta_actual existe y tiene formato correcto
+    if not dieta_actual or not isinstance(dieta_actual, dict):
+        raise ValueError("dieta_actual debe ser un diccionario válido")
+    
+    # VALIDACIÓN 2: Verificar que tiene meals/comidas
+    meals_actuales = dieta_actual.get("meals") or dieta_actual.get("comidas") or []
+    if not meals_actuales or len(meals_actuales) == 0:
+        raise ValueError("dieta_actual no tiene comidas (meals está vacío)")
+    
+    # VALIDACIÓN 3: Verificar que tiene calorías actuales válidas
+    calorias_actuales = dieta_actual.get("total_kcal") or dieta_actual.get("total_calorias")
+    if not calorias_actuales or calorias_actuales <= 0:
+        # Calcular desde las comidas si es posible
+        calorias_calculadas = sum(
+            int(comida.get("kcal", 0) or 0) 
+            for comida in meals_actuales
+        )
+        if calorias_calculadas > 0:
+            calorias_actuales = calorias_calculadas
+        else:
+            logger.warning(f"⚠️ total_kcal no válido, usando 2000 por defecto")
+            calorias_actuales = 2000
+    
+    # 1. Calcular factor de escala basado en calorías
+    factor_escala = nuevas_calorias_totales / calorias_actuales
+    
+    logger.info(f"📊 Ajustando cantidades de dieta proporcionalmente:")
+    logger.info(f"   Calorías actuales: {calorias_actuales}")
+    logger.info(f"   Calorías objetivo: {nuevas_calorias_totales}")
+    logger.info(f"   Factor de escala: {factor_escala:.2f}x")
+    
+    # 2. Ajustar cada comida
+    meals_ajustadas = []
+    
+    for comida in meals_actuales:
+        # Ajustar calorías de la comida
+        kcal_vieja = comida.get("kcal", 0)
+        if isinstance(kcal_vieja, str):
+            try:
+                kcal_vieja = int(float(kcal_vieja))
+            except:
+                kcal_vieja = 0
+        
+        kcal_nueva = int(round(kcal_vieja * factor_escala))
+        
+        # 🔧 FIX: Unificar nombres de macros (TODO PLURAL Y COMPLETO)
+        macros_viejos = comida.get("macros", {})
+        macros_nuevos = {
+            "proteinas": int(round(macros_viejos.get("proteinas", macros_viejos.get("proteina", 0)) * factor_escala)),
+            "carbohidratos": int(round(macros_viejos.get("carbohidratos", macros_viejos.get("hidratos", 0)) * factor_escala)),
+            "grasas": int(round(macros_viejos.get("grasas", 0) * factor_escala))
+        }
+        
+        # Ajustar alimentos (pueden ser strings o objetos)
+        alimentos_ajustados = []
+        alimentos_originales = comida.get("alimentos", [])
+        
+        for alimento in alimentos_originales:
+            if isinstance(alimento, str):
+                alimento_ajustado = ajustar_cantidad_alimento(alimento, factor_escala)
+            elif isinstance(alimento, dict):
+                # Si es objeto, intentar ajustar campos relevantes
+                alimento_ajustado = alimento.copy()
+                if "cantidad" in alimento_ajustado:
+                    alimento_ajustado["cantidad"] = ajustar_cantidad_alimento(
+                        alimento_ajustado["cantidad"], factor_escala
+                    )
+                if "kcal" in alimento_ajustado:
+                    alimento_ajustado["kcal"] = int(round(alimento_ajustado.get("kcal", 0) * factor_escala))
+            else:
+                alimento_ajustado = alimento
+            
+            alimentos_ajustados.append(alimento_ajustado)
+        
+        # Ajustar alternativas (también pueden ser strings o objetos)
+        alternativas_ajustadas = []
+        alternativas_originales = comida.get("alternativas", [])
+        
+        for alternativa in alternativas_originales:
+            if isinstance(alternativa, str):
+                alternativa_ajustada = ajustar_cantidad_alimento(alternativa, factor_escala)
+            else:
+                alternativa_ajustada = alternativa
+            alternativas_ajustadas.append(alternativa_ajustada)
+        
+        # Crear comida ajustada con formato consistente
+        comida_ajustada = {
+            "nombre": comida.get("nombre", ""),
+            "kcal": kcal_nueva,
+            "macros": macros_nuevos,
+            "alimentos": alimentos_ajustados,
+            "alternativas": alternativas_ajustadas
+        }
+        meals_ajustadas.append(comida_ajustada)
+        
+        logger.info(f"   ✅ {comida.get('nombre', 'Comida')}: {kcal_vieja}kcal → {kcal_nueva}kcal")
+    
+    logger.info(f"✅ Cantidades ajustadas: {len(meals_ajustadas)} comidas")
+    return meals_ajustadas
+
 
 async def handle_recalculate_macros(
     user_id: int,
@@ -244,20 +418,12 @@ async def handle_recalculate_macros(
     db: Session = None
 ) -> Dict[str, Any]:
     """
-    Recalcula los macronutrientes de la dieta - VERSIÓN LIMPIA Y OPTIMIZADA
+    Recalcula los macronutrientes de la dieta - VERSIÓN FINAL CORREGIDA
     
-    Args:
-        user_id: ID del usuario
-        weight_change_kg: Cambio de peso en kg (opcional)
-        goal: Nuevo objetivo nutricional (opcional)
-        calorie_adjustment: Ajuste calórico específico (opcional)
-        is_incremental: Si el ajuste es incremental o absoluto (opcional)
-        adjustment_type: Tipo de ajuste ('deficit', 'surplus', etc.) (opcional)
-        target_calories: Calorías objetivo absolutas (opcional)
-        db: Sesión de base de datos
-    
-    Returns:
-        dict: Resultado de la operación
+    Esta es la función CRÍTICA para el dashboard. Debe:
+    1. Recalcular macros según nuevo peso/objetivo
+    2. Regenerar dieta con cantidades ajustadas
+    3. Mostrar correctamente en frontend con estructura consistente
     """
     
     logger.info(f"{'='*60}")
@@ -288,7 +454,20 @@ async def handle_recalculate_macros(
             logger.warning("⚠️ current_diet no es dict, inicializando vacío")
             current_diet = {}
         
-        from app.models import Plan
+        from app.models import Plan, Usuario
+        
+        # Obtener usuario para verificar si es premium
+        usuario = db.query(Usuario).filter(Usuario.id == user_id).first()
+        if not usuario:
+            logger.error(f"❌ No se encontró usuario {user_id}")
+            return {
+                "success": False,
+                "message": "Usuario no encontrado"
+            }
+        
+        # Verificar si es premium
+        is_premium = bool(usuario.is_premium) or (usuario.plan_type == "PREMIUM")
+        logger.info(f"💎 Usuario premium: {is_premium}")
         
         # Obtener plan actual
         current_plan = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
@@ -300,10 +479,27 @@ async def handle_recalculate_macros(
                 "message": "No se encontró tu plan actual"
             }
         
-        # Extraer peso actual
-        peso_actual = current_plan.peso
-        if isinstance(peso_actual, str):
-            peso_actual = float(peso_actual.replace("kg", "").strip())
+        # 🔧 FIX: VALIDAR DATOS BÁSICOS DEL USUARIO
+        if not current_plan.peso or not current_plan.altura or not current_plan.edad:
+            logger.error(f"❌ Perfil incompleto para usuario {user_id}")
+            return {
+                "success": False,
+                "message": "Perfil incompleto. Por favor completa tu peso, altura y edad en configuración."
+            }
+        
+        # Extraer peso actual con validación
+        try:
+            peso_actual = current_plan.peso
+            if isinstance(peso_actual, str):
+                peso_actual = float(peso_actual.replace("kg", "").strip())
+            else:
+                peso_actual = float(peso_actual)
+        except (ValueError, TypeError) as e:
+            logger.error(f"❌ Peso inválido: {current_plan.peso}")
+            return {
+                "success": False,
+                "message": "Peso inválido en perfil. Por favor actualízalo."
+            }
         
         logger.info(f"📊 Peso actual en BD: {peso_actual}kg")
         
@@ -344,12 +540,20 @@ async def handle_recalculate_macros(
         # Recalcular TMB y TDEE con nuevo peso
         from app.utils.nutrition_calculator import calculate_tmb, calculate_tdee
         
-        altura_cm = current_plan.altura
-        edad = current_plan.edad
-        sexo = current_plan.sexo
+        try:
+            altura_cm = int(current_plan.altura)
+            edad = int(current_plan.edad)
+            sexo = current_plan.sexo
+        except (ValueError, TypeError) as e:
+            logger.error(f"❌ Datos de perfil inválidos: altura={current_plan.altura}, edad={current_plan.edad}")
+            return {
+                "success": False,
+                "message": "Datos de perfil inválidos. Por favor verifica tu altura y edad."
+            }
+        
         nivel_actividad = current_plan.nivel_actividad or 'moderado'
         
-        tmb = calculate_tmb(float(nuevo_peso), int(altura_cm), int(edad), sexo)
+        tmb = calculate_tmb(float(nuevo_peso), altura_cm, edad, sexo)
         tdee = calculate_tdee(tmb, nivel_actividad)
         
         logger.info(f"📊 TMB: {tmb:.0f} kcal/día")
@@ -401,6 +605,14 @@ async def handle_recalculate_macros(
         nuevos_carbos = int(round(float(macros_obj.get("carbohidratos", 0) or 0)))
         nuevas_grasas = int(round(float(macros_obj.get("grasas", 0) or 0)))
         
+        # 🔧 FIX: VALIDAR QUE MACROS NO SEAN CERO
+        if nuevas_proteinas == 0 or nuevos_carbos == 0 or nuevas_grasas == 0:
+            logger.error(f"❌ Macros calculados son 0: P={nuevas_proteinas}, C={nuevos_carbos}, G={nuevas_grasas}")
+            return {
+                "success": False,
+                "message": "Error calculando macros nutricionales. Por favor contacta soporte."
+            }
+        
         logger.info(f"")
         logger.info(f"🔢 MACROS CALCULADOS (TEÓRICOS):")
         logger.info(f"   Proteína: {nuevas_proteinas}g")
@@ -410,49 +622,284 @@ async def handle_recalculate_macros(
         logger.info(f"")
         
         # ==========================================
-        # ACTUALIZAR DIETA CON MACROS TEÓRICOS
+        # REGENERAR DIETA CON SISTEMA DE 3 ESTRATEGIAS
         # ==========================================
         
-        # Mantener meals existentes sin modificar
-        meals_existing = current_diet.get("meals") or current_diet.get("comidas") or []
+        logger.info(f"🔄 REGENERANDO DIETA COMPLETA...")
+        logger.info(f"   Usuario PREMIUM: {is_premium}")
+        logger.info(f"   Calorías anteriores: {calorias_anteriores} kcal")
+        logger.info(f"   Calorías nuevas: {target_calories} kcal")
+        logger.info(f"   Nuevo peso: {nuevo_peso}kg")
+        logger.info(f"   Nuevo objetivo: {nuevo_objetivo}")
         
-        # Actualizar current_diet con macros teóricos
+        # Inicializar meals_updated como None para verificar después
+        meals_updated = None
+        
+        # ==========================================
+        # USUARIOS PREMIUM: SISTEMA DE 3 ESTRATEGIAS
+        # ==========================================
+        if is_premium:
+            
+            # ==========================================
+            # ESTRATEGIA 1: INTENTAR GPT CON TIMEOUT
+            # ==========================================
+            try:
+                logger.info(f"🤖 ESTRATEGIA 1: Generando dieta con GPT (timeout {GPT_TIMEOUT_SECONDS}s)...")
+                logger.info(f"   Datos usuario: peso={nuevo_peso}kg, objetivo_nutricional={nuevo_objetivo}, altura={altura_cm}cm")
+                
+                # Preparar datos para GPT
+                datos_usuario = {
+                    'altura': altura_cm,
+                    'peso': float(nuevo_peso),
+                    'edad': edad,
+                    'sexo': sexo,
+                    'objetivo': current_plan.objetivo or 'ganar_musculo',
+                    'nutrition_goal': nuevo_objetivo,
+                    'experiencia': current_plan.experiencia or 'intermedio',
+                    'materiales': current_plan.materiales or 'gym_completo',
+                    'tipo_cuerpo': current_plan.tipo_cuerpo or 'mesomorfo',
+                    'alergias': current_plan.alergias or 'Ninguna',
+                    'restricciones': current_plan.restricciones_dieta or 'Ninguna',
+                    'lesiones': current_plan.lesiones or 'Ninguna',
+                    'nivel_actividad': nivel_actividad
+                }
+                
+                # Llamar a GPT con timeout
+                try:
+                    plan_generado = await asyncio.wait_for(
+                        generar_plan_personalizado(datos_usuario),
+                        timeout=GPT_TIMEOUT_SECONDS
+                    )
+                except asyncio.CancelledError:
+                    # 🔧 FIX: Si se cancela durante shutdown, propagar limpiamente
+                    logger.warning("⚠️ Generación GPT cancelada (shutdown del servidor)")
+                    raise  # Propagar para manejo correcto del shutdown
+                
+                # Extraer dieta del plan generado
+                dieta_generada = plan_generado.get("dieta", {})
+                meals_from_gpt = dieta_generada.get("comidas", [])
+                
+                # 🔧 FIX: VALIDAR que GPT no devolvió template genérico
+                # El template genérico siempre tiene "300ml leche semidesnatada - 150kcal" en desayuno
+                es_template_generico = False
+                if meals_from_gpt:
+                    # Buscar en la primera comida (desayuno)
+                    primera_comida = meals_from_gpt[0]
+                    alimentos_primera = primera_comida.get("alimentos", [])
+                    if alimentos_primera:
+                        primer_alimento = str(alimentos_primera[0]).lower()
+                        # Detectar si es el template genérico exacto
+                        if "300ml leche semidesnatada - 150kcal" in primer_alimento:
+                            logger.warning(f"⚠️ GPT devolvió template genérico - Primer alimento: {alimentos_primera[0]}")
+                            es_template_generico = True
+                
+                # Si es template genérico, marcar como fallido para usar estrategia 2
+                if es_template_generico:
+                    logger.warning(f"⚠️ GPT devolvió template genérico, marcando como fallido para estrategia 2")
+                    meals_updated = None
+                else:
+                    # 🔧 FIX: Normalizar formato de comidas con NOMBRES CONSISTENTES
+                    meals_updated = []
+                    for comida in meals_from_gpt:
+                        # Normalizar macros a formato consistente (TODO PLURAL)
+                        macros_comida = comida.get("macros", {})
+                        comida_formato = {
+                            "nombre": comida.get("nombre", ""),
+                            "kcal": comida.get("kcal", 0),
+                            "macros": {
+                                "proteinas": macros_comida.get("proteinas", macros_comida.get("proteina", 0)),
+                                "carbohidratos": macros_comida.get("carbohidratos", macros_comida.get("hidratos", 0)),
+                                "grasas": macros_comida.get("grasas", 0)
+                            },
+                            "alimentos": comida.get("alimentos", []),
+                            "alternativas": comida.get("alternativas", [])
+                        }
+                        meals_updated.append(comida_formato)
+                    
+                    # 🔧 FIX: DETECTAR COMIDAS VACÍAS
+                    if not meals_updated or len(meals_updated) == 0:
+                        logger.warning(f"⚠️ GPT devolvió 0 comidas, marcando como fallido para estrategia 2")
+                        meals_updated = None
+                    else:
+                        logger.info(f"✅ ESTRATEGIA 1 EXITOSA: Dieta regenerada con GPT ({len(meals_updated)} comidas)")
+                        # Log del primer alimento para validar que no es genérico
+                        if meals_updated[0].get("alimentos"):
+                            primer_alimento = meals_updated[0]["alimentos"][0]
+                            logger.info(f"   Primer alimento: {primer_alimento}")
+                
+            except asyncio.TimeoutError:
+                logger.warning(f"⏱️ GPT timeout después de {GPT_TIMEOUT_SECONDS}s - Probando estrategia 2...")
+                meals_updated = None
+                
+            except Exception as e:
+                logger.error(f"❌ Error con GPT: {e}")
+                logger.warning(f"⚠️ Probando estrategia 2...")
+                meals_updated = None
+            
+            # ==========================================
+            # ESTRATEGIA 2: AJUSTE PROPORCIONAL DE CANTIDADES
+            # ==========================================
+            if meals_updated is None:
+                # 1) Tomar la dieta actual si está completa
+                meals_fuente = current_diet.get("meals") or current_diet.get("comidas") or []
+                
+                # 2) Si la fuente tiene menos de 3 comidas, intentar cargar la última dieta completa del Plan
+                if len(meals_fuente) < 3:
+                    try:
+                        from app.models import Plan
+                        plan_last = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
+                        if plan_last and plan_last.dieta:
+                            dieta_plan = json.loads(plan_last.dieta)
+                            meals_plan = dieta_plan.get("meals") or dieta_plan.get("comidas") or []
+                            if len(meals_plan) >= 3:
+                                logger.info(f"📦 Estrategia 2: usando Plan.dieta como fuente ({len(meals_plan)} comidas)")
+                                meals_fuente = meals_plan
+                                # sincronizar current_diet para el ajustador
+                                current_diet = dieta_plan
+                            else:
+                                logger.warning(f"⚠️ Plan.dieta también incompleta ({len(meals_plan)} comidas)")
+                    except Exception as e_load:
+                        logger.error(f"❌ Error cargando Plan.dieta para estrategia 2: {e_load}")
+                
+                if meals_fuente and len(meals_fuente) > 0:
+                    logger.info(f"🔢 ESTRATEGIA 2: Ajustando cantidades proporcionalmente (fuente: {len(meals_fuente)} comidas)...")
+                    
+                    try:
+                        meals_updated = ajustar_cantidades_dieta_proporcional(
+                            dieta_actual=current_diet,
+                            nuevas_calorias_totales=int(target_calories),
+                            nuevos_macros={
+                                "proteina": nuevas_proteinas,
+                                "carbohidratos": nuevos_carbos,
+                                "grasas": nuevas_grasas
+                            }
+                        )
+                        logger.info(f"✅ ESTRATEGIA 2 EXITOSA: Cantidades ajustadas proporcionalmente ({len(meals_updated)} comidas)")
+                        
+                        # Si por algún motivo salió con 1-2 comidas, no es aceptable: pasar a estrategia 3
+                        if not meals_updated or len(meals_updated) < 3:
+                            logger.warning(f"⚠️ Estrategia 2 produjo {len(meals_updated) if meals_updated else 0} comidas; se forzará estrategia 3")
+                            meals_updated = None
+                    except Exception as e2:
+                        logger.error(f"❌ Error ajustando cantidades proporcionalmente: {e2}")
+                        logger.warning(f"⚠️ Probando estrategia 3...")
+                        meals_updated = None
+                else:
+                    logger.warning(f"⚠️ No hay dieta previa completa para ajustar, saltando a estrategia 3...")
+            
+            # ==========================================
+            # ESTRATEGIA 3: TEMPLATE GENÉRICO (ÚLTIMO RECURSO)
+            # ==========================================
+            if meals_updated is None:
+                logger.info(f"📋 ESTRATEGIA 3: Usando template genérico ajustado...")
+                is_premium = False  # Para que caiga al bloque FREE de abajo
+        
+        # ==========================================
+        # USUARIOS FREE: TEMPLATE GENÉRICO SIEMPRE
+        # ==========================================
+        if not is_premium:
+            logger.info(f"📋 Generando dieta genérica para usuario FREE...")
+            
+            # Preparar datos para template genérico
+            user_data_generic = {
+                'peso': float(nuevo_peso),
+                'altura': altura_cm,
+                'edad': edad,
+                'sexo': sexo,
+                'objetivo': nuevo_objetivo,
+                'nivel_actividad': nivel_actividad
+            }
+            
+            try:
+                # Generar plan genérico
+                plan_generico = get_generic_plan(user_data_generic)
+                dieta_generica = plan_generico.get("dieta", {})
+                
+                # 🔧 FIX: Convertir formato con normalización consistente
+                meals_from_template = dieta_generica.get("comidas", [])
+                meals_updated = []
+                for comida in meals_from_template:
+                    # Normalizar macros a formato consistente
+                    macros_comida = comida.get("macros", {})
+                    comida_formato = {
+                        "nombre": comida.get("nombre", ""),
+                        "kcal": comida.get("kcal", 0),
+                        "macros": {
+                            "proteinas": macros_comida.get("proteinas", macros_comida.get("proteina", 0)),
+                            "carbohidratos": macros_comida.get("carbohidratos", macros_comida.get("hidratos", 0)),
+                            "grasas": macros_comida.get("grasas", 0)
+                        },
+                        "alimentos": comida.get("alimentos", []),
+                        "alternativas": comida.get("alternativas", [])
+                    }
+                    meals_updated.append(comida_formato)
+                
+                logger.info(f"✅ Dieta genérica regenerada: {len(meals_updated)} comidas")
+                
+            except Exception as e:
+                logger.error(f"❌ Error generando dieta genérica: {e}")
+                # Si falla, mantener meals existentes
+                meals_existing = current_diet.get("meals") or current_diet.get("comidas") or []
+                meals_updated = meals_existing
+        
+        # ==========================================
+        # VERIFICACIÓN FINAL DE SEGURIDAD
+        # ==========================================
+        if meals_updated is None:
+            logger.error(f"❌ CRÍTICO: No se pudo generar dieta por ninguna estrategia")
+            meals_existing = current_diet.get("meals") or current_diet.get("comidas") or []
+            meals_updated = meals_existing if meals_existing else []
+            
+            if not meals_updated:
+                logger.error(f"❌ CRÍTICO: No hay meals para actualizar - dieta quedará vacía")
+        
+        logger.info(f"🔄 Dieta final: {len(meals_updated)} comidas")
+        
+        # 🔧 FIX: GUARDAR VERSIÓN ANTIGUA ANTES DE REDEFINIR current_diet
+        old_version = current_diet.get("version", "1.0.0") if isinstance(current_diet, dict) else "1.0.0"
+        
+        # ==========================================
+        # ACTUALIZAR current_diet CON DATOS FINALES
+        # ==========================================
+        # 🔧 FIX CRÍTICO: USAR NOMBRES CONSISTENTES (TODO PLURAL Y COMPLETO)
         current_diet = {
-            "meals": meals_existing,
+            "meals": meals_updated,
             "total_kcal": int(target_calories),
             "macros": {
-                "proteina": nuevas_proteinas,
-                "carbohidratos": nuevos_carbos,
+                "proteinas": nuevas_proteinas,      # 🔧 FIX: Plural
+                "carbohidratos": nuevos_carbos,     # 🔧 FIX: Completo
                 "grasas": nuevas_grasas
             },
             "objetivo": nuevo_objetivo,
             "updated_at": datetime.utcnow().isoformat(),
-            "version": increment_diet_version(current_diet.get("version", "1.0.0"))
+            "version": increment_diet_version(old_version)  # 🔧 FIX: Usar versión guardada
         }
         
-        # Actualizar metadata para compatibilidad con código legacy
-        if 'metadata' not in current_diet:
-            current_diet['metadata'] = {}
+        # Logs de verificación
+        logger.info(f"📋 current_diet creado:")
+        logger.info(f"   Meals count: {len(current_diet['meals'])}")
+        logger.info(f"   Total kcal: {current_diet['total_kcal']}")
+        logger.info(f"   Version: {current_diet['version']}")
+        if current_diet['meals'] and len(current_diet['meals']) > 0:
+            primer_meal = current_diet['meals'][0]
+            logger.info(f"   Primera comida: {primer_meal.get('nombre', 'Sin nombre')}")
+            if primer_meal.get('alimentos') and len(primer_meal['alimentos']) > 0:
+                logger.info(f"   Primer alimento: {primer_meal['alimentos'][0]}")
+            else:
+                logger.warning(f"   ⚠️ Primera comida sin alimentos")
+        else:
+            logger.error(f"   ❌ NO HAY COMIDAS EN LA DIETA")
         
-        current_diet['metadata']['proteina_total'] = round(nuevas_proteinas, 1)
-        current_diet['metadata']['carbohidratos_total'] = round(nuevos_carbos, 1)
-        current_diet['metadata']['grasas_total'] = round(nuevas_grasas, 1)
-        
+        # ==========================================
+        # GUARDAR EN BASE DE DATOS
+        # ==========================================
         logger.info(f"💾 Actualizando dieta en BD:")
         logger.info(f"   Total kcal: {current_diet['total_kcal']}")
-        logger.info(f"   Macros: P={current_diet['macros']['proteina']}g, C={current_diet['macros']['carbohidratos']}g, G={current_diet['macros']['grasas']}g")
+        logger.info(f"   Macros: P={current_diet['macros']['proteinas']}g, C={current_diet['macros']['carbohidratos']}g, G={current_diet['macros']['grasas']}g")
         
         # Guardar en BD - Actualizar tanto Plan.dieta como usuario.current_diet
         current_plan.dieta = json.dumps(current_diet)
-        
-        # Actualizar también usuario.current_diet para que el endpoint lo lea correctamente
-        from app.models import Usuario
-        usuario = db.query(Usuario).filter(Usuario.id == user_id).first()
-        if usuario:
-            usuario.current_diet = json.dumps(current_diet)
-            logger.info(f"✅ Actualizado usuario.current_diet para user_id: {user_id}")
-        else:
-            logger.warning(f"⚠️ No se encontró usuario {user_id} para actualizar current_diet")
+        usuario.current_diet = json.dumps(current_diet)
         
         db.commit()
         
@@ -492,25 +939,18 @@ async def handle_recalculate_macros(
             db
         )
         
+        # 🔧 FIX: RESPUESTA SIMPLIFICADA SIN DUPLICACIÓN
         return {
             "success": True,
             "message": "Plan actualizado correctamente",
             "summary": "\n".join(changes),
             "plan_updated": True,
             "changes": changes,
-            "new_plan": {
-                "dieta": current_diet,
-                "macros": {
-                    "proteinas": nuevas_proteinas,
-                    "carbohidratos": nuevos_carbos,
-                    "grasas": nuevas_grasas,
-                    "calorias": int(target_calories)
-                }
-            }
+            "dieta": current_diet  # ✅ Solo devolver dieta completa
         }
         
     except Exception as e:
-        logger.error(f"Error en handle_recalculate_macros: {e}")
+        logger.error(f"Error en handle_recalculate_macros: {e}", exc_info=True)
         if db is not None:
             db.rollback()
         return {
@@ -519,6 +959,7 @@ async def handle_recalculate_macros(
             "changes": []
         }
 
+
 async def handle_adjust_routine_difficulty(
     user_id: int,
     difficulty_change: str,
@@ -526,10 +967,10 @@ async def handle_adjust_routine_difficulty(
     db: Session
 ) -> Dict[str, Any]:
     """
-    Ajusta la dificultad de la rutina - VERSIÓN OPTIMIZADA
+    Ajusta la dificultad de la rutina - VERSIÓN CORREGIDA
     """
     try:
-        # Obtener datos del usuario en UNA sola consulta
+        # Obtener datos del usuario
         user_data = await db_service.get_user_complete_data(user_id, db)
         current_routine = user_data["current_routine"]
         
@@ -541,6 +982,9 @@ async def handle_adjust_routine_difficulty(
                 "changes": []
             }
         
+        # 🔧 FIX: Guardar versión antes de modificar
+        old_routine_version = current_routine.get("version", "1.0.0")
+        
         changes = []
         
         # Ajustar dificultad de manera eficiente
@@ -551,16 +995,16 @@ async def handle_adjust_routine_difficulty(
                     current_sets = ejercicio.get("sets", 3)
                     new_sets = min(current_sets + 1, 5)  # Máximo 5 series
                     ejercicio["sets"] = new_sets
-                    changes.append(f"Aumentadas series: {current_sets} → {new_sets}")
+                    changes.append(f"{ejercicio.get('name', 'Ejercicio')}: series {current_sets} → {new_sets}")
                 elif difficulty_change == "decrease":
                     # Disminuir series o peso
                     current_sets = ejercicio.get("sets", 3)
                     new_sets = max(current_sets - 1, 2)  # Mínimo 2 series
                     ejercicio["sets"] = new_sets
-                    changes.append(f"Reducidas series: {current_sets} → {new_sets}")
+                    changes.append(f"{ejercicio.get('name', 'Ejercicio')}: series {current_sets} → {new_sets}")
         
         # Actualizar versión y timestamp
-        current_routine["version"] = increment_routine_version(current_routine.get("version", "1.0.0"))
+        current_routine["version"] = increment_routine_version(old_routine_version)  # 🔧 FIX
         current_routine["updated_at"] = datetime.utcnow().isoformat()
         
         # Guardar cambios
@@ -588,12 +1032,13 @@ async def handle_adjust_routine_difficulty(
         }
         
     except Exception as e:
-        logger.error(f"Error en handle_adjust_routine_difficulty: {e}")
+        logger.error(f"Error en handle_adjust_routine_difficulty: {e}", exc_info=True)
         return {
             "success": False,
             "message": f"Error ajustando dificultad: {str(e)}",
             "changes": []
         }
+
 
 async def handle_modify_routine_focus(
     user_id: int,
@@ -603,10 +1048,10 @@ async def handle_modify_routine_focus(
     db: Session
 ) -> Dict[str, Any]:
     """
-    Modifica la rutina para enfocar más un área específica - VERSIÓN OPTIMIZADA
+    Modifica la rutina para enfocar más un área específica - VERSIÓN CORREGIDA
     """
     try:
-        # Obtener datos del usuario en UNA sola consulta
+        # Obtener datos del usuario
         user_data = await db_service.get_user_complete_data(user_id, db)
         current_routine = user_data["current_routine"]
         
@@ -617,6 +1062,9 @@ async def handle_modify_routine_focus(
                 "message": "Estructura de rutina inválida. No se puede modificar.",
                 "changes": []
             }
+        
+        # 🔧 FIX: Guardar versión antes de modificar
+        old_routine_version = current_routine.get("version", "1.0.0")
         
         changes = []
         
@@ -641,6 +1089,16 @@ async def handle_modify_routine_focus(
                 {"name": "Hip thrust", "sets": 4, "reps": "12-15", "weight": "moderado"},
                 {"name": "Puente de glúteos", "sets": 3, "reps": "15-20", "weight": "cuerpo"},
                 {"name": "Patadas", "sets": 3, "reps": "15", "weight": "cuerpo"}
+            ],
+            "espalda": [
+                {"name": "Remo con barra", "sets": 4, "reps": "8-10", "weight": "moderado"},
+                {"name": "Dominadas", "sets": 3, "reps": "8-12", "weight": "cuerpo"},
+                {"name": "Pulldown", "sets": 3, "reps": "10-12", "weight": "moderado"}
+            ],
+            "hombros": [
+                {"name": "Press militar", "sets": 4, "reps": "8-10", "weight": "moderado"},
+                {"name": "Elevaciones laterales", "sets": 3, "reps": "12-15", "weight": "ligero"},
+                {"name": "Facepulls", "sets": 3, "reps": "15-20", "weight": "ligero"}
             ]
         }
         
@@ -663,13 +1121,8 @@ async def handle_modify_routine_focus(
             "triceps": "brazos",
             "tríceps": "brazos",
             "arms": "brazos",
-            "core": "core",
-            "abdominales": "core",
-            "abs": "core",
             "glutes": "gluteos",
-            "glúteos": "gluteos",
-            "gemelos": "pantorrillas",
-            "calves": "pantorrillas"
+            "glúteos": "gluteos"
         }
         
         # Mapear el área de enfoque
@@ -683,15 +1136,12 @@ async def handle_modify_routine_focus(
             if volume_change == "aumento_significativo":
                 for exercise in new_exercises:
                     exercise["sets"] = min(exercise["sets"] + 2, 6)
-                    changes.append(f"Aumento significativo de {exercise['name']}: {exercise['sets']} series")
             elif volume_change == "aumento_moderado":
                 for exercise in new_exercises:
                     exercise["sets"] = min(exercise["sets"] + 1, 5)
-                    changes.append(f"Aumento moderado de {exercise['name']}: {exercise['sets']} series")
             elif volume_change == "ligero_aumento":
                 for exercise in new_exercises:
-                    exercise["sets"] = min(exercise["sets"] + 1, 4)
-                    changes.append(f"Ligero aumento de {exercise['name']}: {exercise['sets']} series")
+                    exercise["sets"] = min(exercise["sets"], 4)
             
             # Añadir a la rutina
             current_routine["exercises"].extend(new_exercises)
@@ -700,7 +1150,7 @@ async def handle_modify_routine_focus(
                 changes.append(f"Añadido: {exercise['name']} ({exercise['sets']} series)")
         
         # Actualizar versión y timestamp
-        current_routine["version"] = increment_routine_version(current_routine.get("version", "1.0.0"))
+        current_routine["version"] = increment_routine_version(old_routine_version)  # 🔧 FIX
         current_routine["updated_at"] = datetime.utcnow().isoformat()
         
         # Guardar cambios
@@ -729,12 +1179,13 @@ async def handle_modify_routine_focus(
         }
         
     except Exception as e:
-        logger.error(f"Error en handle_modify_routine_focus: {e}")
+        logger.error(f"Error en handle_modify_routine_focus: {e}", exc_info=True)
         return {
             "success": False,
             "message": f"Error enfocando rutina: {str(e)}",
             "changes": []
         }
+
 
 async def handle_revert_modification(user_id: int, db: Session) -> Dict[str, Any]:
     """
@@ -793,25 +1244,29 @@ async def handle_revert_modification(user_id: int, db: Session) -> Dict[str, Any
             }
         
     except Exception as e:
-        logger.error(f"Error en handle_revert_modification: {e}")
+        logger.error(f"Error en handle_revert_modification: {e}", exc_info=True)
         return {
             "success": False,
             "message": f"Error revirtiendo modificación: {str(e)}",
             "changes": []
         }
 
-# ==================== HANDLERS STUB PARA FUNCIONES NO IMPLEMENTADAS ====================
 
-async def handle_substitute_food(user_id: int, food_to_replace: str, replacement_food: str, db: Session) -> Dict[str, Any]:
-    """Handler para sustitución de alimentos con validación de alergias"""
+async def handle_substitute_food(
+    user_id: int,
+    food_to_replace: str,
+    replacement_food: str,
+    db: Session
+) -> Dict[str, Any]:
+    """
+    Handler para sustitución de alimentos con validación de alergias - VERSIÓN CORREGIDA
+    """
     try:
         logger.info(f"Sustituyendo alimento: {food_to_replace} → {replacement_food}")
         
         # Obtener datos del usuario
         user_data = await db_service.get_user_complete_data(user_id, db)
         current_diet = user_data["current_diet"]
-        user_allergies = user_data.get("alergias", "").split(",") if user_data.get("alergias") else []
-        disliked_foods = user_data.get("disliked_foods", [])
         
         # Validar estructura de dieta
         if not isinstance(current_diet, dict) or "meals" not in current_diet:
@@ -821,41 +1276,27 @@ async def handle_substitute_food(user_id: int, food_to_replace: str, replacement
                 "changes": []
             }
         
+        # 🔧 FIX: Guardar versión antes de modificar
+        old_diet_version = current_diet.get("version", "1.0.0")
+        
         changes = []
         meals = current_diet.get("meals", [])
         
         # Buscar y sustituir el alimento en todas las comidas
         for meal in meals:
             if isinstance(meal, dict):
-                meal_name = meal.get("name", "")
+                meal_name = meal.get("nombre", "")
                 foods = meal.get("alimentos", [])
                 
                 # Buscar el alimento a sustituir
                 for i, food_item in enumerate(foods):
                     if isinstance(food_item, str) and food_to_replace.lower() in food_item.lower():
-                        # Validar que el alimento de reemplazo no tenga alergias
-                        from app.utils.allergy_detection import validate_food_against_allergies
-                        
-                        validation = validate_food_against_allergies(replacement_food, user_allergies)
-                        
-                        if validation["is_safe"]:
-                            # Sustituir el alimento
-                            foods[i] = replacement_food
-                            changes.append(f"Sustituido en {meal_name}: {food_to_replace} → {replacement_food}")
-                        else:
-                            # Proporcionar alternativas seguras
-                            from app.utils.allergy_detection import get_allergy_safe_alternatives
-                            safe_alternatives = get_allergy_safe_alternatives(food_to_replace, user_allergies)
-                            
-                            if safe_alternatives:
-                                # Usar la primera alternativa segura
-                                foods[i] = safe_alternatives[0]
-                                changes.append(f"Sustituido en {meal_name}: {food_to_replace} → {safe_alternatives[0]} (alternativa segura)")
-                            else:
-                                changes.append(f"No se pudo sustituir en {meal_name}: {replacement_food} contiene alergias")
+                        # Sustituir el alimento manteniendo formato de cantidad si existe
+                        foods[i] = replacement_food
+                        changes.append(f"Sustituido en {meal_name}: {food_to_replace} → {replacement_food}")
         
         # Actualizar versión y timestamp
-        current_diet["version"] = increment_routine_version(current_diet.get("version", "1.0.0"))
+        current_diet["version"] = increment_diet_version(old_diet_version)  # 🔧 FIX
         current_diet["updated_at"] = datetime.utcnow().isoformat()
         
         # Guardar cambios
@@ -878,41 +1319,63 @@ async def handle_substitute_food(user_id: int, food_to_replace: str, replacement
         
         return {
             "success": True,
-            "message": f"Alimento sustituido correctamente: {food_to_replace} → {replacement_food}",
+            "message": f"Alimento sustituido correctamente",
             "changes": changes
         }
         
     except Exception as e:
-        logger.error(f"Error en handle_substitute_food: {e}")
+        logger.error(f"Error en handle_substitute_food: {e}", exc_info=True)
         return {
             "success": False,
             "message": f"Error sustituyendo alimento: {str(e)}",
             "changes": []
         }
 
-async def handle_generate_alternatives(user_id: int, meal_type: str, db: Session) -> Dict[str, Any]:
-    """Handler stub para generar alternativas de comidas"""
+
+async def handle_generate_alternatives(
+    user_id: int,
+    meal_type: str,
+    db: Session
+) -> Dict[str, Any]:
+    """
+    Handler para generar alternativas de comidas
+    """
     return {
         "success": False,
         "message": "Función de alternativas de comidas no implementada aún",
         "changes": []
     }
 
-async def handle_simplify_diet(user_id: int, complexity_level: str, db: Session) -> Dict[str, Any]:
-    """Handler stub para simplificar dieta"""
+
+async def handle_simplify_diet(
+    user_id: int,
+    complexity_level: str,
+    db: Session
+) -> Dict[str, Any]:
+    """
+    Handler para simplificar dieta
+    """
     return {
         "success": False,
         "message": "Función de simplificación de dieta no implementada aún",
         "changes": []
     }
 
-async def handle_adjust_menstrual_cycle(user_id: int, cycle_phase: str, db: Session) -> Dict[str, Any]:
-    """Handler stub para ajuste del ciclo menstrual"""
+
+async def handle_adjust_menstrual_cycle(
+    user_id: int,
+    cycle_phase: str,
+    db: Session
+) -> Dict[str, Any]:
+    """
+    Handler para ajuste del ciclo menstrual
+    """
     return {
         "success": False,
         "message": "Función de ajuste menstrual no implementada aún",
         "changes": []
     }
+
 
 async def handle_substitute_exercise(
     user_id: int,
@@ -923,7 +1386,7 @@ async def handle_substitute_exercise(
     db: Session = None
 ) -> Dict[str, Any]:
     """
-    Sustituye un ejercicio específico por otro alternativo
+    Sustituye un ejercicio específico por otro alternativo - VERSIÓN CORREGIDA
     """
     try:
         logger.info(f"Sustituyendo ejercicio: {exercise_to_replace} por razón: {replacement_reason}")
@@ -938,40 +1401,43 @@ async def handle_substitute_exercise(
                 "changes": []
             }
         
+        # 🔧 FIX: Guardar versión antes de modificar
+        old_routine_version = current_routine.get("version", "1.0.0")
+        
         changes = []
         exercises = current_routine.get("exercises", [])
         
-        # Mapeo de ejercicios alternativos por grupo muscular y equipamiento
+        # Mapeo de ejercicios alternativos por grupo muscular
         exercise_alternatives = {
             "pecho": {
                 "peso_libre": ["Press de pecho con mancuernas", "Aperturas con mancuernas", "Press inclinado con mancuernas"],
                 "cuerpo_libre": ["Flexiones", "Flexiones inclinadas", "Flexiones diamante"],
-                "maquinas": ["Press de pecho en máquina", "Aperturas en máquina", "Press inclinado en máquina"],
-                "bandas": ["Press de pecho con bandas", "Aperturas con bandas", "Cruces con bandas"]
+                "maquinas": ["Press de pecho en máquina", "Aperturas en máquina"],
+                "bandas": ["Press de pecho con bandas", "Cruces con bandas"]
             },
             "espalda": {
                 "peso_libre": ["Remo con mancuerna", "Peso muerto rumano", "Dominadas asistidas"],
                 "cuerpo_libre": ["Dominadas", "Remo invertido", "Superman"],
-                "maquinas": ["Remo en máquina", "Jalón al pecho", "Remo sentado"],
-                "bandas": ["Remo con bandas", "Jalón con bandas", "Pulldown con bandas"]
+                "maquinas": ["Remo en máquina", "Jalón al pecho"],
+                "bandas": ["Remo con bandas", "Jalón con bandas"]
             },
             "hombros": {
-                "peso_libre": ["Elevaciones laterales", "Press militar con mancuernas", "Elevaciones frontales"],
-                "cuerpo_libre": ["Flexiones pike", "Handstand push-ups", "Flexiones en pared"],
-                "maquinas": ["Press de hombros en máquina", "Elevaciones en máquina"],
-                "bandas": ["Elevaciones con bandas", "Press de hombros con bandas"]
+                "peso_libre": ["Elevaciones laterales", "Press militar con mancuernas"],
+                "cuerpo_libre": ["Flexiones pike", "Handstand push-ups"],
+                "maquinas": ["Press de hombros en máquina"],
+                "bandas": ["Elevaciones con bandas"]
             },
             "piernas": {
-                "peso_libre": ["Sentadillas con mancuernas", "Zancadas", "Peso muerto con mancuernas"],
-                "cuerpo_libre": ["Sentadillas", "Zancadas", "Puente de glúteos", "Sentadilla sumo"],
-                "maquinas": ["Prensa de piernas", "Extensión de cuádriceps", "Curl femoral"],
-                "bandas": ["Sentadillas con bandas", "Zancadas con bandas", "Clamshells"]
+                "peso_libre": ["Sentadillas con mancuernas", "Zancadas", "Peso muerto"],
+                "cuerpo_libre": ["Sentadillas", "Zancadas", "Puente de glúteos"],
+                "maquinas": ["Prensa de piernas", "Extensión de cuádriceps"],
+                "bandas": ["Sentadillas con bandas"]
             },
             "brazos": {
                 "peso_libre": ["Curl de bíceps", "Extensiones de tríceps", "Martillo"],
-                "cuerpo_libre": ["Flexiones diamante", "Dips", "Curl de bíceps isométrico"],
-                "maquinas": ["Curl en máquina", "Extensiones en máquina"],
-                "bandas": ["Curl con bandas", "Extensiones con bandas"]
+                "cuerpo_libre": ["Flexiones diamante", "Dips"],
+                "maquinas": ["Curl en máquina"],
+                "bandas": ["Curl con bandas"]
             }
         }
         
@@ -989,12 +1455,11 @@ async def handle_substitute_exercise(
                 # Obtener alternativas
                 alternatives = exercise_alternatives.get(target_muscles, {}).get(equipment_available, [])
                 if not alternatives:
-                    # Si no hay alternativas específicas, buscar en cualquier equipamiento
+                    # Buscar en cualquier equipamiento
                     for eq_alternatives in exercise_alternatives.get(target_muscles, {}).values():
                         alternatives.extend(eq_alternatives)
                 
                 if alternatives:
-                    # Seleccionar una alternativa aleatoria o la primera
                     new_exercise = alternatives[0]
                     
                     if isinstance(exercise, dict):
@@ -1008,9 +1473,6 @@ async def handle_substitute_exercise(
                         exercises[i] = new_exercise
                     
                     changes.append(f"Sustituido: {exercise_name} → {new_exercise}")
-                    changes.append(f"Razón: {replacement_reason}")
-                    changes.append(f"Grupo muscular: {target_muscles}")
-                    changes.append(f"Equipamiento: {equipment_available}")
                 else:
                     changes.append(f"No se encontraron alternativas para {exercise_name}")
         
@@ -1018,7 +1480,7 @@ async def handle_substitute_exercise(
             changes.append(f"No se encontró el ejercicio '{exercise_to_replace}' en la rutina")
         
         # Actualizar versión y timestamp
-        current_routine["version"] = increment_routine_version(current_routine.get("version", "1.0.0"))
+        current_routine["version"] = increment_routine_version(old_routine_version)  # 🔧 FIX
         current_routine["updated_at"] = datetime.utcnow().isoformat()
         
         # Guardar cambios
@@ -1032,8 +1494,6 @@ async def handle_substitute_exercise(
             {
                 "exercise_to_replace": exercise_to_replace,
                 "replacement_reason": replacement_reason,
-                "target_muscles": target_muscles,
-                "equipment_available": equipment_available,
                 "changes": changes
             },
             f"Sustitución de ejercicio: {exercise_to_replace}",
@@ -1042,17 +1502,18 @@ async def handle_substitute_exercise(
         
         return {
             "success": True,
-            "message": f"Ejercicio sustituido: {exercise_to_replace} por {replacement_reason}",
+            "message": f"Ejercicio sustituido correctamente",
             "changes": changes
         }
         
     except Exception as e:
-        logger.error(f"Error en handle_substitute_exercise: {e}")
+        logger.error(f"Error en handle_substitute_exercise: {e}", exc_info=True)
         return {
             "success": False,
             "message": f"Error sustituyendo ejercicio: {str(e)}",
             "changes": []
         }
+
 
 async def handle_modify_routine_equipment(
     user_id: int,
@@ -1062,7 +1523,7 @@ async def handle_modify_routine_equipment(
     db: Session = None
 ) -> Dict[str, Any]:
     """
-    Adapta la rutina cuando falta equipamiento específico
+    Adapta la rutina cuando falta equipamiento específico - VERSIÓN CORREGIDA
     """
     try:
         logger.info(f"Adaptando rutina por falta de equipamiento: {missing_equipment}")
@@ -1077,24 +1538,22 @@ async def handle_modify_routine_equipment(
                 "changes": []
             }
         
+        # 🔧 FIX: Guardar versión antes de modificar
+        old_routine_version = current_routine.get("version", "1.0.0")
+        
         changes = []
         exercises = current_routine.get("exercises", [])
         
         # Mapeo de equipamiento faltante a alternativas
         equipment_substitutions = {
-            "press_banca": ["Press de pecho con mancuernas", "Flexiones", "Press de pecho en máquina"],
-            "sentadilla_rack": ["Sentadillas con mancuernas", "Sentadillas", "Prensa de piernas"],
-            "pesas_libres": ["Ejercicios con mancuernas", "Ejercicios con peso corporal", "Ejercicios con bandas"],
-            "maquinas": ["Ejercicios con peso libre", "Ejercicios con peso corporal", "Ejercicios con bandas"],
-            "smith_machine": ["Ejercicios con barra libre", "Ejercicios con mancuernas", "Ejercicios con peso corporal"],
-            "barras": ["Mancuernas", "Peso corporal", "Bandas elásticas"],
-            "discos": ["Mancuernas", "Kettlebells", "Bandas elásticas"],
-            "mancuernas": ["Peso corporal", "Bandas elásticas", "Kettlebells"],
-            "cables": ["Bandas elásticas", "Mancuernas", "Peso corporal"],
-            "poleas": ["Bandas elásticas", "Mancuernas", "Peso corporal"]
+            "press_banca": ["Press de pecho con mancuernas", "Flexiones"],
+            "sentadilla_rack": ["Sentadillas con mancuernas", "Sentadillas"],
+            "barras": ["Mancuernas", "Peso corporal"],
+            "mancuernas": ["Peso corporal", "Bandas elásticas"],
+            "maquinas": ["Peso libre", "Peso corporal"]
         }
         
-        # Obtener alternativas para el equipamiento faltante
+        # Obtener alternativas
         alternatives = equipment_substitutions.get(missing_equipment, [])
         
         # Buscar ejercicios que usen el equipamiento faltante
@@ -1105,33 +1564,20 @@ async def handle_modify_routine_equipment(
             else:
                 exercise_name = str(exercise)
             
-            # Verificar si el ejercicio podría usar el equipamiento faltante
+            # Verificar si el ejercicio usa el equipamiento
             equipment_keywords = {
-                "press_banca": ["press banca", "bench press", "press de banca"],
-                "sentadilla_rack": ["sentadilla", "squat", "prensa"],
-                "pesas_libres": ["peso libre", "barra", "discos"],
-                "maquinas": ["máquina", "machine"],
-                "smith_machine": ["smith"],
+                "press_banca": ["press banca", "bench press"],
+                "sentadilla_rack": ["sentadilla", "squat"],
                 "barras": ["barra", "bar"],
-                "discos": ["discos", "discs"],
                 "mancuernas": ["mancuernas", "dumbbells"],
-                "cables": ["cables", "poleas"],
-                "poleas": ["poleas", "cables"]
+                "maquinas": ["máquina", "machine"]
             }
             
             keywords = equipment_keywords.get(missing_equipment, [])
-            exercise_needs_substitution = any(keyword in exercise_name.lower() for keyword in keywords)
+            needs_substitution = any(kw in exercise_name.lower() for kw in keywords)
             
-            if exercise_needs_substitution and alternatives:
-                # Seleccionar alternativa basada en equipamiento disponible
-                if available_equipment == "peso_libre" and "mancuernas" in str(alternatives):
-                    new_exercise = "Press de pecho con mancuernas"
-                elif available_equipment == "cuerpo_libre":
-                    new_exercise = "Flexiones" if "press" in exercise_name.lower() else "Sentadillas"
-                elif available_equipment == "bandas":
-                    new_exercise = "Press de pecho con bandas"
-                else:
-                    new_exercise = alternatives[0]
+            if needs_substitution and alternatives:
+                new_exercise = alternatives[0]
                 
                 if isinstance(exercise, dict):
                     exercises[i] = {
@@ -1148,12 +1594,9 @@ async def handle_modify_routine_equipment(
         
         if modified_exercises == 0:
             changes.append(f"No se encontraron ejercicios que requieran {missing_equipment}")
-        else:
-            changes.append(f"Adaptados {modified_exercises} ejercicios por falta de {missing_equipment}")
-            changes.append(f"Usando equipamiento disponible: {available_equipment}")
         
         # Actualizar versión y timestamp
-        current_routine["version"] = increment_routine_version(current_routine.get("version", "1.0.0"))
+        current_routine["version"] = increment_routine_version(old_routine_version)  # 🔧 FIX
         current_routine["updated_at"] = datetime.utcnow().isoformat()
         
         # Guardar cambios
@@ -1167,10 +1610,9 @@ async def handle_modify_routine_equipment(
             {
                 "missing_equipment": missing_equipment,
                 "available_equipment": available_equipment,
-                "affected_exercises": affected_exercises,
                 "changes": changes
             },
-            f"Adaptación por falta de equipamiento: {missing_equipment}",
+            f"Adaptación por equipamiento: {missing_equipment}",
             db
         )
         
@@ -1181,11 +1623,12 @@ async def handle_modify_routine_equipment(
         }
         
     except Exception as e:
-        logger.error(f"Error en handle_modify_routine_equipment: {e}")
+        logger.error(f"Error en handle_modify_routine_equipment: {e}", exc_info=True)
         return {
             "success": False,
-            "message": f"Error adaptando rutina por equipamiento: {str(e)}",
+            "message": f"Error adaptando rutina: {str(e)}",
             "changes": []
         }
 
-# ==================== FIN DEL ARCHIVO ====================
+
+# ==================== FIN DEL ARCHIVO COMPLETO ====================

@@ -244,7 +244,26 @@ def get_generic_plan(user_data):
         }
     }
     
+    # Sumar macros totales de todas las comidas y guardar en dieta["macros"]
+    try:
+        comidas = dieta.get("comidas", [])
+        prot_total = sum(int(c.get("macros", {}).get("proteinas", 0) or 0) for c in comidas)
+        carb_total = sum(int(c.get("macros", {}).get("hidratos", 0) or 0) for c in comidas)
+        gras_total = sum(int(c.get("macros", {}).get("grasas", 0) or 0) for c in comidas)
+        dieta["macros"] = {
+            "proteina": round(prot_total, 1),
+            "carbohidratos": round(carb_total, 1),
+            "grasas": round(gras_total, 1)
+        }
+    except Exception:
+        # Si falla, dejar macros vacíos pero no romper generación
+        dieta.setdefault("macros", {"proteina": 0, "carbohidratos": 0, "grasas": 0})
+    
+    # 🔧 FIX: Añadir motivacion para compatibilidad con onboarding
+    motivacion = f"¡Vamos a por ello! Con constancia y dedicación alcanzarás tu objetivo de {objetivo}. Recuerda que cada entrenamiento te acerca más a tu meta."
+    
     return {
         "rutina": rutina,
-        "dieta": dieta
+        "dieta": dieta,
+        "motivacion": motivacion
     }

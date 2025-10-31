@@ -9,7 +9,7 @@ import json
 from app.database import get_db
 from app.models import Usuario, Plan
 from app.auth_utils import get_current_user
-from app.utils.gpt import generar_plan_safe
+from app.utils.gpt import generar_plan_personalizado
 from app.utils.json_helpers import serialize_json
 
 router = APIRouter()
@@ -60,10 +60,14 @@ async def process_onboarding(
                 "motivacion": existing_plan.motivacion
             }
 
-        # 🛡️ PROTECCIÓN 2: Logging antes de generar
-        print(f"🔄 Generando NUEVO plan para usuario {usuario.id}")
+        # 🛡️ PROTECCIÓN 2: Verificar premium ANTES de generar
+        is_premium = usuario.is_premium or usuario.plan_type == "PREMIUM"
+        print(f"🔍 DEBUG ONBOARDING:")
+        print(f"   Usuario ID: {usuario.id}")
+        print(f"   is_premium: {usuario.is_premium}")
+        print(f"   plan_type: {usuario.plan_type}")
+        print(f"   ¿Usará GPT?: {is_premium}")
         
-        # Generar plan personalizado con GPT (UNA SOLA VEZ)
         # Convertir OnboardingRequest a diccionario
         user_data = {
             'altura': data.altura,
@@ -88,7 +92,29 @@ async def process_onboarding(
             'training_frequency': data.training_frequency,
             'training_days': data.training_days
         }
-        plan_data = await generar_plan_safe(user_data, usuario.id)
+        
+        # 🔧 FIX: Generar según tipo de usuario ANTES de guardar
+        print(f"🔄 Generando NUEVO plan para usuario {usuario.id} (premium={is_premium})...")
+        if is_premium:
+            print(f"🤖 Generando plan personalizado con GPT (usuario premium)...")
+            try:
+                # 🔧 FIX: Usar directamente generar_plan_personalizado (NO usar generar_plan_safe que tenía fallback)
+                from app.utils.gpt import generar_plan_personalizado
+                plan_data = await generar_plan_personalizado(user_data)
+                print(f"✅ Plan GPT generado: {len(plan_data.get('dieta', {}).get('comidas', []))} comidas")
+            except Exception as e:
+                # 🔧 FIX: Si GPT falla para premium, usar template con logs MUY claros
+                print(f"❌ ERROR: GPT falló para usuario PREMIUM: {e}")
+                print(f"⚠️ FALLBACK: Usando template genérico como respaldo temporal")
+                print(f"⚠️ Esto NO debería pasar normalmente - verificar API key y créditos de OpenAI")
+                from app.utils.routine_templates import get_generic_plan
+                plan_data = get_generic_plan(user_data)
+                print(f"✅ Template genérico generado como FALLBACK: {len(plan_data.get('dieta', {}).get('comidas', []))} comidas")
+        else:
+            print(f"📋 Generando plan genérico (usuario free)...")
+            from app.utils.routine_templates import get_generic_plan
+            plan_data = get_generic_plan(user_data)
+            print(f"✅ Template genérico generado: {len(plan_data.get('dieta', {}).get('comidas', []))} comidas")
         
         # 🛡️ PROTECCIÓN 3: Logging detallado del plan generado
         print(f"🔍 Plan generado:")
@@ -136,7 +162,7 @@ async def process_onboarding(
             restricciones_dieta=data.restricciones_dieta,
             rutina=json.dumps(rutina_json, ensure_ascii=False),
             dieta=json.dumps(dieta_json, ensure_ascii=False),
-            motivacion=plan_data["motivacion"],
+            motivacion=plan_data.get("motivacion", ""),
             fecha_creacion=datetime.utcnow()
         )
 
@@ -174,10 +200,22 @@ async def process_onboarding(
         }
         
         # Convertir dieta al formato current_diet
+        # Extraer macros del plan generado (ahora están en dieta_json.macros gracias a gpt.py)
+        macros_plan = dieta_json.get("macros", {})
+        # Si no están en el nivel raíz, intentar desde metadata
+        if not macros_plan or (isinstance(macros_plan, dict) and len(macros_plan) == 0):
+            metadata_macros = dieta_json.get("metadata", {}).get("macros_objetivo", {})
+            if metadata_macros:
+                macros_plan = {
+                    "proteina": metadata_macros.get("proteina", 0),
+                    "carbohidratos": metadata_macros.get("carbohidratos", 0),
+                    "grasas": metadata_macros.get("grasas", 0)
+                }
+        
         current_diet = {
             "meals": dieta_json.get("comidas", []),
             "total_kcal": sum([meal.get("kcal", 0) for meal in dieta_json.get("comidas", [])]),
-            "macros": {},
+            "macros": macros_plan,  # ✅ Usar macros del plan generado en lugar de {}
             "created_at": datetime.utcnow().isoformat(),
             "version": "1.0.0",
             "metadata": {
@@ -262,7 +300,7 @@ async def process_onboarding(
             "plan_id": plan_id,
             "rutina": rutina_json,
             "dieta": dieta_json,
-            "motivacion": plan_data["motivacion"]
+            "motivacion": plan_data.get("motivacion", "¡Vamos a por ello! Con constancia y dedicación alcanzarás tu objetivo.")
         }
 
     except Exception as e:

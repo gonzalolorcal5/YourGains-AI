@@ -159,7 +159,23 @@ class DatabaseService:
             # Commit en UNA sola transacción
             db.commit()
             
-            logger.info(f"Datos actualizados exitosamente para usuario {user_id}")
+            # REFRESH CRÍTICO: Refrescar el objeto desde la BD para asegurar datos actualizados
+            db.refresh(user)
+            
+            # Logging detallado para verificar qué se guardó
+            if "current_diet" in data:
+                try:
+                    diet_data = deserialize_json(user.current_diet, "current_diet")
+                    total_kcal = diet_data.get('total_kcal', 'NO EXISTE')
+                    macros = diet_data.get('macros', {})
+                    logger.info(f"✅ BD actualizada correctamente para usuario {user_id}")
+                    logger.info(f"   ✅ current_diet guardado con total_kcal: {total_kcal}")
+                    logger.info(f"   ✅ Macros guardados: P={macros.get('proteina', 0)}g, C={macros.get('carbohidratos', 0)}g, G={macros.get('grasas', 0)}g")
+                except Exception as e:
+                    logger.warning(f"⚠️ No se pudo verificar current_diet después del guardado: {e}")
+            else:
+                logger.info(f"✅ Datos actualizados exitosamente para usuario {user_id}")
+            
             return True
             
         except Exception as e:

@@ -1382,21 +1382,24 @@
                     
                     if (!isPremiumUser()) {
                         incrementChatUsage();
-                            if (!canUseChat()) {
-                                addMessage('Has llegado al máximo de mensajes gratis. Sube a Pro para seguir chateando.');
-                            }
-                        }
-                    } else {
-                        if (response.status === 401) {
-                            addMessage('Sesión expirada. Redirigiendo al login...');
-                            setTimeout(() => {
-                                localStorage.clear();
-                                window.location.href = './login.html';
-                            }, 2000);
-                        } else {
-                            addMessage(`Error: ${data.detail || 'Error desconocido'}`);
+                        if (!canUseChat()) {
+                            addMessage('Has llegado al máximo de mensajes gratis. Sube a Pro para seguir chateando.');
                         }
                     }
+                    
+                    // Si se actualizó el plan, forzar recarga
+                    if (data.success && data.plan_updated) {
+                        console.log('✅ Plan actualizado, recargando página...');
+                        if (data.response) {
+                            addMessage(data.response, 'assistant');
+                        }
+                        setTimeout(() => {
+                            console.log('🔄 Ejecutando location.reload()...');
+                            location.reload(true);
+                        }, 1500);
+                        return;
+                    }
+                    
                 } catch (error) {
                     console.error('Error en chat:', error);
                     addMessage('Error de conexión. Verifica que el servidor esté funcionando.');
@@ -2029,8 +2032,8 @@
         function displayDietContent(plan, premium) {
             const contentArea = document.getElementById('dietaContent');
             
-            if (plan.dieta && plan.dieta.comidas) {
-                const comidas = plan.dieta.comidas;
+            if (plan.dieta && (plan.dieta.comidas || plan.dieta.meals)) {
+                const comidas = plan.dieta.comidas || plan.dieta.meals;
                 const total = comidas.length;
                 const visibles = premium ? total : Math.max(2, Math.ceil(total * 0.5)); // 50% para usuarios básicos
 
@@ -2038,11 +2041,12 @@
                 
                 // Mostrar macros si están disponibles
                 if (plan.dieta.macros) {
+                    const macros = plan.dieta.macros;
                     dietHTML += `<div class="macros-grid">`;
-                    dietHTML += `<div class="macro-card"><span class="macro-value">${plan.dieta.macros.proteinas}g</span><span class="macro-label">Proteínas</span></div>`;
-                    dietHTML += `<div class="macro-card"><span class="macro-value">${plan.dieta.macros.carbohidratos}g</span><span class="macro-label">Carbohidratos</span></div>`;
-                    dietHTML += `<div class="macro-card"><span class="macro-value">${plan.dieta.macros.grasas}g</span><span class="macro-label">Grasas</span></div>`;
-                    dietHTML += `<div class="macro-card"><span class="macro-value">${plan.dieta.macros.calorias}</span><span class="macro-label">Calorías</span></div>`;
+                    dietHTML += `<div class="macro-card"><span class="macro-value">${macros.proteina || macros.proteinas || 0}g</span><span class="macro-label">Proteínas</span></div>`;
+                    dietHTML += `<div class="macro-card"><span class="macro-value">${macros.carbohidratos || macros.hidratos || macros.carbs || 0}g</span><span class="macro-label">Carbohidratos</span></div>`;
+                    dietHTML += `<div class="macro-card"><span class="macro-value">${macros.grasas || macros.grass || 0}g</span><span class="macro-label">Grasas</span></div>`;
+                    dietHTML += `<div class="macro-card"><span class="macro-value">${macros.calorias || plan.dieta.kcal_objetivo || plan.dieta.total_kcal || ''}</span><span class="macro-label">Calorías</span></div>`;
                     dietHTML += `</div>`;
                 }
 
@@ -2652,7 +2656,7 @@
                     return;
                 }
                 
-                const response = await fetch('http://127.0.0.1:8000/api/user/current-diet', {
+                const response = await fetch('http://127.0.0.1:8000/user/current-diet', {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'

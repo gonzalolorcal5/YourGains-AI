@@ -70,6 +70,10 @@ class ChatResponse(BaseModel):
     modified: bool
     changes: List[str]
     function_used: Optional[str] = None
+    # Campos adicionales para actualización de planes
+    success: Optional[bool] = None
+    plan_updated: Optional[bool] = None
+    summary: Optional[str] = None
 
 async def get_user_context(user_id: int, db: Session) -> Dict[str, Any]:
     """
@@ -345,7 +349,10 @@ async def chat_with_modifications(
                         response=f"✅ Plan actualizado correctamente.\n\n{result.get('summary', '')}",
                         modified=True,
                         changes=result.get("changes", []),
-                        function_used="recalculate_diet_macros"
+                        function_used="recalculate_diet_macros",
+                        success=result.get("success"),
+                        plan_updated=result.get("plan_updated"),
+                        summary=result.get("summary")
                     )
                 else:
                     return ChatResponse(
@@ -505,7 +512,11 @@ async def chat_with_modifications(
                         response=final_message,
                         modified=modified,
                         changes=changes,
-                        function_used=function_used
+                        function_used=function_used,
+                        # Pasar campos adicionales del handler_result
+                        success=handler_result.get("success"),
+                        plan_updated=handler_result.get("plan_updated"),
+                        summary=handler_result.get("summary")
                     )
                 else:
                     # Error en la modificación

@@ -144,3 +144,46 @@ async def _print_routes():
         print("[ROUTES]", paths)
     except Exception as e:
         print("[ROUTES-ERROR]", e)
+
+# 🔧 FIX: Shutdown limpio para evitar errores al detener servidor
+@app.on_event("shutdown")
+async def _cleanup_shutdown():
+    import asyncio
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    try:
+        # Obtener el loop actual
+        loop = asyncio.get_event_loop()
+        if loop.is_closed():
+            return
+        
+        # Cancelar todas las tareas pendientes de forma limpia
+        try:
+            tasks = [t for t in asyncio.all_tasks(loop) if t is not asyncio.current_task(loop)]
+            if tasks:
+                logger.info(f"🔄 Cancelando {len(tasks)} tareas pendientes durante shutdown...")
+                for task in tasks:
+                    if not task.done():
+                        task.cancel()
+                
+                # Esperar que las tareas se cancelen (con timeout y manejo de excepciones)
+                try:
+                    await asyncio.wait_for(
+                        asyncio.gather(*tasks, return_exceptions=True),
+                        timeout=1.5
+                    )
+                except (asyncio.TimeoutError, asyncio.CancelledError):
+                    # Ignorar errores de timeout/cancelación durante shutdown
+                    pass
+        except Exception:
+            # Ignorar cualquier error durante el cleanup
+            pass
+        
+        logger.info("✅ Shutdown limpio completado")
+    except (RuntimeError, AttributeError, asyncio.CancelledError):
+        # Ignorar errores si el loop ya está cerrado o cancelado
+        pass
+    except Exception as e:
+        # Si hay error durante shutdown, solo loguear (no propagar)
+        logger.warning(f"⚠️ Error durante shutdown: {e}")

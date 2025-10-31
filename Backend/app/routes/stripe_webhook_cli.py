@@ -82,10 +82,22 @@ def generate_and_save_ai_plan(db: Session, user_id: int):
         }
         
         # Convertir dieta al formato current_diet
+        # Extraer macros del plan generado (ahora están en plan["dieta"].macros gracias a gpt.py)
+        macros_plan = plan["dieta"].get("macros", {})
+        # Si no están en el nivel raíz, intentar desde metadata
+        if not macros_plan or (isinstance(macros_plan, dict) and len(macros_plan) == 0):
+            metadata_macros = plan["dieta"].get("metadata", {}).get("macros_objetivo", {})
+            if metadata_macros:
+                macros_plan = {
+                    "proteina": metadata_macros.get("proteina", 0),
+                    "carbohidratos": metadata_macros.get("carbohidratos", 0),
+                    "grasas": metadata_macros.get("grasas", 0)
+                }
+        
         current_diet = {
             "meals": plan["dieta"].get("comidas", []),
             "total_kcal": plan["dieta"].get("total_calorias", 2200),
-            "macros": {},
+            "macros": macros_plan,  # ✅ Usar macros del plan generado en lugar de {}
             "objetivo": user_info['objetivo'],
             "created_at": datetime.utcnow().isoformat(),
             "version": "1.0.0"

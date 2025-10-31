@@ -2276,7 +2276,7 @@
                         : 0);
                 let dietaHtml = `
                     <h1 class="section-title" style="margin-top: 50px;">Dieta</h1>
-                    <p class="section-subtitle">Plan personalizado - ${totalKcal} kcal diarias<br><span style="color:#00ff00;font-size:14px">Proteínas: ${plan.dieta?.macros?.proteina||0}g | Carbos: ${plan.dieta?.macros?.carbohidratos||0}g | Grasas: ${plan.dieta?.macros?.grasas||0}g</span></p>
+                    <p class="section-subtitle">Plan personalizado - ${totalKcal} kcal diarias<br><span style="color:#00ff00;font-size:14px">Proteínas: ${(plan.dieta?.macros?.proteinas ?? plan.dieta?.macros?.proteina) || 0}g | Carbos: ${plan.dieta?.macros?.carbohidratos||0}g | Grasas: ${plan.dieta?.macros?.grasas||0}g</span></p>
                 `;
                 
                 let upgradeShown = false;
