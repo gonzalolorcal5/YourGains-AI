@@ -12,7 +12,23 @@ OPENAI_FUNCTIONS: List[Dict[str, Any]] = [
     
     {
         "name": "modify_routine_injury",
-        "description": "Elimina ejercicios que afecten una lesión específica y los sustituye por alternativas seguras",
+        "description": """
+        Elimina ejercicios que afecten una lesión específica y los sustituye por alternativas seguras.
+        
+        DETECCIÓN DE VARIACIONES:
+        - "Me duele el hombro" → body_part="hombro", injury_type="dolor_muscular", severity="mild"
+        - "Tengo molestias en la rodilla" → body_part="rodilla", injury_type="dolor_muscular", severity="mild"
+        - "Me he lesionado el hombro" → body_part="hombro", injury_type="dolor_cronico", severity="moderate"
+        - "Me lesioné la espalda" → body_part="espalda", injury_type="dolor_cronico", severity="moderate"
+        - "Me duele mucho el hombro" → body_part="hombro", injury_type="dolor_muscular", severity="moderate"
+        - "Tengo una tendinitis en el hombro" → body_part="hombro", injury_type="tendinitis", severity="moderate"
+        - "No puedo entrenar el hombro porque me duele" → body_part="hombro", injury_type="dolor_muscular", severity="mild"
+        
+        PALABRAS CLAVE PARA DETECCIÓN:
+        - "duele", "dolor", "molestias", "molesta" → Dolor/malestar (severidad: mild)
+        - "me lesioné", "me he lesionado", "tengo una lesión", "estoy lesionado" → Lesión (severidad: moderate)
+        - "mucho dolor", "duele mucho", "muy doloroso", "dolor intenso" → Dolor intenso (severidad: moderate/severe)
+        """,
         "parameters": {
             "type": "object",
             "properties": {

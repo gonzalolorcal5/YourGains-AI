@@ -249,6 +249,11 @@ PERFIL DEL USUARIO:
 - Lesiones: {datos.get('lesiones', 'ninguna')}
 - Intensidad deseada: {datos.get('entrenar_fuerte', 'media')}
 
+⚠️ IMPORTANTE: Si hay una lesión especificada arriba, DEBES:
+- EVITAR completamente ejercicios que afecten esa parte del cuerpo
+- Generar ejercicios alternativos seguros
+- Adaptar el volumen e intensidad según la severidad de la lesión
+
 ═══════════════════════════════════════════════
 OBJETIVOS SEPARADOS:
 ═══════════════════════════════════════════════

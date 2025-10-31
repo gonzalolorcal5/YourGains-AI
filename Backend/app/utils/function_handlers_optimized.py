@@ -74,7 +74,8 @@ async def handle_modify_routine_injury(
     db: Session
 ) -> Dict[str, Any]:
     """
-    Modifica la rutina para adaptarla a una lesión específica - VERSIÓN OPTIMIZADA Y CORREGIDA
+    Modifica la rutina para adaptarla a una lesión específica - VERSIÓN CON GPT
+    🔧 NUEVO: Ahora GPT genera una rutina completamente nueva evitando la lesión
     """
     try:
         # Obtener datos del usuario en UNA sola consulta
@@ -93,112 +94,223 @@ async def handle_modify_routine_injury(
         previous_routine = json.loads(json.dumps(current_routine))
         old_routine_version = current_routine.get("version", "1.0.0")
         
-        changes = []
+        logger.info(f"🏥 GENERANDO RUTINA CON GPT PARA LESIÓN:")
+        logger.info(f"   Parte del cuerpo: {body_part}")
+        logger.info(f"   Tipo de lesión: {injury_type}")
+        logger.info(f"   Severidad: {severity}")
         
-        # Diccionarios optimizados de ejercicios
-        exercises_to_remove = {
-            "hombro": ["Press banca", "Press militar", "Remo al cuello", "Elevaciones laterales", "Fondos"],
-            "rodilla": ["Sentadilla profunda", "Zancadas", "Sentadillas", "Prensa", "Salto"],
-            "espalda": ["Peso muerto", "Remo con barra", "Pull ups", "Extensión lumbar"],
-            "cuello": ["Press militar", "Elevaciones frontales", "Encogimientos"],
-            "muñeca": ["Flexiones", "Press banca", "Curl de bíceps", "Fondos"],
-            "tobillo": ["Sentadillas", "Zancadas", "Prensa", "Salto"],
-            "codo": ["Curl de bíceps", "Press francés", "Fondos", "Flexiones"],
-            "cadera": ["Sentadillas", "Prensa", "Peso muerto", "Zancadas"],
-            "cuadriceps": ["Sentadillas", "Zancadas", "Prensa", "Sentadilla profunda", "Salto", "Extensiones de cuádriceps", "Hack squat", "Sissy squat"],
-            "piernas": ["Sentadillas", "Zancadas", "Prensa", "Sentadilla profunda", "Salto", "Extensiones de cuádriceps", "Hack squat", "Sissy squat", "Peso muerto"],
-            "muslos": ["Sentadillas", "Zancadas", "Prensa", "Sentadilla profunda", "Salto", "Extensiones de cuádriceps", "Hack squat", "Sissy squat"]
+        # Obtener datos del Plan para pasar a GPT
+        from app.models import Plan
+        plan_actual = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
+        
+        if not plan_actual:
+            logger.error(f"❌ No se encontró Plan para usuario {user_id}")
+            return {
+                "success": False,
+                "message": "No se encontró plan del usuario. Completa el onboarding primero.",
+                "changes": []
+            }
+        
+        # Preparar datos para GPT con información de la lesión
+        datos_gpt = {
+            'altura': plan_actual.altura or 175,
+            'peso': float(plan_actual.peso) if plan_actual.peso else 75.0,
+            'edad': plan_actual.edad or 25,
+            'sexo': plan_actual.sexo or 'masculino',
+            'objetivo': plan_actual.objetivo_gym or (plan_actual.objetivo or 'ganar_musculo'),
+            'gym_goal': plan_actual.objetivo_gym or 'ganar_musculo',
+            'nutrition_goal': plan_actual.objetivo_nutricional or (plan_actual.objetivo_dieta or 'mantenimiento'),
+            'experiencia': plan_actual.experiencia or 'principiante',
+            'materiales': plan_actual.materiales or 'gym_completo',
+            'tipo_cuerpo': plan_actual.tipo_cuerpo or 'mesomorfo',
+            'alergias': plan_actual.alergias or 'Ninguna',
+            'restricciones': plan_actual.restricciones_dieta or 'Ninguna',
+            # 🔧 NUEVO: Información específica de la lesión
+            'lesiones': f"{body_part} ({injury_type}, severidad: {severity}) - EVITAR ejercicios que afecten esta parte",
+            'nivel_actividad': plan_actual.nivel_actividad or 'moderado',
+            'training_frequency': 4,
+            'training_days': ['lunes', 'martes', 'jueves', 'viernes']
         }
         
-        safe_alternatives = {
-            "hombro": [
-                {"nombre": "Press banca agarre cerrado", "series": 4, "reps": "8-10", "descanso": 90},
-                {"nombre": "Elevaciones laterales ligeras", "series": 3, "reps": "12-15", "descanso": 60},
-                {"nombre": "Facepulls", "series": 3, "reps": "15-20", "descanso": 60}
-            ],
-            "rodilla": [
-                {"nombre": "Leg press", "series": 4, "reps": "12-15", "descanso": 90},
-                {"nombre": "Extensiones de cuádriceps", "series": 3, "reps": "12-15", "descanso": 60},
-                {"nombre": "Curl femoral", "series": 3, "reps": "12-15", "descanso": 60}
-            ],
-            "espalda": [
-                {"nombre": "Remo con mancuernas", "series": 4, "reps": "8-10", "descanso": 90},
-                {"nombre": "Lat pulldown", "series": 3, "reps": "10-12", "descanso": 90},
-                {"nombre": "Facepulls", "series": 3, "reps": "15-20", "descanso": 60}
-            ],
-            "cuello": [
-                {"nombre": "Movimientos de cuello", "series": 3, "reps": "10", "descanso": 30},
-                {"nombre": "Estiramientos cervicales", "series": 2, "reps": "30s", "descanso": 60}
-            ],
-            "muñeca": [
-                {"nombre": "Curl con barra EZ", "series": 3, "reps": "12-15", "descanso": 60},
-                {"nombre": "Press con mancuernas", "series": 3, "reps": "10-12", "descanso": 90}
-            ],
-            "tobillo": [
-                {"nombre": "Elevaciones de talón", "series": 3, "reps": "15-20", "descanso": 60},
-                {"nombre": "Flexiones de tobillo", "series": 3, "reps": "15", "descanso": 45}
-            ],
-            "codo": [
-                {"nombre": "Curl martillo", "series": 3, "reps": "12-15", "descanso": 60},
-                {"nombre": "Press con mancuernas", "series": 3, "reps": "10-12", "descanso": 90}
-            ],
-            "cadera": [
-                {"nombre": "Puente de glúteos", "series": 3, "reps": "15-20", "descanso": 60},
-                {"nombre": "Clamshells", "series": 3, "reps": "15", "descanso": 45}
-            ],
-            "cuadriceps": [
-                {"nombre": "Leg press", "series": 4, "reps": "12-15", "descanso": 90},
-                {"nombre": "Curl femoral", "series": 3, "reps": "12-15", "descanso": 60},
-                {"nombre": "Puente de glúteos", "series": 3, "reps": "15-20", "descanso": 60},
-                {"nombre": "Estocadas estáticas", "series": 3, "reps": "10-12", "descanso": 60}
-            ],
-            "piernas": [
-                {"nombre": "Leg press", "series": 4, "reps": "12-15", "descanso": 90},
-                {"nombre": "Curl femoral", "series": 3, "reps": "12-15", "descanso": 60},
-                {"nombre": "Puente de glúteos", "series": 3, "reps": "15-20", "descanso": 60},
-                {"nombre": "Elevaciones de talón", "series": 3, "reps": "15-20", "descanso": 60}
-            ],
-            "muslos": [
-                {"nombre": "Leg press", "series": 4, "reps": "12-15", "descanso": 90},
-                {"nombre": "Curl femoral", "series": 3, "reps": "12-15", "descanso": 60},
-                {"nombre": "Puente de glúteos", "series": 3, "reps": "15-20", "descanso": 60}
-            ]
-        }
+        # Llamar a GPT para generar rutina nueva con lesión
+        from app.utils.gpt import generar_plan_personalizado
         
-        exercises_to_remove_list = exercises_to_remove.get(body_part, [])
-        alternatives = safe_alternatives.get(body_part, [])
+        exercises_nuevos = None  # Variable para controlar si GPT funcionó
         
-        # Procesar ejercicios de manera eficiente
-        ejercicios_actuales = current_routine.get("exercises", [])
-        ejercicios_filtrados = []
-        ejercicios_eliminados = []
-        
-        # Filtrar ejercicios problemáticos
-        for ejercicio in ejercicios_actuales:
-            nombre_ejercicio = ejercicio.get("name", "") if isinstance(ejercicio, dict) else str(ejercicio)
-            should_remove = any(avoid.lower() in nombre_ejercicio.lower() for avoid in exercises_to_remove_list)
+        try:
+            logger.info(f"🤖 Generando rutina con GPT considerando lesión de {body_part}...")
+            plan_generado = await generar_plan_personalizado(datos_gpt)
             
-            if should_remove:
-                ejercicios_eliminados.append(nombre_ejercicio)
-                changes.append(f"Eliminado: {nombre_ejercicio}")
-            else:
-                ejercicios_filtrados.append(ejercicio)
+            # Extraer solo la rutina (no necesitamos regenerar dieta)
+            rutina_gpt = plan_generado.get("rutina", {})
+            dias_rutina = rutina_gpt.get("dias", [])
+            
+            if not dias_rutina:
+                raise ValueError("GPT no generó rutina válida")
+            
+            # Convertir formato de "dias" a "exercises" (formato que usa current_routine)
+            exercises_nuevos = []
+            for dia in dias_rutina:
+                nombre_dia = dia.get("dia", "")
+                grupos_musculares = dia.get("grupos_musculares", "")
+                ejercicios_dia = dia.get("ejercicios", [])
+                
+                for ejercicio in ejercicios_dia:
+                    exercises_nuevos.append({
+                        "name": ejercicio.get("nombre", ""),
+                        "sets": ejercicio.get("series", 3),
+                        "reps": ejercicio.get("repeticiones", "10-12"),
+                        "weight": "moderado",
+                        "day": nombre_dia
+                    })
+            
+            logger.info(f"✅ Rutina generada con GPT: {len(exercises_nuevos)} ejercicios")
+            
+            # Preparar cambios para el registro
+            changes = [
+                f"Rutina regenerada con GPT evitando ejercicios para {body_part}",
+                f"Total ejercicios: {len(exercises_nuevos)}"
+            ]
+            
+        except Exception as e_gpt:
+            logger.error(f"❌ Error generando rutina con GPT: {e_gpt}")
+            logger.warning(f"⚠️ Fallando a método de filtrado tradicional...")
+            exercises_nuevos = None  # GPT falló, usar fallback
         
-        # Añadir alternativas si se eliminaron ejercicios
-        if ejercicios_eliminados and alternatives:
-            for alt in alternatives[:3]:
-                ejercicios_filtrados.append({
-                    "name": alt["nombre"],
-                    "sets": alt["series"],
-                    "reps": alt["reps"],
-                    "weight": "peso moderado",
-                    "notes": f"Alternativa segura para {body_part}"
-                })
-                changes.append(f"Añadido: {alt['nombre']}")
+        # FALLBACK: Si GPT falló, usar método tradicional de filtrado
+        if exercises_nuevos is None:
+            # Diccionarios optimizados de ejercicios
+            exercises_to_remove = {
+                "hombro": [
+                "Press banca", "Press inclinado", "Press declinado", "Press militar", "Press con mancuernas",
+                "Press inclinado con mancuernas", "Press declinado con mancuernas", "Press banca con mancuernas",
+                "Remo al cuello", "Elevaciones laterales", "Elevaciones frontales", "Fondos",
+                "Aperturas con mancuernas", "Aperturas en máquina", "Cruce de cables", "Pullover"
+            ],
+                "rodilla": ["Sentadilla profunda", "Zancadas", "Sentadillas", "Prensa", "Salto"],
+                "espalda": ["Peso muerto", "Remo con barra", "Pull ups", "Extensión lumbar"],
+                "cuello": ["Press militar", "Elevaciones frontales", "Encogimientos"],
+                "muñeca": ["Flexiones", "Press banca", "Curl de bíceps", "Fondos"],
+                "tobillo": ["Sentadillas", "Zancadas", "Prensa", "Salto"],
+                "codo": ["Curl de bíceps", "Press francés", "Fondos", "Flexiones"],
+                "cadera": ["Sentadillas", "Prensa", "Peso muerto", "Zancadas"],
+                "cuadriceps": ["Sentadillas", "Zancadas", "Prensa", "Sentadilla profunda", "Salto", "Extensiones de cuádriceps", "Hack squat", "Sissy squat"],
+                "piernas": ["Sentadillas", "Zancadas", "Prensa", "Sentadilla profunda", "Salto", "Extensiones de cuádriceps", "Hack squat", "Sissy squat", "Peso muerto"],
+                "muslos": ["Sentadillas", "Zancadas", "Prensa", "Sentadilla profunda", "Salto", "Extensiones de cuádriceps", "Hack squat", "Sissy squat"]
+            }
+            
+            safe_alternatives = {
+                "hombro": [
+                    {"nombre": "Press banca agarre cerrado", "series": 4, "reps": "8-10", "descanso": 90},
+                    {"nombre": "Elevaciones laterales ligeras", "series": 3, "reps": "12-15", "descanso": 60},
+                    {"nombre": "Facepulls", "series": 3, "reps": "15-20", "descanso": 60}
+                ],
+                "rodilla": [
+                    {"nombre": "Leg press", "series": 4, "reps": "12-15", "descanso": 90},
+                    {"nombre": "Extensiones de cuádriceps", "series": 3, "reps": "12-15", "descanso": 60},
+                    {"nombre": "Curl femoral", "series": 3, "reps": "12-15", "descanso": 60}
+                ],
+                "espalda": [
+                    {"nombre": "Remo con mancuernas", "series": 4, "reps": "8-10", "descanso": 90},
+                    {"nombre": "Lat pulldown", "series": 3, "reps": "10-12", "descanso": 90},
+                    {"nombre": "Facepulls", "series": 3, "reps": "15-20", "descanso": 60}
+                ],
+                "cuello": [
+                    {"nombre": "Movimientos de cuello", "series": 3, "reps": "10", "descanso": 30},
+                    {"nombre": "Estiramientos cervicales", "series": 2, "reps": "30s", "descanso": 60}
+                ],
+                "muñeca": [
+                    {"nombre": "Curl con barra EZ", "series": 3, "reps": "12-15", "descanso": 60},
+                    {"nombre": "Press con mancuernas", "series": 3, "reps": "10-12", "descanso": 90}
+                ],
+                "tobillo": [
+                    {"nombre": "Elevaciones de talón", "series": 3, "reps": "15-20", "descanso": 60},
+                    {"nombre": "Flexiones de tobillo", "series": 3, "reps": "15", "descanso": 45}
+                ],
+                "codo": [
+                    {"nombre": "Curl martillo", "series": 3, "reps": "12-15", "descanso": 60},
+                    {"nombre": "Press con mancuernas", "series": 3, "reps": "10-12", "descanso": 90}
+                ],
+                "cadera": [
+                    {"nombre": "Puente de glúteos", "series": 3, "reps": "15-20", "descanso": 60},
+                    {"nombre": "Clamshells", "series": 3, "reps": "15", "descanso": 45}
+                ],
+                "cuadriceps": [
+                    {"nombre": "Leg press", "series": 4, "reps": "12-15", "descanso": 90},
+                    {"nombre": "Curl femoral", "series": 3, "reps": "12-15", "descanso": 60},
+                    {"nombre": "Puente de glúteos", "series": 3, "reps": "15-20", "descanso": 60},
+                    {"nombre": "Estocadas estáticas", "series": 3, "reps": "10-12", "descanso": 60}
+                ],
+                "piernas": [
+                    {"nombre": "Leg press", "series": 4, "reps": "12-15", "descanso": 90},
+                    {"nombre": "Curl femoral", "series": 3, "reps": "12-15", "descanso": 60},
+                    {"nombre": "Puente de glúteos", "series": 3, "reps": "15-20", "descanso": 60},
+                    {"nombre": "Elevaciones de talón", "series": 3, "reps": "15-20", "descanso": 60}
+                ],
+                "muslos": [
+                    {"nombre": "Leg press", "series": 4, "reps": "12-15", "descanso": 90},
+                    {"nombre": "Curl femoral", "series": 3, "reps": "12-15", "descanso": 60},
+                    {"nombre": "Puente de glúteos", "series": 3, "reps": "15-20", "descanso": 60}
+                ]
+            }
+            
+            exercises_to_remove_list = exercises_to_remove.get(body_part, [])
+            alternatives = safe_alternatives.get(body_part, [])
+            
+            # Procesar ejercicios de manera eficiente
+            ejercicios_actuales = current_routine.get("exercises", [])
+            ejercicios_filtrados = []
+            ejercicios_eliminados = []
+            
+            # Filtrar ejercicios problemáticos
+            for ejercicio in ejercicios_actuales:
+                nombre_ejercicio = ejercicio.get("name", "") if isinstance(ejercicio, dict) else str(ejercicio)
+                nombre_lower = nombre_ejercicio.lower()
+                
+                # Detección mejorada: buscar palabras clave y coincidencias exactas
+                should_remove = False
+                
+                # Coincidencia exacta o parcial en la lista
+                should_remove = any(avoid.lower() in nombre_lower for avoid in exercises_to_remove_list)
+                
+                # Detección adicional por palabras clave específicas para hombro
+                if body_part == "hombro" and not should_remove:
+                    # Palabras clave que indican ejercicios que afectan el hombro
+                    keywords_hombro = ["press", "apertura", "fondo", "elevación", "remo al cuello"]
+                    if any(keyword in nombre_lower for keyword in keywords_hombro):
+                        # Excluir ejercicios seguros para hombro
+                        safe_keywords = ["curl", "sentadilla", "prensa", "remo con", "lat pulldown", "jalón", "dominada", "remo invertido"]
+                        if not any(safe in nombre_lower for safe in safe_keywords):
+                            should_remove = True
+                            logger.info(f"⚠️ Ejercicio detectado por palabra clave '{nombre_ejercicio}' para lesión de hombro")
+                
+                if should_remove:
+                    ejercicios_eliminados.append(nombre_ejercicio)
+                    changes.append(f"Eliminado: {nombre_ejercicio}")
+                else:
+                    ejercicios_filtrados.append(ejercicio)
+            
+            # Añadir alternativas si se eliminaron ejercicios (solo en fallback)
+            if ejercicios_eliminados and alternatives:
+                for alt in alternatives[:3]:
+                    ejercicios_filtrados.append({
+                        "name": alt["nombre"],
+                        "sets": alt["series"],
+                        "reps": alt["reps"],
+                        "weight": "peso moderado",
+                        "notes": f"Alternativa segura para {body_part}"
+                    })
+                    changes.append(f"Añadido: {alt['nombre']}")
         
-        # Actualizar la rutina
-        current_routine["exercises"] = ejercicios_filtrados
-        current_routine["version"] = increment_routine_version(old_routine_version)  # 🔧 FIX
+        # Actualizar rutina con el método que funcionó
+        if exercises_nuevos is not None:
+            # GPT funcionó: usar rutina generada por GPT
+            current_routine["exercises"] = exercises_nuevos
+        else:
+            # GPT falló: usar rutina filtrada
+            current_routine["exercises"] = ejercicios_filtrados
+        
+        current_routine["version"] = increment_routine_version(old_routine_version)
         current_routine["updated_at"] = datetime.utcnow().isoformat()
         
         # Actualizar lesiones

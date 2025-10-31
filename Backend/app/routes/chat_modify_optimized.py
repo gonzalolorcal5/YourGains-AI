@@ -38,7 +38,7 @@ from app.utils.function_handlers_optimized import (
 # Diccionario para guardar confirmaciones pendientes
 # En producción, usar Redis o base de datos
 pending_confirmations: Dict[int, Dict[str, Any]] = {}
-from app.utils.simple_injury_handler import handle_modify_routine_injury_simple
+from app.utils.function_handlers_optimized import handle_modify_routine_injury
 from app.utils.database_service import db_service
 from app.utils.allergy_detection import process_user_allergies, validate_food_against_allergies, get_allergy_safe_alternatives
 
@@ -144,7 +144,22 @@ DETECCIÓN AUTOMÁTICA:
 🏋️ FALTA DE EQUIPAMIENTO → modify_routine_equipment(missing_equipment="X", available_equipment="Y")
 💪 AJUSTES DE RUTINA → adjust_routine_difficulty(difficulty_change="increase/decrease", reason="X")
 🎯 ENFOQUE EN ÁREAS → modify_routine_focus(focus_area="X", intensity="medium/high")
-🏥 LESIONES → modify_routine_injury(body_part="X", injury_type="Y")
+🏥 LESIONES → modify_routine_injury(body_part="X", injury_type="Y", severity="mild/moderate/severe")
+
+DETECCIÓN DE LESIONES - Ejemplos:
+- "Me duele el hombro" → modify_routine_injury(body_part="hombro", injury_type="dolor_muscular", severity="mild")
+- "Tengo molestias en la rodilla" → modify_routine_injury(body_part="rodilla", injury_type="dolor_muscular", severity="mild")
+- "Me he lesionado el hombro" → modify_routine_injury(body_part="hombro", injury_type="lesion", severity="moderate")
+- "Me lesioné la espalda" → modify_routine_injury(body_part="espalda", injury_type="lesion", severity="moderate")
+- "Me duele mucho la rodilla" → modify_routine_injury(body_part="rodilla", injury_type="dolor_muscular", severity="moderate")
+- "Tengo una tendinitis en el hombro" → modify_routine_injury(body_part="hombro", injury_type="tendinitis", severity="moderate")
+- "No puedo entrenar el hombro porque me duele" → modify_routine_injury(body_part="hombro", injury_type="dolor_muscular", severity="mild")
+
+VARIACIONES DE DETECCIÓN:
+- "me duele", "duele", "dolor en", "tengo dolor" → Dolor/malestar
+- "tengo molestias", "molestias en", "molesta" → Molestias (severidad: mild)
+- "me lesioné", "me he lesionado", "tengo una lesión", "estoy lesionado" → Lesión (severidad: moderate)
+- "mucho dolor", "duele mucho", "muy doloroso" → Dolor intenso (severidad: moderate/severe)
 
 🎯 DETECCIÓN DE AJUSTES CALÓRICOS:
 Cuando el usuario mencione cambios en déficit/superávit calórico, debes identificar:
@@ -180,7 +195,7 @@ PALABRAS CLAVE:
 🎯 Objetivo: "fuerza", "hipertrofia", "volumen", "definir", "mantener"
 💪 Dificultad: "fácil", "difícil", "intensidad", "rutina"
 🎯 Enfoque: "enfocar", "más", "pecho", "piernas", "brazos", "espalda", "hombros"
-🏥 Lesiones: "duele", "dolor", "lesión", "hombro", "rodilla", "espalda", "cuádriceps"
+🏥 Lesiones: "duele", "dolor", "lesión", "molestias", "molesta", "me lesioné", "me he lesionado", "tengo molestias", "hombro", "rodilla", "espalda", "cuádriceps"
 💪 Ejercicios: "no me gusta", "odio", "no tengo", "no puedo hacer"
 🏋️ Equipamiento: "no tengo", "no hay", "máquina", "barra", "mancuernas"
 
@@ -263,7 +278,7 @@ async def execute_function_handler(
         
         # Mapeo de funciones a handlers
         handler_mapping = {
-            "modify_routine_injury": handle_modify_routine_injury_simple,
+            "modify_routine_injury": handle_modify_routine_injury,
             "modify_routine_focus": handle_modify_routine_focus,
             "adjust_routine_difficulty": handle_adjust_routine_difficulty,
             "adjust_for_menstrual_cycle": handle_adjust_menstrual_cycle,
