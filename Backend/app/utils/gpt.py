@@ -97,18 +97,34 @@ async def generar_plan_personalizado(datos):
     
     nutrition_goal = datos.get('nutrition_goal', 'mantenimiento')
     
+    # 🔧 FIX: Si el usuario especificó calorías objetivo específicas, usarlas directamente
+    target_calories_override = datos.get('target_calories_override')
+    
     logger.info("=" * 70)
     logger.info("🧮 CALCULANDO PLAN NUTRICIONAL CIENTÍFICO")
     logger.info("=" * 70)
     logger.info(f"📊 Objetivo nutricional: {nutrition_goal}")
+    if target_calories_override:
+        logger.info(f"🎯 Calorías objetivo especificadas: {target_calories_override} kcal")
     
     # Calcular plan nutricional con función científica (TMB + TDEE)
     nutrition_plan = get_complete_nutrition_plan(datos, nutrition_goal)
     
     tmb = nutrition_plan['tmb']
     tdee = nutrition_plan['tdee']
-    kcal_objetivo = nutrition_plan['calorias_objetivo']
-    macros = nutrition_plan['macros']
+    
+    # 🔧 FIX: Usar calorías especificadas si están presentes, sino calcular desde objetivo
+    if target_calories_override:
+        kcal_objetivo = int(target_calories_override)
+        logger.info(f"✅ Usando calorías objetivo especificadas: {kcal_objetivo} kcal")
+        # Recalcular macros desde las calorías objetivo especificadas
+        from app.utils.nutrition_calculator import calculate_macros_distribution, parse_peso
+        peso_kg = parse_peso(datos.get('peso', 75))
+        macros = calculate_macros_distribution(kcal_objetivo, peso_kg, nutrition_goal)
+        logger.info(f"📊 Macros recalculados desde calorías objetivo: P={macros['proteina']}g, C={macros['carbohidratos']}g, G={macros['grasas']}g")
+    else:
+        kcal_objetivo = nutrition_plan['calorias_objetivo']
+        macros = nutrition_plan['macros']
     
     # Calcular diferencia vs mantenimiento para logging
     diferencia_mantenimiento = kcal_objetivo - tdee
@@ -158,13 +174,33 @@ MACRONUTRIENTES OBJETIVO (CALCULADOS CIENTÍFICAMENTE):
 
 INSTRUCCIONES CRÍTICAS PARA LA DIETA:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. La dieta DEBE cumplir EXACTAMENTE con {kcal_objetivo} kcal/día total
-2. Los macros deben aproximarse lo máximo posible a los valores calculados arriba
-3. Distribuir en 5 comidas balanceadas al día
-4. Cada comida debe especificar cantidades exactas en gramos/ml
-5. Los macros totales deben sumar aproximadamente los valores objetivo
+⚠️⚠️⚠️ REGLA ABSOLUTA: AJUSTE DE CANTIDADES ⚠️⚠️⚠️
+La dieta DEBE sumar EXACTAMENTE {kcal_objetivo} kcal/día total.
+NO uses cantidades fijas. AJUSTA las cantidades de cada alimento para que:
+- Las 5 comidas sumen EXACTAMENTE {kcal_objetivo} kcal
+- Los macros totales se aproximen a: P={macros['proteina']}g, C={macros['carbohidratos']}g, G={macros['grasas']}g
 
-Ahora, crea una dieta estructurada en 5 comidas al día. Usa los siguientes alimentos de preferencia:
+CÓMO AJUSTAR LAS CANTIDADES:
+1. Calcula las calorías objetivo por comida (aprox. {kcal_objetivo // 5} kcal por comida)
+2. AJUSTA las cantidades de cada alimento para que cada comida sume sus kcal objetivo
+3. Si la suma total es mayor a {kcal_objetivo}, REDUCE las cantidades proporcionalmente
+4. Si la suma total es menor a {kcal_objetivo}, AUMENTA las cantidades proporcionalmente
+5. Verifica que la suma de las 5 comidas = {kcal_objetivo} kcal EXACTAMENTE
+
+EJEMPLO DE AJUSTE:
+- Si necesitas 2216 kcal total y una comida tiene 600 kcal, AJUSTA a ~443 kcal (2216/5)
+- Si un alimento aporta 100 kcal pero necesitas 80 kcal, reduce la cantidad: 80g en lugar de 100g
+- Si un alimento aporta 50 kcal pero necesitas 70 kcal, aumenta la cantidad: 140g en lugar de 100g
+
+DISTRIBUCIÓN DE CALORÍAS POR COMIDA:
+- Desayuno: ~{int(kcal_objetivo * 0.20)} kcal (20% del total)
+- Media mañana: ~{int(kcal_objetivo * 0.15)} kcal (15% del total)
+- Comida: ~{int(kcal_objetivo * 0.30)} kcal (30% del total)
+- Merienda: ~{int(kcal_objetivo * 0.15)} kcal (15% del total)
+- Cena: ~{int(kcal_objetivo * 0.20)} kcal (20% del total)
+- TOTAL: {kcal_objetivo} kcal EXACTAMENTE
+
+Ahora, crea una dieta estructurada en 5 comidas al día. AJUSTA las cantidades de cada alimento para que cuadren con las calorías objetivo. Usa los siguientes alimentos de preferencia:
 - Frutas: dátiles (preentreno), sandía, plátano, manzana.
 - Verduras: brócoli, coliflor, lechuga, tomate, aguacate.
 - Proteínas: leche, yogur, frutos secos, mantequilla de cacahuete, atún, pollo, ternera, pescado, queso, fuet, proteína en polvo (si el usuario la tiene).
@@ -374,14 +410,25 @@ REVISA LA RUTINA COMPLETA antes de devolverla y asegúrate de que:
    """ if datos.get('focus_area') else ""}
 
 2. PLAN NUTRICIONAL:
-   - Calcula calorías según objetivo nutricional: {nutrition_goal}
+   ⚠️⚠️⚠️ CRÍTICO: AJUSTE DE CANTIDADES SEGÚN CALORÍAS OBJETIVO ⚠️⚠️⚠️
+   
+   - Calorías objetivo ({nutrition_goal}): {kcal_objetivo} kcal/día EXACTAS
      * Si "volumen": Superávit de ~300 kcal → {kcal_objetivo} kcal/día
      * Si "definicion": Déficit de ~300 kcal → {kcal_objetivo} kcal/día
      * Si "mantenimiento": Calorías de mantenimiento → {kcal_objetivo} kcal/día
    
-   - Distribución de macros:
-     * Proteína: 1.8-2.2g por kg de peso corporal
-     * Ajustar carbohidratos y grasas según objetivo
+   - REGLA ABSOLUTA: Las 5 comidas DEBEN sumar EXACTAMENTE {kcal_objetivo} kcal
+     * NO uses cantidades fijas de alimentos
+     * AJUSTA las cantidades (gramos/ml) de cada alimento para cuadrar con las calorías objetivo
+     * Calcula: calorías por comida = {kcal_objetivo // 5} kcal aprox. por comida
+     * Distribución sugerida: Desayuno 20%, Media mañana 15%, Comida 30%, Merienda 15%, Cena 20%
+     * Verifica que la suma total = {kcal_objetivo} kcal EXACTAMENTE antes de devolver
+   
+   - Distribución de macros objetivo:
+     * Proteína: {macros['proteina']}g/día ({macros['proteina'] * 4} kcal)
+     * Carbohidratos: {macros['carbohidratos']}g/día ({macros['carbohidratos'] * 4} kcal)
+     * Grasas: {macros['grasas']}g/día ({macros['grasas'] * 9} kcal)
+     * AJUSTA las cantidades de alimentos para aproximar estos macros
    
    - Respetar restricciones: {datos.get('restricciones', 'ninguna')}
    - Evitar alergias: {datos.get('alergias', 'ninguna')}

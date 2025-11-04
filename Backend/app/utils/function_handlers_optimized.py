@@ -773,7 +773,9 @@ async def handle_recalculate_macros(
                     'alergias': current_plan.alergias or 'Ninguna',
                     'restricciones': current_plan.restricciones_dieta or 'Ninguna',
                     'lesiones': current_plan.lesiones or 'Ninguna',
-                    'nivel_actividad': nivel_actividad
+                    'nivel_actividad': nivel_actividad,
+                    # 🔧 FIX: Pasar calorías objetivo específicas si fueron solicitadas
+                    'target_calories_override': int(target_calories) if target_calories is not None else None
                 }
                 
                 # Llamar a GPT con timeout

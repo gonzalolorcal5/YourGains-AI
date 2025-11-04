@@ -246,6 +246,49 @@ async def execute_function_handler(
         
         # Normalizar argumentos: filtrar None para funciones que aceptan parámetros opcionales
         if function_name == "recalculate_diet_macros":
+            # 🔧 FIX: Soportar peso absoluto ("ahora peso 87kg") y mapear a weight_change_kg
+            try:
+                # Obtener peso actual desde el plan más reciente
+                from app.models import Plan
+                plan_actual = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
+                peso_actual_float = None
+                if plan_actual and plan_actual.peso is not None:
+                    try:
+                        peso_actual_float = float(str(plan_actual.peso).replace("kg", "").strip())
+                    except Exception:
+                        peso_actual_float = None
+
+                # Detectar posibles claves de peso absoluto
+                new_weight_candidates = []
+                for k in ["new_weight_kg", "peso", "weight", "weight_kg"]:
+                    if k in arguments and arguments[k] is not None:
+                        try:
+                            new_weight_candidates.append(float(str(arguments[k]).replace("kg", "").strip()))
+                        except Exception:
+                            pass
+
+                new_weight_val = new_weight_candidates[0] if new_weight_candidates else None
+
+                # Caso 1: Viene explícitamente new_weight_* → calcular delta
+                if new_weight_val is not None and peso_actual_float is not None:
+                    arguments["weight_change_kg"] = round(new_weight_val - peso_actual_float, 2)
+                    # Eliminar claves auxiliares para no romper validación
+                    for k in ["new_weight_kg", "peso", "weight", "weight_kg"]:
+                        arguments.pop(k, None)
+
+                # Caso 2: Viene weight_change_kg pero parece ser peso absoluto (valor grande)
+                elif "weight_change_kg" in arguments and arguments["weight_change_kg"] is not None and peso_actual_float is not None:
+                    try:
+                        wc = float(arguments["weight_change_kg"])
+                        # Heurística: si está en rango de peso humano (30-300), trátalo como peso absoluto
+                        if 30 <= wc <= 300:
+                            arguments["weight_change_kg"] = round(wc - peso_actual_float, 2)
+                    except Exception:
+                        pass
+            except Exception:
+                # No bloquear si falla la normalización; continuar con los argumentos originales
+                pass
+
             clean_arguments = {
                 k: v for k, v in arguments.items()
                 if v is not None and k in [

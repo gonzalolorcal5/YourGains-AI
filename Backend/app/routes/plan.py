@@ -283,7 +283,55 @@ def obtener_rutina_actual(
                         print(f"✅ Leyendo desde Plan.dieta (Plan ID: {plan_data.id})")
                         # Actualizar current_diet con los datos del Plan
                         if isinstance(dieta_plan, dict):
-                            current_diet = dieta_plan
+                            # 🔧 FIX CRÍTICO: Convertir dieta_plan al formato current_diet correctamente
+                            # dieta_plan tiene estructura GPT (comidas), current_diet necesita (meals, total_kcal)
+                            
+                            # Obtener macros de dieta_plan
+                            macros_dieta = dieta_plan.get("macros", {})
+                            
+                            # 🔧 FIX: Leer total_kcal correctamente desde dieta_plan
+                            total_kcal = None
+                            if macros_dieta and "calorias" in macros_dieta:
+                                total_kcal = macros_dieta["calorias"]
+                            elif dieta_plan.get("metadata", {}).get("calorias_objetivo"):
+                                total_kcal = dieta_plan["metadata"]["calorias_objetivo"]
+                            elif dieta_plan.get("macros", {}).get("calorias"):
+                                total_kcal = dieta_plan["macros"]["calorias"]
+                            else:
+                                # Calcular desde objetivo nutricional
+                                objetivo_nutricional = plan_data.objetivo_nutricional or plan_data.objetivo_dieta or "mantenimiento"
+                                if " + " in objetivo_nutricional:
+                                    objetivo_nutricional = objetivo_nutricional.split(" + ")[-1]
+                                
+                                from app.utils.nutrition_calculator import get_complete_nutrition_plan
+                                user_data_nutrition = {
+                                    'peso': float(plan_data.peso) if plan_data.peso else 75.0,
+                                    'altura': int(plan_data.altura) if plan_data.altura else 175,
+                                    'edad': int(plan_data.edad) if plan_data.edad else 25,
+                                    'sexo': plan_data.sexo or 'masculino',
+                                    'nivel_actividad': plan_data.nivel_actividad or 'moderado'
+                                }
+                                try:
+                                    nutrition_plan = get_complete_nutrition_plan(user_data_nutrition, objetivo_nutricional)
+                                    total_kcal = nutrition_plan.get("calorias_objetivo")
+                                    print(f"✅ total_kcal calculado desde objetivo nutricional: {total_kcal} kcal")
+                                except Exception as e:
+                                    print(f"⚠️ Error calculando total_kcal: {e}")
+                                    total_kcal = sum([comida.get("kcal", 0) for comida in dieta_plan.get("comidas", [])])
+                            
+                            if not total_kcal or total_kcal <= 0:
+                                total_kcal = sum([comida.get("kcal", 0) for comida in dieta_plan.get("comidas", [])])
+                            
+                            # Convertir a formato current_diet
+                            current_diet = {
+                                "meals": dieta_plan.get("comidas", []),
+                                "total_kcal": int(total_kcal),
+                                "macros": macros_dieta,
+                                "objetivo": plan_data.objetivo_nutricional or plan_data.objetivo or "mantenimiento",
+                                "created_at": datetime.utcnow().isoformat(),
+                                "version": "1.0.0"
+                            }
+                            
                             print(f"✅ current_diet actualizado desde Plan.dieta")
                             print(f"   macros: {current_diet.get('macros', {})}")
                             print(f"   total_kcal: {current_diet.get('total_kcal', 'N/A')}")
@@ -334,9 +382,49 @@ def obtener_rutina_actual(
                             "grasas": round(grasas_total, 1)
                         }
                     
+                    # 🔧 FIX CRÍTICO: Leer total_kcal correctamente desde dieta_plan
+                    # El bug era que buscaba "total_calorias" que no existe en el JSON de GPT
+                    # GPT guarda las calorías en: macros.calorias o metadata.calorias_objetivo
+                    total_kcal = None
+                    if macros_dieta and "calorias" in macros_dieta:
+                        total_kcal = macros_dieta["calorias"]
+                    elif dieta_plan.get("metadata", {}).get("calorias_objetivo"):
+                        total_kcal = dieta_plan["metadata"]["calorias_objetivo"]
+                    elif dieta_plan.get("macros", {}).get("calorias"):
+                        total_kcal = dieta_plan["macros"]["calorias"]
+                    else:
+                        # Si no hay calorías en macros, calcular desde objetivo nutricional
+                        objetivo_nutricional = plan_data.objetivo_nutricional or plan_data.objetivo_dieta or "mantenimiento"
+                        # Extraer solo la parte nutricional del objetivo si está combinado
+                        if " + " in objetivo_nutricional:
+                            objetivo_nutricional = objetivo_nutricional.split(" + ")[-1]
+                        
+                        from app.utils.nutrition_calculator import get_complete_nutrition_plan
+                        user_data_nutrition = {
+                            'peso': float(plan_data.peso) if plan_data.peso else 75.0,
+                            'altura': int(plan_data.altura) if plan_data.altura else 175,
+                            'edad': int(plan_data.edad) if plan_data.edad else 25,
+                            'sexo': plan_data.sexo or 'masculino',
+                            'nivel_actividad': plan_data.nivel_actividad or 'moderado'
+                        }
+                        try:
+                            nutrition_plan = get_complete_nutrition_plan(user_data_nutrition, objetivo_nutricional)
+                            total_kcal = nutrition_plan.get("calorias_objetivo")
+                            print(f"✅ total_kcal calculado desde objetivo nutricional: {total_kcal} kcal (objetivo: {objetivo_nutricional})")
+                        except Exception as e:
+                            print(f"⚠️ Error calculando total_kcal desde objetivo: {e}")
+                            # Fallback: sumar comidas
+                            total_kcal = sum([comida.get("kcal", 0) for comida in dieta_plan.get("comidas", [])])
+                            print(f"⚠️ Usando suma de comidas como fallback: {total_kcal} kcal")
+                    
+                    # Si aún no hay valor, usar suma como último recurso
+                    if not total_kcal or total_kcal <= 0:
+                        total_kcal = sum([comida.get("kcal", 0) for comida in dieta_plan.get("comidas", [])])
+                        print(f"⚠️ Usando suma de comidas como último recurso: {total_kcal} kcal")
+                    
                     current_diet = {
                         "meals": dieta_plan.get("comidas", []),
-                        "total_kcal": dieta_plan.get("total_calorias", 2200),
+                        "total_kcal": int(total_kcal),  # 🔧 FIX: Usar total_kcal calculado correctamente
                         "macros": macros_dieta,
                         "objetivo": plan_data.objetivo_nutricional or plan_data.objetivo or "mantenimiento",
                         "created_at": "2024-01-01T00:00:00",
