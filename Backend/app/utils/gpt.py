@@ -2,6 +2,7 @@ import os
 import json
 import regex as re
 import asyncio
+from typing import Dict, Any
 from dotenv import load_dotenv
 from app.schemas import PlanRequest
 from openai import AsyncOpenAI
@@ -617,3 +618,125 @@ REGLAS CRÍTICAS:
         "dieta": data["dieta"],
         "motivacion": data["motivacion"]
     }
+
+
+async def generar_comida_personalizada(datos: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Genera UNA comida específica personalizada con GPT
+    - Respeta calorías objetivo de la comida
+    - Respeta macros objetivo de la comida
+    - Excluye alimentos no deseados
+    """
+    try:
+        # Extraer parámetros de la comida específica
+        meal_type = datos.get('meal_type', 'desayuno')
+        meal_target_kcal = datos.get('meal_target_kcal', 0)
+        meal_target_macros = datos.get('meal_target_macros', {})
+        excluded_foods = datos.get('excluded_foods', [])
+        
+        # Obtener macros objetivo
+        target_protein = meal_target_macros.get('proteinas', meal_target_macros.get('proteina', 0))
+        target_carbs = meal_target_macros.get('carbohidratos', meal_target_macros.get('hidratos', meal_target_macros.get('carbohidratos', 0)))
+        target_fats = meal_target_macros.get('grasas', 0)
+        
+        # Construir prompt para generar solo UNA comida
+        prompt = f"""Eres un nutricionista experto. Tu tarea es generar UNA comida específica para un usuario.
+
+TIPO DE COMIDA: {meal_type.upper()}
+
+PARÁMETROS OBLIGATORIOS:
+- Calorías objetivo: {meal_target_kcal} kcal EXACTAMENTE
+- Proteínas objetivo: {target_protein}g
+- Carbohidratos objetivo: {target_carbs}g
+- Grasas objetivo: {target_fats}g
+
+{f'''
+⚠️⚠️⚠️ ALIMENTOS EXCLUIDOS (CRÍTICO) ⚠️⚠️⚠️
+El usuario NO quiere estos alimentos en esta comida:
+{', '.join(excluded_foods)}
+
+⚠️⚠️⚠️ IMPORTANTE - SINÓNIMOS Y VARIANTES ⚠️⚠️⚠️
+NO debes incluir NINGÚN alimento que sea el mismo o equivalente a los excluidos, incluso si se llama diferente.
+
+REGLAS OBLIGATORIAS:
+1. ❌ PROHIBIDO: NO incluir NINGÚN alimento que contenga: {', '.join(excluded_foods)}
+2. ❌ PROHIBIDO: NO incluir NINGÚN alimento que sea equivalente o sinónimo de los excluidos
+3. ✅ OBLIGATORIO: Usar alimentos completamente diferentes a los excluidos
+4. ✅ OBLIGATORIO: Mantener las calorías objetivo EXACTAS ({meal_target_kcal} kcal)
+5. ✅ OBLIGATORIO: Mantener los macros objetivo: P={target_protein}g, C={target_carbs}g, G={target_fats}g
+6. ✅ OBLIGATORIO: Ajustar las cantidades de los alimentos para cuadrar con las calorías y macros
+
+EJEMPLOS DE SUSTITUCIÓN:
+- Si excluye "avena": usar quinoa, arroz integral, mijo, o trigo sarraceno en su lugar
+- Si excluye "crema de cacahuete" o "mantequilla de cacahuete": usar mantequilla de almendras, tahini, o aguacate
+- Si excluye "leche": usar leche de almendras, leche de avena, leche de soja, o yogur natural
+- Si excluye "pollo": usar pavo, ternera magra, pescado blanco, o tofu
+- Ajusta las cantidades para mantener las mismas calorías y macros
+
+VALIDACIÓN FINAL:
+- Revisa CADA alimento generado y verifica que NO contenga ningún alimento excluido O SUS SINÓNIMOS
+- Si un alimento contiene un excluido o su sinónimo, REEMPLÁZALO inmediatamente por una alternativa
+- Asegúrate de que la suma total = {meal_target_kcal} kcal EXACTAMENTE
+- Asegúrate de que los macros se aproximen a P={target_protein}g, C={target_carbs}g, G={target_fats}g
+
+⚠️⚠️⚠️ CRÍTICO: Si incluyes CUALQUIER alimento excluido O SUS SINÓNIMOS, la comida será INVÁLIDA ⚠️⚠️⚠️
+''' if excluded_foods else ''}
+
+Formato obligatorio de salida en JSON:
+
+{{
+  "nombre": "{meal_type.capitalize()}",
+  "kcal": {meal_target_kcal},
+  "macros": {{
+    "proteinas": {target_protein},
+    "carbohidratos": {target_carbs},
+    "grasas": {target_fats}
+  }},
+  "alimentos": [
+    "cantidad alimento1 - kcal",
+    "cantidad alimento2 - kcal",
+    "cantidad alimento3 - kcal"
+  ],
+  "alternativas": []
+}}
+
+IMPORTANTE:
+- La suma de calorías de todos los alimentos debe ser EXACTAMENTE {meal_target_kcal} kcal
+- Los macros deben aproximarse a P={target_protein}g, C={target_carbs}g, G={target_fats}g
+- NO incluyas NINGÚN alimento de la lista de excluidos: {', '.join(excluded_foods) if excluded_foods else 'ninguno'}
+- Usa alimentos variados y nutricionalmente completos
+- Ajusta las cantidades para cuadrar con las calorías objetivo
+
+Genera SOLO esta comida en formato JSON válido."""
+
+        # Llamar a GPT
+        response = await client.chat.completions.create(
+            model=MODEL,
+            messages=[
+                {"role": "system", "content": "Eres un nutricionista experto especializado en generar comidas personalizadas con macros precisos."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=1000,
+            response_format={"type": "json_object"}
+        )
+        
+        contenido = response.choices[0].message.content
+        
+        if not contenido:
+            logger.error("❌ GPT no devolvió contenido para comida personalizada")
+            return None
+        
+        # Parsear JSON
+        try:
+            comida_json = json.loads(contenido)
+            logger.info(f"✅ Comida generada por GPT: {comida_json.get('nombre', '')}")
+            return comida_json
+        except json.JSONDecodeError as e:
+            logger.error(f"❌ Error parseando JSON de GPT: {e}")
+            logger.error(f"   Contenido recibido: {contenido[:200]}")
+            return None
+            
+    except Exception as e:
+        logger.error(f"❌ Error generando comida personalizada: {e}", exc_info=True)
+        return None

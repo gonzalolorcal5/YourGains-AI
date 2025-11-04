@@ -1477,15 +1477,16 @@ async def handle_revert_modification(user_id: int, db: Session) -> Dict[str, Any
 
 async def handle_substitute_food(
     user_id: int,
-    food_to_replace: str,
-    replacement_food: str,
-    db: Session
+    disliked_food: str,
+    meal_type: str = "todos",
+    db: Session = None
 ) -> Dict[str, Any]:
     """
-    Handler para sustitución de alimentos con validación de alergias - VERSIÓN CORREGIDA
+    Handler para sustitución de alimentos no deseados - VERSIÓN CON GPT PRIORITARIO
+    Flujo: 1) Intentar GPT (regenerar dieta completa excluyendo alimento), 2) Fallback a lista de sustituciones
     """
     try:
-        logger.info(f"Sustituyendo alimento: {food_to_replace} → {replacement_food}")
+        logger.info(f"🍽️ Sustituyendo alimento no deseado: {disliked_food} en {meal_type}")
         
         # Obtener datos del usuario
         user_data = await db_service.get_user_complete_data(user_id, db)
@@ -1499,27 +1500,826 @@ async def handle_substitute_food(
                 "changes": []
             }
         
-        # 🔧 FIX: Guardar versión antes de modificar
+        # Obtener usuario para verificar si es premium
+        from app.models import Usuario, Plan
+        usuario = db.query(Usuario).filter(Usuario.id == user_id).first()
+        if not usuario:
+            return {
+                "success": False,
+                "message": "Usuario no encontrado",
+                "changes": []
+            }
+        
+        is_premium = bool(usuario.is_premium) or (usuario.plan_type == "PREMIUM")
+        logger.info(f"💎 Usuario premium: {is_premium}")
+        
+        # Guardar versión antes de modificar
         old_diet_version = current_diet.get("version", "1.0.0")
-        
         changes = []
-        meals = current_diet.get("meals", [])
+        disliked_food_lower = disliked_food.lower()
         
-        # Buscar y sustituir el alimento en todas las comidas
-        for meal in meals:
-            if isinstance(meal, dict):
-                meal_name = meal.get("nombre", "")
+        # ==========================================
+        # ESTRATEGIA 1: GPT (Solo para premium)
+        # ==========================================
+        dieta_regenerada = None
+        
+        if is_premium:
+            try:
+                logger.info(f"🤖 ESTRATEGIA 1: Regenerando dieta con GPT excluyendo '{disliked_food}'...")
+                
+                # Obtener plan actual para datos del usuario
+                current_plan = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
+                if not current_plan:
+                    logger.warning(f"⚠️ No se encontró plan para usuario {user_id}, usando fallback")
+                else:
+                    # Preparar datos para GPT
+                    datos_usuario = {
+                        'altura': int(current_plan.altura) if current_plan.altura else 175,
+                        'peso': float(current_plan.peso.replace("kg", "").strip()) if current_plan.peso else 75.0,
+                        'edad': int(current_plan.edad) if current_plan.edad else 25,
+                        'sexo': current_plan.sexo or 'masculino',
+                        'objetivo': current_plan.objetivo_gym or 'ganar_musculo',
+                        'nutrition_goal': current_plan.objetivo_nutricional or 'mantenimiento',
+                        'experiencia': current_plan.experiencia or 'intermedio',
+                        'materiales': current_plan.materiales.split(", ") if current_plan.materiales else ['gym_completo'],
+                        'tipo_cuerpo': current_plan.tipo_cuerpo or 'mesomorfo',
+                        'alergias': current_plan.alergias or 'Ninguna',
+                        'restricciones': current_plan.restricciones_dieta or 'Ninguna',
+                        'lesiones': current_plan.lesiones or 'Ninguna',
+                        'nivel_actividad': current_plan.nivel_actividad or 'moderado',
+                        'training_frequency': 4,
+                        'training_days': ['lunes', 'martes', 'jueves', 'viernes'],
+                        # 🔧 CRÍTICO: Pasar alimentos excluidos
+                        'excluded_foods': [disliked_food],
+                        # Pasar calorías objetivo actuales
+                        'target_calories_override': current_diet.get("total_kcal")
+                    }
+                    
+                    # Llamar a GPT con timeout
+                    try:
+                        plan_generado = await asyncio.wait_for(
+                            generar_plan_personalizado(datos_usuario),
+                            timeout=GPT_TIMEOUT_SECONDS
+                        )
+                        
+                        # Extraer dieta del plan generado
+                        dieta_generada = plan_generado.get("dieta", {})
+                        meals_from_gpt = dieta_generada.get("comidas", [])
+                        
+                        # Validar que GPT no devolvió template genérico o dieta vacía
+                        if meals_from_gpt and len(meals_from_gpt) >= 3:
+                            # Normalizar formato de comidas
+                            dieta_regenerada = []
+                            for comida in meals_from_gpt:
+                                macros_comida = comida.get("macros", {})
+                                comida_formato = {
+                                    "nombre": comida.get("nombre", ""),
+                                    "kcal": comida.get("kcal", 0),
+                                    "macros": {
+                                        "proteinas": macros_comida.get("proteinas", macros_comida.get("proteina", 0)),
+                                        "carbohidratos": macros_comida.get("carbohidratos", macros_comida.get("hidratos", 0)),
+                                        "grasas": macros_comida.get("grasas", 0)
+                                    },
+                                    "alimentos": comida.get("alimentos", []),
+                                    "alternativas": comida.get("alternativas", [])
+                                }
+                                dieta_regenerada.append(comida_formato)
+                            
+                            logger.info(f"✅ ESTRATEGIA 1 EXITOSA: Dieta regenerada con GPT ({len(dieta_regenerada)} comidas)")
+                            
+                            # 🔧 FIX CRÍTICO: Verificar que no contiene el alimento excluido O SUS VARIANTES/SINÓNIMOS
+                            # Crear lista de variantes del alimento excluido
+                            variantes_alimento = [disliked_food_lower]
+                            
+                            # Diccionario de sinónimos/variantes comunes (CRÍTICO para evitar confusiones)
+                            # 📋 LISTA EXHAUSTIVA DE SINÓNIMOS Y VARIANTES
+                            sinonimos = {
+                                # 🥜 FRUTOS SECOS Y CREMAS
+                                "mantequilla de cacahuete": ["crema de cacahuete", "crema cacahuete", "mantequilla cacahuete", "peanut butter", "mantequilla de cacahuate", "crema de cacahuate", "crema de maní", "manteca de maní", "manteca de cacahuate"],
+                                "crema de cacahuete": ["mantequilla de cacahuete", "mantequilla cacahuete", "crema cacahuete", "peanut butter", "mantequilla de cacahuate", "crema de cacahuate", "crema de maní", "manteca de maní", "manteca de cacahuate"],
+                                "mantequilla cacahuete": ["crema de cacahuete", "mantequilla de cacahuete", "crema cacahuete", "peanut butter", "crema de maní", "manteca de maní"],
+                                "crema cacahuete": ["mantequilla de cacahuete", "crema de cacahuete", "mantequilla cacahuete", "peanut butter", "crema de maní", "manteca de maní"],
+                                "peanut butter": ["mantequilla de cacahuete", "crema de cacahuete", "crema de maní", "manteca de maní"],
+                                "crema de maní": ["mantequilla de cacahuete", "crema de cacahuete", "manteca de maní", "peanut butter"],
+                                "manteca de maní": ["mantequilla de cacahuete", "crema de cacahuete", "crema de maní", "peanut butter"],
+                                "nueces": ["nueces de nogal", "nuez común", "nuez de castilla", "walnuts", "nuez"],
+                                "nueces de nogal": ["nueces", "nuez común", "nuez de castilla", "walnuts"],
+                                "walnuts": ["nueces", "nueces de nogal", "nuez común"],
+                                "almendras": ["almendra cruda", "almendra tostada", "almonds", "almendra"],
+                                "almonds": ["almendras", "almendra cruda", "almendra tostada"],
+                                "anacardos": ["marañones", "cashews", "anacardo"],
+                                "cashews": ["anacardos", "marañones"],
+                                "avellanas": ["hazelnut", "avellana tostada", "avellana"],
+                                "hazelnut": ["avellanas", "avellana tostada"],
+                                "pistachos": ["pistacho pelado", "pistacho natural", "pistachio", "pistacho"],
+                                "pistachio": ["pistachos", "pistacho pelado", "pistacho natural"],
+                                
+                                # 🍞 CEREALES, PANES Y HARINAS
+                                "pan integral": ["pan de trigo integral", "pan 100% integral", "pan con salvado", "whole wheat bread", "pan integral"],
+                                "pan": ["bread", "pan integral", "pan blanco", "pan de molde"],
+                                "bread": ["pan", "pan integral", "pan blanco"],
+                                "avena": ["oatmeal", "gachas", "avena en copos", "copos de avena", "avena en hojuelas", "porridge", "avena integral"],
+                                "gachas": ["avena", "oatmeal", "avena en copos", "copos de avena", "porridge", "avena en hojuelas"],
+                                "oatmeal": ["avena", "gachas", "avena en copos", "copos de avena", "porridge", "avena en hojuelas"],
+                                "porridge": ["avena", "gachas", "oatmeal", "avena en copos", "copos de avena"],
+                                "copos de avena": ["avena", "gachas", "oatmeal", "porridge", "avena en hojuelas"],
+                                "avena en hojuelas": ["avena", "gachas", "oatmeal", "porridge", "copos de avena"],
+                                "arroz integral": ["arroz moreno", "arroz de grano entero", "brown rice", "arroz brown", "arroz integral"],
+                                "arroz moreno": ["arroz integral", "arroz de grano entero", "brown rice"],
+                                "brown rice": ["arroz integral", "arroz moreno", "arroz de grano entero"],
+                                "arroz blanco": ["arroz normal", "arroz pulido", "arroz cocido", "rice", "arroz"],
+                                "arroz": ["rice", "arroz blanco", "arroz normal", "arroz pulido"],
+                                "rice": ["arroz", "arroz blanco", "arroz normal"],
+                                "pasta integral": ["macarrones integrales", "espaguetis integrales", "whole wheat pasta"],
+                                "pasta": ["pasta italiana", "macarrones", "espaguetis", "fideos", "pasta"],
+                                "macarrones": ["pasta", "espaguetis", "fideos"],
+                                "espaguetis": ["pasta", "macarrones", "fideos"],
+                                "tortitas de arroz": ["galletas de arroz", "tortas de arroz inflado", "rice cakes"],
+                                "galletas de arroz": ["tortitas de arroz", "tortas de arroz inflado", "rice cakes"],
+                                "rice cakes": ["tortitas de arroz", "galletas de arroz", "tortas de arroz inflado"],
+                                
+                                # LECHE
+                                "leche": ["milk", "leche entera", "leche completa"],
+                                "leche semidesnatada": ["leche semi-desnatada", "leche semidesnatada", "semi-skimmed milk", "leche 2%", "leche desnatada parcialmente"],
+                                "leche desnatada": ["leche descremada", "skimmed milk", "leche 0%", "leche sin grasa"],
+                                "leche entera": ["leche completa", "whole milk", "leche"],
+                                "milk": ["leche", "leche entera", "leche completa"],
+                                
+                                # 🍗 PROTEÍNAS ANIMALES
+                                "pollo": ["chicken", "pechuga de pollo", "pollo a la plancha", "pollo asado", "carne blanca", "muslo de pollo"],
+                                "chicken": ["pollo", "pechuga de pollo", "carne blanca", "muslo de pollo"],
+                                "pechuga de pollo": ["pollo", "chicken", "pechuga pollo", "carne blanca"],
+                                "pechuga pollo": ["pollo", "chicken", "pechuga de pollo"],
+                                "carne blanca": ["pollo", "chicken", "pechuga de pollo"],
+                                "muslo de pollo": ["pollo", "chicken"],
+                                "ternera": ["beef", "carne de ternera", "carne ternera", "vaca", "carne de vaca", "vacuno", "carne de res", "carne roja"],
+                                "beef": ["ternera", "carne de ternera", "vaca", "vacuno", "carne de res", "carne roja"],
+                                "carne": ["ternera", "beef", "vaca", "carne de vaca", "vacuno", "carne de res", "carne roja"],
+                                "vacuno": ["ternera", "beef", "carne de ternera", "carne de res"],
+                                "carne de res": ["ternera", "beef", "vacuno", "carne de ternera"],
+                                "carne roja": ["ternera", "beef", "vacuno", "carne de res"],
+                                "pavo": ["turkey", "pechuga de pavo", "pechuga pavo", "fiambre de pavo"],
+                                "turkey": ["pavo", "pechuga de pavo", "fiambre de pavo"],
+                                "pechuga de pavo": ["pavo", "turkey", "pechuga pavo", "fiambre de pavo"],
+                                "fiambre de pavo": ["pavo", "turkey", "pechuga de pavo"],
+                                "cerdo": ["lomo de cerdo", "carne de cerdo", "jamón", "pork"],
+                                "lomo de cerdo": ["cerdo", "carne de cerdo", "jamón"],
+                                "carne de cerdo": ["cerdo", "lomo de cerdo", "jamón"],
+                                "jamón": ["cerdo", "lomo de cerdo", "carne de cerdo"],
+                                "pork": ["cerdo", "lomo de cerdo", "carne de cerdo"],
+                                "pescado": ["fish", "pescado blanco", "pescado azul"],
+                                "fish": ["pescado", "pescado blanco"],
+                                "salmón": ["salmon", "salmón fresco", "salmón ahumado", "filete de salmón", "pescado azul"],
+                                "salmon": ["salmón", "salmón fresco", "filete de salmón"],
+                                "filete de salmón": ["salmón", "salmon", "salmón fresco"],
+                                "atún": ["tuna", "atún en lata", "atún en conserva", "atún natural", "bonito"],
+                                "tuna": ["atún", "atún en lata", "atún en conserva", "bonito"],
+                                "atún en lata": ["atún", "tuna", "atún en conserva"],
+                                "bonito": ["atún", "tuna", "atún en lata"],
+                                
+                                # 🥚 HUEVOS
+                                "huevos": ["huevo", "eggs", "huevos enteros", "huevo entero"],
+                                "huevo": ["huevos", "eggs", "huevos enteros"],
+                                "eggs": ["huevos", "huevo", "huevos enteros"],
+                                "claras de huevo": ["clara de huevo", "egg whites", "claras huevo", "albúmina", "parte blanca del huevo"],
+                                "clara de huevo": ["claras de huevo", "egg whites", "claras huevo", "albúmina", "parte blanca del huevo"],
+                                "egg whites": ["claras de huevo", "clara de huevo", "albúmina"],
+                                "albúmina": ["claras de huevo", "clara de huevo", "egg whites", "parte blanca del huevo"],
+                                "parte blanca del huevo": ["claras de huevo", "clara de huevo", "albúmina"],
+                                
+                                # 🥦 VERDURAS Y HORTALIZAS
+                                "espinacas": ["hojas verdes", "acelga", "spinach"],
+                                "hojas verdes": ["espinacas", "acelga"],
+                                "acelga": ["espinacas", "hojas verdes"],
+                                "spinach": ["espinacas", "hojas verdes"],
+                                "brócoli": ["brécol", "col verde", "broccoli"],
+                                "brécol": ["brócoli", "col verde", "broccoli"],
+                                "col verde": ["brócoli", "brécol"],
+                                "broccoli": ["brócoli", "brécol", "col verde"],
+                                "zanahoria": ["zanahoria cruda", "zanahoria cocida", "carrot"],
+                                "zanahoria cruda": ["zanahoria", "carrot"],
+                                "zanahoria cocida": ["zanahoria", "carrot"],
+                                "carrot": ["zanahoria", "zanahoria cruda", "zanahoria cocida"],
+                                "calabacín": ["zucchini", "calabacín"],
+                                "zucchini": ["calabacín"],
+                                "pimiento": ["ají", "morrón", "pepper"],
+                                "ají": ["pimiento", "morrón"],
+                                "morrón": ["pimiento", "ají"],
+                                "pepper": ["pimiento", "ají", "morrón"],
+                                "tomate": ["jitomate", "tomate rojo", "tomato"],
+                                "jitomate": ["tomate", "tomate rojo"],
+                                "tomate rojo": ["tomate", "jitomate"],
+                                "tomato": ["tomate", "jitomate", "tomate rojo"],
+                                "patata": ["patatas", "potato", "potatoes", "papas", "papa"],
+                                "patatas": ["patata", "potato", "potatoes", "papas", "papa"],
+                                "potato": ["patata", "patatas", "papas", "papa"],
+                                "potatoes": ["patata", "patatas", "papas", "papa"],
+                                "papas": ["patata", "patatas", "potato", "potatoes"],
+                                "papa": ["patata", "patatas", "potato", "potatoes"],
+                                "boniato": ["batata", "sweet potato", "camote"],
+                                "batata": ["boniato", "sweet potato", "camote"],
+                                "sweet potato": ["boniato", "batata", "camote"],
+                                "camote": ["boniato", "batata", "sweet potato"],
+                                
+                                # 🍚 LEGUMBRES
+                                "lentejas": ["lentejas pardinas", "lentejas cocidas", "lentils"],
+                                "lentejas pardinas": ["lentejas", "lentejas cocidas"],
+                                "lentejas cocidas": ["lentejas", "lentejas pardinas"],
+                                "lentils": ["lentejas", "lentejas pardinas", "lentejas cocidas"],
+                                "garbanzos": ["chickpeas", "garbanzo cocido", "garbanzo"],
+                                "chickpeas": ["garbanzos", "garbanzo cocido"],
+                                "garbanzo cocido": ["garbanzos", "chickpeas"],
+                                "judías": ["alubias", "porotos", "frijoles", "beans"],
+                                "alubias": ["judías", "porotos", "frijoles"],
+                                "porotos": ["judías", "alubias", "frijoles"],
+                                "frijoles": ["judías", "alubias", "porotos"],
+                                "beans": ["judías", "alubias", "porotos", "frijoles"],
+                                "soja": ["habas de soja", "soya", "soy"],
+                                "habas de soja": ["soja", "soya"],
+                                "soya": ["soja", "habas de soja"],
+                                "soy": ["soja", "soya", "habas de soja"],
+                                
+                                # 🧀 LÁCTEOS Y DERIVADOS
+                                "leche": ["milk", "leche entera", "leche completa", "leche de vaca"],
+                                "milk": ["leche", "leche entera", "leche de vaca"],
+                                "leche de vaca": ["leche", "milk", "leche entera"],
+                                "leche semidesnatada": ["leche semi-desnatada", "leche semidesnatada", "semi-skimmed milk", "leche 2%", "leche desnatada parcialmente"],
+                                "leche desnatada": ["leche descremada", "skimmed milk", "leche 0%", "leche sin grasa"],
+                                "leche entera": ["leche completa", "whole milk", "leche", "leche de vaca"],
+                                "yogur": ["yogurt", "yoghurt", "yogur natural", "yogur griego", "yogur blanco", "yogur sin azúcar"],
+                                "yogurt": ["yogur", "yoghurt", "yogur natural", "yogur blanco"],
+                                "yogur natural": ["yogur", "yogurt", "yogur blanco", "yogur sin azúcar"],
+                                "yogur blanco": ["yogur natural", "yogur", "yogur sin azúcar"],
+                                "yogur sin azúcar": ["yogur natural", "yogur blanco", "yogur"],
+                                "yogur griego": ["greek yogurt", "yogur griego natural"],
+                                "queso": ["cheese", "queso fresco", "queso tierno"],
+                                "cheese": ["queso", "queso fresco"],
+                                "queso fresco": ["queso tipo burgos", "queso", "cheese", "requesón"],
+                                "queso tipo burgos": ["queso fresco", "requesón"],
+                                "requesón": ["ricotta", "requesón fresco", "cuajada de leche", "queso tipo burgos"],
+                                "ricotta": ["requesón", "requesón fresco", "cuajada de leche"],
+                                "cuajada de leche": ["requesón", "ricotta"],
+                                "mantequilla": ["manteca", "manteca de leche", "butter"],
+                                "manteca": ["mantequilla", "manteca de leche"],
+                                "manteca de leche": ["mantequilla", "manteca"],
+                                "butter": ["mantequilla", "manteca"],
+                                "leche vegetal": ["bebida de soja", "bebida de avena", "leche de almendras", "leche de soja", "leche de avena"],
+                                "bebida de soja": ["leche vegetal", "leche de soja", "bebida de avena"],
+                                "bebida de avena": ["leche vegetal", "leche de avena", "bebida de soja"],
+                                "leche de almendras": ["leche vegetal", "bebida de almendras"],
+                                "leche de soja": ["leche vegetal", "bebida de soja"],
+                                "leche de avena": ["leche vegetal", "bebida de avena"],
+                                
+                                # 🍎 FRUTAS
+                                "plátano": ["banana", "plátano canario", "banano", "cambur"],
+                                "banana": ["plátano", "plátano canario", "banano", "cambur"],
+                                "banano": ["plátano", "banana", "cambur"],
+                                "cambur": ["plátano", "banana", "banano"],
+                                "manzana": ["apple", "manzana roja", "manzana verde"],
+                                "apple": ["manzana", "manzana roja", "manzana verde"],
+                                "manzana roja": ["manzana", "apple"],
+                                "manzana verde": ["manzana", "apple"],
+                                "pera": ["pear", "pera verde"],
+                                "pear": ["pera", "pera verde"],
+                                "aguacate": ["avocado", "palta", "aguacate hass"],
+                                "avocado": ["aguacate", "palta"],
+                                "palta": ["aguacate", "avocado"],
+                                "sandía": ["patilla", "melón de agua", "watermelon"],
+                                "patilla": ["sandía", "melón de agua"],
+                                "melón de agua": ["sandía", "patilla"],
+                                "watermelon": ["sandía", "patilla", "melón de agua"],
+                                "melón": ["melón cantalupo", "melón verde", "melon"],
+                                "melón cantalupo": ["melón", "melón verde"],
+                                "melón verde": ["melón", "melón cantalupo"],
+                                "uvas": ["racimo de uvas", "uvas sin semilla", "grapes"],
+                                "racimo de uvas": ["uvas", "grapes"],
+                                "uvas sin semilla": ["uvas", "grapes"],
+                                "grapes": ["uvas", "racimo de uvas"],
+                                "frutos rojos": ["frutos del bosque", "berries", "arándanos", "frambuesas", "fresas"],
+                                "frutos del bosque": ["frutos rojos", "berries", "arándanos", "frambuesas", "fresas"],
+                                "berries": ["frutos rojos", "frutos del bosque", "arándanos", "frambuesas", "fresas"],
+                                "arándanos": ["frutos rojos", "frutos del bosque", "berries", "blueberries"],
+                                "frambuesas": ["frutos rojos", "frutos del bosque", "berries", "raspberries"],
+                                "fresas": ["frutos rojos", "frutos del bosque", "berries", "strawberries"],
+                                
+                                # 🥑 GRASAS Y ACEITES
+                                "aceite de oliva": ["olive oil", "aceite oliva", "aove", "aceite oliva virgen", "aceite virgen extra", "aceite virgen"],
+                                "olive oil": ["aceite de oliva", "aceite oliva", "aove", "aceite virgen extra"],
+                                "aceite oliva": ["aceite de oliva", "olive oil", "aove"],
+                                "aove": ["aceite de oliva", "olive oil", "aceite virgen extra"],
+                                "aceite virgen extra": ["aceite de oliva", "aove", "olive oil"],
+                                "aceite de girasol": ["aceite vegetal", "sunflower oil"],
+                                "aceite vegetal": ["aceite de girasol", "sunflower oil"],
+                                "sunflower oil": ["aceite de girasol", "aceite vegetal"],
+                                "frutos secos": ["mix de frutos", "frutos grasos", "nuts", "frutos secos mix"],
+                                "mix de frutos": ["frutos secos", "frutos grasos"],
+                                "frutos grasos": ["frutos secos", "mix de frutos"],
+                                "nuts": ["frutos secos", "mix de frutos"],
+                                
+                                # 🍫 OTROS / DULCES
+                                "chocolate negro": ["cacao", "chocolate amargo", "dark chocolate"],
+                                "chocolate amargo": ["chocolate negro", "cacao", "dark chocolate"],
+                                "cacao": ["chocolate negro", "chocolate amargo", "dark chocolate"],
+                                "dark chocolate": ["chocolate negro", "chocolate amargo", "cacao"],
+                                "miel": ["miel natural", "néctar de abejas", "honey"],
+                                "miel natural": ["miel", "néctar de abejas"],
+                                "néctar de abejas": ["miel", "miel natural"],
+                                "honey": ["miel", "miel natural"],
+                                "azúcar": ["sugar", "azúcar blanca", "azúcar blanco", "azúcar refinada", "azúcar refinado", "sacarosa"],
+                                "sugar": ["azúcar", "azúcar blanca", "azúcar blanco", "azúcar refinada"],
+                                "azúcar blanca": ["azúcar", "sugar", "azúcar refinada"],
+                                "azúcar refinada": ["azúcar", "azúcar blanca", "sacarosa"],
+                                "azúcar refinado": ["azúcar", "azúcar blanca", "sacarosa"],
+                                "sacarosa": ["azúcar", "azúcar refinada", "azúcar refinado"],
+                                "edulcorante": ["stevia", "eritritol", "sucralosa", "sweetener"],
+                                "stevia": ["edulcorante", "sweetener"],
+                                "eritritol": ["edulcorante", "sweetener"],
+                                "sucralosa": ["edulcorante", "sweetener"],
+                                "sweetener": ["edulcorante", "stevia", "eritritol", "sucralosa"],
+                                
+                                # 💧 BEBIDAS
+                                "agua con gas": ["agua carbonatada", "soda", "sparkling water"],
+                                "agua carbonatada": ["agua con gas", "soda"],
+                                "soda": ["agua con gas", "agua carbonatada"],
+                                "sparkling water": ["agua con gas", "agua carbonatada"],
+                                "refresco": ["bebida azucarada", "gaseosa", "soda", "soft drink"],
+                                "bebida azucarada": ["refresco", "gaseosa"],
+                                "gaseosa": ["refresco", "bebida azucarada"],
+                                "soft drink": ["refresco", "bebida azucarada", "gaseosa"],
+                                "café": ["espresso", "café solo", "americano", "coffee"],
+                                "espresso": ["café", "café solo"],
+                                "café solo": ["café", "espresso"],
+                                "americano": ["café", "coffee"],
+                                "coffee": ["café", "espresso", "americano"],
+                                "té verde": ["infusión de té", "matcha", "green tea"],
+                                "infusión de té": ["té verde", "matcha"],
+                                "matcha": ["té verde", "infusión de té"],
+                                "green tea": ["té verde", "infusión de té", "matcha"],
+                                
+                                # 💪 PROTEÍNA EN POLVO
+                                "proteína en polvo": ["proteína polvo", "whey protein", "proteína whey", "proteína de suero"],
+                                "proteína polvo": ["proteína en polvo", "whey protein", "proteína whey"],
+                                "whey protein": ["proteína en polvo", "proteína polvo", "proteína whey"],
+                                "proteína whey": ["proteína en polvo", "proteína polvo", "whey protein"],
+                                "proteína de suero": ["proteína en polvo", "whey protein"],
+                                
+                                # 🧂 VARIOS
+                                "sal": ["salt", "sal marina", "sal común"],
+                                "salt": ["sal", "sal marina"],
+                                "sal marina": ["sal", "salt"],
+                                "sal común": ["sal", "salt"],
+                                
+                                # 🍞 CEREALES (ya incluidos arriba pero para completitud)
+                                "quinoa": ["quinua"],
+                                "quinua": ["quinoa"]
+                            }
+                            
+                            # Añadir sinónimos a la lista de variantes
+                            for alimento, variantes in sinonimos.items():
+                                if alimento.lower() in disliked_food_lower or disliked_food_lower in alimento.lower():
+                                    variantes_alimento.extend([v.lower() for v in variantes])
+                                    break
+                            
+                            # Eliminar duplicados
+                            variantes_alimento = list(set(variantes_alimento))
+                            logger.info(f"🔍 Buscando variantes del alimento excluido: {variantes_alimento}")
+                            
+                            # Verificar que no contiene ninguna variante
+                            contiene_excluido = False
+                            alimento_prohibido_encontrado = None
+                            for comida in dieta_regenerada:
+                                for alimento in comida.get("alimentos", []):
+                                    if isinstance(alimento, str):
+                                        alimento_lower = alimento.lower()
+                                        # Buscar si alguna variante está en el alimento
+                                        for variante in variantes_alimento:
+                                            if variante in alimento_lower:
+                                                contiene_excluido = True
+                                                alimento_prohibido_encontrado = alimento
+                                                logger.warning(f"⚠️ GPT incluyó alimento excluido o variante: '{alimento}' (buscaba: {variantes_alimento})")
+                                                break
+                                        if contiene_excluido:
+                                            break
+                                if contiene_excluido:
+                                    break
+                            
+                            if contiene_excluido:
+                                logger.warning(f"⚠️ GPT incluyó alimento excluido o variante '{alimento_prohibido_encontrado}', usando estrategia 2...")
+                                dieta_regenerada = None
+                            else:
+                                logger.info(f"✅ Verificado: GPT excluyó correctamente '{disliked_food}' y sus variantes")
+                        else:
+                            logger.warning(f"⚠️ GPT devolvió dieta incompleta ({len(meals_from_gpt) if meals_from_gpt else 0} comidas), usando estrategia 2...")
+                            dieta_regenerada = None
+                            
+                    except asyncio.TimeoutError:
+                        logger.warning(f"⏱️ GPT timeout después de {GPT_TIMEOUT_SECONDS}s, usando estrategia 2...")
+                        dieta_regenerada = None
+                    except Exception as e:
+                        logger.error(f"❌ Error con GPT: {e}")
+                        logger.warning(f"⚠️ Usando estrategia 2 (lista de sustituciones)...")
+                        dieta_regenerada = None
+                        
+            except Exception as e:
+                logger.error(f"❌ Error preparando datos para GPT: {e}")
+                dieta_regenerada = None
+        
+        # ==========================================
+        # ESTRATEGIA 2: Lista de sustituciones (Fallback)
+        # ==========================================
+        mejor_sustitucion = None
+        total_sustituciones = 0
+        
+        if dieta_regenerada is None:
+            logger.info(f"📋 ESTRATEGIA 2: Usando lista de sustituciones predefinidas...")
+            meals = current_diet.get("meals", [])
+            
+            # Diccionario de sustituciones con macros similares
+            # 🔧 FIX: Incluir variantes y sinónimos en el diccionario
+            sustituciones = {
+                # 🧀 LÁCTEOS Y DERIVADOS
+                "leche": ["leche de almendras", "leche de avena", "leche de soja", "yogur natural"],
+                "leche de vaca": ["leche de almendras", "leche de avena", "leche de soja", "yogur natural"],
+                "leche semidesnatada": ["leche de almendras", "leche de avena", "yogur natural"],
+                "leche desnatada": ["leche de almendras", "leche de avena", "yogur natural"],
+                "leche entera": ["leche de almendras", "leche de avena", "leche de soja", "yogur natural"],
+                "milk": ["leche de almendras", "leche de avena", "leche de soja", "yogur natural"],
+                "yogur": ["kéfir", "requesón", "cuajada", "yogur griego"],
+                "yogur natural": ["kéfir", "requesón", "cuajada", "yogur griego"],
+                "yogur blanco": ["kéfir", "requesón", "cuajada", "yogur griego"],
+                "yogur sin azúcar": ["kéfir", "requesón", "cuajada", "yogur griego"],
+                "yogurt": ["kéfir", "requesón", "cuajada", "yogur griego"],
+                "yoghurt": ["kéfir", "requesón", "cuajada", "yogur griego"],
+                "yogur griego": ["kéfir", "requesón", "cuajada", "yogur natural"],
+                "queso": ["requesón", "queso fresco", "tofu", "yogur griego"],
+                "cheese": ["requesón", "queso fresco", "tofu", "yogur griego"],
+                "queso fresco": ["requesón", "queso tipo burgos", "tofu", "yogur griego"],
+                "queso tipo burgos": ["requesón", "queso fresco", "tofu"],
+                "requesón": ["ricotta", "queso fresco", "cuajada de leche"],
+                "ricotta": ["requesón", "queso fresco", "cuajada de leche"],
+                "cuajada de leche": ["requesón", "ricotta", "queso fresco"],
+                "mantequilla": ["manteca", "aceite de oliva", "aguacate"],
+                "manteca": ["mantequilla", "aceite de oliva", "aguacate"],
+                "manteca de leche": ["mantequilla", "aceite de oliva", "aguacate"],
+                "butter": ["mantequilla", "aceite de oliva", "aguacate"],
+                "leche vegetal": ["bebida de soja", "bebida de avena", "leche de almendras"],
+                "bebida de soja": ["leche vegetal", "leche de soja", "bebida de avena"],
+                "bebida de avena": ["leche vegetal", "leche de avena", "bebida de soja"],
+                "leche de almendras": ["leche vegetal", "bebida de almendras", "leche de soja"],
+                "leche de soja": ["leche vegetal", "bebida de soja", "leche de avena"],
+                "leche de avena": ["leche vegetal", "bebida de avena", "leche de soja"],
+                
+                # 🍞 CEREALES, PANES Y HARINAS
+                "pan integral": ["pan de trigo integral", "pan 100% integral", "pan con salvado"],
+                "pan de trigo integral": ["pan integral", "pan 100% integral", "pan con salvado"],
+                "pan 100% integral": ["pan integral", "pan de trigo integral", "pan con salvado"],
+                "pan con salvado": ["pan integral", "pan de trigo integral", "pan 100% integral"],
+                "pan": ["tortitas de arroz", "crackers integrales", "pan de centeno"],
+                "bread": ["tortitas de arroz", "crackers integrales", "pan de centeno"],
+                "avena": ["quinoa", "arroz integral", "mijo", "trigo sarraceno"],
+                "oatmeal": ["quinoa", "arroz integral", "mijo", "trigo sarraceno"],
+                "gachas": ["quinoa", "arroz integral", "mijo", "trigo sarraceno"],
+                "porridge": ["quinoa", "arroz integral", "mijo", "trigo sarraceno"],
+                "copos de avena": ["quinoa", "arroz integral", "mijo", "trigo sarraceno"],
+                "avena en copos": ["quinoa", "arroz integral", "mijo", "trigo sarraceno"],
+                "avena en hojuelas": ["quinoa", "arroz integral", "mijo", "trigo sarraceno"],
+                "arroz integral": ["arroz moreno", "arroz de grano entero", "quinoa", "mijo"],
+                "arroz moreno": ["arroz integral", "arroz de grano entero", "quinoa"],
+                "arroz de grano entero": ["arroz integral", "arroz moreno", "quinoa"],
+                "brown rice": ["arroz integral", "arroz moreno", "quinoa"],
+                "arroz blanco": ["arroz normal", "arroz pulido", "arroz cocido", "quinoa"],
+                "arroz": ["arroz normal", "arroz pulido", "quinoa", "mijo"],
+                "arroz normal": ["arroz blanco", "arroz pulido", "quinoa"],
+                "arroz pulido": ["arroz blanco", "arroz normal", "quinoa"],
+                "arroz cocido": ["arroz blanco", "arroz normal", "quinoa"],
+                "rice": ["quinoa", "mijo", "boniato", "patata"],
+                "pasta integral": ["macarrones integrales", "espaguetis integrales", "arroz integral"],
+                "pasta": ["arroz integral", "quinoa", "boniato"],
+                "macarrones": ["arroz integral", "quinoa", "boniato"],
+                "macarrones integrales": ["pasta integral", "espaguetis integrales", "arroz integral"],
+                "espaguetis": ["arroz integral", "quinoa", "boniato"],
+                "espaguetis integrales": ["pasta integral", "macarrones integrales", "arroz integral"],
+                "fideos": ["arroz integral", "quinoa", "boniato"],
+                "tortitas de arroz": ["galletas de arroz", "tortas de arroz inflado", "pan integral"],
+                "galletas de arroz": ["tortitas de arroz", "tortas de arroz inflado", "pan integral"],
+                "tortas de arroz inflado": ["tortitas de arroz", "galletas de arroz", "pan integral"],
+                "rice cakes": ["tortitas de arroz", "galletas de arroz", "pan integral"],
+                "patata": ["boniato", "quinoa", "arroz integral"],
+                "patatas": ["boniato", "quinoa", "arroz integral"],
+                "potato": ["boniato", "quinoa", "arroz integral"],
+                "potatoes": ["boniato", "quinoa", "arroz integral"],
+                "papas": ["boniato", "quinoa", "arroz integral"],
+                "papa": ["boniato", "quinoa", "arroz integral"],
+                "boniato": ["patata", "quinoa", "arroz integral"],
+                "batata": ["patata", "quinoa", "arroz integral"],
+                "sweet potato": ["patata", "quinoa", "arroz integral"],
+                "camote": ["patata", "quinoa", "arroz integral"],
+                "quinoa": ["quinua", "arroz integral", "mijo"],
+                "quinua": ["quinoa", "arroz integral", "mijo"],
+                
+                # 🍗 PROTEÍNAS ANIMALES
+                "pollo": ["pavo", "ternera magra", "pescado blanco", "tofu"],
+                "chicken": ["pavo", "ternera magra", "pescado blanco", "tofu"],
+                "pechuga de pollo": ["pavo", "ternera magra", "pescado blanco", "tofu"],
+                "pechuga pollo": ["pavo", "ternera magra", "pescado blanco", "tofu"],
+                "carne blanca": ["pollo", "pavo", "ternera magra", "tofu"],
+                "muslo de pollo": ["pavo", "ternera magra", "pescado blanco", "tofu"],
+                "ternera": ["pollo", "pavo", "cerdo magro", "pescado"],
+                "beef": ["pollo", "pavo", "cerdo magro", "pescado"],
+                "carne": ["pollo", "pavo", "cerdo magro", "pescado"],
+                "carne de ternera": ["pollo", "pavo", "cerdo magro", "pescado"],
+                "vaca": ["pollo", "pavo", "cerdo magro", "pescado"],
+                "vacuno": ["pollo", "pavo", "cerdo magro", "pescado"],
+                "carne de res": ["pollo", "pavo", "cerdo magro", "pescado"],
+                "carne roja": ["pollo", "pavo", "cerdo magro", "pescado"],
+                "pavo": ["turkey", "pechuga de pavo", "pollo", "ternera magra"],
+                "turkey": ["pavo", "pechuga de pavo", "pollo", "ternera magra"],
+                "pechuga de pavo": ["pavo", "turkey", "pollo", "ternera magra"],
+                "fiambre de pavo": ["pavo", "turkey", "pollo", "ternera magra"],
+                "cerdo": ["lomo de cerdo", "carne de cerdo", "jamón", "pollo"],
+                "lomo de cerdo": ["cerdo", "carne de cerdo", "jamón", "pollo"],
+                "carne de cerdo": ["cerdo", "lomo de cerdo", "jamón", "pollo"],
+                "jamón": ["cerdo", "lomo de cerdo", "carne de cerdo", "pollo"],
+                "pork": ["cerdo", "lomo de cerdo", "carne de cerdo", "pollo"],
+                "pescado": ["pollo", "pavo", "huevos", "tofu"],
+                "fish": ["pollo", "pavo", "huevos", "tofu"],
+                "pescado blanco": ["pollo", "pavo", "huevos", "tofu"],
+                "pescado azul": ["pollo", "pavo", "huevos", "tofu"],
+                "atún": ["salmón", "pollo", "pavo", "huevos"],
+                "tuna": ["salmón", "pollo", "pavo", "huevos"],
+                "atún en lata": ["atún natural", "salmón", "pollo", "pavo"],
+                "atún en conserva": ["atún natural", "salmón", "pollo", "pavo"],
+                "atún natural": ["atún en lata", "salmón", "pollo", "pavo"],
+                "bonito": ["atún", "salmón", "pollo", "pavo"],
+                "salmón": ["atún", "pollo", "pavo", "huevos"],
+                "salmon": ["atún", "pollo", "pavo", "huevos"],
+                "salmón fresco": ["salmón ahumado", "atún", "pollo", "pavo"],
+                "salmón ahumado": ["salmón fresco", "atún", "pollo", "pavo"],
+                "filete de salmón": ["salmón fresco", "atún", "pollo", "pavo"],
+                "huevos": ["claras de huevo", "tofu", "proteína en polvo"],
+                "huevo": ["claras de huevo", "tofu", "proteína en polvo"],
+                "eggs": ["claras de huevo", "tofu", "proteína en polvo"],
+                "huevos enteros": ["claras de huevo", "tofu", "proteína en polvo"],
+                "huevo entero": ["claras de huevo", "tofu", "proteína en polvo"],
+                "claras de huevo": ["albúmina", "parte blanca del huevo", "huevos", "tofu"],
+                "clara de huevo": ["albúmina", "parte blanca del huevo", "huevos", "tofu"],
+                "egg whites": ["albúmina", "parte blanca del huevo", "huevos", "tofu"],
+                "albúmina": ["claras de huevo", "parte blanca del huevo", "huevos", "tofu"],
+                "parte blanca del huevo": ["claras de huevo", "albúmina", "huevos", "tofu"],
+                
+                # 🍎 FRUTAS
+                "plátano": ["manzana", "pera", "dátiles", "uvas"],
+                "banana": ["manzana", "pera", "dátiles", "uvas"],
+                "banano": ["manzana", "pera", "dátiles", "uvas"],
+                "cambur": ["manzana", "pera", "dátiles", "uvas"],
+                "manzana": ["pera", "naranja", "kiwi", "fresas"],
+                "manzana roja": ["pera", "naranja", "kiwi", "fresas"],
+                "manzana verde": ["pera", "naranja", "kiwi", "fresas"],
+                "apple": ["pera", "naranja", "kiwi", "fresas"],
+                "pera": ["manzana", "naranja", "kiwi", "fresas"],
+                "pera verde": ["manzana", "naranja", "kiwi", "fresas"],
+                "pear": ["manzana", "naranja", "kiwi", "fresas"],
+                "aguacate": ["aceite de oliva", "frutos secos", "semillas"],
+                "avocado": ["aceite de oliva", "frutos secos", "semillas"],
+                "palta": ["aceite de oliva", "frutos secos", "semillas"],
+                "aguacate hass": ["aceite de oliva", "frutos secos", "semillas"],
+                "sandía": ["patilla", "melón de agua", "melón", "manzana"],
+                "patilla": ["sandía", "melón de agua", "melón", "manzana"],
+                "melón de agua": ["sandía", "patilla", "melón", "manzana"],
+                "watermelon": ["sandía", "patilla", "melón", "manzana"],
+                "melón": ["melón cantalupo", "melón verde", "sandía", "manzana"],
+                "melón cantalupo": ["melón", "melón verde", "sandía"],
+                "melón verde": ["melón", "melón cantalupo", "sandía"],
+                "melon": ["melón", "melón cantalupo", "sandía"],
+                "uvas": ["racimo de uvas", "uvas sin semilla", "manzana", "pera"],
+                "racimo de uvas": ["uvas", "uvas sin semilla", "manzana", "pera"],
+                "uvas sin semilla": ["uvas", "racimo de uvas", "manzana", "pera"],
+                "grapes": ["uvas", "racimo de uvas", "manzana", "pera"],
+                "frutos rojos": ["frutos del bosque", "berries", "arándanos", "frambuesas", "fresas"],
+                "frutos del bosque": ["frutos rojos", "berries", "arándanos", "frambuesas", "fresas"],
+                "berries": ["frutos rojos", "frutos del bosque", "arándanos", "frambuesas", "fresas"],
+                "arándanos": ["frutos rojos", "frutos del bosque", "berries", "frambuesas", "fresas"],
+                "blueberries": ["frutos rojos", "frutos del bosque", "berries", "frambuesas", "fresas"],
+                "frambuesas": ["frutos rojos", "frutos del bosque", "berries", "arándanos", "fresas"],
+                "raspberries": ["frutos rojos", "frutos del bosque", "berries", "arándanos", "fresas"],
+                "fresas": ["frutos rojos", "frutos del bosque", "berries", "arándanos", "frambuesas"],
+                "strawberries": ["frutos rojos", "frutos del bosque", "berries", "arándanos", "frambuesas"],
+                
+                # 🥜 FRUTOS SECOS Y CREMAS
+                "mantequilla de cacahuete": ["mantequilla de almendras", "tahini", "aguacate"],
+                "crema de cacahuete": ["mantequilla de almendras", "tahini", "aguacate"],
+                "crema cacahuete": ["mantequilla de almendras", "tahini", "aguacate"],
+                "mantequilla cacahuete": ["mantequilla de almendras", "tahini", "aguacate"],
+                "peanut butter": ["mantequilla de almendras", "tahini", "aguacate"],
+                "crema de maní": ["mantequilla de almendras", "tahini", "aguacate"],
+                "manteca de maní": ["mantequilla de almendras", "tahini", "aguacate"],
+                "manteca de cacahuate": ["mantequilla de almendras", "tahini", "aguacate"],
+                "nueces": ["almendras", "avellanas", "anacardos"],
+                "walnuts": ["almendras", "avellanas", "anacardos"],
+                "nueces de nogal": ["almendras", "avellanas", "anacardos"],
+                "almendras": ["nueces", "avellanas", "anacardos"],
+                "almonds": ["nueces", "avellanas", "anacardos"],
+                "anacardos": ["almendras", "nueces", "avellanas"],
+                "cashews": ["almendras", "nueces", "avellanas"],
+                "marañones": ["almendras", "nueces", "avellanas"],
+                "avellanas": ["almendras", "nueces", "anacardos"],
+                "hazelnut": ["almendras", "nueces", "anacardos"],
+                "pistachos": ["almendras", "nueces", "avellanas"],
+                "pistachio": ["almendras", "nueces", "avellanas"],
+                
+                # 🥑 GRASAS Y ACEITES
+                "aceite de oliva": ["aguacate", "frutos secos", "semillas"],
+                "aceite oliva": ["aguacate", "frutos secos", "semillas"],
+                "olive oil": ["aguacate", "frutos secos", "semillas"],
+                "aove": ["aguacate", "frutos secos", "semillas"],
+                "aceite virgen extra": ["aguacate", "frutos secos", "semillas"],
+                "aceite de girasol": ["aceite de oliva", "aguacate", "frutos secos"],
+                "aceite vegetal": ["aceite de oliva", "aguacate", "frutos secos"],
+                "sunflower oil": ["aceite de oliva", "aguacate", "frutos secos"],
+                "frutos secos": ["mix de frutos", "almendras", "nueces"],
+                "mix de frutos": ["almendras", "nueces", "avellanas"],
+                "frutos grasos": ["almendras", "nueces", "avellanas"],
+                "nuts": ["almendras", "nueces", "avellanas"],
+                
+                # 🥦 VERDURAS Y HORTALIZAS
+                "espinacas": ["hojas verdes", "acelga", "brócoli"],
+                "hojas verdes": ["espinacas", "acelga", "brócoli"],
+                "acelga": ["espinacas", "hojas verdes", "brócoli"],
+                "spinach": ["espinacas", "hojas verdes", "acelga"],
+                "brócoli": ["brécol", "col verde", "espinacas"],
+                "brécol": ["brócoli", "col verde", "espinacas"],
+                "col verde": ["brócoli", "brécol", "espinacas"],
+                "broccoli": ["brócoli", "brécol", "col verde"],
+                "zanahoria": ["zanahoria cruda", "zanahoria cocida", "tomate"],
+                "zanahoria cruda": ["zanahoria", "zanahoria cocida", "tomate"],
+                "zanahoria cocida": ["zanahoria", "zanahoria cruda", "tomate"],
+                "carrot": ["zanahoria", "zanahoria cruda", "zanahoria cocida"],
+                "calabacín": ["zucchini", "calabacín", "pimiento"],
+                "zucchini": ["calabacín", "pimiento"],
+                "pimiento": ["ají", "morrón", "calabacín"],
+                "ají": ["pimiento", "morrón", "calabacín"],
+                "morrón": ["pimiento", "ají", "calabacín"],
+                "pepper": ["pimiento", "ají", "morrón"],
+                "tomate": ["jitomate", "tomate rojo", "zanahoria"],
+                "jitomate": ["tomate", "tomate rojo", "zanahoria"],
+                "tomate rojo": ["tomate", "jitomate", "zanahoria"],
+                "tomato": ["tomate", "jitomate", "tomate rojo"],
+                
+                # 🍚 LEGUMBRES
+                "lentejas": ["lentejas pardinas", "lentejas cocidas", "garbanzos"],
+                "lentejas pardinas": ["lentejas", "lentejas cocidas", "garbanzos"],
+                "lentejas cocidas": ["lentejas", "lentejas pardinas", "garbanzos"],
+                "lentils": ["lentejas", "lentejas pardinas", "garbanzos"],
+                "garbanzos": ["chickpeas", "garbanzo cocido", "lentejas"],
+                "chickpeas": ["garbanzos", "garbanzo cocido", "lentejas"],
+                "garbanzo cocido": ["garbanzos", "chickpeas", "lentejas"],
+                "judías": ["alubias", "porotos", "frijoles", "garbanzos"],
+                "alubias": ["judías", "porotos", "frijoles", "garbanzos"],
+                "porotos": ["judías", "alubias", "frijoles", "garbanzos"],
+                "frijoles": ["judías", "alubias", "porotos", "garbanzos"],
+                "beans": ["judías", "alubias", "porotos", "frijoles"],
+                "soja": ["habas de soja", "soya", "tofu"],
+                "habas de soja": ["soja", "soya", "tofu"],
+                "soya": ["soja", "habas de soja", "tofu"],
+                "soy": ["soja", "soya", "habas de soja"],
+                
+                # 🍫 OTROS / DULCES
+                "chocolate negro": ["cacao", "chocolate amargo", "miel"],
+                "chocolate amargo": ["chocolate negro", "cacao", "miel"],
+                "cacao": ["chocolate negro", "chocolate amargo", "miel"],
+                "dark chocolate": ["chocolate negro", "chocolate amargo", "cacao"],
+                "miel": ["miel natural", "néctar de abejas", "edulcorante"],
+                "miel natural": ["miel", "néctar de abejas", "edulcorante"],
+                "néctar de abejas": ["miel", "miel natural", "edulcorante"],
+                "honey": ["miel", "miel natural", "edulcorante"],
+                "azúcar": ["sugar", "azúcar blanca", "azúcar refinada", "edulcorante"],
+                "sugar": ["azúcar", "azúcar blanca", "azúcar refinada", "edulcorante"],
+                "azúcar blanca": ["azúcar", "sugar", "azúcar refinada", "edulcorante"],
+                "azúcar refinada": ["azúcar", "azúcar blanca", "sacarosa", "edulcorante"],
+                "azúcar refinado": ["azúcar", "azúcar blanca", "sacarosa", "edulcorante"],
+                "sacarosa": ["azúcar", "azúcar refinada", "azúcar refinado", "edulcorante"],
+                "edulcorante": ["stevia", "eritritol", "sucralosa", "miel"],
+                "stevia": ["edulcorante", "eritritol", "sucralosa", "miel"],
+                "eritritol": ["edulcorante", "stevia", "sucralosa", "miel"],
+                "sucralosa": ["edulcorante", "stevia", "eritritol", "miel"],
+                "sweetener": ["edulcorante", "stevia", "eritritol", "sucralosa"],
+                
+                # 💧 BEBIDAS
+                "agua con gas": ["agua carbonatada", "soda", "agua"],
+                "agua carbonatada": ["agua con gas", "soda", "agua"],
+                "soda": ["agua con gas", "agua carbonatada", "agua"],
+                "sparkling water": ["agua con gas", "agua carbonatada", "agua"],
+                "refresco": ["bebida azucarada", "gaseosa", "agua"],
+                "bebida azucarada": ["refresco", "gaseosa", "agua"],
+                "gaseosa": ["refresco", "bebida azucarada", "agua"],
+                "soft drink": ["refresco", "bebida azucarada", "gaseosa"],
+                "café": ["espresso", "café solo", "americano", "té verde"],
+                "espresso": ["café", "café solo", "americano", "té verde"],
+                "café solo": ["café", "espresso", "americano", "té verde"],
+                "americano": ["café", "coffee", "té verde"],
+                "coffee": ["café", "espresso", "americano", "té verde"],
+                "té verde": ["infusión de té", "matcha", "café"],
+                "infusión de té": ["té verde", "matcha", "café"],
+                "matcha": ["té verde", "infusión de té", "café"],
+                "green tea": ["té verde", "infusión de té", "matcha"],
+                
+                # 💪 PROTEÍNA EN POLVO
+                "proteína en polvo": ["claras de huevo", "huevos", "tofu"],
+                "proteína polvo": ["claras de huevo", "huevos", "tofu"],
+                "whey protein": ["claras de huevo", "huevos", "tofu"],
+                "proteína whey": ["claras de huevo", "huevos", "tofu"],
+                "proteína de suero": ["claras de huevo", "huevos", "tofu"]
+            }
+            
+            # Buscar la mejor sustitución basada en el alimento no deseado
+            mejor_sustitucion = None
+            for alimento, alternativas in sustituciones.items():
+                if alimento.lower() in disliked_food_lower or disliked_food_lower in alimento.lower():
+                    mejor_sustitucion = alternativas[0]  # Usar la primera alternativa
+                    logger.info(f"✅ Encontrada sustitución: {alimento} → {mejor_sustitucion}")
+                    break
+            
+            # Si no hay sustitución específica, usar genérica
+            if not mejor_sustitucion:
+                # Extraer el alimento base (sin cantidades)
+                alimento_base = disliked_food_lower.split()[0] if disliked_food_lower.split() else disliked_food_lower
+                mejor_sustitucion = f"alternativa de {alimento_base}"
+                logger.info(f"⚠️ Usando sustitución genérica: {mejor_sustitucion}")
+            
+            # Buscar y sustituir en las comidas correspondientes
+            total_sustituciones = 0
+            meal_type_lower = meal_type.lower()
+            
+            for meal in meals:
+                if not isinstance(meal, dict):
+                    continue
+                    
+                meal_name = meal.get("nombre", "").lower()
                 foods = meal.get("alimentos", [])
+                
+                # Verificar si debemos modificar esta comida
+                if meal_type_lower != "todos" and meal_type_lower not in meal_name:
+                    continue
                 
                 # Buscar el alimento a sustituir
                 for i, food_item in enumerate(foods):
-                    if isinstance(food_item, str) and food_to_replace.lower() in food_item.lower():
-                        # Sustituir el alimento manteniendo formato de cantidad si existe
-                        foods[i] = replacement_food
-                        changes.append(f"Sustituido en {meal_name}: {food_to_replace} → {replacement_food}")
+                    if isinstance(food_item, str):
+                        food_item_lower = food_item.lower()
+                        # Buscar coincidencias parciales
+                        if disliked_food_lower in food_item_lower or any(
+                            palabra in food_item_lower for palabra in disliked_food_lower.split()
+                        ):
+                            # Extraer cantidad del alimento original si existe
+                            # Formato típico: "300ml leche - 150kcal" o "40g avena - 150kcal"
+                            match = re.match(r'^(\d+(?:\.\d+)?)\s*(ml|g|kg)?\s*', food_item)
+                            cantidad = ""
+                            if match:
+                                cantidad = match.group(0).strip()
+                            
+                            # Crear sustitución manteniendo cantidad si es posible
+                            if cantidad:
+                                nuevo_alimento = f"{cantidad} {mejor_sustitucion}"
+                            else:
+                                nuevo_alimento = mejor_sustitucion
+                            
+                            foods[i] = nuevo_alimento
+                            total_sustituciones += 1
+                            changes.append(f"Sustituido en {meal.get('nombre', '')}: {food_item} → {nuevo_alimento}")
+                            logger.info(f"✅ Sustituido: {food_item} → {nuevo_alimento} en {meal.get('nombre', '')}")
+            
+            if total_sustituciones == 0:
+                return {
+                    "success": False,
+                    "message": f"No se encontró '{disliked_food}' en tu dieta. Por favor, verifica el nombre del alimento.",
+                    "changes": []
+                }
+            
+            # Actualizar current_diet con sustituciones
+            current_diet["meals"] = meals
+            dieta_regenerada = None  # Marcamos que usamos fallback
+        
+        # ==========================================
+        # ACTUALIZAR DIETA FINAL
+        # ==========================================
+        if dieta_regenerada:
+            # Usar dieta regenerada por GPT
+            logger.info(f"✅ Usando dieta regenerada por GPT")
+            
+            # Obtener macros y calorías objetivo de la dieta actual
+            macros_actuales = current_diet.get("macros", {})
+            total_kcal_actual = current_diet.get("total_kcal", 0)
+            
+            # Actualizar current_diet con dieta regenerada por GPT
+            current_diet["meals"] = dieta_regenerada
+            current_diet["total_kcal"] = total_kcal_actual  # Mantener calorías objetivo
+            current_diet["macros"] = macros_actuales  # Mantener macros objetivo
+            changes.append(f"Dieta regenerada por GPT excluyendo '{disliked_food}'")
+        else:
+            # Ya se actualizó current_diet en la estrategia 2
+            logger.info(f"✅ Usando sustituciones de lista predefinida")
         
         # Actualizar versión y timestamp
-        current_diet["version"] = increment_diet_version(old_diet_version)  # 🔧 FIX
+        current_diet["version"] = increment_diet_version(old_diet_version)
         current_diet["updated_at"] = datetime.utcnow().isoformat()
         
         # Guardar cambios
@@ -1527,23 +2327,44 @@ async def handle_substitute_food(
             "current_diet": current_diet
         }, db)
         
+        # Añadir a alimentos no deseados
+        disliked_foods = user_data.get("disliked_foods", [])
+        if disliked_food not in disliked_foods:
+            disliked_foods.append(disliked_food)
+            await db_service.update_user_data(user_id, {
+                "disliked_foods": disliked_foods
+        }, db)
+        
         # Añadir registro de modificación
+        replacement_info = "GPT regeneración completa" if dieta_regenerada else mejor_sustitucion
         await db_service.add_modification_record(
             user_id,
             "food_substitution",
             {
-                "food_to_replace": food_to_replace,
-                "replacement_food": replacement_food,
+                "disliked_food": disliked_food,
+                "meal_type": meal_type,
+                "replacement": replacement_info,
+                "strategy": "GPT" if dieta_regenerada else "lista_predefinida",
                 "changes": changes
             },
-            f"Sustitución de alimento: {food_to_replace}",
+            f"Sustitución de {disliked_food}",
             db
         )
         
+        # Mensaje final según estrategia usada
+        if dieta_regenerada:
+            mensaje = f"He regenerado tu dieta completa excluyendo '{disliked_food}'. La nueva dieta se ajusta a tus calorías y macros objetivo, sin incluir ese alimento."
+        else:
+            if mejor_sustitucion and total_sustituciones > 0:
+                mensaje = f"He sustituido '{disliked_food}' por '{mejor_sustitucion}' en {total_sustituciones} lugar(es) de tu dieta. Los macros se mantienen similares."
+            else:
+                mensaje = f"No se encontró '{disliked_food}' en tu dieta. Por favor, verifica el nombre del alimento."
+        
         return {
             "success": True,
-            "message": f"Alimento sustituido correctamente",
-            "changes": changes
+            "message": mensaje,
+            "changes": changes,
+            "plan_updated": True
         }
         
     except Exception as e:
@@ -1558,16 +2379,424 @@ async def handle_substitute_food(
 async def handle_generate_alternatives(
     user_id: int,
     meal_type: str,
-    db: Session
+    db: Session = None
 ) -> Dict[str, Any]:
     """
-    Handler para generar alternativas de comidas
+    Handler para generar alternativas de comidas completas - VERSIÓN CON GPT PRIORITARIO
+    Flujo: 1) Intentar GPT (regenerar comida completa excluyendo alimentos de la comida actual), 2) Fallback a alternativas predefinidas
     """
-    return {
-        "success": False,
-        "message": "Función de alternativas de comidas no implementada aún",
-        "changes": []
-    }
+    try:
+        logger.info(f"🍽️ Generando alternativas para comida: {meal_type}")
+        
+        # Obtener datos del usuario
+        user_data = await db_service.get_user_complete_data(user_id, db)
+        current_diet = user_data["current_diet"]
+        
+        # Validar estructura de dieta
+        if not isinstance(current_diet, dict) or "meals" not in current_diet:
+            return {
+                "success": False,
+                "message": "Estructura de dieta inválida. No se puede modificar.",
+                "changes": []
+            }
+        
+        # Obtener usuario para verificar si es premium
+        from app.models import Usuario, Plan
+        usuario = db.query(Usuario).filter(Usuario.id == user_id).first()
+        if not usuario:
+            return {
+                "success": False,
+                "message": "Usuario no encontrado",
+                "changes": []
+            }
+        
+        is_premium = bool(usuario.is_premium) or (usuario.plan_type == "PREMIUM")
+        logger.info(f"💎 Usuario premium: {is_premium}")
+        
+        # Buscar la comida actual
+        meals = current_diet.get("meals", [])
+        meal_type_lower = meal_type.lower()
+        current_meal = None
+        
+        for meal in meals:
+            if isinstance(meal, dict):
+                meal_name = meal.get("nombre", "").lower()
+                if meal_type_lower in meal_name or meal_name in meal_type_lower:
+                    current_meal = meal
+                    break
+        
+        if not current_meal:
+            return {
+                "success": False,
+                "message": f"No se encontró la comida '{meal_type}' en tu dieta.",
+                "changes": []
+            }
+        
+        # Obtener calorías y macros objetivo de la comida actual
+        meal_kcal = current_meal.get("kcal", 0)
+        meal_macros = current_meal.get("macros", {})
+        meal_alimentos = current_meal.get("alimentos", [])
+        
+        # Extraer alimentos de la comida actual para excluirlos
+        alimentos_excluidos = []
+        for alimento in meal_alimentos:
+            if isinstance(alimento, str):
+                # Extraer nombre del alimento (sin cantidades)
+                alimento_limpio = alimento.split('-')[0].strip() if '-' in alimento else alimento.strip()
+                # Eliminar números y unidades
+                alimento_limpio = re.sub(r'^\d+(?:\.\d+)?\s*(ml|g|kg|unidad|unidades)?\s*', '', alimento_limpio, flags=re.IGNORECASE)
+                if alimento_limpio:
+                    alimentos_excluidos.append(alimento_limpio)
+        
+        logger.info(f"📋 Comida actual: {current_meal.get('nombre', '')}")
+        logger.info(f"   Calorías: {meal_kcal} kcal")
+        logger.info(f"   Macros: P={meal_macros.get('proteinas', 0)}g, C={meal_macros.get('carbohidratos', 0)}g, G={meal_macros.get('grasas', 0)}g")
+        logger.info(f"   Alimentos a excluir: {alimentos_excluidos}")
+        
+        # Guardar versión antes de modificar
+        old_diet_version = current_diet.get("version", "1.0.0")
+        changes = []
+        
+        # ==========================================
+        # ESTRATEGIA 1: GPT (Solo para premium)
+        # ==========================================
+        nueva_comida_gpt = None
+        
+        if is_premium:
+            try:
+                logger.info(f"🤖 ESTRATEGIA 1: Regenerando {meal_type} con GPT excluyendo alimentos actuales...")
+                
+                # Obtener plan actual para datos del usuario
+                current_plan = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
+                if not current_plan:
+                    logger.warning(f"⚠️ No se encontró plan para usuario {user_id}, usando fallback")
+                else:
+                    # Preparar datos para GPT - generar solo UNA comida
+                    datos_usuario = {
+                        'altura': int(current_plan.altura) if current_plan.altura else 175,
+                        'peso': float(current_plan.peso.replace("kg", "").strip()) if current_plan.peso else 75.0,
+                        'edad': int(current_plan.edad) if current_plan.edad else 25,
+                        'sexo': current_plan.sexo or 'masculino',
+                        'objetivo': current_plan.objetivo_gym or 'ganar_musculo',
+                        'nutrition_goal': current_plan.objetivo_nutricional or 'mantenimiento',
+                        'experiencia': current_plan.experiencia or 'intermedio',
+                        'materiales': current_plan.materiales.split(", ") if current_plan.materiales else ['gym_completo'],
+                        'tipo_cuerpo': current_plan.tipo_cuerpo or 'mesomorfo',
+                        'alergias': current_plan.alergias or 'Ninguna',
+                        'restricciones': current_plan.restricciones_dieta or 'Ninguna',
+                        'lesiones': current_plan.lesiones or 'Ninguna',
+                        'nivel_actividad': current_plan.nivel_actividad or 'moderado',
+                        'training_frequency': 4,
+                        'training_days': ['lunes', 'martes', 'jueves', 'viernes'],
+                        # 🔧 CRÍTICO: Pasar alimentos excluidos de la comida actual
+                        'excluded_foods': alimentos_excluidos,
+                        # 🔧 CRÍTICO: Pasar parámetros de la comida específica
+                        'generate_single_meal': True,
+                        'meal_type': meal_type,
+                        'meal_target_kcal': meal_kcal,
+                        'meal_target_macros': meal_macros
+                    }
+                    
+                    # Llamar a GPT con timeout
+                    try:
+                        from app.utils.gpt import generar_comida_personalizada
+                        nueva_comida_gpt = await asyncio.wait_for(
+                            generar_comida_personalizada(datos_usuario),
+                            timeout=GPT_TIMEOUT_SECONDS
+                        )
+                        
+                        if nueva_comida_gpt and isinstance(nueva_comida_gpt, dict):
+                            # Validar estructura de la comida generada
+                            alimentos_generados = nueva_comida_gpt.get("alimentos", [])
+                            kcal_generadas = nueva_comida_gpt.get("kcal", 0)
+                            macros_generados = nueva_comida_gpt.get("macros", {})
+                            
+                            logger.info(f"✅ ESTRATEGIA 1 EXITOSA: Comida regenerada con GPT")
+                            logger.info(f"   Comida: {nueva_comida_gpt.get('nombre', meal_type)}")
+                            logger.info(f"   Calorías generadas: {kcal_generadas} kcal (objetivo: {meal_kcal} kcal)")
+                            logger.info(f"   Macros generados: P={macros_generados.get('proteinas', 0)}g, C={macros_generados.get('carbohidratos', 0)}g, G={macros_generados.get('grasas', 0)}g")
+                            logger.info(f"   Alimentos generados: {alimentos_generados}")
+                            logger.info(f"   Alimentos excluidos: {alimentos_excluidos}")
+                            
+                            # Verificar que no contiene alimentos excluidos
+                            contiene_excluido = False
+                            for alimento_generado in alimentos_generados:
+                                if isinstance(alimento_generado, str):
+                                    alimento_generado_lower = alimento_generado.lower()
+                                    for alimento_excluido in alimentos_excluidos:
+                                        if alimento_excluido.lower() in alimento_generado_lower:
+                                            contiene_excluido = True
+                                            logger.warning(f"⚠️ GPT incluyó alimento excluido: '{alimento_generado}' (excluido: '{alimento_excluido}')")
+                                            break
+                                    if contiene_excluido:
+                                        break
+                            
+                            if contiene_excluido:
+                                logger.warning(f"⚠️ GPT incluyó alimento excluido, usando estrategia 2...")
+                                nueva_comida_gpt = None
+                            else:
+                                logger.info(f"✅ Verificado: GPT excluyó correctamente todos los alimentos excluidos")
+                                changes.append(f"Comida regenerada por GPT excluyendo alimentos anteriores: {', '.join(alimentos_excluidos)}")
+                        else:
+                            logger.warning(f"⚠️ GPT devolvió respuesta inválida, usando estrategia 2...")
+                            nueva_comida_gpt = None
+                            
+                    except asyncio.TimeoutError:
+                        logger.warning(f"⏱️ GPT timeout después de {GPT_TIMEOUT_SECONDS}s, usando estrategia 2...")
+                        nueva_comida_gpt = None
+                    except Exception as e:
+                        logger.error(f"❌ Error con GPT: {e}")
+                        logger.warning(f"⚠️ Usando estrategia 2 (alternativas predefinidas)...")
+                        nueva_comida_gpt = None
+                        
+            except Exception as e:
+                logger.error(f"❌ Error preparando datos para GPT: {e}")
+                nueva_comida_gpt = None
+        
+        # ==========================================
+        # ESTRATEGIA 2: Alternativas predefinidas (Fallback)
+        # ==========================================
+        if nueva_comida_gpt is None:
+            logger.info(f"📋 ESTRATEGIA 2: Usando alternativas predefinidas para {meal_type}...")
+            
+            # Diccionario de alternativas predefinidas por tipo de comida
+            alternativas_predefinidas = {
+                "desayuno": [
+                    {
+                        "nombre": "Desayuno",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["2 huevos revueltos", "2 rebanadas pan integral", "1 aguacate", "300ml leche semidesnatada"]
+                    },
+                    {
+                        "nombre": "Desayuno",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["50g avena", "1 plátano", "30g frutos secos", "250ml yogur natural"]
+                    },
+                    {
+                        "nombre": "Desayuno",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["3 rebanadas pan integral", "100g queso fresco", "200g tomate", "200ml leche semidesnatada"]
+                    }
+                ],
+                "almuerzo": [
+                    {
+                        "nombre": "Almuerzo",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["150g pollo a la plancha", "150g arroz integral", "200g brócoli", "1 cucharada aceite oliva"]
+                    },
+                    {
+                        "nombre": "Almuerzo",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["200g salmón", "150g quinoa", "200g espinacas", "1 cucharada aceite oliva"]
+                    },
+                    {
+                        "nombre": "Almuerzo",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["150g ternera magra", "200g patata asada", "200g ensalada", "1 cucharada aceite oliva"]
+                    }
+                ],
+                "comida": [
+                    {
+                        "nombre": "Comida",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["150g pollo a la plancha", "150g arroz integral", "200g brócoli", "1 cucharada aceite oliva"]
+                    },
+                    {
+                        "nombre": "Comida",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["200g salmón", "150g quinoa", "200g espinacas", "1 cucharada aceite oliva"]
+                    },
+                    {
+                        "nombre": "Comida",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["150g ternera magra", "200g patata asada", "200g ensalada", "1 cucharada aceite oliva"]
+                    }
+                ],
+                "merienda": [
+                    {
+                        "nombre": "Merienda",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["200ml yogur natural", "30g frutos secos", "1 plátano"]
+                    },
+                    {
+                        "nombre": "Merienda",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["1 plátano", "20g mantequilla de almendras", "200ml leche semidesnatada"]
+                    },
+                    {
+                        "nombre": "Merienda",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["100g queso fresco", "200g frutos rojos", "30g frutos secos"]
+                    }
+                ],
+                "cena": [
+                    {
+                        "nombre": "Cena",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["200g pescado blanco", "200g verduras al vapor", "100g quinoa", "1 cucharada aceite oliva"]
+                    },
+                    {
+                        "nombre": "Cena",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["150g pollo a la plancha", "200g ensalada", "100g aguacate", "1 cucharada aceite oliva"]
+                    },
+                    {
+                        "nombre": "Cena",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["200g salmón", "200g espinacas", "150g arroz integral", "1 cucharada aceite oliva"]
+                    }
+                ],
+                "snack": [
+                    {
+                        "nombre": "Snack",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["200ml yogur natural", "30g frutos secos", "1 plátano"]
+                    },
+                    {
+                        "nombre": "Snack",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["1 plátano", "20g mantequilla de almendras", "200ml leche semidesnatada"]
+                    },
+                    {
+                        "nombre": "Snack",
+                        "kcal": meal_kcal,
+                        "macros": meal_macros,
+                        "alimentos": ["100g queso fresco", "200g frutos rojos", "30g frutos secos"]
+                    }
+                ]
+            }
+            
+            # Obtener alternativas para el tipo de comida
+            alternativas = alternativas_predefinidas.get(meal_type_lower, [])
+            
+            if not alternativas:
+                # Si no hay alternativas específicas, usar las de "snack"
+                alternativas = alternativas_predefinidas.get("snack", [])
+            
+            # Usar la primera alternativa
+            nueva_comida_gpt = alternativas[0] if alternativas else None
+            
+            if nueva_comida_gpt:
+                alimentos_fallback = nueva_comida_gpt.get('alimentos', [])
+                logger.info(f"✅ Usando alternativa predefinida #1 para {meal_type}")
+                logger.info(f"   Comida: {nueva_comida_gpt.get('nombre', meal_type)}")
+                logger.info(f"   Calorías: {nueva_comida_gpt.get('kcal', 0)} kcal (objetivo: {meal_kcal} kcal)")
+                logger.info(f"   Macros: P={nueva_comida_gpt.get('macros', {}).get('proteinas', 0)}g, C={nueva_comida_gpt.get('macros', {}).get('carbohidratos', 0)}g, G={nueva_comida_gpt.get('macros', {}).get('grasas', 0)}g")
+                logger.info(f"   Alimentos: {alimentos_fallback}")
+                changes.append(f"Comida reemplazada por alternativa predefinida: {', '.join(alimentos_fallback)}")
+            else:
+                return {
+                    "success": False,
+                    "message": f"No se encontraron alternativas predefinidas para '{meal_type}'.",
+                    "changes": []
+                }
+        
+        # ==========================================
+        # ACTUALIZAR DIETA
+        # ==========================================
+        if nueva_comida_gpt:
+            logger.info(f"🔄 Actualizando dieta con nueva comida para {meal_type}...")
+            
+            # Reemplazar la comida actual con la nueva
+            comida_encontrada = False
+            for i, meal in enumerate(meals):
+                if isinstance(meal, dict):
+                    meal_name = meal.get("nombre", "").lower()
+                    if meal_type_lower in meal_name or meal_name in meal_type_lower:
+                        # Mantener el nombre original de la comida
+                        nombre_original = meal.get("nombre", meal_type.capitalize())
+                        alimentos_anteriores = meal.get("alimentos", [])
+                        
+                        nueva_comida_gpt["nombre"] = nombre_original
+                        meals[i] = nueva_comida_gpt
+                        comida_encontrada = True
+                        
+                        logger.info(f"✅ Comida reemplazada en posición {i}")
+                        logger.info(f"   Anterior: {nombre_original} - {', '.join(alimentos_anteriores[:3])}...")
+                        logger.info(f"   Nueva: {nueva_comida_gpt.get('nombre')} - {', '.join(nueva_comida_gpt.get('alimentos', [])[:3])}...")
+                        break
+            
+            if not comida_encontrada:
+                logger.warning(f"⚠️ No se encontró la comida '{meal_type}' en meals para reemplazar")
+                return {
+                    "success": False,
+                    "message": f"No se encontró la comida '{meal_type}' para actualizar.",
+                    "changes": []
+                }
+            
+            # Actualizar current_diet
+            current_diet["meals"] = meals
+            current_diet["version"] = increment_diet_version(old_diet_version)
+            current_diet["updated_at"] = datetime.utcnow().isoformat()
+            
+            logger.info(f"💾 Guardando cambios en base de datos...")
+            logger.info(f"   Versión anterior: {old_diet_version}")
+            logger.info(f"   Versión nueva: {current_diet['version']}")
+            logger.info(f"   Timestamp: {current_diet['updated_at']}")
+            
+            # Guardar cambios
+            await db_service.update_user_data(user_id, {
+                "current_diet": current_diet
+            }, db)
+            
+            logger.info(f"✅ Cambios guardados exitosamente en base de datos")
+            
+            # Añadir registro de modificación
+            await db_service.add_modification_record(
+                user_id,
+                "meal_alternatives_generated",
+                {
+                    "meal_type": meal_type,
+                    "strategy": "GPT" if nueva_comida_gpt and "GPT" in str(changes) else "predefinida",
+                    "changes": changes
+                },
+                f"Alternativa generada para {meal_type}",
+                db
+            )
+            
+            # Mensaje final
+            if "GPT" in str(changes):
+                mensaje = f"He regenerado tu {meal_type} completamente con GPT, excluyendo los alimentos anteriores. La nueva comida se ajusta a tus calorías y macros objetivo."
+            else:
+                mensaje = f"He reemplazado tu {meal_type} por una alternativa predefinida que se ajusta a tus calorías y macros objetivo."
+            
+            return {
+                "success": True,
+                "message": mensaje,
+                "changes": changes,
+                "plan_updated": True
+            }
+        else:
+            return {
+                "success": False,
+                "message": f"No se pudo generar una alternativa para '{meal_type}'.",
+                "changes": []
+            }
+        
+    except Exception as e:
+        logger.error(f"Error en handle_generate_alternatives: {e}", exc_info=True)
+        return {
+            "success": False,
+            "message": f"Error generando alternativas: {str(e)}",
+            "changes": []
+        }
 
 
 async def handle_simplify_diet(

@@ -12,23 +12,7 @@ OPENAI_FUNCTIONS: List[Dict[str, Any]] = [
     
     {
         "name": "modify_routine_injury",
-        "description": """
-        Elimina ejercicios que afecten una lesión específica y los sustituye por alternativas seguras.
-        
-        DETECCIÓN DE VARIACIONES:
-        - "Me duele el hombro" → body_part="hombro", injury_type="dolor_muscular", severity="mild"
-        - "Tengo molestias en la rodilla" → body_part="rodilla", injury_type="dolor_muscular", severity="mild"
-        - "Me he lesionado el hombro" → body_part="hombro", injury_type="dolor_cronico", severity="moderate"
-        - "Me lesioné la espalda" → body_part="espalda", injury_type="dolor_cronico", severity="moderate"
-        - "Me duele mucho el hombro" → body_part="hombro", injury_type="dolor_muscular", severity="moderate"
-        - "Tengo una tendinitis en el hombro" → body_part="hombro", injury_type="tendinitis", severity="moderate"
-        - "No puedo entrenar el hombro porque me duele" → body_part="hombro", injury_type="dolor_muscular", severity="mild"
-        
-        PALABRAS CLAVE PARA DETECCIÓN:
-        - "duele", "dolor", "molestias", "molesta" → Dolor/malestar (severidad: mild)
-        - "me lesioné", "me he lesionado", "tengo una lesión", "estoy lesionado" → Lesión (severidad: moderate)
-        - "mucho dolor", "duele mucho", "muy doloroso", "dolor intenso" → Dolor intenso (severidad: moderate/severe)
-        """,
+        "description": "Elimina ejercicios que afecten una lesión específica y los sustituye por alternativas seguras",
         "parameters": {
             "type": "object",
             "properties": {
@@ -256,23 +240,17 @@ OPENAI_FUNCTIONS: List[Dict[str, Any]] = [
     
     {
         "name": "generate_meal_alternatives",
-        "description": "Genera opciones alternativas para un tipo de comida específico",
+        "description": "Genera una alternativa completa para un tipo de comida específico cuando el usuario no le gusta esa comida. Reemplaza toda la comida con una nueva.",
         "parameters": {
             "type": "object",
             "properties": {
                 "meal_type": {
                     "type": "string",
-                    "description": "Tipo de comida para generar alternativas",
-                    "enum": ["desayuno", "almuerzo", "cena", "snack"]
-                },
-                "num_alternatives": {
-                    "type": "integer",
-                    "description": "Número de alternativas a generar",
-                    "minimum": 2,
-                    "maximum": 5
+                    "description": "Tipo de comida para generar alternativa",
+                    "enum": ["desayuno", "almuerzo", "comida", "merienda", "cena", "snack"]
                 }
             },
-            "required": ["meal_type", "num_alternatives"]
+            "required": ["meal_type"]
         }
     },
     
