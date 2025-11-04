@@ -698,6 +698,9 @@ async def handle_recalculate_macros(
             logger.info(f"🎯 Ajuste por objetivo ({nuevo_objetivo}): {ajuste:+d} kcal")
             logger.info(f"🎯 Calorías objetivo: {target_calories:.0f} kcal/día")
         
+        # Guardar snapshot de dieta antes de modificar (para revertir cambios)
+        previous_diet = json.loads(json.dumps(current_diet))
+        
         # Guardar calorías anteriores para el resumen
         calorias_anteriores = int(current_diet.get("total_kcal", target_calories))
         
@@ -1045,6 +1048,7 @@ async def handle_recalculate_macros(
             user_id,
             "diet_macro_recalculation",
             {
+                "previous_diet": previous_diet,  # Snapshot para revertir cambios
                 "weight_change": weight_change_kg,
                 "goal": goal,
                 "changes": changes
@@ -1096,6 +1100,9 @@ async def handle_adjust_routine_difficulty(
                 "changes": []
             }
         
+        # Guardar snapshot de rutina antes de modificar (para revertir cambios)
+        previous_routine = json.loads(json.dumps(current_routine))
+        
         # 🔧 FIX: Guardar versión antes de modificar
         old_routine_version = current_routine.get("version", "1.0.0")
         
@@ -1131,6 +1138,7 @@ async def handle_adjust_routine_difficulty(
             user_id,
             "routine_difficulty_adjustment",
             {
+                "previous_routine": previous_routine,  # Snapshot para revertir cambios
                 "difficulty_change": difficulty_change,
                 "reason": reason,
                 "changes": changes
@@ -1512,6 +1520,9 @@ async def handle_substitute_food(
         
         is_premium = bool(usuario.is_premium) or (usuario.plan_type == "PREMIUM")
         logger.info(f"💎 Usuario premium: {is_premium}")
+        
+        # Guardar snapshot de dieta antes de modificar (para revertir cambios)
+        previous_diet = json.loads(json.dumps(current_diet))
         
         # Guardar versión antes de modificar
         old_diet_version = current_diet.get("version", "1.0.0")
@@ -2341,6 +2352,7 @@ async def handle_substitute_food(
             user_id,
             "food_substitution",
             {
+                "previous_diet": previous_diet,  # Snapshot para revertir cambios
                 "disliked_food": disliked_food,
                 "meal_type": meal_type,
                 "replacement": replacement_info,
@@ -2412,6 +2424,9 @@ async def handle_generate_alternatives(
         
         is_premium = bool(usuario.is_premium) or (usuario.plan_type == "PREMIUM")
         logger.info(f"💎 Usuario premium: {is_premium}")
+        
+        # Guardar snapshot de dieta antes de modificar (para revertir cambios)
+        previous_diet = json.loads(json.dumps(current_diet))
         
         # Buscar la comida actual
         meals = current_diet.get("meals", [])
@@ -2763,6 +2778,7 @@ async def handle_generate_alternatives(
                 user_id,
                 "meal_alternatives_generated",
                 {
+                    "previous_diet": previous_diet,  # Snapshot para revertir cambios
                     "meal_type": meal_type,
                     "strategy": "GPT" if nueva_comida_gpt and "GPT" in str(changes) else "predefinida",
                     "changes": changes
@@ -2852,6 +2868,9 @@ async def handle_substitute_exercise(
                 "message": "Estructura de rutina inválida. No se puede modificar.",
                 "changes": []
             }
+        
+        # Guardar snapshot de rutina antes de modificar (para revertir cambios)
+        previous_routine = json.loads(json.dumps(current_routine))
         
         # 🔧 FIX: Guardar versión antes de modificar
         old_routine_version = current_routine.get("version", "1.0.0")
@@ -2944,6 +2963,7 @@ async def handle_substitute_exercise(
             user_id,
             "exercise_substitution",
             {
+                "previous_routine": previous_routine,  # Snapshot para revertir cambios
                 "exercise_to_replace": exercise_to_replace,
                 "replacement_reason": replacement_reason,
                 "changes": changes

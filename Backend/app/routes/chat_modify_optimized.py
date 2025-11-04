@@ -137,6 +137,19 @@ RUTINAS: modify_routine_injury, modify_routine_focus, adjust_routine_difficulty,
 DIETA: recalculate_diet_macros, substitute_disliked_food, generate_meal_alternatives, simplify_diet_plan
 GENERAL: revert_last_modification
 
+🔄 DETECCIÓN DE REVERTIR CAMBIOS - Ejemplos:
+- "Deshaz el último cambio" → revert_last_modification()
+- "Revertir cambios" → revert_last_modification()
+- "Vuelve atrás" → revert_last_modification()
+- "Deshacer modificación" → revert_last_modification()
+- "Deshaz la última modificación" → revert_last_modification()
+- "Quiero volver atrás" → revert_last_modification()
+- "Cancela el último cambio" → revert_last_modification()
+- "Deshacer el último cambio" → revert_last_modification()
+
+VARIACIONES DE DETECCIÓN:
+- "deshaz", "deshacer", "revertir", "volver atrás", "cancelar", "deshacer cambios" → revert_last_modification
+
 DETECCIÓN AUTOMÁTICA:
 🔥 CAMBIOS DE PESO → recalculate_diet_macros(weight_change_kg=X, goal="{current_goal}")
 🎯 CAMBIOS DE OBJETIVO → recalculate_diet_macros(weight_change_kg=0.0, goal="nuevo_objetivo")
