@@ -37,6 +37,30 @@ OPENAI_FUNCTIONS: List[Dict[str, Any]] = [
     },
     
     {
+        "name": "handle_food_allergy",
+        "description": "Registra una alergia/intolerancia del usuario y regenera la dieta completa excluyendo el alérgeno",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "allergen": {
+                    "type": "string",
+                    "description": "Alérgeno detectado (ej: lactosa, gluten, frutos secos, huevo, mariscos)"
+                },
+                "severity": {
+                    "type": ["string", "null"],
+                    "enum": ["alergia", "intolerancia", None],
+                    "description": "Severidad clasificada por el usuario"
+                },
+                "type": {
+                    "type": ["string", "null"],
+                    "description": "Tipo estandarizado (lactosa, gluten, frutos_secos, huevo, mariscos)"
+                }
+            },
+            "required": ["allergen"]
+        }
+    },
+    
+    {
         "name": "modify_routine_focus",
         "description": "Aumenta volumen y/o frecuencia de entrenamiento en un área específica del cuerpo",
         "parameters": {
@@ -350,6 +374,7 @@ FUNCTION_HANDLERS: Dict[str, str] = {
     "simplify_diet_plan": "handle_simplify_diet",
     "substitute_exercise": "handle_substitute_exercise",
     "modify_routine_equipment": "handle_modify_routine_equipment",
+    "handle_food_allergy": "handle_food_allergy",
     "revert_last_modification": "handle_revert_modification"
 }
 

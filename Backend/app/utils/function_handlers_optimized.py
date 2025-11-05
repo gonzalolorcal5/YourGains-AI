@@ -16,6 +16,7 @@ from app.utils.database_service import db_service
 from app.utils.gpt import generar_plan_personalizado
 from app.utils.routine_templates import get_generic_plan
 from app.utils.json_helpers import serialize_json
+from app.utils.allergy_detection import process_user_allergies, validate_food_against_allergies, get_allergy_safe_alternatives
 
 logger = logging.getLogger(__name__)
 
@@ -1944,8 +1945,8 @@ async def handle_substitute_food(
         if dieta_regenerada is None:
             logger.info(f"📋 ESTRATEGIA 2: Usando lista de sustituciones predefinidas...")
             meals = current_diet.get("meals", [])
-            
-            # Diccionario de sustituciones con macros similares
+
+            # Diccionario de sustituciones con macros similares (resumen)
             # 🔧 FIX: Incluir variantes y sinónimos en el diccionario
             sustituciones = {
                 # 🧀 LÁCTEOS Y DERIVADOS
@@ -2246,66 +2247,41 @@ async def handle_substitute_food(
             mejor_sustitucion = None
             for alimento, alternativas in sustituciones.items():
                 if alimento.lower() in disliked_food_lower or disliked_food_lower in alimento.lower():
-                    mejor_sustitucion = alternativas[0]  # Usar la primera alternativa
+                    mejor_sustitucion = alternativas[0]
                     logger.info(f"✅ Encontrada sustitución: {alimento} → {mejor_sustitucion}")
                     break
-            
-            # Si no hay sustitución específica, usar genérica
+
             if not mejor_sustitucion:
-                # Extraer el alimento base (sin cantidades)
                 alimento_base = disliked_food_lower.split()[0] if disliked_food_lower.split() else disliked_food_lower
                 mejor_sustitucion = f"alternativa de {alimento_base}"
                 logger.info(f"⚠️ Usando sustitución genérica: {mejor_sustitucion}")
-            
-            # Buscar y sustituir en las comidas correspondientes
+
+            # Aplicar sustituciones
             total_sustituciones = 0
             meal_type_lower = meal_type.lower()
-            
             for meal in meals:
                 if not isinstance(meal, dict):
                     continue
-                    
                 meal_name = meal.get("nombre", "").lower()
                 foods = meal.get("alimentos", [])
-                
-                # Verificar si debemos modificar esta comida
                 if meal_type_lower != "todos" and meal_type_lower not in meal_name:
                     continue
-                
-                # Buscar el alimento a sustituir
                 for i, food_item in enumerate(foods):
-                    if isinstance(food_item, str):
-                        food_item_lower = food_item.lower()
-                        # Buscar coincidencias parciales
-                        if disliked_food_lower in food_item_lower or any(
-                            palabra in food_item_lower for palabra in disliked_food_lower.split()
-                        ):
-                            # Extraer cantidad del alimento original si existe
-                            # Formato típico: "300ml leche - 150kcal" o "40g avena - 150kcal"
-                            match = re.match(r'^(\d+(?:\.\d+)?)\s*(ml|g|kg)?\s*', food_item)
-                            cantidad = ""
-                            if match:
-                                cantidad = match.group(0).strip()
-                            
-                            # Crear sustitución manteniendo cantidad si es posible
-                            if cantidad:
-                                nuevo_alimento = f"{cantidad} {mejor_sustitucion}"
-                            else:
-                                nuevo_alimento = mejor_sustitucion
-                            
-                            foods[i] = nuevo_alimento
-                            total_sustituciones += 1
-                            changes.append(f"Sustituido en {meal.get('nombre', '')}: {food_item} → {nuevo_alimento}")
-                            logger.info(f"✅ Sustituido: {food_item} → {nuevo_alimento} en {meal.get('nombre', '')}")
-            
+                    if not isinstance(food_item, str):
+                        continue
+                    food_item_lower = food_item.lower()
+                    if disliked_food_lower in food_item_lower or any(p in food_item_lower for p in disliked_food_lower.split()):
+                        match = re.match(r'^(\d+(?:\.\d+)?)\s*(ml|g|kg)?\s*', food_item)
+                        cantidad = match.group(0).strip() if match else ""
+                        nuevo_alimento = f"{cantidad} {mejor_sustitucion}".strip()
+                        foods[i] = nuevo_alimento
+                        total_sustituciones += 1
+                        changes.append(f"Sustituido en {meal.get('nombre', '')}: {food_item} → {nuevo_alimento}")
+                        logger.info(f"✅ Sustituido: {food_item} → {nuevo_alimento} en {meal.get('nombre', '')}")
+
             if total_sustituciones == 0:
-                return {
-                    "success": False,
-                    "message": f"No se encontró '{disliked_food}' en tu dieta. Por favor, verifica el nombre del alimento.",
-                    "changes": []
-                }
-            
-            # Actualizar current_diet con sustituciones
+                return {"success": False, "message": f"No se encontró '{disliked_food}' en tu dieta.", "changes": []}
+
             current_diet["meals"] = meals
             dieta_regenerada = None  # Marcamos que usamos fallback
         
@@ -2811,8 +2787,8 @@ async def handle_generate_alternatives(
         return {
             "success": False,
             "message": f"Error generando alternativas: {str(e)}",
-            "changes": []
-        }
+        "changes": []
+    }
 
 
 async def handle_simplify_diet(
@@ -2854,11 +2830,13 @@ async def handle_substitute_exercise(
     db: Session = None
 ) -> Dict[str, Any]:
     """
-    Sustituye un ejercicio específico por otro alternativo - VERSIÓN CORREGIDA
+    Sustituye un ejercicio específico por otro alternativo - VERSIÓN CON GPT PRIORITARIO
+    🔧 NUEVO: Ahora GPT genera una rutina completamente nueva sustituyendo el ejercicio específico
     """
     try:
-        logger.info(f"Sustituyendo ejercicio: {exercise_to_replace} por razón: {replacement_reason}")
+        logger.info(f"💪 Sustituyendo ejercicio: {exercise_to_replace} por razón: {replacement_reason}")
         
+        # Obtener datos del usuario
         user_data = await db_service.get_user_complete_data(user_id, db)
         current_routine = user_data["current_routine"]
         
@@ -2871,50 +2849,14 @@ async def handle_substitute_exercise(
         
         # Guardar snapshot de rutina antes de modificar (para revertir cambios)
         previous_routine = json.loads(json.dumps(current_routine))
-        
-        # 🔧 FIX: Guardar versión antes de modificar
         old_routine_version = current_routine.get("version", "1.0.0")
         
-        changes = []
+        # Validar que el ejercicio existe en la rutina
         exercises = current_routine.get("exercises", [])
-        
-        # Mapeo de ejercicios alternativos por grupo muscular
-        exercise_alternatives = {
-            "pecho": {
-                "peso_libre": ["Press de pecho con mancuernas", "Aperturas con mancuernas", "Press inclinado con mancuernas"],
-                "cuerpo_libre": ["Flexiones", "Flexiones inclinadas", "Flexiones diamante"],
-                "maquinas": ["Press de pecho en máquina", "Aperturas en máquina"],
-                "bandas": ["Press de pecho con bandas", "Cruces con bandas"]
-            },
-            "espalda": {
-                "peso_libre": ["Remo con mancuerna", "Peso muerto rumano", "Dominadas asistidas"],
-                "cuerpo_libre": ["Dominadas", "Remo invertido", "Superman"],
-                "maquinas": ["Remo en máquina", "Jalón al pecho"],
-                "bandas": ["Remo con bandas", "Jalón con bandas"]
-            },
-            "hombros": {
-                "peso_libre": ["Elevaciones laterales", "Press militar con mancuernas"],
-                "cuerpo_libre": ["Flexiones pike", "Handstand push-ups"],
-                "maquinas": ["Press de hombros en máquina"],
-                "bandas": ["Elevaciones con bandas"]
-            },
-            "piernas": {
-                "peso_libre": ["Sentadillas con mancuernas", "Zancadas", "Peso muerto"],
-                "cuerpo_libre": ["Sentadillas", "Zancadas", "Puente de glúteos"],
-                "maquinas": ["Prensa de piernas", "Extensión de cuádriceps"],
-                "bandas": ["Sentadillas con bandas"]
-            },
-            "brazos": {
-                "peso_libre": ["Curl de bíceps", "Extensiones de tríceps", "Martillo"],
-                "cuerpo_libre": ["Flexiones diamante", "Dips"],
-                "maquinas": ["Curl en máquina"],
-                "bandas": ["Curl con bandas"]
-            }
-        }
-        
-        # Buscar el ejercicio a sustituir
         exercise_found = False
-        for i, exercise in enumerate(exercises):
+        exercise_info = None
+        
+        for exercise in exercises:
             if isinstance(exercise, dict):
                 exercise_name = exercise.get("name", "")
             else:
@@ -2922,36 +2864,215 @@ async def handle_substitute_exercise(
             
             if exercise_to_replace.lower() in exercise_name.lower():
                 exercise_found = True
-                
-                # Obtener alternativas
-                alternatives = exercise_alternatives.get(target_muscles, {}).get(equipment_available, [])
-                if not alternatives:
-                    # Buscar en cualquier equipamiento
-                    for eq_alternatives in exercise_alternatives.get(target_muscles, {}).values():
-                        alternatives.extend(eq_alternatives)
-                
-                if alternatives:
-                    new_exercise = alternatives[0]
-                    
-                    if isinstance(exercise, dict):
-                        exercises[i] = {
-                            "name": new_exercise,
-                            "sets": exercise.get("sets", 3),
-                            "reps": exercise.get("reps", "10-12"),
-                            "weight": exercise.get("weight", "moderado")
-                        }
-                    else:
-                        exercises[i] = new_exercise
-                    
-                    changes.append(f"Sustituido: {exercise_name} → {new_exercise}")
-                else:
-                    changes.append(f"No se encontraron alternativas para {exercise_name}")
+                exercise_info = exercise if isinstance(exercise, dict) else {"name": exercise_name}
+                break
         
         if not exercise_found:
-            changes.append(f"No se encontró el ejercicio '{exercise_to_replace}' en la rutina")
+            return {
+                "success": False,
+                "message": f"No se encontró el ejercicio '{exercise_to_replace}' en tu rutina actual.",
+                "changes": []
+            }
         
-        # Actualizar versión y timestamp
-        current_routine["version"] = increment_routine_version(old_routine_version)  # 🔧 FIX
+        # Obtener usuario para verificar si es premium
+        from app.models import Usuario, Plan
+        usuario = db.query(Usuario).filter(Usuario.id == user_id).first()
+        if not usuario:
+            return {
+                "success": False,
+                "message": "Usuario no encontrado",
+                "changes": []
+            }
+        
+        is_premium = bool(usuario.is_premium) or (usuario.plan_type == "PREMIUM")
+        logger.info(f"💎 Usuario premium: {is_premium}")
+        
+        # Obtener datos del Plan para pasar a GPT
+        plan_actual = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
+        
+        if not plan_actual:
+            logger.error(f"❌ No se encontró Plan para usuario {user_id}")
+            return {
+                "success": False,
+                "message": "No se encontró plan del usuario. Completa el onboarding primero.",
+                "changes": []
+            }
+        
+        # ==========================================
+        # ESTRATEGIA 1: GPT (Solo para premium)
+        # ==========================================
+        exercises_nuevos = None
+        changes = []
+        
+        if is_premium:
+            try:
+                logger.info(f"🤖 ESTRATEGIA 1: Generando rutina con GPT sustituyendo '{exercise_to_replace}'...")
+                
+                # Preparar datos para GPT
+                datos_gpt = {
+                    'altura': plan_actual.altura or 175,
+                    'peso': float(plan_actual.peso) if plan_actual.peso else 75.0,
+                    'edad': plan_actual.edad or 25,
+                    'sexo': plan_actual.sexo or 'masculino',
+                    'objetivo': plan_actual.objetivo_gym or (plan_actual.objetivo or 'ganar_musculo'),
+                    'gym_goal': plan_actual.objetivo_gym or 'ganar_musculo',
+                    'nutrition_goal': plan_actual.objetivo_nutricional or (plan_actual.objetivo_dieta or 'mantenimiento'),
+                    'experiencia': (plan_actual.experiencia if (plan_actual and plan_actual.experiencia) else user_data.get('experiencia', 'principiante')),
+                    'materiales': plan_actual.materiales or 'gym_completo',
+                    'tipo_cuerpo': plan_actual.tipo_cuerpo or 'mesomorfo',
+                    'alergias': plan_actual.alergias or 'Ninguna',
+                    'restricciones': plan_actual.restricciones_dieta or 'Ninguna',
+                    'lesiones': plan_actual.lesiones or 'Ninguna',
+                    'nivel_actividad': plan_actual.nivel_actividad or 'moderado',
+                    'training_frequency': 4,
+                    'training_days': ['lunes', 'martes', 'jueves', 'viernes'],
+                    # Información específica del ejercicio a sustituir
+                    'exercise_to_replace': exercise_to_replace,
+                    'replacement_reason': replacement_reason,
+                    'target_muscles': target_muscles,
+                    'equipment_available': equipment_available,
+                    'current_routine': current_routine  # Rutina actual para contexto
+                }
+                
+                # Llamar a GPT para generar rutina nueva sustituyendo el ejercicio
+                plan_generado = await generar_plan_personalizado(datos_gpt)
+                
+                # Extraer solo la rutina (no necesitamos regenerar dieta)
+                rutina_gpt = plan_generado.get("rutina", {})
+                dias_rutina = rutina_gpt.get("dias", [])
+                
+                if not dias_rutina:
+                    raise ValueError("GPT no generó rutina válida")
+                
+                # Convertir formato de "dias" a "exercises" (formato que usa current_routine)
+                exercises_nuevos = []
+                ejercicios_rechazados = []
+                
+                for dia in dias_rutina:
+                    nombre_dia = dia.get("dia", "")
+                    ejercicios_dia = dia.get("ejercicios", [])
+                    
+                    for ejercicio in ejercicios_dia:
+                        nombre_ejercicio = ejercicio.get("nombre", "")
+                        nombre_ejercicio_lower = nombre_ejercicio.lower()
+                        
+                        # Validar que el ejercicio NO sea el que se quiere reemplazar
+                        if exercise_to_replace.lower() in nombre_ejercicio_lower:
+                            ejercicios_rechazados.append(nombre_ejercicio)
+                            logger.warning(f"⚠️ GPT generó ejercicio que se quería reemplazar: {nombre_ejercicio} - Omitiendo")
+                            continue
+                        
+                        exercises_nuevos.append({
+                            "name": nombre_ejercicio,
+                            "sets": ejercicio.get("series", 3),
+                            "reps": ejercicio.get("repeticiones", "10-12"),
+                            "weight": "moderado",
+                            "day": nombre_dia
+                        })
+                
+                if ejercicios_rechazados:
+                    logger.warning(f"⚠️ Se omitieron {len(ejercicios_rechazados)} ejercicios que coincidían con el ejercicio a reemplazar")
+                
+                if not exercises_nuevos or len(exercises_nuevos) < 10:
+                    logger.warning(f"⚠️ Rutina generada tiene muy pocos ejercicios ({len(exercises_nuevos)}), forzando fallback...")
+                    raise ValueError(f"Rutina generada tiene muy pocos ejercicios ({len(exercises_nuevos)})")
+                
+                logger.info(f"✅ Rutina generada con GPT sustituyendo '{exercise_to_replace}': {len(exercises_nuevos)} ejercicios válidos")
+                
+                changes = [
+                    f"Rutina regenerada con GPT sustituyendo '{exercise_to_replace}'",
+                    f"Ejercicio eliminado: {exercise_to_replace}",
+                    f"Razón: {replacement_reason}",
+                    f"Total ejercicios: {len(exercises_nuevos)}"
+                ]
+                
+            except Exception as e_gpt:
+                logger.error(f"❌ Error generando rutina con GPT: {e_gpt}")
+                logger.warning(f"⚠️ Fallando a método tradicional de sustitución...")
+                exercises_nuevos = None  # GPT falló, usar fallback
+        
+        # ==========================================
+        # ESTRATEGIA 2: FALLBACK (Sustitución directa)
+        # ==========================================
+        if exercises_nuevos is None:
+            logger.info(f"📋 ESTRATEGIA 2: Usando método tradicional de sustitución...")
+        
+        # Mapeo de ejercicios alternativos por grupo muscular
+            exercise_alternatives = {
+                "pecho": {
+                    "peso_libre": ["Press de pecho con mancuernas", "Aperturas con mancuernas", "Press inclinado con mancuernas"],
+                    "cuerpo_libre": ["Flexiones", "Flexiones inclinadas", "Flexiones diamante"],
+                    "maquinas": ["Press de pecho en máquina", "Aperturas en máquina"],
+                    "bandas": ["Press de pecho con bandas", "Cruces con bandas"],
+                    "cualquiera": ["Press de pecho con mancuernas", "Flexiones", "Press de pecho en máquina"]
+                },
+                "espalda": {
+                    "peso_libre": ["Remo con mancuerna", "Peso muerto rumano", "Dominadas asistidas"],
+                    "cuerpo_libre": ["Dominadas", "Remo invertido", "Superman"],
+                    "maquinas": ["Remo en máquina", "Jalón al pecho"],
+                    "bandas": ["Remo con bandas", "Jalón con bandas"],
+                    "cualquiera": ["Remo con mancuerna", "Dominadas", "Remo en máquina"]
+                },
+                "hombros": {
+                    "peso_libre": ["Elevaciones laterales", "Press militar con mancuernas"],
+                    "cuerpo_libre": ["Flexiones pike", "Handstand push-ups"],
+                    "maquinas": ["Press de hombros en máquina"],
+                    "bandas": ["Elevaciones con bandas"],
+                    "cualquiera": ["Elevaciones laterales", "Flexiones pike", "Press de hombros en máquina"]
+                },
+                "piernas": {
+                    "peso_libre": ["Sentadillas con mancuernas", "Zancadas", "Peso muerto"],
+                    "cuerpo_libre": ["Sentadillas", "Zancadas", "Puente de glúteos"],
+                    "maquinas": ["Prensa de piernas", "Extensión de cuádriceps"],
+                    "bandas": ["Sentadillas con bandas"],
+                    "cualquiera": ["Prensa de piernas", "Sentadillas", "Zancadas"]
+                },
+                "brazos": {
+                    "peso_libre": ["Curl de bíceps", "Extensiones de tríceps", "Martillo"],
+                    "cuerpo_libre": ["Flexiones diamante", "Dips"],
+                    "maquinas": ["Curl en máquina"],
+                    "bandas": ["Curl con bandas"],
+                    "cualquiera": ["Curl de bíceps", "Extensiones de tríceps", "Flexiones diamante"]
+                }
+            }
+
+            # Obtener alternativas
+            alternatives = exercise_alternatives.get(target_muscles, {}).get(equipment_available, [])
+            if not alternatives:
+                # Buscar en cualquier equipamiento
+                for eq_alternatives in exercise_alternatives.get(target_muscles, {}).values():
+                    alternatives.extend(eq_alternatives)
+
+            if not alternatives:
+                alternatives = ["Ejercicio alternativo para " + target_muscles]
+
+            new_exercise = alternatives[0]
+
+            # Sustituir el ejercicio en la rutina
+            exercises_nuevos = []
+            for exercise in exercises:
+                if isinstance(exercise, dict):
+                    exercise_name = exercise.get("name", "")
+                else:
+                    exercise_name = str(exercise)
+
+                if exercise_to_replace.lower() in exercise_name.lower():
+                    exercises_nuevos.append({
+                        "name": new_exercise,
+                        "sets": exercise.get("sets", 3) if isinstance(exercise, dict) else 3,
+                        "reps": exercise.get("reps", "10-12") if isinstance(exercise, dict) else "10-12",
+                        "weight": exercise.get("weight", "moderado") if isinstance(exercise, dict) else "moderado",
+                        "day": exercise.get("day", "") if isinstance(exercise, dict) else ""
+                    })
+                    changes.append(f"Sustituido: {exercise_name} → {new_exercise}")
+                else:
+                    exercises_nuevos.append(exercise)
+        
+        # ==========================================
+        # ACTUALIZAR RUTINA
+        # ==========================================
+        current_routine["exercises"] = exercises_nuevos
+        current_routine["version"] = increment_routine_version(old_routine_version)
         current_routine["updated_at"] = datetime.utcnow().isoformat()
         
         # Guardar cambios
@@ -2959,6 +3080,7 @@ async def handle_substitute_exercise(
             "current_routine": current_routine
         }, db)
         
+        # Añadir registro de modificación
         await db_service.add_modification_record(
             user_id,
             "exercise_substitution",
@@ -2966,15 +3088,19 @@ async def handle_substitute_exercise(
                 "previous_routine": previous_routine,  # Snapshot para revertir cambios
                 "exercise_to_replace": exercise_to_replace,
                 "replacement_reason": replacement_reason,
+                "target_muscles": target_muscles,
+                "strategy": "GPT" if exercises_nuevos and is_premium else "fallback",
                 "changes": changes
             },
             f"Sustitución de ejercicio: {exercise_to_replace}",
             db
         )
         
+        mensaje = "Rutina regenerada con GPT sustituyendo el ejercicio." if (exercises_nuevos and is_premium) else f"Ejercicio sustituido: {exercise_to_replace} → {new_exercise if 'new_exercise' in locals() else 'alternativa apropiada'}"
+        
         return {
             "success": True,
-            "message": f"Ejercicio sustituido correctamente",
+            "message": mensaje,
             "changes": changes
         }
         
@@ -2985,6 +3111,233 @@ async def handle_substitute_exercise(
             "message": f"Error sustituyendo ejercicio: {str(e)}",
             "changes": []
         }
+
+
+async def handle_food_allergy(
+    user_id: int,
+    allergen: str,
+    severity: str = "alergia",
+    type: str = None,
+    db: Session = None
+) -> Dict[str, Any]:
+    """
+    Maneja alergias sin usar GPT: sustitución directa de alimentos y actualización de BD.
+    """
+    try:
+        logger.info(f"🚫 INICIANDO handle_food_allergy: allergen={allergen}, severity={severity}")
+
+        # Mapeo de alérgenos a alimentos prohibidos
+        allergen_map = {
+            'lactosa': ['leche', 'yogur', 'queso', 'mantequilla', 'nata', 'whey', 'mozzarella', 'parmesano'],
+            'gluten': ['pan', 'pasta', 'avena', 'cereales', 'harina de trigo', 'pan integral'],
+            'frutos secos': ['almendras', 'nueces', 'cacahuetes', 'mantequilla de cacahuete', 'avellanas', 'pistachos', 'anacardos'],
+            'almendras': ['almendras', 'leche de almendras', 'mantequilla de almendras', 'harina de almendras'],
+            'huevo': ['huevo', 'huevos', 'mayonesa', 'clara de huevo', 'huevo entero'],
+            'mariscos': ['gambas', 'langostinos', 'mejillones', 'pulpo', 'calamar', 'marisco'],
+            'soja': ['tofu', 'leche de soja', 'edamame', 'salsa de soja', 'tempeh'],
+            'pescado': ['salmón', 'atún', 'merluza', 'bacalao', 'pescado', 'sardinas']
+        }
+
+        # Reglas de sustitución
+        substitution_rules = {
+            'lactosa': {
+                'leche': 'leche de avena',
+                'yogur': 'yogur sin lactosa',
+                'queso': 'queso sin lactosa',
+                'whey': 'proteína vegetal',
+                'mantequilla': 'aceite de oliva',
+                'mozzarella': 'queso vegetal',
+                'nata': 'nata de coco'
+            },
+            'almendras': {
+                'almendras': 'nueces de macadamia',
+                'leche de almendras': 'leche de avena',
+                'mantequilla de almendras': 'tahini'
+            },
+            'gluten': {
+                'pan': 'pan sin gluten',
+                'pasta': 'pasta de arroz',
+                'pan integral': 'pan sin gluten',
+                'avena': 'avena sin gluten certificada'
+            },
+            'huevo': {
+                'huevo': 'tofu revuelto',
+                'huevos': 'tofu',
+                'clara de huevo': 'sustituto vegetal de clara'
+            },
+            'pescado': {
+                'salmón': 'pollo',
+                'atún': 'pavo',
+                'merluza': 'ternera magra',
+                'pescado': 'pollo'
+            }
+        }
+
+        allergen_lower = (allergen or '').lower().strip()
+        forbidden = allergen_map.get(allergen_lower, [allergen_lower])
+        subs_map = substitution_rules.get(allergen_lower, {})
+        logger.info(f"📋 Alimentos prohibidos: {forbidden}")
+
+        # Obtener datos y dieta actual
+        user_data = await db_service.get_user_complete_data(user_id, db)
+        current_diet = user_data.get("current_diet", {}) or {}
+
+        # Snapshot para revertir
+        previous_diet = json.loads(json.dumps(current_diet)) if isinstance(current_diet, dict) else {}
+
+        # Intentar usar formato current_diet[meals] primero; si no, buscar plan.dieta (formato comidas)
+        meals = []
+        if isinstance(current_diet, dict) and current_diet.get("meals"):
+            meals = current_diet.get("meals", [])
+        else:
+            # Cargar desde Plan si es necesario
+            from app.models import Plan
+            plan_actual = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
+            if plan_actual and plan_actual.dieta:
+                try:
+                    dieta_plan = json.loads(plan_actual.dieta)
+                    comidas = dieta_plan.get('comidas', [])
+                    # Convertir a formato meals
+                    for c in comidas:
+                        meals.append({
+                            "nombre": c.get("nombre", ""),
+                            "alimentos": c.get("alimentos", []),
+                            "kcal": c.get("kcal", 0),
+                            "macros": c.get("macros", {})
+                        })
+                except Exception:
+                    meals = []
+
+        if not meals:
+            logger.warning("⚠️ No se pudo obtener la dieta actual para aplicar sustituciones")
+            return {"success": False, "message": "No se pudo cargar tu dieta actual. Genera un plan primero.", "changes": []}
+
+        # Intentar GPT primero para regenerar dieta completa sin el alérgeno
+        try:
+            logger.info("🤖 Intentando GPT para dieta sin alérgeno...")
+            target_kcal = int((user_data.get("current_diet", {}) or {}).get("total_kcal", 0) or 0)
+            from app.models import Plan
+            plan_actual = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
+            datos_gpt = {
+                'altura': int((plan_actual.altura if plan_actual and plan_actual.altura else user_data.get('altura', 175)) or 175),
+                'peso': float(str(plan_actual.peso).replace('kg','').strip()) if plan_actual and plan_actual.peso else float(user_data.get('peso', 75)),
+                'edad': int((plan_actual.edad if plan_actual and plan_actual.edad else user_data.get('edad', 25)) or 25),
+                'sexo': (plan_actual.sexo or user_data.get('sexo', 'masculino')),
+                'experiencia': (plan_actual.experiencia if (plan_actual and plan_actual.experiencia) else user_data.get('experiencia', 'intermedio')),
+                'nivel_actividad': plan_actual.nivel_actividad or user_data.get('nivel_actividad', 'moderado'),
+                'gym_goal': plan_actual.objetivo_gym or user_data.get('objetivo_gym', 'ganar_musculo'),
+                'nutrition_goal': (user_data.get('current_diet', {}) or {}).get('objetivo', user_data.get('objetivo_nutricional', 'mantenimiento')),
+                'materiales': plan_actual.materiales or user_data.get('materiales', 'gym_completo'),
+                'training_frequency': 4,
+                'training_days': ['lunes', 'martes', 'jueves', 'viernes'],
+                'target_calories_override': target_kcal if target_kcal > 0 else None,
+                'alergias': json.dumps([allergen_lower], ensure_ascii=False),
+                'excluded_foods': forbidden,
+            }
+            plan_gpt = await generar_plan_personalizado(datos_gpt)
+            dieta_gpt = plan_gpt.get('dieta', {}) if plan_gpt else {}
+            # Validar salida
+            dieta_str = json.dumps(dieta_gpt, ensure_ascii=False).lower()
+            if not dieta_gpt or any(f in dieta_str for f in forbidden):
+                raise ValueError("GPT devolvió dieta inválida o con alérgeno")
+            macros = dieta_gpt.get('macros', {})
+            meals_from_gpt = dieta_gpt.get('comidas', dieta_gpt.get('meals', []))
+            if not meals_from_gpt:
+                raise ValueError("GPT no devolvió comidas")
+            old_version = (user_data.get("current_diet", {}) or {}).get("version", "1.0.0")
+            current_diet = {
+                'meals': meals_from_gpt,
+                'total_kcal': macros.get('calorias', target_kcal) or target_kcal,
+                'macros': {
+                    'proteinas': macros.get('proteinas', macros.get('proteina', 0)),
+                    'carbohidratos': macros.get('carbohidratos', 0),
+                    'grasas': macros.get('grasas', 0),
+                },
+                'objetivo': (user_data.get('current_diet', {}) or {}).get('objetivo', 'mantenimiento'),
+                'updated_at': datetime.utcnow().isoformat(),
+                'version': increment_diet_version(old_version)
+            }
+            await db_service.update_user_data(user_id, {'current_diet': current_diet}, db)
+            await db_service.add_modification_record(
+                user_id,
+                'allergy_adaptation',
+                {
+                    'previous_diet': previous_diet,
+                    'allergen': allergen,
+                    'severity': severity,
+                    'changes': ["Dieta regenerada con GPT sin alérgeno"],
+                },
+                f"Adaptación por alergia/intolerancia (GPT): {allergen}",
+                db
+            )
+            return {
+                'success': True,
+                'message': f"✅ Dieta regenerada con GPT excluyendo {allergen}. Recarga para ver los cambios.",
+                'plan_updated': True,
+            }
+        except Exception as e_gpt:
+            logger.warning(f"⚠️ GPT no disponible o inválido, usando fallback: {e_gpt}")
+
+        # Aplicar sustituciones/eliminaciones (FALLBACK)
+        total_sustituciones = 0
+        for meal in meals:
+            alimentos = meal.get("alimentos", [])
+            nuevos_alimentos = []
+            for item in alimentos:
+                item_str = str(item)
+                lower = item_str.lower()
+                contiene = any(f in lower for f in forbidden)
+                if contiene:
+                    hecho = False
+                    for forb, repl in subs_map.items():
+                        if forb in lower:
+                            nuevo = lower.replace(forb, repl)
+                            nuevos_alimentos.append(nuevo)
+                            total_sustituciones += 1
+                            logger.info(f"✅ Sustituido: {item_str} → {nuevo}")
+                            hecho = True
+                            break
+                    if not hecho:
+                        logger.info(f"🗑️ Eliminado por alergia: {item_str}")
+                        # No añadir (eliminado)
+                else:
+                    nuevos_alimentos.append(item_str)
+            meal["alimentos"] = nuevos_alimentos
+
+        # Actualizar current_diet y guardar
+        old_version = (current_diet.get("version") if isinstance(current_diet, dict) else "1.0.0") or "1.0.0"
+        current_diet = {
+            "meals": meals,
+            "total_kcal": (user_data.get("current_diet", {}) or {}).get("total_kcal", 0),
+            "macros": (user_data.get("current_diet", {}) or {}).get("macros", {}),
+            "objetivo": (user_data.get("current_diet", {}) or {}).get("objetivo", "mantenimiento"),
+            "updated_at": datetime.utcnow().isoformat(),
+            "version": increment_diet_version(old_version)
+        }
+
+        await db_service.update_user_data(user_id, {"current_diet": current_diet}, db)
+        await db_service.add_modification_record(
+            user_id,
+            "allergy_adaptation",
+            {
+                "previous_diet": previous_diet,
+                "allergen": allergen,
+                "severity": severity,
+                "changes": [f"Sustituciones/eliminaciones aplicadas: {total_sustituciones}"]
+            },
+            f"Adaptación por alergia/intolerancia: {allergen}",
+            db
+        )
+
+        subs_text = '\n'.join([f"  • {k} → {v}" for k, v in subs_map.items()]) if subs_map else "  • Alimentos con alérgeno eliminados"
+        return {
+            "success": True,
+            "message": f"✅ Dieta adaptada sin {allergen}. Eliminado/sustituido: {', '.join(forbidden)}\n\n{subs_text}\n\nRecarga para ver los cambios.",
+            "plan_updated": True
+        }
+    except Exception as e:
+        logger.error(f"❌ ERROR en handle_food_allergy: {e}", exc_info=True)
+        return {"success": False, "message": "Error procesando alergia. Intenta de nuevo.", "changes": []}
 
 
 async def handle_modify_routine_equipment(

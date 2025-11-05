@@ -1,4 +1,7 @@
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
+import asyncio
+import logging
 from dotenv import load_dotenv
 import os
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,7 +21,35 @@ from app.routes import (
 )
 
 load_dotenv()
-app = FastAPI()
+
+# Lifespan para startup/shutdown limpios (evita CancelledError al salir)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    try:
+        yield
+    finally:
+        # Shutdown: cancelar tareas pendientes de forma ordenada
+        try:
+            loop = asyncio.get_event_loop()
+            if loop.is_closed():
+                return
+            # Cancelar todas las tareas excepto la actual
+            tasks = [t for t in asyncio.all_tasks(loop) if t is not asyncio.current_task(loop)]
+            if tasks:
+                logging.getLogger(__name__).info(f"🔄 Cancelando {len(tasks)} tareas pendientes durante shutdown...")
+                for task in tasks:
+                    if not task.done():
+                        task.cancel()
+                try:
+                    await asyncio.wait_for(asyncio.gather(*tasks, return_exceptions=True), timeout=2.0)
+                except (asyncio.TimeoutError, asyncio.CancelledError):
+                    pass
+        except Exception:
+            # No propagar errores en shutdown
+            pass
+
+app = FastAPI(lifespan=lifespan)
 
 # CORS abierto mientras probamos
 app.add_middleware(
@@ -145,45 +176,4 @@ async def _print_routes():
     except Exception as e:
         print("[ROUTES-ERROR]", e)
 
-# 🔧 FIX: Shutdown limpio para evitar errores al detener servidor
-@app.on_event("shutdown")
-async def _cleanup_shutdown():
-    import asyncio
-    import logging
-    logger = logging.getLogger(__name__)
-    
-    try:
-        # Obtener el loop actual
-        loop = asyncio.get_event_loop()
-        if loop.is_closed():
-            return
-        
-        # Cancelar todas las tareas pendientes de forma limpia
-        try:
-            tasks = [t for t in asyncio.all_tasks(loop) if t is not asyncio.current_task(loop)]
-            if tasks:
-                logger.info(f"🔄 Cancelando {len(tasks)} tareas pendientes durante shutdown...")
-                for task in tasks:
-                    if not task.done():
-                        task.cancel()
-                
-                # Esperar que las tareas se cancelen (con timeout y manejo de excepciones)
-                try:
-                    await asyncio.wait_for(
-                        asyncio.gather(*tasks, return_exceptions=True),
-                        timeout=1.5
-                    )
-                except (asyncio.TimeoutError, asyncio.CancelledError):
-                    # Ignorar errores de timeout/cancelación durante shutdown
-                    pass
-        except Exception:
-            # Ignorar cualquier error durante el cleanup
-            pass
-        
-        logger.info("✅ Shutdown limpio completado")
-    except (RuntimeError, AttributeError, asyncio.CancelledError):
-        # Ignorar errores si el loop ya está cerrado o cancelado
-        pass
-    except Exception as e:
-        # Si hay error durante shutdown, solo loguear (no propagar)
-        logger.warning(f"⚠️ Error durante shutdown: {e}")
+# Shutdown ahora gestionado por lifespan() de arriba para evitar CancelledError

@@ -32,6 +32,7 @@ from app.utils.function_handlers_optimized import (
     handle_simplify_diet,
     handle_substitute_exercise,
     handle_modify_routine_equipment,
+    handle_food_allergy,
     handle_revert_modification
 )
 
@@ -155,10 +156,38 @@ DETECCIÓN AUTOMÁTICA:
 🎯 CAMBIOS DE OBJETIVO → recalculate_diet_macros(weight_change_kg=0.0, goal="nuevo_objetivo")
 🍽️ ALIMENTOS NO DESEADOS → substitute_disliked_food(disliked_food="X", meal_type="desayuno/almuerzo/cena/snack/todos")
 💪 EJERCICIOS NO DESEADOS → substitute_exercise(exercise_to_replace="X", replacement_reason="no_gusta", target_muscles="Y")
+
+💪 DETECCIÓN DE SUSTITUCIÓN DE EJERCICIO - Ejemplos:
+- "No me gusta el press de banca" → substitute_exercise(exercise_to_replace="press de banca", replacement_reason="no_gusta", target_muscles="pecho")
+- "No puedo hacer sentadillas" → substitute_exercise(exercise_to_replace="sentadillas", replacement_reason="muy_dificil", target_muscles="piernas")
+- "Cambia el press de banca" → substitute_exercise(exercise_to_replace="press de banca", replacement_reason="otro", target_muscles="pecho")
+- "Quita el peso muerto" → substitute_exercise(exercise_to_replace="peso muerto", replacement_reason="otro", target_muscles="espalda")
+- "Sustituye las dominadas" → substitute_exercise(exercise_to_replace="dominadas", replacement_reason="otro", target_muscles="espalda")
+- "Reemplaza el press de banca por press con mancuernas" → substitute_exercise(exercise_to_replace="press de banca", replacement_reason="otro", target_muscles="pecho")
+- "No me gusta hacer sentadillas" → substitute_exercise(exercise_to_replace="sentadillas", replacement_reason="no_gusta", target_muscles="piernas")
+- "Cambia las sentadillas por prensa" → substitute_exercise(exercise_to_replace="sentadillas", replacement_reason="otro", target_muscles="piernas")
+- "Quiero cambiar el press de banca" → substitute_exercise(exercise_to_replace="press de banca", replacement_reason="otro", target_muscles="pecho")
+- "Odio el peso muerto" → substitute_exercise(exercise_to_replace="peso muerto", replacement_reason="no_gusta", target_muscles="espalda")
+
+VARIACIONES DE DETECCIÓN DE EJERCICIOS:
+- "no me gusta", "no quiero", "odio", "no puedo hacer", "no puedo realizar", "me duele al hacer" → Ejercicio no deseado
+- "cambia", "sustituye", "reemplaza", "quita", "elimina" → Sustitución de ejercicio
+- Si menciona ejercicio específico ("no me gusta el press de banca") → substitute_exercise
+- Si sugiere alternativa ("cambia X por Y"), extrae ambos ejercicios
 🏋️ FALTA DE EQUIPAMIENTO → modify_routine_equipment(missing_equipment="X", available_equipment="Y")
 💪 AJUSTES DE RUTINA → adjust_routine_difficulty(difficulty_change="increase/decrease", reason="X")
 🎯 ENFOQUE EN ÁREAS → modify_routine_focus(focus_area="X", intensity="medium/high")
 🏥 LESIONES → modify_routine_injury(body_part="X", injury_type="Y", severity="mild/moderate/severe")
+
+🛡️ DETECCIÓN DE ALERGIAS/INTOLERANCIAS (CRÍTICO):
+- "Soy intolerante a la lactosa" → handle_food_allergy(allergen="lactosa", severity="intolerancia", type="lactosa")
+- "Tengo alergia a los frutos secos" → handle_food_allergy(allergen="frutos secos", severity="alergia", type="frutos_secos")
+- "Soy celíaco" → handle_food_allergy(allergen="gluten", severity="alergia", type="gluten")
+- "No puedo comer huevo" → handle_food_allergy(allergen="huevo", severity="alergia", type="huevo")
+- "Alergia al marisco" → handle_food_allergy(allergen="mariscos", severity="alergia", type="mariscos")
+
+VARIACIONES:
+- "intolerante a", "alérgico a", "tengo alergia a", "me sienta mal", "no puedo comer" → activar handle_food_allergy
 
 🍽️ DETECCIÓN DE ALIMENTOS NO DESEADOS - Ejemplos:
 - "No me gusta la leche" → substitute_disliked_food(disliked_food="leche", meal_type="todos")
@@ -377,6 +406,7 @@ async def execute_function_handler(
             "simplify_diet_plan": handle_simplify_diet,
             "substitute_exercise": handle_substitute_exercise,
             "modify_routine_equipment": handle_modify_routine_equipment,
+            "handle_food_allergy": handle_food_allergy,
             "revert_last_modification": handle_revert_modification
         }
         
