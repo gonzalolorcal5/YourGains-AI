@@ -1,0 +1,71 @@
+{
+    "title": "Hipertrofia Mediada por Estiramiento (SMH) y Repeticiones Parciales en Longitud: Guía Definitiva",
+    "category": "training_technique",
+    "tags": [
+      "lengthened partials",
+      "repeticiones parciales",
+      "SMH",
+      "titina",
+      "milo wolf",
+      "kassem hanson",
+      "rango completo",
+      "perfil de resistencia",
+      "isquiosurales",
+      "triceps",
+      "pantorrillas",
+      "mechanical dropset"
+    ],
+    "level": "advanced",
+    "goal": [
+      "hipertrofia_maxima",
+      "seleccion_ejercicios",
+      "optimizacion_biomecanica"
+    ],
+    "language": "es",
+    "content": "INTRODUCCIÓN: EL CAMBIO DE PARADIGMA. Tradicionalmente se creía que el Rango de Movimiento Completo (fROM) era obligatorio. La evidencia de 2023-2025 (Wolf, Pedrosa, Maeo, Kassiano) refuta esto: Las Repeticiones Parciales en Longitud (LPs) —entrenar solo la parte estirada del movimiento— generan hipertrofia igual o SUPERIOR al fROM. MECANISMO FISIOLÓGICO: LA TITINA. La hipertrofia no depende solo de la tensión activa (actina-miosina). En longitudes largas, la proteína gigante TITINA actúa como un resorte molecular y mecanosensor. Al estirarse bajo carga, la titina genera tensión pasiva y activa vías de señalización (mTOR) que no se activan en rangos acortados.  EVIDENCIA CIENTÍFICA (MILO WOLF): Meta-análisis indican que LPs > fROM para hipertrofia en tren inferior y LPs = fROM en tren superior. Esto sugiere que la fase de 'contracción pico' (squeeze) es redundante para el crecimiento muscular; lo vital es la fase de estiramiento bajo carga. BIOMECÁNICA APLICADA (KASSEM HANSON - N1): No basta con 'estirar'. El ejercicio debe tener un PERFIL DE RESISTENCIA que cargue ese estiramiento. EJEMPLO ERROR: Remo con mancuerna (cero tensión en el estiramiento). EJEMPLO CORRECTO: Remo en polea o Curl Predicador (máxima tensión en el estiramiento). JERARQUÍA DE RESPUESTA MUSCULAR: No todos los músculos responden igual. ALTOS RESPONDEDORES (Priorizar LPs): Isquiosurales (Curl Sentado > Tumbado), Tríceps (Sobre cabeza > Neutro), Pantorrillas (Parte baja > Completa), Cuádriceps (Recto femoral).  IMPLEMENTACIÓN PRÁCTICA Y PROGRESIÓN: 1. NIVEL ESTÁNDAR (PARCIALES INTEGRADAS): La recomendación base es acabar SIEMPRE al menos la ÚLTIMA serie de cada ejercicio con parciales. Realiza rango completo hasta el fallo y continúa inmediatamente con parciales en la zona de estiramiento (Mechanical Dropset). 2. NIVEL AVANZADO (PARCIALES PURAS PESADAS): Si eres avanzado, prueba realizar 1 serie completa por ejercicio EXCLUSIVAMENTE con parciales alargadas desde la primera repetición. ALERTA: Al no tener que bloquear el peso arriba, esto te permitirá usar una CARGA MAYOR (más peso) que en el rango completo. Aprovecha esa sobrecarga mecánica extra desde la repetición 1 para maximizar el estímulo de la titina. SEGURIDAD: Usar esta técnica preferiblemente en máquinas estables (Prensa, Multipower, Poleas), evitar en ejercicios inestables bajo fatiga sistémica.",
+    "source": "Wolf et al. (2023/2024/2025); Pedrosa et al. (2022); Maeo et al. (2021); Kassiano et al. (2023); N1 Education (Kassem Hanson); Godwin (2024)",
+    "references": [
+      {
+        "title": "Lengthened partial repetitions elicit similar muscular adaptations as full range of motion repetitions during resistance training in trained individuals",
+        "authors": "Wolf M, Androulakis-Korakakis P, et al.",
+        "year": 2025,
+        "url": "https://peerj.com/"
+      },
+      {
+        "title": "Partial Vs Full Range of Motion Resistance Training: A Systematic Review and Meta-Analysis",
+        "authors": "Wolf M, et al.",
+        "year": 2023,
+        "url": "https://journal.iusca.org/index.php/Journal/article/view/182"
+      },
+      {
+        "title": "Greater Hamstrings Muscle Hypertrophy but Similar Damage Protection after Training at Long versus Short Muscle Lengths",
+        "authors": "Maeo S, et al.",
+        "year": 2021,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/33009197/"
+      },
+      {
+        "title": "Triceps brachii hypertrophy is substantially greater after elbow extension training performed in the overhead versus neutral arm position",
+        "authors": "Maeo S, et al.",
+        "year": 2022,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/35819335/"
+      },
+      {
+        "title": "Partial range of motion training elicits favorable improvements in muscular adaptations when carried out at long muscle lengths",
+        "authors": "Pedrosa GF, et al.",
+        "year": 2022,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/35044672/"
+      },
+      {
+        "title": "Greater Gastrocnemius Muscle Hypertrophy After Partial Range of Motion Training Performed at Long Muscle Lengths",
+        "authors": "Kassiano W, et al.",
+        "year": 2023,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/37015016/"
+      },
+      {
+        "title": "A Critical Look At Lengthened Partials (N1 Education)",
+        "authors": "Hanson K.",
+        "year": 2024,
+        "url": "https://n1.education/"
+      }
+    ]
+  }

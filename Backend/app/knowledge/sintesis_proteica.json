@@ -1,0 +1,70 @@
+{
+    "title": "Fisiología Avanzada de la Síntesis Proteica Muscular (MPS): Mecanismos Moleculares, Cinética Temporal y la Revolución de la Dosis",
+    "category": "nutrition_science",
+    "tags": [
+      "sintesis proteica",
+      "MPS",
+      "mTORC1",
+      "leucina",
+      "hipertrofia",
+      "cinetica temporal",
+      "Damas et al",
+      "Trommelen",
+      "frecuencia proteica",
+      "ayuno intermitente",
+      "anabolismo"
+    ],
+    "level": "advanced",
+    "goal": [
+      "hipertrofia",
+      "optimizacion_nutricional",
+      "educacion_cientifica"
+    ],
+    "language": "es",
+    "content": "INTRODUCCIÓN: FUNDAMENTOS METABÓLICOS. La regulación de la masa muscular esquelética se rige por el principio del recambio proteico continuo (protein turnover). El Balance Proteico Neto (NPB) es el resultado de la Síntesis de Proteínas Musculares (MPS) menos la Degradación de Proteínas Musculares (MPB). La evidencia científica contemporánea establece inequívocamente que la MPS es la variable principal y más plástica para la hipertrofia, variando 4-5 veces más que la degradación en respuesta a estímulos. NO buscamos suprimir totalmente la degradación, ya que es necesaria para limpiar tejido dañado. ESPECIFICIDAD DE FRACCIÓN: La MPS no es monolítica. La fracción MIOFIBRILAR (MyoPS - actina/miosina) es la única correlacionada directamente con la hipertrofia funcional, a diferencia de la sarcoplásmica o mitocondrial. 2. REGULACIÓN MOLECULAR: mTORC1 Y SENSORES. El complejo mTORC1 es el nodo central que integra señales. INSULINA: Juega un rol permisivo y anti-catabólico, no estimulatorio directo en adultos. LEUCINA: Es la señal maestra. Actúa independientemente de la insulina a través de sensores citosólicos (Sestrin2/GATOR2) para activar mTORC1 y la biogénesis ribosomal. 3. CINÉTICA TEMPORAL: LA PARADOJA DEL ESTATUS DE ENTRENAMIENTO (DAMAS ET AL. 2016). Este es uno de los conceptos más críticos. La respuesta de MPS cambia drásticamente según el nivel del sujeto. SUJETOS NO ENTRENADOS (NOVATOS): Experimentan un aumento masivo y prolongado de MPS (>24-48h). PARADOJA: Este pico NO se correlaciona con crecimiento muscular, sino con la reparación del daño muscular excesivo. SUJETOS ENTRENADOS (AVANZADOS): Debido al 'efecto de la dosis repetida', el daño se atenúa. La respuesta de MPS se vuelve más corta, precisa y efímera. En avanzados, la MPS se correlaciona casi perfectamente con la hipertrofia. IMPLICACIÓN: La 'ventana anabólica' es amplia (días) para novatos, pero se estrecha significativamente para avanzados, haciendo que el timing nutricional sea más relevante en atletas experimentados. 4. DOSIS Y SATURACIÓN: EL NUEVO PARADIGMA (TROMMELEN ET AL. 2023). La literatura ha evolucionado desde un modelo de saturación estricta hacia uno de respuesta ilimitada dependiente de la cinética. MODELO CLÁSICO (20-40g): Estudios con WHEY (rápida absorción) sugerían que 20-40g saturaban la respuesta y el exceso se oxidaba. MODELO ACTUAL (SIN LÍMITE): Trommelen (2023) demostró que 100g de proteína de leche (absorción lenta/matriz compleja) mantienen la MPS elevada por más de 12 HORAS sin saturación aparente y con oxidación mínima. EXPLICACIÓN: La proteína rápida satura los transportadores y activa frenos (muscle-full); la proteína lenta libera aminoácidos gradualmente permitiendo una utilización sostenida y masiva. 5. FRECUENCIA Y AYUNO INTERMITENTE. El efecto 'muscle-full' sugiere un periodo refractario donde la MPS cae a las 3 horas. Esto apoyaba comer cada 3-4 horas. AYUNO INTERMITENTE (TRE): Reduce las oportunidades de estimular la MPS. Meta-análisis muestran riesgo de pérdida de masa magra si no se controla la ingesta. SOLUCIÓN BASADA EN EVIDENCIA: Si se hace ayuno, la última comida debe contener una dosis masiva (ej. 80-100g) de proteína de liberación lenta (caseína/comida sólida) para extender la cola anabólica durante el ayuno, conciliando el estudio de Trommelen con la restricción de frecuencia. 6. EL UMBRAL DE LEUCINA Y RESISTENCIA ANABÓLICA. Existe una concentración crítica de leucina intracelular para 'encender' mTORC1. JÓVENES: Necesitan poco (~1-2g leucina = ~20g proteína). ADULTOS MAYORES (>60): Sufren resistencia anabólica y mayor retención esplácnica (hígado/intestino secuestran aminoácidos). Necesitan dosis dobles (~3-4g leucina = ~35-45g proteína por comida) para lograr el mismo estímulo. 7. CONCLUSIONES PRÁCTICAS. JERARQUÍA: 1. Ingesta Total Diaria (1.6-2.2 g/kg). 2. Distribución. 3. Timing. FLEXIBILIDAD: Gracias a la nueva evidencia de absorción lenta, no es obligatorio comer cada 3 horas; se pueden hacer 3-4 comidas grandes siempre que la calidad y cinética de la proteína sean adecuadas. ESTRATEGIA AVANZADA: Atletas experimentados deben cuidar más el timing peri-entreno debido a su ventana anabólica acortada.",
+    "source": "Trommelen et al. (2023) Cell Reports Med; Damas et al. (2016) J Physiology; Macnaughton et al. (2016) Physiological Reports; Moore et al. (2009) Am J Clin Nutr; Frontiers in Nutrition Systematic Reviews",
+    "references": [
+      {
+        "title": "The anabolic response to protein ingestion during recovery from exercise has no upper limit in magnitude and duration in vivo in humans",
+        "authors": "Trommelen J, et al.",
+        "year": 2023,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/38118410/"
+      },
+      {
+        "title": "A review of resistance training-induced changes in skeletal muscle protein synthesis and their contribution to hypertrophy",
+        "authors": "Damas F, Phillips SM, et al.",
+        "year": 2015,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/25739559/"
+      },
+      {
+        "title": "Resistance training-induced changes in integrated myofibrillar protein synthesis are related to hypertrophy only after attenuation of muscle damage",
+        "authors": "Damas F, et al.",
+        "year": 2016,
+        "url": "https://10.1113/JP272472"
+      },
+      {
+        "title": "The response of muscle protein synthesis following whole-body resistance exercise is greater following 40 g than 20 g of whey protein ingestion",
+        "authors": "Macnaughton LS, et al.",
+        "year": 2016,
+        "url": "https://physoc.onlinelibrary.wiley.com/doi/full/10.14814/phy2.12893"
+      },
+      {
+        "title": "Ingested protein dose response of muscle and albumin protein synthesis after resistance exercise in young men",
+        "authors": "Moore DR, et al.",
+        "year": 2009,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/19056590/"
+      },
+      {
+        "title": "Evaluating the Leucine Trigger Hypothesis to Explain the Post-prandial Regulation of Muscle Protein Synthesis",
+        "authors": "Frontiers Systematic Review",
+        "year": 2020,
+        "url": "https://www.frontiersin.org/articles/10.3389/fnut.2020.570672"
+      },
+      {
+        "title": "Effects of Intermittent Fasting and Calorie Restriction on Exercise Performance: A Systematic Review",
+        "authors": "MDPI Sports",
+        "year": 2020,
+        "url": "https://www.mdpi.com/"
+      }
+    ]
+  }

@@ -212,9 +212,42 @@ async def process_onboarding(
                     "grasas": metadata_macros.get("grasas", 0)
                 }
         
+        # 🔧 FIX CRÍTICO: Usar kcal_objetivo calculado en lugar de sumar comidas
+        # El problema era que GPT puede generar comidas que suman volumen (2816.25) 
+        # cuando debería ser definición (2216.25). Usamos el kcal_objetivo calculado
+        # científicamente que está en dieta_json.macros.calorias
+        kcal_objetivo_calculado = macros_plan.get("calorias") if isinstance(macros_plan, dict) else None
+        
+        # Si no hay kcal_objetivo en macros, intentar calcularlo desde el objetivo nutricional
+        if not kcal_objetivo_calculado:
+            from app.utils.nutrition_calculator import get_complete_nutrition_plan
+            user_data_nutrition = {
+                'peso': data.peso,
+                'altura': data.altura,
+                'edad': data.edad,
+                'sexo': data.sexo,
+                'nivel_actividad': data.nivel_actividad
+            }
+            try:
+                nutrition_plan = get_complete_nutrition_plan(user_data_nutrition, data.nutrition_goal)
+                kcal_objetivo_calculado = nutrition_plan.get("calorias_objetivo")
+                print(f"✅ kcal_objetivo calculado desde nutrition_plan: {kcal_objetivo_calculado} kcal")
+            except Exception as e:
+                print(f"⚠️ Error calculando kcal_objetivo: {e}")
+                # Fallback: sumar comidas (no ideal pero mejor que nada)
+                kcal_objetivo_calculado = sum([meal.get("kcal", 0) for meal in dieta_json.get("comidas", [])])
+                print(f"⚠️ Usando suma de comidas como fallback: {kcal_objetivo_calculado} kcal")
+        
+        # Si aún no hay valor, usar suma como último recurso
+        if not kcal_objetivo_calculado or kcal_objetivo_calculado <= 0:
+            kcal_objetivo_calculado = sum([meal.get("kcal", 0) for meal in dieta_json.get("comidas", [])])
+            print(f"⚠️ Usando suma de comidas como último recurso: {kcal_objetivo_calculado} kcal")
+        else:
+            print(f"✅ Usando kcal_objetivo calculado: {kcal_objetivo_calculado} kcal (objetivo: {data.nutrition_goal})")
+        
         current_diet = {
             "meals": dieta_json.get("comidas", []),
-            "total_kcal": sum([meal.get("kcal", 0) for meal in dieta_json.get("comidas", [])]),
+            "total_kcal": int(kcal_objetivo_calculado),  # 🔧 FIX: Usar kcal_objetivo calculado
             "macros": macros_plan,  # ✅ Usar macros del plan generado en lugar de {}
             "created_at": datetime.utcnow().isoformat(),
             "version": "1.0.0",

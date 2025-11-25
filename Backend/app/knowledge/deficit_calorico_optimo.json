@@ -1,0 +1,36 @@
+{
+    "title": "Déficit calórico óptimo: preservación de masa muscular",
+    "category": "nutrition_knowledge",
+    "tags": ["déficit calórico", "pérdida de grasa", "preservación muscular", "cardio", "definición", "recomposición"],
+    "level": "intermediate",
+    "goal": ["perdida_grasa", "definicion", "hipertrofia"],
+    "language": "es",
+    "content": "Para perder grasa preservando masa muscular, es más efectivo crear el déficit calórico mediante ejercicio (manteniendo ingesta más alta) que solo reduciendo calorías. Los estudios demuestran que con déficit solo por dieta, se pierde aproximadamente 24-28% del peso en forma de músculo, mientras que con dieta + ejercicio solo se pierde ~13% (casi la mitad). La estrategia óptima es un déficit pequeño por dieta (10-15%) combinado con gasto por ejercicio. Ejemplo: si tu TDEE es 2500 kcal y buscas un déficit de 500 kcal, es preferible comer 2300 kcal y quemar 300 con cardio, en lugar de comer 2000 kcal sin ejercicio adicional. La velocidad óptima de pérdida es 0.5-0.7% del peso corporal por semana. Con esta velocidad moderada, los atletas naturales pueden incluso ganar masa muscular mientras pierden grasa (+2.1% de masa magra con déficit lento vs 0% con déficit rápido). Beneficios adicionales: mayor adherencia por menor hambre, mejor rendimiento en el gimnasio por más energía disponible, metabolismo más alto al no suprimirlo excesivamente, y beneficios cardiovasculares del ejercicio aeróbico. El entrenamiento de fuerza debe mantenerse durante el déficit para señalizar al cuerpo que preserve el músculo.",
+    "source": "Ballor & Poehlman (1994); Weiss et al. (2017); Garthe et al. (2011); Miller et al. (2013)",
+    "references": [
+      {
+        "title": "Exercise-training enhances fat-free mass preservation during diet-induced weight loss",
+        "authors": "Ballor & Poehlman",
+        "year": 1994,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/8130813/"
+      },
+      {
+        "title": "Effects of Weight Loss on Lean Mass, Strength, Bone, and Aerobic Capacity",
+        "authors": "Weiss et al.",
+        "year": 2017,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/27580151/"
+      },
+      {
+        "title": "Effect of two different weight-loss rates on body composition and strength in elite athletes",
+        "authors": "Garthe et al.",
+        "year": 2011,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/21558571/"
+      },
+      {
+        "title": "The Effects of Exercise Training in Addition to Energy Restriction on Functional Capacities",
+        "authors": "Miller et al.",
+        "year": 2013,
+        "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0081692"
+      }
+    ]
+  }

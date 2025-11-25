@@ -347,7 +347,48 @@ VALIDACIÓN ANTES DE GENERAR LA RUTINA:
 - Revisa CADA ejercicio generado y verifica que NO requiera {datos.get('missing_equipment')}
 - Si un ejercicio requiere {datos.get('missing_equipment')}, REEMPLÁZALO inmediatamente por una alternativa
 - Asegúrate de que TODOS los ejercicios usen {datos.get('available_equipment', 'equipamiento disponible')}
+""" if datos.get('missing_equipment') else ""}
 
+{f"""
+⚠️⚠️⚠️ SUSTITUCIÓN DE EJERCICIO ESPECÍFICO (CRÍTICO) ⚠️⚠️⚠️
+🔄 EJERCICIO A REEMPLAZAR: {datos.get('exercise_to_replace', 'ninguno')}
+📝 RAZÓN: {datos.get('replacement_reason', 'no especificada')}
+🎯 GRUPO MUSCULAR: {datos.get('target_muscles', 'no especificado')}
+🏋️ EQUIPAMIENTO DISPONIBLE: {datos.get('equipment_available', 'cualquiera')}
+
+REGLAS OBLIGATORIAS:
+1. ❌ PROHIBIDO: NO incluir NINGÚN ejercicio que se llame "{datos.get('exercise_to_replace')}" o variaciones similares
+2. ✅ OBLIGATORIO: Sustituir "{datos.get('exercise_to_replace')}" por un ejercicio alternativo para {datos.get('target_muscles', 'el mismo grupo muscular')}
+3. ✅ OBLIGATORIO: El ejercicio alternativo debe trabajar el mismo grupo muscular ({datos.get('target_muscles', 'no especificado')})
+4. ✅ OBLIGATORIO: Considerar el equipamiento disponible: {datos.get('equipment_available', 'cualquiera')}
+5. ✅ OBLIGATORIO: Mantener la estructura y equilibrio del resto de la rutina
+6. ✅ OBLIGATORIO: Si el ejercicio original tenía series/reps específicas, intentar mantener similares en el alternativo
+
+EJEMPLOS DE SUSTITUCIÓN POR GRUPO MUSCULAR:
+- Si se reemplaza "Press de banca" (pecho):
+  ❌ PROHIBIDO: Press de banca, Bench press, Press banca
+  ✅ USAR: Press con mancuernas, Flexiones, Press inclinado con mancuernas, Aperturas con mancuernas
+
+- Si se reemplaza "Sentadillas" (piernas):
+  ❌ PROHIBIDO: Sentadillas, Squat, Sentadillas con barra
+  ✅ USAR: Prensa de piernas, Zancadas, Sentadillas con mancuernas, Extensión de cuádriceps
+
+- Si se reemplaza "Dominadas" (espalda):
+  ❌ PROHIBIDO: Dominadas, Pull-ups, Chin-ups
+  ✅ USAR: Jalones en polea, Remo con barra, Remo con mancuerna, Remo invertido
+
+- Si se reemplaza "Peso muerto" (espalda/piernas):
+  ❌ PROHIBIDO: Peso muerto, Deadlift, Peso muerto con barra
+  ✅ USAR: Peso muerto rumano, Remo con barra, Zancadas, Hip thrust
+
+VALIDACIÓN ANTES DE GENERAR LA RUTINA:
+- Revisa CADA ejercicio generado y verifica que NO sea "{datos.get('exercise_to_replace')}" o variaciones
+- Si generas "{datos.get('exercise_to_replace')}", REEMPLÁZALO inmediatamente por una alternativa apropiada
+- Asegúrate de que el ejercicio alternativo trabaje {datos.get('target_muscles', 'el mismo grupo muscular')}
+- Mantén el equilibrio y estructura del resto de la rutina intacta
+""" if datos.get('exercise_to_replace') else ""}
+
+{f"""
 ⚠️⚠️⚠️ CRÍTICO: Si incluyes CUALQUIER ejercicio que requiera {datos.get('missing_equipment')}, la rutina será INVÁLIDA ⚠️⚠️⚠️
 """ if datos.get('missing_equipment') else ""}
 

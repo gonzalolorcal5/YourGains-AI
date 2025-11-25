@@ -1,0 +1,36 @@
+{
+    "title": "Entrenamiento de fuerza e hipertrofia en mujeres naturales: diferencias fisiológicas, influencia del ciclo menstrual y periodización basada en evidencia científica",
+    "category": "training_knowledge",
+    "tags": ["mujeres", "entrenamiento_fuerza", "hipertrofia", "ciclo_menstrual", "diferencias_sexuales", "periodizacion", "fase_folicular", "fase_lutea", "recuperacion", "fatiga"],
+    "level": "intermediate",
+    "goal": ["hipertrofia", "fuerza", "mujeres", "periodizacion_ciclica"],
+    "language": "es",
+    "content": "INTRODUCCIÓN: CONTEXTUALIZANDO EL ENTRENAMIENTO DE FUERZA EN MUJERES NATURALES. Durante décadas, el entrenamiento de fuerza e hipertrofia fue estudiado predominantemente en poblaciones masculinas, generando un vacío considerable en el conocimiento científico específico sobre cómo las mujeres responden al entrenamiento de resistencia. Esta carencia de datos condujo a la perpetuación de mitos, estereotipos y recomendaciones inapropiadas para la población femenina. Históricamente se asumió que las mujeres debían entrenar con cargas ligeras, altas repeticiones y evitar el trabajo pesado para no volverse demasiado musculosas o para preservar su feminidad, creencias completamente desvinculadas de la realidad fisiológica. Afortunadamente, la investigación científica de las últimas dos décadas, y especialmente los estudios publicados entre 2020 y 2024, han proporcionado evidencia robusta que permite desmitificar estas creencias erróneas y establecer recomendaciones basadas en datos objetivos. Este documento sintetiza la evidencia científica más reciente sobre las diferencias fisiológicas reales entre mujeres y hombres en el contexto del entrenamiento de fuerza e hipertrofia, examina exhaustivamente la influencia del ciclo menstrual en el rendimiento físico, la fatiga y la recuperación, evalúa críticamente la validez de periodizar el entrenamiento según las fases hormonales, y proporciona recomendaciones prácticas específicas para mujeres naturales (sin uso de hormonas exógenas o esteroides anabólicos) basadas en la totalidad de la evidencia disponible. El objetivo fundamental es empoderar a las mujeres atletas y a sus entrenadores con conocimiento científico sólido que les permita diseñar programas de entrenamiento óptimos que respeten la fisiología femenina única mientras maximizan las adaptaciones de fuerza y masa muscular.",
+    "source": "Roberts et al. (2020) PMID: 32218059; Refalo et al. (2025) PMID: 40028215; Romero-Parra et al. (2021); McNulty et al. (2020) PMID: 31482453; Frontiers Physiology (2018); Wikström-Frisén et al. (2017); Sung et al. (2014); Frontiers Sports (2023)",
+    "references": [
+      {
+        "title": "Sex Differences in Resistance Training: A Systematic Review and Meta-Analysis",
+        "authors": "Roberts BM, et al.",
+        "year": 2020,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/32218059/"
+      },
+      {
+        "title": "Sex differences in absolute and relative changes in muscle size following resistance training in healthy adults: a systematic review with Bayesian meta-analysis",
+        "authors": "Refalo MC, et al.",
+        "year": 2025,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/40028215/"
+      },
+      {
+        "title": "Exercise-Induced Muscle Damage During the Menstrual Cycle: A Systematic Review and Meta-Analysis",
+        "authors": "Romero-Parra N, et al.",
+        "year": 2021,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/33332337/"
+      },
+      {
+        "title": "The Effects of Menstrual Cycle Phase on Physical Performance in Female Soccer Players: A Systematic Review",
+        "authors": "McNulty KL, et al.",
+        "year": 2020,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/31482453/"
+      }
+    ]
+  }

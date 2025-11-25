@@ -1,0 +1,76 @@
+{
+    "title": "Entrenamiento en Superávit vs Déficit: La Paradoja del Volumen y la Primacía de la Intensidad para la Retención Muscular",
+    "category": "training_knowledge",
+    "tags": [
+      "volumen",
+      "intensidad",
+      "fatiga",
+      "superavit",
+      "deficit",
+      "bulking",
+      "cutting",
+      "recomposicion",
+      "p-ratio",
+      "mrv",
+      "proteina",
+      "retencion muscular"
+    ],
+    "level": "advanced",
+    "goal": [
+      "hipertrofia",
+      "perdida_grasa"
+    ],
+    "language": "es",
+    "content": "La programación del entrenamiento no puede ser estática; debe adaptarse agresivamente al balance energético del atleta. La interacción entre el superávit calórico (bulking) y el déficit calórico (cutting) es el factor decisivo para optimizar la composición corporal. En SUPERÁVIT CALÓRICO, el entorno es anabólico. La comida actúa como un 'amplificador' de la recuperación (mejora el MRV o Máximo Volumen Recuperable) y de la Síntesis de Proteínas Musculares (MPS)[cite: 1, 2]. El principal impulsor de la hipertrofia aquí es el VOLUMEN, apuntando a un rango óptimo de 10-20 series efectivas por músculo por semana. Sin embargo, el tamaño del superávit es crítico. Un estudio de Helms et al. (2023) mostró que un superávit grande (15%) no construyó más músculo ni fuerza que uno moderado (5%) o incluso el mantenimiento, pero SÍ acumuló significativamente más grasa. La lección es que el superávit debe ser CONGRUENTE con el estímulo; un superávit conservador del 5-10% optimiza el P-Ratio (proporción de músculo/grasa ganado)[cite: 18, 22]. Por el contrario, el DÉFICIT CALÓRICO (cutting) es un entorno fundamentalmente catabólico que suprime la MPS. El objetivo del entrenamiento cambia de 'crecimiento' a 'supervivencia'. El entrenamiento de fuerza (RT) es la señal anti-catabólica indispensable, demostrando prevenir hasta el 93% de la pérdida de masa magra (LBM) vista en dietas solas. Para lograr esta retención se necesitan dos pilares innegociables. El primero es una ingesta de PROTEÍNA MUY ALTA, ya que las necesidades proteicas aumentan en un déficit, requiriendo un rango de 2.3 a 3.1 gramos por kilogramo de MASA LIBRE DE GRASA (FFM)[cite: 32, 33]. Esta proteína actúa como un 'ahorrador' de músculo. El segundo pilar, y la prioridad de programación MÁXIMA, es la INTENSIDAD[cite: 41]. Aquí, 'intensidad' se refiere a la carga absoluta (el peso en la barra). Reducir el peso es una señal directa al cuerpo para desadaptarse y atrofiar las fibras tipo II[cite: 42]. Aquí surge la PARADOJA DEL VOLUMEN: la lógica dicta que, con una recuperación pobre (bajo glucógeno, MPS suprimida), el volumen debe bajar. Sin embargo, la evidencia científica (revisión de 2022) sugiere que volúmenes de entrenamiento MÁS ALTOS (≥10 series/semana) son, de hecho, MÁS PROTECTORES para la masa magra. La resolución a esta paradoja es la estrategia de autorregulación avanzada: el atleta debe EMPEZAR el déficit intentando mantener su volumen de alta calidad (≥10 series), priorizando la INTENSIDAD (peso) por encima de todo. A medida que la fatiga se acumula inevitablemente (el 'bucle contraproducente'), el atleta debe REDUCIR EL VOLUMEN ESTRATÉGICAMENTE (eliminar el 'volumen basura') [cite: 46] con el único propósito de preservar la energía para poder mantener la INTENSIDAD en las series restantes. Finalmente, la RECOMPOSICIÓN (ganar músculo y perder grasa simultáneamente) es un fenómeno real. Es altamente probable en principiantes, personas con sobrepeso o desentrenados. En atletas entrenados, es posible pero de magnitud muy pequeña y progresión lenta. La fórmula para la recomposición es un balance calórico de mantenimiento o déficit muy leve (+/- 5%) , una ingesta de proteína MUY ALTA (1.6-3.4 g/kg)  y un programa de entrenamiento enfocado en la SOBRECARGA PROGRESIVA, no en el mantenimiento.",
+    "source": "Basado en un meta-análisis y revisión de la literatura científica (2014-2023) sobre la interacción entre el balance energético y las variables del entrenamiento de fuerza (Helms et al., Schoenfeld et al., y revisiones sistemáticas sobre volumen en déficit y recomposición).",
+    "references": [
+      {
+        "title": "Is an Energy Surplus Required to Maximize Skeletal Muscle Hypertrophy Associated With Resistance Training",
+        "authors": "Iraki, J., et al. (revisión de literatura)",
+        "year": 2019,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/31126322/"
+      },
+      {
+        "title": "Effect of Small and Large Energy Surpluses on Strength, Muscle, and Skinfold Thickness in Resistance-Trained Individuals",
+        "authors": "Helms, E. R., et al.",
+        "year": 2023,
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10232675/"
+      },
+      {
+        "title": "Resistance Training Prevents Muscle Loss Induced by Caloric Restriction in Obese Elderly Individuals: A Systematic Review and Meta-Analysis",
+        "authors": "Sardeli, A. V., et al.",
+        "year": 2021,
+        "url": "https://www.mdpi.com/2072-6643/13/5/1683"
+      },
+      {
+        "title": "A systematic review of dietary protein during caloric restriction in resistance-trained lean athletes: a case for higher intakes",
+        "authors": "Helms, E. R., et al.",
+        "year": 2014,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/24092765/"
+      },
+      {
+        "title": "How to Train Bodybuilding on a Cut — Science-Based Guidance for Getting Shredded",
+        "authors": "BarBend (revisión de expertos)",
+        "year": 2024,
+        "url": "https://barbend.com/how-to-train-bodybuilding-on-a-cut-science-based-guidance-for-getting-shredded"
+      },
+      {
+        "title": "Lean mass sparing in resistance-trained athletes during caloric restriction: the role of resistance training volume",
+        "authors": "Stallknecht, B., et al. (Revisión Sistemática)",
+        "year": 2022,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/35939223/"
+      },
+      {
+        "title": "Body Recomposition: Can Trained Individuals Build Muscle and Lose Fat at the Same Time?",
+        "authors": "Barakat, C., et al. (Revisión)",
+        "year": 2020,
+        "url": "https://www.researchgate.net/publication/344065646_Body_Recomposition_Can_Trained_Individuals_Build_Muscle_and_Lose_Fat_at_the_Same_Time"
+      },
+      {
+        "title": "Resistance Training Variables for Optimization of Muscle Hypertrophy: A Systematic Review",
+        "authors": "Schoenfeld, B. J., et al.",
+        "year": 2017,
+        "url": "https://www.frontiersin.org/articles/10.3389/fphys.2017.00290/full"
+      }
+    ]
+  }

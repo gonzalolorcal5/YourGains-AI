@@ -1,0 +1,50 @@
+{
+    "title": "Cargas Bajas (30%) vs. Altas (80%) para Hipertrofia: El fin del Continuum de Repeticiones y la Defensa del Rango Medio",
+    "category": "training_science",
+    "tags": [
+      "carga baja vs alta",
+      "low load training",
+      "fallo muscular",
+      "continuum repeticiones",
+      "fatiga central",
+      "reclutamiento unidades motoras",
+      "henneman",
+      "schoenfeld",
+      "hipertrofia"
+    ],
+    "level": "advanced",
+    "goal": [
+      "hipertrofia",
+      "seleccion_carga",
+      "gestion_fatiga"
+    ],
+    "language": "es",
+    "content": "RESUMEN EJECUTIVO: LA EQUIVALENCIA HIPERTRÓFICA. La evidencia de 2020-2025 (Schoenfeld, Cumming, Refalo) ha desmantelado el dogma del 'Continuum de Repeticiones'. La conclusión es firme: Entrenar con cargas bajas (30 por ciento 1RM / ~25-30 reps) produce la MISMA hipertrofia que cargas altas (80 por ciento 1RM / ~8 reps), SIEMPRE QUE SE ALCANCE EL FALLO MUSCULAR.  2. MECANISMO: EL PRINCIPIO DE HENNEMAN. ¿Cómo puede un peso ligero estimular fibras rápidas? Por la fatiga. Al inicio de una serie ligera, solo usas fibras lentas. Conforme se fatigan, el cerebro se ve obligado a reclutar fibras de alto umbral (Tipo II) para mantener la fuerza. Al llegar al fallo, el reclutamiento es idéntico al de una carga pesada.  3. EL PRECIO DE LA CARGA BAJA (LL): FATIGA Y DISCOMFORT. Aunque el resultado muscular es igual, el coste sistémico no lo es. El entrenamiento LL al fallo genera: A) Mayor Fatiga del Sistema Nervioso Central (inhibición por acidosis). B) Mayor Discomfort Metabólico (dolor/quemazón extrema). C) Peor precisión del RPE (la gente para por dolor antes del fallo real). D) Sesiones más largas. 4. EL PRECIO DE LA CARGA ALTA (HL): ESTRÉS MECÁNICO. El HL es superior para fuerza máxima (1RM) por adaptaciones neurales específicas, pero conlleva mayor compresión articular y riesgo de lesión si la técnica se degrada. 5. LA DEFENSA DEL 'PUNTO DULCE' (8-12 REPS). Si 30 por ciento y 80 por ciento crecen igual, ¿por qué recomendamos 8-12 reps (aprox 70-75 por ciento)? POR EFICIENCIA. El rango medio es el compromiso perfecto: A) Genera suficiente tensión mecánica sin aplastar las articulaciones (como el 90 por ciento). B) Genera suficiente estrés metabólico sin causar la fatiga sistémica y náuseas del rango alto (como el 30 por ciento). C) Es eficiente en tiempo. D) Es fácil estimar el fallo (RIR). CONCLUSIÓN ALGORÍTMICA: Para hipertrofia pura, el rango de carga es flexible (30-85 por ciento). Sin embargo, la recomendación base debe ser el rango medio (6-15 reps) para optimizar la relación estímulo-fatiga. Reservar cargas bajas (30 por ciento) para lesiones/rehabilitación y cargas altas (>85 por ciento) para peaking de fuerza.",
+    "source": "Schoenfeld et al. (2017 Meta-analysis); Cumming et al. (2025 Intra-subject study); Lasevicius et al. (2022); Refalo et al. (2024)",
+    "references": [
+      {
+        "title": "Strength and Hypertrophy Adaptations Between Low- vs. High-Load Resistance Training: A Systematic Review and Meta-analysis",
+        "authors": "Schoenfeld BJ, et al.",
+        "year": 2017,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/28834797/"
+      },
+      {
+        "title": "Divergent strength gains but similar hypertrophy after low-load and high-load resistance exercise training in trained individuals",
+        "authors": "Cumming VA, et al.",
+        "year": 2025,
+        "url": "https://journals.physiology.org/"
+      },
+      {
+        "title": "Muscle Failure Promotes Greater Muscle Hypertrophy in Low-Load but Not in High-Load Resistance Training",
+        "authors": "Lasevicius T, et al.",
+        "year": 2022,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/31895290/"
+      },
+      {
+        "title": "Influence of Varying Proximity-to-Failure on Muscular Adaptations",
+        "authors": "Refalo MC, et al.",
+        "year": 2024,
+        "url": "https://sportsmedicine-open.springeropen.com/"
+      }
+    ]
+  }

@@ -1,0 +1,36 @@
+{
+    "title": "Distribución óptima de macronutrientes para hipertrofia",
+    "category": "nutrition_knowledge",
+    "tags": ["macronutrientes", "proteína", "carbohidratos", "grasas", "distribución", "volumen", "definición", "calorías", "balance energético"],
+    "level": "intermediate",
+    "goal": ["hipertrofia", "volumen", "perdida_grasa", "definicion"],
+    "language": "es",
+    "content": "La nutrición para hipertrofia sigue una jerarquía clara que debes entender antes de obsesionarte con ratios específicos como 40-30-30. La jerarquía es: 1) Balance calórico (superávit para crecer, déficit para definir, mantenimiento para recomponer), 2) Proteína total diaria, 3) Grasas mínimas para salud hormonal, 4) Carbohidratos llenan el resto y son la variable de ajuste. PROTEÍNA (el constructor muscular): Para volumen y mantenimiento, la ingesta óptima es 1.6-2.2 gramos por kilo de peso corporal al día. El meta-análisis de Morton et al. (2018) estableció que 1.6 g/kg es el punto óptimo, aunque beneficios marginales se observan hasta 2.2 g/kg. Durante un déficit calórico (definición), la proteína se vuelve aún más crítica como arma anti-catabólica: debe aumentarse a 2.0-2.8 g/kg diarios, o incluso 2.3-3.1 g/kg de masa libre de grasa según Helms et al. (2014). CARBOHIDRATOS (el combustible del rendimiento): Este es el macronutriente más subestimado y mal entendido. El entrenamiento de hipertrofia (series de 6-20 repeticiones) utiliza principalmente la vía glucolítica, que depende del glucógeno muscular (carbohidratos almacenados). Una ingesta alta de carbohidratos asegura reservas de glucógeno llenas, lo que permite realizar más series y repeticiones de calidad, mantener la intensidad durante toda la sesión, y mejorar la recuperación entre series y sesiones. Además, los carbohidratos estimulan la insulina, que no solo es anabólica sino potentemente anti-catabólica (detiene la degradación muscular). En fase de volumen, los carbohidratos deben ser el macronutriente DOMINANTE: 4-7 g/kg al día según Iraki et al. (2019). Aquí está el error más común en definición: la gente recorta carbohidratos primero y drásticamente, pero la estrategia correcta es mantener los carbohidratos TAN ALTOS como sea posible dentro del déficit calórico. Si recortas carbos a niveles muy bajos (por ejemplo, menos de 2 g/kg), tu rendimiento en el gimnasio se desploma, pierdes fuerza, no puedes mantener el volumen de entrenamiento, y como consecuencia pierdes músculo junto con la grasa. Los carbohidratos deben ser el ÚLTIMO macronutriente que se recorta, no el primero. GRASAS (el soporte hormonal): Las grasas son esenciales para la producción de hormonas esteroides, incluyendo testosterona, y para la absorción de vitaminas liposolubles (A, D, E, K). El mínimo absoluto es 20% de las calorías totales o 0.5 g/kg de peso corporal. Por debajo de este umbral se puede afectar negativamente la testosterona y la salud general. En definición, las grasas son el primer macronutriente que se ajusta después de fijar calorías totales (se pueden reducir a 15-25% de calorías o 0.5-0.8 g/kg), pero nunca por debajo del mínimo. ESTRATEGIA PRÁCTICA: El proceso es siempre el mismo independientemente de la fase: 1) Fija las calorías según objetivo (superávit para volumen, déficit para definición, mantenimiento para recomp). 2) Fija la proteína según fase (1.6-2.2 en volumen, 2.0-2.8 en déficit). 3) Fija las grasas en el mínimo saludable (20-30% en volumen, 15-25% en déficit, nunca menos de 20% prolongadamente). 4) LLENA TODO EL RESTO DE CALORÍAS CON CARBOHIDRATOS. Los carbohidratos son la variable que ajustas para llegar a tu objetivo calórico. Ejemplo práctico en definición para persona de 80kg con 2200 kcal: Proteína 200g (800 kcal, 36%), Grasas 55g (495 kcal, 22%), Carbohidratos 226g (905 kcal, 41%). Nota cómo incluso en déficit los carbohidratos siguen siendo altos (226g) para mantener el rendimiento. El error común sería bajar carbos a 100g y subir grasas a 100g, lo que colapsaría el rendimiento y provocaría pérdida muscular. Esta estrategia está respaldada por los meta-análisis más recientes y es especialmente crítica para atletas naturales cuya capacidad de recuperación y construcción muscular es limitada comparada con usuarios de ayudas farmacológicas.",
+    "source": "Morton et al. (2018); Helms et al. (2014); Iraki et al. (2019); Slater et al. (2019)",
+    "references": [
+      {
+        "title": "A systematic review, meta-analysis and meta-regression of the effect of protein supplementation on resistance training-induced gains in muscle mass and strength in healthy adults",
+        "authors": "Morton et al.",
+        "year": 2018,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/28698222/"
+      },
+      {
+        "title": "Evidence-based recommendations for natural bodybuilding contest preparation: nutrition and supplementation",
+        "authors": "Helms, Aragon & Fitschen",
+        "year": 2014,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/24864135/"
+      },
+      {
+        "title": "Nutrition Recommendations for Bodybuilders in the Off-Season: A Narrative Review",
+        "authors": "Iraki et al.",
+        "year": 2019,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/31035722/"
+      },
+      {
+        "title": "Is there a relationship between changes in energy availability and body composition in athletes?",
+        "authors": "Slater et al.",
+        "year": 2019,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/30899047/"
+      }
+    ]
+  }

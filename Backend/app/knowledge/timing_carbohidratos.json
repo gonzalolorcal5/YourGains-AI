@@ -1,0 +1,51 @@
+{
+    "title": "Crononutrición y Timing de Carbohidratos: Optimización de Glucógeno, Carga Frontal vs. Posterior y Mitos Nocturnos",
+    "category": "nutrition_timing",
+    "tags": [
+      "carb timing",
+      "glucogeno",
+      "pre-entreno",
+      "post-entreno",
+      "gluconeogenesis",
+      "backloading",
+      "frontloading",
+      "indice glucemico",
+      "insulina",
+      "glut4"
+    ],
+    "level": "advanced",
+    "goal": [
+      "rendimiento_maximo",
+      "composicion_corporal",
+      "recuperacion_glucogeno"
+    ],
+    "language": "es",
+    "content": "INTRODUCCIÓN: BIOENERGÉTICA Y CRONONUTRICIÓN. Los carbohidratos no son solo combustible; son moléculas de señalización (insulina) que dictan el anabolismo. 1. LA IMPORTANCIA CRÍTICA DEL PRE-ENTRENO Y EL GLUCÓGENO. El glucógeno muscular es el determinante directo de la capacidad de trabajo y tolerancia al volumen. Entrenar con depósitos bajos compromete la intensidad. REGLA: La comida pre-entreno debe ser rica en hidratos (Frontloading) para asegurar la saturación de glucógeno y mantener la intensidad. 2. POST-ENTRENO, GLUCONEOGÉNESIS Y LA VENTANA GLUT4. Tras el entrenamiento, el cuerpo está en un estado catabólico. Si no hay glucosa disponible, el cuerpo iniciará la GLUCONEOGÉNESIS: romperá tejido muscular (aminoácidos) para convertirlos en glucosa. Ingerir carbohidratos post-entreno es vital para: A) Frenar este catabolismo (ahorrar proteína). B) Aprovechar la translocación de transportadores GLUT4 inducida por la contracción (independiente de insulina), que absorbe glucosa como una esponja.  3. ESTRATEGIAS DE CARGA: FRONT VS BACK. FRONTLOADING: Cargar carbs al inicio del día/semana. Ideal para rendimiento y seguridad (evitar verse plano). BACKLOADING (CBL): Comer ligero de día y cargar carbs de noche post-entreno. Basado en el estudio de Sofer et al. (2011), es ideal para endomorfos o resistencia a la insulina, aprovechando que el ejercicio sensibiliza el músculo mientras la grasa permanece resistente. 4. MITO DE LOS CARBOS NOCTURNOS. La evidencia confirma que los carbohidratos de noche NO se convierten automáticamente en grasa. De hecho, facilitan el sueño al aumentar el triptófano y la serotonina, mejorando la recuperación. 5. ÍNDICE GLUCÉMICO (IG). Usar Alto IG (Dextrosa, Arroz blanco) SOLO en peri-entreno (rápida energía/recuperación). Usar Bajo/Medio IG (Avena, Legumbres) el resto del día para saciedad y salud. CONCLUSIÓN: Priorizar el total diario, pero usar el timing para potenciar el rendimiento: asegurar glucógeno PRE-entreno para rendir y glucosa POST-entreno para frenar la gluconeogénesis y recuperar.",
+    "source": "Sofer et al. (2011) Obesity; ISSN Position Stand: Nutrient Timing; Aragon & Schoenfeld (2013); Ivy & Portman Bioenergetics",
+    "references": [
+      {
+        "title": "Greater weight loss and hormonal changes after 6 months diet with carbohydrates eaten mostly at dinner",
+        "authors": "Sofer S, et al.",
+        "year": 2011,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/21475137/"
+      },
+      {
+        "title": "International society of sports nutrition position stand: nutrient timing",
+        "authors": "Kerksick CM, et al.",
+        "year": 2017,
+        "url": "https://jissn.biomedcentral.com/articles/10.1186/s12970-017-0189-4"
+      },
+      {
+        "title": "Nutrient timing revisited: is there a post-exercise anabolic window?",
+        "authors": "Aragon AA, Schoenfeld BJ",
+        "year": 2013,
+        "url": "https://jissn.biomedcentral.com/articles/10.1186/1550-2783-10-5"
+      },
+      {
+        "title": "Regulation of Muscle Glycogen Repletion, Muscle Protein Synthesis and Repair Following Exercise",
+        "authors": "Ivy JL",
+        "year": 2004,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/15571428/"
+      }
+    ]
+  }

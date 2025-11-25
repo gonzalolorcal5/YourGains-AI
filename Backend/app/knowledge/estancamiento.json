@@ -1,0 +1,66 @@
+{
+    "title": "Fisiología del Estancamiento: Mecanismos Moleculares y Estrategias Avanzadas para Romper Plateaus",
+    "category": "training_science",
+    "tags": [
+      "estancamiento",
+      "plateau",
+      "biogenesis ribosomal",
+      "mTOR",
+      "fatiga central",
+      "volumen",
+      "MEV",
+      "MRV",
+      "VBT",
+      "periodizacion",
+      "titina",
+      "deload"
+    ],
+    "level": "advanced",
+    "goal": [
+      "romper_estancamiento",
+      "hipertrofia_avanzada",
+      "fuerza_maxima",
+      "programacion_avanzada"
+    ],
+    "language": "es",
+    "content": "INTRODUCCIÓN: LA NATURALEZA BIOLÓGICA DEL ESTANCAMIENTO. El estancamiento o 'plateau' no es un fallo del esfuerzo, sino un triunfo de la homeostasis (Ley de la Acomodación). A medida que el atleta avanza, la sensibilidad al estímulo disminuye. El estancamiento emerge de limitaciones neurales (fatiga central), estructurales (capacidad ribosomal) y de programación. 2. FISIOLOGÍA CELULAR: EFICIENCIA VS CAPACIDAD. En novatos, el crecimiento ocurre por mayor 'eficiencia' de los ribosomas existentes. En avanzados, el factor limitante es la BIOGÉNESIS RIBOSOMAL (crear nuevos ribosomas).  Sin aumentar la capacidad traduccional total mediante nuevos estímulos de volumen/intensidad, el crecimiento se detiene. FRENOS MOLECULARES: Mecanismos como la miostatina actúan para frenar el crecimiento descontrolado; romper el plateau requiere una señal anabólica lo suficientemente potente para anular estos frenos. 3. ADAPTACIONES NEURALES Y FATIGA. La fuerza se estanca a menudo por 'acomodación neural' (falta de mejora en la Tasa de Desarrollo de Fuerza - RFD). ES CRÍTICO DISTINGUIR FATIGA: Fatiga Periférica (local, metabólica) vs Fatiga Central (sistémica, reducción del drive neural).  Un atleta puede estancarse en pecho por exceso de fatiga central generada en piernas. 4. HITOS DE VOLUMEN (VOLUME LANDMARKS). La gestión del volumen es la herramienta más potente. CONCEPTOS CLAVE: MEV (Volumen Mínimo Efectivo) y MRV (Volumen Máximo Recuperable). PARADOJA DEL AVANZADO: Su MEV sube (necesita más para crecer) y su MRV baja (se recupera peor de cargas absolutas altas), cerrando la ventana de adaptación.  SOLUCIÓN: Periodización en bloques donde se especializan grupos musculares mientras otros están en mantenimiento (MV). 5. RESENSIBILIZACIÓN Y DELOADS. Para volver a crecer, hay que restaurar la sensibilidad anabólica. ESTRATEGIA: Reducir Volumen (-40-60 por ciento) manteniendo Intensidad (peso). El detraining estratégico (1 semana off) no causa atrofia y resensibiliza mTOR. 6. PERIODIZACIÓN Y BIOMECÁNICA AVANZADA. Modelos Lineales fallan en avanzados. Usar DUP (Ondulante Diaria) o Conjugada. BIOMECÁNICA: El 'ROM completo' no siempre es lo mejor para romper estancamientos. HIPERTROFIA MEDIADA POR ESTIRAMIENTO: Entrenar en longitudes musculares largas (Lengthened Partials) aprovecha la TITINA como mecanosensor para activar vías de crecimiento inactivas.  7. AUTORREGULACIÓN (VBT). Los porcentajes fijos fallan. Usar Velocidad de la Barra. Para fuerza: Velocity Loss 20 por ciento (minimiza fatiga metabólica). Para hipertrofia: Velocity Loss 40 por ciento (maximiza estrés metabólico).  CONCLUSIÓN: Superar el estancamiento requiere 'esforzarse diferente', no solo 'más'. Usar deloads para resensibilizar, parciales alargadas para nuevos estímulos mecánicos, y VBT para precisión en la fatiga.",
+    "source": "Rev. Narrativa Fisiología del Estancamiento (130 fuentes); Outside Magazine; J Physiology; Westside Barbell Methods; RP Strength Volume Landmarks; Frontiers in Physiology",
+    "references": [
+      {
+        "title": "The Plateau in Muscle Growth with Resistance Training: An Exploration of Possible Mechanisms",
+        "authors": "Damas F, et al.",
+        "year": 2015,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/25739559/"
+      },
+      {
+        "title": "Molecular Regulation of Exercise-Induced Muscle Fiber Hypertrophy",
+        "authors": "PubMed Central",
+        "year": 2020,
+        "url": "https://pmc.ncbi.nlm.nih.gov/"
+      },
+      {
+        "title": "Gaining more from doing less? The effects of a one-week deload period",
+        "authors": "Hwang PS, et al.",
+        "year": 2017,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/28032435/"
+      },
+      {
+        "title": "Lengthened partial repetitions elicit similar muscular adaptations as full range of motion",
+        "authors": "Pedrosa GF, et al.",
+        "year": 2022,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/"
+      },
+      {
+        "title": "Training Volume Landmarks for Muscle Growth",
+        "authors": "Israetel M.",
+        "year": 2020,
+        "url": "https://rpstrength.com/"
+      },
+      {
+        "title": "Central and Peripheral Fatigue in Physical Exercise Explained",
+        "authors": "PMC Review",
+        "year": 2021,
+        "url": "https://pmc.ncbi.nlm.nih.gov/"
+      }
+    ]
+  }

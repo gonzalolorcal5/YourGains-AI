@@ -1,0 +1,36 @@
+{
+    "title": "Tempo de entrenamiento y tensión mecánica para hipertrofia",
+    "category": "training_knowledge",
+    "tags": ["tempo", "tensión mecánica", "hipertrofia", "fallo muscular", "intensidad", "time under tension", "actina", "miosina", "intencionalidad"],
+    "level": "intermediate",
+    "goal": ["hipertrofia", "fuerza"],
+    "language": "es",
+    "content": "La tensión mecánica es el estímulo principal para la hipertrofia muscular, por encima del daño muscular o estrés metabólico. Para entender por qué, necesitas conocer lo básico: tus músculos se contraen cuando millones de pequeñas proteínas llamadas actina y miosina forman 'puentes' entre ellas, tirando unas de otras como un engranaje. Cuando levantas peso, estos puentes se forman y se rompen miles de veces por segundo, generando fuerza. Cuanto más peso levantas (o más cerca del fallo llegas la serie), más puentes deben formarse simultáneamente para generar la fuerza necesaria. Esta activación masiva de puentes actina-miosina bajo tensión es lo que 'señaliza' a tu cuerpo que necesita construir más músculo. Sin suficiente tensión mecánica (es decir, sin que se formen suficientes puentes trabajando al mismo tiempo), el estímulo de crecimiento es débil. Por eso tanto el tempo lento como el tempo normal pueden generar hipertrofia equivalente: lo que importa no es la velocidad, sino cuántos puentes actina-miosina estás forzando a trabajar bajo tensión. Estudios demuestran que tempo lento (3-0-3 segundos) con 50-60% de 1RM produce la misma hipertrofia que tempo normal con 80-90% de 1RM, siempre que se entrene cerca del fallo. En ambos casos, estás forzando a formar muchos puentes bajo tensión. Sin embargo, existe un umbral mínimo: necesitas al menos 30-40% de tu 1RM para generar suficientes puentes activos. Con cargas inferiores al 30% de 1RM, incluso entrenando al fallo muscular, no reclutan suficientes fibras ni forman suficientes puentes para maximizar la hipertrofia (8.9% vs 19.5% con cargas más altas). La proximidad al fallo es crucial porque las últimas repeticiones, cuando se vuelven lentas por la fatiga, son cuando TODAS las fibras musculares disponibles deben activarse (formando el máximo de puentes posible) para mover el peso. Se produce la máxima tensión mecánica cuando el movimiento es lento y con máxima intencionalidad, y a ese punto se llega cerca del fallo: es cuando salen las repeticiones más lentas de la serie por la fatiga, y ahí es donde mantienes la máxima intencionalidad de completar la serie, forzando cada fibra muscular disponible a trabajar. Entrenar a 1-3 repeticiones del fallo muscular genera significativamente más hipertrofia que quedarse a 5+ repeticiones porque recluta más fibras y forma más puentes bajo tensión. Aplicación práctica: puedes variar el tempo según preferencia, fatiga articular o disponibilidad de equipo. Si usas tempo lento, necesitas menos peso pero igual intensidad de esfuerzo (igual número de puentes activos). Si usas tempo normal, necesitas más peso pero menos tiempo bajo tensión. Ambos caminos funcionan si respetas: carga mayor al 40% de 1RM (suficiente para formar muchos puentes) y entrenar a 1-3 RIR para forzar el reclutamiento máximo de fibras con máxima intencionalidad.",
+    "source": "Wackerhage et al. (2019); Tanimoto & Ishii (2008); Lasevicius et al. (2018); Pareja-Blanco et al. (2017)",
+    "references": [
+      {
+        "title": "Stimuli and sensors that initiate skeletal muscle hypertrophy following resistance exercise",
+        "authors": "Wackerhage et al.",
+        "year": 2019,
+        "url": "https://www.researchgate.net/publication/328370177_Stimuli_and_sensors_that_initiate_skeletal_muscle_hypertrophy_following_resistance_exercise"
+      },
+      {
+        "title": "Effects of low-intensity resistance exercise with slow movement on muscular size and strength",
+        "authors": "Tanimoto & Ishii",
+        "year": 2008,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/18978616/"
+      },
+      {
+        "title": "Effects of different intensities of resistance training with equated volume load on muscle strength and hypertrophy",
+        "authors": "Lasevicius et al.",
+        "year": 2018,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/29564973/"
+      },
+      {
+        "title": "Effects of velocity loss during resistance training on performance and muscle adaptations",
+        "authors": "Pareja-Blanco et al.",
+        "year": 2017,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/27038416/"
+      }
+    ]
+  }

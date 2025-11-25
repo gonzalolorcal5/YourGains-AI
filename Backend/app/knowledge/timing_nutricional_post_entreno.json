@@ -1,0 +1,30 @@
+{
+  "title": "Timing nutricional post-entreno: glucógeno vs síntesis proteica",
+  "category": "nutrition_knowledge",
+  "tags": ["post-entreno", "glucógeno", "síntesis proteica", "gluconeogénesis", "timing nutricional", "hidratos", "consejos nutricionales"],
+  "level": "intermediate",
+  "goal": ["hipertrofia", "rendimiento"],
+  "language": "es",
+  "content": "Después de entrenar, el cuerpo tiene los depósitos de glucógeno muscular vaciados. Si solo consumes proteína en la comida post-entreno (por ejemplo, un batido de proteínas aislado), el cuerpo activará la gluconeogénesis: convertirá parte de esa proteína en glucosa para rellenar los depósitos de glucógeno, desaprovechando su función principal de reparación y construcción muscular. Estudios demuestran que incluso sin ingesta de carbohidratos, el cuerpo sintetiza glucosa a tasas de 1-2 mmol/kg/h mediante gluconeogénesis usando aminoácidos como sustrato. La estrategia óptima es combinar hidratos de carbono con proteína: los hidratos se descomponen en glucosa y reponen el glucógeno muscular, mientras que la proteína se destina completamente a la síntesis proteica y reparación del tejido muscular. Meta-análisis de 20 estudios confirman que la co-ingestión de CHO+PRO optimiza ambos procesos de recuperación.",
+  "source": "Craven et al. (2021) Sports Med Open; Alghannam et al. (2018) Nutrients; Fournier et al. (2017) J Appl Physiol",
+  "references": [
+    {
+      "title": "Meta-análisis sobre CHO+PRO y síntesis de glucógeno",
+      "authors": "Craven et al.",
+      "year": 2021,
+      "url": "https://pubmed.ncbi.nlm.nih.gov/33507402/"
+    },
+    {
+      "title": "Restauración de glucógeno y capacidad funcional",
+      "authors": "Alghannam et al.",
+      "year": 2018,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5852829/"
+    },
+    {
+      "title": "Fisiología de la gluconeogénesis",
+      "authors": "Kerksick et al.",
+      "year": 2023,
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK541119/"
+    }
+  ]
+}

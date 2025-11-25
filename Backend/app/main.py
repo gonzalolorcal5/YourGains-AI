@@ -20,6 +20,8 @@ from app.routes import (
     chat_modify_optimized,
 )
 
+from app.routers import rag
+
 load_dotenv()
 
 # Lifespan para startup/shutdown limpios (evita CancelledError al salir)
@@ -68,7 +70,7 @@ app.include_router(user_status.router)
 app.include_router(chat.router)
 app.include_router(onboarding.router)
 app.include_router(chat_modify_optimized.router)
-
+app.include_router(rag.router)
 # Stripe (protegido por si faltan variables)
 try:
     from app.routes import stripe_routes, stripe_webhook, stripe_webhook_cli

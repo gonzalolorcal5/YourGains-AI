@@ -1,0 +1,70 @@
+{
+    "title": "Biomecánica Computacional: Movilidad, Flexibilidad y la Hipertrofia Mediada por Estiramiento (SMH)",
+    "category": "biomechanics",
+    "tags": [
+      "movilidad vs flexibilidad",
+      "hipertrofia mediada por estiramiento",
+      "stretch-mediated hypertrophy",
+      "titina",
+      "RAMP",
+      "estiramiento estatico",
+      "estiramiento dinamico",
+      "gap activo-pasivo",
+      "prevencion lesiones",
+      "repeticiones parciales"
+    ],
+    "level": "advanced",
+    "goal": [
+      "hipertrofia",
+      "movilidad",
+      "prevencion_lesiones",
+      "arquitectura_datos"
+    ],
+    "language": "es",
+    "content": "INTRODUCCIÓN: TAXONOMÍA PARA IA. Para construir una IA de entrenamiento precisa, debemos abandonar la heurística tradicional y adoptar una taxonomía basada en mecánica tisular. El punto de partida es la distinción crítica entre flexibilidad (capacidad pasiva) y movilidad (capacidad activa). 1. DEFINICIÓN DE PARÁMETROS: EL DÉFICIT ACTIVO-PASIVO. FLEXIBILIDAD (PROM): Es el límite viscoelástico pasivo de los tejidos (músculo, tendón, cápsula) cuando una fuerza externa actúa sobre ellos. MOVILIDAD (AROM): Es el rango que la articulación puede recorrer usando solo contracción voluntaria.  EL GAP DE RIESGO: La diferencia (delta) entre PROM y AROM es la 'zona de inestabilidad'. Una IA debe identificar usuarios con gran flexibilidad pero baja movilidad como de ALTO RIESGO de lesión, prescribiendo fuerza en rangos finales en lugar de más estiramientos. 2. FISIOLOGÍA DEL ESTIRAMIENTO: TIMING Y MODALIDAD. ESTIRAMIENTO ESTÁTICO (SS) PRE-ENTRENO: Reduce la rigidez tendinosa y la activación neural. Dosis >60s causa pérdida de fuerza/potencia significativa (-4 a -7.5 por ciento). Dosis <30s es aceptable si es necesario para posicionamiento mecánico. ESTIRAMIENTO DINÁMICO (DS): Superior para rendimiento. Debe seguir el protocolo RAMP (Raise, Activate, Mobilize, Potentiate).  ESTIRAMIENTO POST-ENTRENO: La evidencia confirma que NO reduce el DOMS (agujetas), pero es el momento ideal para aumentar la plasticidad (PROM) sin coste de rendimiento. 3. HIPERTROFIA MEDIADA POR ESTIRAMIENTO (SMH): EL NUEVO PARADIGMA. Entrenar el músculo en longitudes largas (estirado) produce mayor hipertrofia que en longitudes cortas o incluso que el ROM completo en algunos casos. MECANISMO DE LA TITINA: La proteína gigante Titina actúa como un resorte molecular y mecanosensor dentro del sarcómero. Al estirarse bajo carga, despliega dominios quinasa que activan la vía mTORC1.  EVIDENCIA DE PARCIALES ALARGADAS: Maeo et al. (2021, 2022) y Pedrosa et al. (2023) demuestran que ejercicios como el Curl de Isquios Sentado (+14 por ciento hipertrofia) y Extensión de Tríceps Sobre Cabeza (+19.8 por ciento) superan a sus contrapartes en posición acortada (Curl Tumbado, Pushdown). LÓGICA ALGORÍTMICA (LPS): La IA debe asignar un 'Lengthened Position Score' (LPS) a los ejercicios. Priorizar movimientos que cargan el músculo en su punto de máxima elongación. 4. ESTIRAMIENTO INTER-SERIES (ISS). Aplicar un estiramiento cargado de 30 segundos entre series puede potenciar la hipertrofia, especialmente en músculos resistentes a la fatiga como el sóleo (Van Every et al. 2022). No abusar en músculos de potencia para no generar fatiga excesiva. 5. ANÁLISIS ESTRUCTURAL Y PREVENCIÓN. TOBILLO: La dorsiflexión limitada es la causa mecánica principal de la mala técnica en sentadilla (squat-morning). CADERA: La estructura ósea (retroversión vs anteversión) debe dictar la elección entre Peso Muerto Sumo o Convencional. ASIMETRÍA: La asimetría funcional (>10-15 por ciento) es el mayor predictor de lesión. La IA debe prescribir trabajo unilateral obligatorio para corregirla. CONCLUSIÓN PARA EL DATASET: La programación no debe basarse en 'estirar por salud', sino en 'movilidad para el rendimiento' y 'longitudes largas para hipertrofia'.",
+    "source": "Maeo et al. (2021/2022); Pedrosa et al. (2023); Kassiano et al. (2023); Van Every et al. (2022); N1 Training Biomechanics; Review Sistemática sobre DOMS y Estiramiento",
+    "references": [
+      {
+        "title": "Greater Hamstrings Muscle Hypertrophy but Similar Damage Protection after Training at Long versus Short Muscle Lengths",
+        "authors": "Maeo S, et al.",
+        "year": 2021,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/33009197/"
+      },
+      {
+        "title": "Triceps brachii hypertrophy is substantially greater after elbow extension training performed in the overhead versus neutral arm position",
+        "authors": "Maeo S, et al.",
+        "year": 2022,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/35819335/"
+      },
+      {
+        "title": "Training in the Initial Range of Motion Promotes Greater Muscle Adaptations Than at Final in the Arm Curl",
+        "authors": "Pedrosa GF, et al.",
+        "year": 2023,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/36670126/"
+      },
+      {
+        "title": "Greater Gastrocnemius Muscle Hypertrophy After Partial Range of Motion Training Performed at Long Muscle Lengths",
+        "authors": "Kassiano W, et al.",
+        "year": 2023,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/37015016/"
+      },
+      {
+        "title": "Loaded inter-set stretch may selectively enhance muscular adaptations of the plantar flexors",
+        "authors": "Van Every DW, et al.",
+        "year": 2022,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/35621513/"
+      },
+      {
+        "title": "The Effectiveness of Post-exercise Stretching in Short-Term and Delayed Recovery of Strength and DOMS: A Systematic Review",
+        "authors": "Afonso J, et al.",
+        "year": 2021,
+        "url": "https://www.frontiersin.org/articles/10.3389/fphys.2021.677581"
+      },
+      {
+        "title": "Does pre-exercise static stretching inhibit maximal muscular performance? A meta-analytical review",
+        "authors": "Simic L, et al.",
+        "year": 2013,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/22316148/"
+      }
+    ]
+  }

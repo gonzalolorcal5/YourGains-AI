@@ -1,0 +1,51 @@
+{
+    "title": "Modulación Lipídica y Hormonal: Por qué las Grasas y el Colesterol son vitales para la Testosterona y la Hipertrofia",
+    "category": "nutrition_endocrinology",
+    "tags": [
+      "grasas",
+      "testosterona",
+      "colesterol",
+      "esteroideogenesis",
+      "omega-3",
+      "acido araquidonico",
+      "dietas bajas en grasa",
+      "huevos enteros",
+      "membrana celular",
+      "grasas saturadas"
+    ],
+    "level": "advanced",
+    "goal": [
+      "optimizacion_hormonal",
+      "hipertrofia",
+      "salud_endocrina"
+    ],
+    "language": "es",
+    "content": "INTRODUCCIÓN: EL PARADIGMA LIPOCÉNTRICO. Las grasas no son solo energía; son sustratos estructurales obligatorios para la testosterona y las membranas celulares. 1. MECANISMO: ESTEROIDEOGÉNESIS MEDIADA POR LÍPIDOS. La testosterona se sintetiza en las células de Leydig a partir del COLESTEROL. La proteína StAR transporta este colesterol a la mitocondria para su conversión. Sin colesterol suficiente o con membranas celulares inestables, este proceso falla.  2. CANTIDAD TOTAL: EL PELIGRO DE LAS DIETAS BAJAS EN GRASA. Meta-análisis (Whittaker & Wu 2021) confirman que dietas con <20 por ciento de grasa reducen significativamente la testosterona total, libre y DHT. REGLA: Nunca bajar de 0.6-0.8g grasa/kg de peso corporal, incluso en etapas de definición (cutting), para evitar el colapso hormonal. 3. COLESTEROL DIETÉTICO Y GRASAS SATURADAS (SFA). Contrario a las guías para sedentarios, en atletas la ingesta de SFA y colesterol se correlaciona POSITIVAMENTE con la testosterona y la ganancia de masa magra (Riechman et al.). Mecanismo: El colesterol es necesario para reparar las micro-roturas de la membrana muscular (sarcolema) tras el entrenamiento y estabilizar las 'balsas lipídicas' donde residen los receptores hormonales.  4. ÁCIDO ARAQUIDÓNICO (OMEGA-6) VS OMEGA-3. El crecimiento requiere inflamación aguda. El Ácido Araquidónico (procedente de grasas animales/huevos) es la señal que inicia la inflamación anabólica. El Omega-3 es necesario para sensibilizar la célula a la insulina, pero dosis masivas pueden blanquear la señal de crecimiento. Ratio ideal 2:1 a 4:1. 5. CONCLUSIÓN PRÁCTICA. A) Ingesta Base: 25-35 por ciento de las calorías totales en volumen. B) Fuentes: Los huevos ENTEROS son un superalimento anabólico. No tirar las yemas. C) Estrategia: Usar grasas monoinsaturadas (Oliva/Aguacate) como base calórica, y grasas saturadas/colesterol (Carnes/Huevos) como soporte endocrino.",
+    "source": "Whittaker & Wu (2021 Meta-analysis); Riechman et al. (Texas A&M Studies on Cholesterol); Volek et al. (Testosterone & Fat); Frontiers in Nutrition",
+    "references": [
+      {
+        "title": "Low-fat diets and testosterone in men: Systematic review and meta-analysis of intervention studies",
+        "authors": "Whittaker J, Wu K.",
+        "year": 2021,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/33741447/"
+      },
+      {
+        "title": "Dietary Cholesterol and Skeletal Muscle Hypertrophy with Resistance Training: A Randomized Placebo-Controlled Trial",
+        "authors": "Riechman SE, et al.",
+        "year": 2007,
+        "url": "https://faseb.onlinelibrary.wiley.com/doi/abs/10.1096/fasebj.22.1_supplement.962.14"
+      },
+      {
+        "title": "Testosterone and cortisol in relationship to dietary nutrients and resistance exercise",
+        "authors": "Volek JS, et al.",
+        "year": 1997,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/9029197/"
+      },
+      {
+        "title": "Effects of arachidonic acid supplementation on training adaptations in resistance-trained males",
+        "authors": "Roberts MD, et al.",
+        "year": 2016,
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4807440/"
+      }
+    ]
+  }

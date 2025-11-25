@@ -1,0 +1,36 @@
+{
+    "title": "Frecuencia de entrenamiento óptima y comparativa Fullbody vs Split",
+    "category": "training_knowledge",
+    "tags": ["frecuencia", "volumen", "fullbody", "split", "bro-split", "PPL", "upper lower", "series semanales", "recuperación"],
+    "level": "intermediate",
+    "goal": ["hipertrofia"],
+    "language": "es",
+    "content": "El factor más importante para la hipertrofia es el volumen semanal total: aproximadamente 12-20 series efectivas por grupo muscular por semana. La frecuencia de entrenamiento (cuántas veces entrenas cada músculo) es simplemente la herramienta que usas para distribuir ese volumen de forma óptima. La frecuencia óptima suele ser 2 veces por semana por grupo muscular, y aquí está el porqué con un ejemplo práctico: si quieres llegar a 20 series semanales de pectoral, es mucho más óptimo dividirlas en 2 sesiones (lunes y jueves por ejemplo) haciendo 10 series en cada una. De esta forma, esas 20 series totales serán de alta calidad porque en cada sesión empiezas fresco. Sin embargo, si intentas meter las 20 series en un mismo entrenamiento, a partir de la serie 10-12 las demás ya no son tan efectivas: tu rendimiento disminuye por la fatiga acumulada, la técnica se degrada, no puedes usar las mismas cargas, y las últimas series se convierten en 'series basura' que aportan poco estímulo real. Además, concentrar tanto volumen en una sola sesión genera un daño muscular mucho mayor del que te costará recuperarte de forma óptima, posiblemente requiriendo 5-7 días de descanso antes de poder entrenar ese músculo nuevamente con calidad. Esto limita tu capacidad de acumular volumen semanal total a largo plazo. Los meta-análisis de Schoenfeld et al. (2016, 2019) confirman esto: entrenar cada músculo 2 veces por semana produce significativamente más hipertrofia que 1 vez por semana. Curiosamente, entrenar 3 veces por semana no es superior a 2 veces SI el volumen semanal total es el mismo. La alta frecuencia (3x+) solo es ventajosa cuando necesitas distribuir un volumen semanal MUY alto (20-25+ series) que sería imposible de realizar con calidad en solo 2 sesiones. En cuanto a Fullbody vs Split, el meta-análisis de Zaroni et al. (2019) concluyó que no hay diferencias significativas en hipertrofia cuando el volumen está igualado: ambos enfoques funcionan igual de bien. La elección depende de tu disponibilidad y preferencia. Fullbody 3 días/semana (frecuencia 3x por músculo) es ideal para principiantes o personas con poco tiempo. Split tipo PPL 6 días/semana o Upper/Lower 4 días/semana (frecuencia 2x) es ideal para intermedios y avanzados que disfrutan del pump y pueden entrenar más días. El antiguo bro-split (1 músculo por día, frecuencia 1x) es subóptimo según la evidencia: solo funciona aceptablemente si tu volumen por músculo es bajo (menos de 12 series semanales), pero si necesitas 15-20 series para progresar, dividirlas en 2 sesiones es claramente superior. Lo ideal es que, dependiendo de cuántos días dispongas para entrenar, distribuyas bien tus sesiones para obtener el máximo rendimiento en cada una sin generar esa fatiga extrema de la cual posiblemente no seas capaz de recuperarte óptimamente. Esto es especialmente crítico para atletas naturales, cuya capacidad de recuperación es limitada comparada con usuarios de ayudas farmacológicas. Jerarquía de importancia: 1) Adherencia y entrenar cerca del fallo, 2) Volumen semanal total (12-20 series), 3) Frecuencia mínima 2x por músculo, 4) Tipo de rutina según logística personal.",
+    "source": "Schoenfeld et al. (2016, 2017, 2019); Zaroni et al. (2019)",
+    "references": [
+      {
+        "title": "Effects of Resistance Training Frequency on Measures of Muscle Hypertrophy: A Systematic Review and Meta-Analysis",
+        "authors": "Schoenfeld, Ogborn & Krieger",
+        "year": 2016,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/27102172/"
+      },
+      {
+        "title": "How many times per week should a muscle be trained to maximize muscle hypertrophy? A systematic review and meta-analysis",
+        "authors": "Schoenfeld, Grgic & Krieger",
+        "year": 2019,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/30558493/"
+      },
+      {
+        "title": "Dose-response relationship between weekly resistance training volume and increases in muscle mass",
+        "authors": "Schoenfeld, Grgic, Ogborn & Krieger",
+        "year": 2017,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/27433992/"
+      },
+      {
+        "title": "High Resistance-Training Frequency Enhances Muscle Thickness in Resistance-Trained Men",
+        "authors": "Zaroni et al.",
+        "year": 2019,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/30558493/"
+      }
+    ]
+  }
