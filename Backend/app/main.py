@@ -18,6 +18,7 @@ from app.routes import (
     chat,
     onboarding,
     chat_modify_optimized,
+    articles,
 )
 
 from app.routers import rag
@@ -71,6 +72,7 @@ app.include_router(chat.router)
 app.include_router(onboarding.router)
 app.include_router(chat_modify_optimized.router)
 app.include_router(rag.router)
+app.include_router(articles.router)
 # Stripe (protegido por si faltan variables)
 try:
     from app.routes import stripe_routes, stripe_webhook, stripe_webhook_cli
@@ -129,6 +131,9 @@ def _tarifas(): return _html("tarifas.html")
 
 @app.get("/pago.html")
 def _pago(): return _html("pago.html")
+
+@app.get("/consejos-estudios.html")
+def _consejos_estudios(): return _html("consejos-estudios.html")
 
 # Servir archivos JS específicos
 @app.get("/auth.js")

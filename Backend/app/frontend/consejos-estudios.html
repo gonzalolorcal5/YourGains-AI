@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consejos y Estudios - YourGains AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #000000;
+            color: white;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header {
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            position: relative;
+            width: 100%;
+        }
+        
+        .header .logo {
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .dna-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dna-icon svg {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 4px rgba(132, 204, 22, 0.45));
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .your-gains {
+            color: white;
+        }
+        
+        .ai {
+            color: #84cc16;
+        }
+        
+        .close-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+        
+        .page-title {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            text-align: center;
+        }
+        
+        .page-title h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .page-title p {
+            font-size: 16px;
+            color: #999;
+        }
+        
+        .articles-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            padding-bottom: 40px;
+        }
+        
+        .article-card {
+            background: rgba(30, 30, 30, 0.8);
+            border: 1px solid rgba(132, 204, 22, 0.2);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .article-card:hover {
+            border-color: #84cc16;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(132, 204, 22, 0.2);
+        }
+        
+        .article-card.locked {
+            filter: blur(4px);
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        
+        .article-card.locked::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+        }
+        
+        .lock-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            text-align: center;
+            color: white;
+        }
+        
+        .lock-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .lock-text {
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: #84cc16;
+            font-weight: bold;
+        }
+        
+        .upgrade-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .upgrade-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(132, 204, 22, 0.4);
+        }
+        
+        .category-badge {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 18px;
+        }
+        
+        .category-entrenamiento {
+            background: rgba(132, 204, 22, 0.2);
+            color: #84cc16;
+            border: 1px solid #84cc16;
+        }
+        
+        .category-nutricion {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+        }
+        
+        .article-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: white;
+            line-height: 1.4;
+        }
+        
+        .article-content {
+            margin-bottom: 24px;
+        }
+        
+        .article-content p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #e0e0e0;
+            margin-bottom: 16px;
+        }
+        
+        .article-references {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(132, 204, 22, 0.2);
+        }
+        
+        .article-references h4 {
+            font-size: 16px;
+            color: #84cc16;
+            margin-bottom: 14px;
+            font-weight: bold;
+        }
+        
+        .reference-item {
+            font-size: 14px;
+            color: #bbb;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .reference-item a {
+            color: #84cc16;
+            text-decoration: none;
+        }
+        
+        .reference-item a:hover {
+            text-decoration: underline;
+        }
+        
+        .article-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        .tag {
+            padding: 6px 12px;
+            background: rgba(132, 204, 22, 0.1);
+            border: 1px solid rgba(132, 204, 22, 0.3);
+            border-radius: 12px;
+            font-size: 13px;
+            color: #84cc16;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #84cc16;
+            font-size: 18px;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #ef4444;
+            font-size: 16px;
+        }
+        
+        @media (max-width: 768px) {
+            .articles-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-title h1 {
+                font-size: 28px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo" style="flex: 1; display: flex; justify-content: center;">
+            <div class="dna-icon">
+                <svg viewBox="0 0 800 800" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+                    <path transform="translate(237)" d="m0 0h19l10 5 8 6 4 4 4 8v5h1v10h234v-10l1-1 1-6 5-9 5-3 3-5 5-1 7-3h19l12 6 7 7h2l2 5 3 13v38l-2 20-3 15v8l-2 3-1 5h-2l-6 15-2 6-1 2-1 4-9 15-5 7-2 1-1 3-2 1-2 4-2 1-2 4-4 2-2 3-2 4-7 7-4 1-8 8-10 8-1 3-4 1-5 1-20-12-24-12-26-10-4-1v-2l10-4 14-8 10-7 1-1-91-1-16-10-13-11-10-9-6-4-1-4-4-2v-5l1-2 186-1 1-6 6-14 3-10 2-1h-232l2 1 2 6v7l4 5 9 17 5 7 1 3 3 2 1 4 4 2 2 5 10 10 17 13 14 9 23 12 21 8 26 8 22 9 22 11 8 5 5 1v2l12 8 12 9 4 1 3 5 4 1 3 5 15 15 4 2 1 4 5 3 1 3 5 5 7 10 7 11 8 16 1 8 6 18h2l1 7-1 1 3 17 1 14v12l-2 21-2 11 1 4-2 3-2 4-6 17v5l-10 19-12 18-5 5-2 4-4 2-2 5-5 3-15 15-2 4-4 1-15 12-5-2-23-13-23-11-24-9 1-3 19-10 15-10-94-1-14-9-14-11-15-15-4-2-1-4h-2l2-5h184l2-5h2l2-9h2l5-15h-229l1 7 2 1 1 7h2l2 4v5h2l6 10 1 3 5 5 1 3 3 2 1 4 5 3 7 7 2 4 8 6 3 1 2 4 17 11 23 12 21 8 36 12 20 9 21 11 21 14 14 11 11 10 4 1 3 5 4 2 3 3 1 4 4 3 3 2 1 4 3 1 1 3 2 1 1 3 4 4 10 16 1 6 3 1 3 9 2 7h2l1 8 2 4 2 2v8l3 14 2 21v38l-2 9-2 7-2 2-7 6-8 5-5 2h-18l-10-4-8-7-3-1-5-9-1-7h-1v-10h-234v10l-1 1-1 6-5 9-5 3-8 6-8 3h-18l-12-6-7-7h-2l-2-5-3-13v-38l2-21 3-14v-8l3-3 2-8 1-3 2-2 5-15h2l2-8 12-18 2-1 1-3 2-1 1-3 3-1 1-4 5-3 2-3 2-4 10-10 4-1 11-10 11-8 5 1 16 10 26 13 24 9 5 3-3 2-17 9-12 8-2 2 91 1 16 10 13 11 10 9 6 4 1 4 4 2v5l-1 2-184 1-7 15-5 15-2 1h232l-2-1-5-15-8-17-7-10-1-3-3-2-1-4-4-2-2-5-10-10-17-13-14-9-23-12-21-8-29-9-23-10-25-13-6-2v-2l-12-8-13-10-7-5-4-2-2-4-16-16-4-2-2-5-3-1-1-4-3-1-1-3-5-5-12-20-6-12v-5h-2l-1-8-6-20-3-18-1-13v-14l2-20 4-19 5-15v-5h2l1-7 9-17 9-14 6-8 3-1 1-4 3-1 1-4 6-4 16-16 2-4 4-1 3-5 4-1 8-6 5 2 23 13 23 11 24 9-1 3-19 10-15 10 98 1 1 3 13 9 11 9 14 14 4 2 1 4h2l-2 5h-184l-2 5h-2l-2 9h-2l-5 15h230l-5-15h-2l-2-9h-2l-6-10-1-3-5-5-1-3-3-2-1-4-5-3-7-7-2-4-3-2-3-1-1-3-4-1-2-4-17-11-23-12-21-8-36-12-20-9-21-11-21-14-14-11-12-11-5-2-8-8-1-4-4-3-3-2-1-4-3-1-1-3-2-1-1-3-4-4-10-16-1-6-3-1-2-9-3-7h-2l-1-8-2-4-2-2v-8l-3-14-2-21v-38l2-9 2-7 2-2 7-6 8-5zm296 5m-259 8m251 0m-250 1m249 0m-308 1m367 0m-307 1m247 0m-308 1m62 0m245 0m62 0m-306 2 1 2zm243 0 1 2zm-242 2 1 2zm241 0 1 2zm-240 3 1 3zm239 0 1 3zm-238 15v1h238v-1zm3 48m231 0m-230 1 1 3zm229 0 1 3zm-228 4 1 3zm227 0 1 2zm-1 3 1 2zm-1 3 1 2zm-1 2 1 2zm-1 3 1 2zm-219 1m1 1 1 2zm217 1m-291 2 1 3zm75 0m215 0m75 0 1 3zm-289 2m213 0m-212 2m211 0m-210 2m1 1m284 0 1 2zm-283 2m1 2m1 1m19 1m-18 1m19 0m-18 1m1 2m1 1m20 1m-19 1m20 0m-17 4m1 1m-80 5m84 0m-83 1 1 2zm84 0m1 1m253 5m-334 2m333 0m-332 2m331 0m-330 2m329 0m-328 1m327 0m-326 2m325 0m-324 2m323 0m-322 1m321 0m-320 2m319 0m-318 1m317 0m-316 2m315 0m-314 1m216 0m97 0m-312 2m311 0m-310 1m309 0m-306 4m303 0m-300 4m297 0m-293 5m289 0m-288 1m287 0m-280 8m273 0m-272 1m271 0m-270 1m269 0m-268 2m266 0m-264 2m263 0m-261 2m259 0m-25 21m-22 12m-193 20m221 0m-222 1m223 0m-229 5m235 0m-236 1m237 0m-259 22m281 0m-282 1m-1 1m-4 5m293 0m3 4m-300 1m301 0m-302 1m303 0m1 2m-306 1m307 0m-308 1m309 0m-310 2m311 0m-312 1m313 0m-314 1 1 2zm315 1m-316 1m195 0m122 0m-94 1m-224 1m319 0m-320 1m321 0m-322 2m231 0m92 0m-324 1m325 0m-326 2m327 0m-328 2m329 0m-330 1 1 2zm331 1m-332 1m244 0m89 0m-87 1m-247 1m248 0m87 0m-86 1m-250 1m251 0m86 0m-338 2m253 0m86 0m-340 2m341 0m-342 2m343 0m-344 2m262 0m83 0m-346 1 1 2zm264 0m83 1m-348 2 1 2zm349 0 1 2zm-81 1m1 1m1 2m1 1m-18 2m1 1m20 2m1 1m1 2m1 1m-206 2m207 0m-208 2m209 0m-213 8m217 0m-224 21v1h232v-1zm0 45v1h232v-1zm0 2m3 10m4 9m217 0m-216 2 1 2zm3 6m209 0m-208 2m207 0m-206 2m1 1m1 2m1 1m20 2m1 1m-18 2m1 1m1 2m-80 1 1 2zm81 0m268 0 1 2zm-348 3 1 2zm347 0m-264 1m-82 1m83 0m262 0m-344 2m343 0m-342 2m341 0m-340 2m86 0m253 0m-338 2m86 0m251 0m-250 1m-86 1m87 0m248 0m-247 1m-87 1m88 0m245 0m-332 1 1 2zm331 0m-330 2m329 0m-328 2m327 0m-326 2m325 0m-324 1m323 0m-322 2m321 0m-320 1m319 0m-224 1m-94 1m317 0m-316 1m315 0m-314 2m313 0m-312 1m311 0m-310 2m309 0m-308 1m307 0m-1 1m-1 2m-302 1m301 0m-1 1m-296 4m293 0m-289 5m1 1m282 1m-259 22m237 0m-236 1m235 0m-200 26m-42 29m-3 2m255 0m-257 2m-2 2m-2 2m267 0m-268 2m269 0m-270 1m271 0m-272 1m273 0m-280 8m287 0m-288 1m289 0m-293 5m297 0m-300 4m303 0m-306 4m309 0m-310 1m311 0m-312 2m97 0m216 0m-314 1m315 0m-316 2m317 0m-318 1m319 0m-320 2m321 0m-322 1m323 0m-324 2m325 0m-326 2m327 0m-328 1m329 0m-330 2m331 0m-332 2m333 0m-337 7m256 0m85 0m-84 1m-258 1m259 0m84 0m1 2 1 2zm-81 3m82 0m-81 1m-17 4m20 0m-19 1m20 1m1 1m1 2m-18 1m19 0m-18 1m19 1m1 1m1 2m-206 2m207 0m-208 1m209 0m-210 2m211 0m-288 2 1 3zm76 0m213 0m76 0 1 3zm-290 2m215 0m-216 2 1 2zm217 0 1 2zm-218 2m219 0m-220 3 1 2zm221 0 1 2zm-222 2 1 2zm223 0 1 2zm-224 3 1 2zm225 0 1 2zm-226 2 1 3zm227 0 1 3zm-228 4 1 3zm229 0 1 3zm-230 3m231 0m-234 48v1h238v-1zm-1 13 1 3zm239 0 1 3zm-240 4 1 2zm241 0 1 2zm-242 2 1 2zm243 0 1 2z" fill="#84CC16"/>
+                </svg>
+            </div>
+            <div class="logo-text">
+                <span class="your-gains">YourGains</span>
+                <span class="ai">AI</span>
+            </div>
+        </div>
+        <button class="close-btn" onclick="window.history.back()" title="Volver atrás" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);">×</button>
+    </div>
+    
+    <div class="page-title">
+        <h1>Consejos y Estudios</h1>
+        <p>Artículos científicos basados en evidencia sobre entrenamiento y nutrición</p>
+    </div>
+    
+    <div id="articles-container" class="articles-container">
+        <div class="loading">Cargando artículos...</div>
+    </div>
+    
+    <script type="module">
+        import { API_BASE } from "./config.js";
+        import { checkAuthOrRedirect, logout, getCurrentUserId } from "./auth.js";
+        
+        // Verificar autenticación
+        if (!checkAuthOrRedirect()) {
+            // La función ya redirige, pero por si acaso
+            window.location.href = "./login.html";
+        }
+        
+        // Función para verificar estado premium
+        async function checkPremiumStatus() {
+            try {
+                const userId = getCurrentUserId();
+                if (!userId) return false;
+                
+                const response = await fetch(`${API_BASE}/user-status?user_id=${userId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.is_premium === true || data.plan_type === 'PREMIUM';
+                }
+            } catch (error) {
+                console.error('Error verificando premium:', error);
+            }
+            return false;
+        }
+        
+        // Función para cargar artículos
+        async function loadArticles() {
+            const container = document.getElementById('articles-container');
+            const userId = getCurrentUserId();
+            
+            if (!userId) {
+                container.innerHTML = '<div class="error">Error: No se pudo obtener el ID de usuario</div>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/articles?user_id=${userId}`);
+                
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                const articles = data.articles || [];
+                const isPremium = data.is_premium || false;
+                
+                if (articles.length === 0) {
+                    container.innerHTML = '<div class="error">No hay artículos disponibles aún</div>';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                
+                articles.forEach((article, index) => {
+                    const card = createArticleCard(article, index + 1, isPremium);
+                    container.appendChild(card);
+                });
+                
+            } catch (error) {
+                console.error('Error cargando artículos:', error);
+                container.innerHTML = `<div class="error">Error cargando artículos: ${error.message}</div>`;
+            }
+        }
+        
+        // Función para crear una card de artículo
+        function createArticleCard(article, index, isPremium) {
+            const card = document.createElement('div');
+            const isLocked = !article.is_accessible;
+            
+            card.className = `article-card ${isLocked ? 'locked' : ''}`;
+
+            // Mapear categoría a clase CSS (evita problemas con acentos)
+            const categoryKey = (article.category || '').toLowerCase();
+            let categoryClass = '';
+            if (categoryKey.startsWith('entren')) {
+                categoryClass = 'category-entrenamiento';
+            } else if (categoryKey.startsWith('nutric')) {
+                categoryClass = 'category-nutricion';
+            } else {
+                categoryClass = 'category-entrenamiento';
+            }
+            
+            let contentHTML = `
+                <div class="category-badge ${categoryClass}">
+                    ${article.category}
+                </div>
+                <h3 class="article-title">${article.title}</h3>
+            `;
+            
+            if (isLocked) {
+                // Contenido bloqueado
+                contentHTML += `
+                    <div class="lock-overlay">
+                        <span class="lock-icon">🔒</span>
+                        <div class="lock-text">Contenido exclusivo Premium</div>
+                        <a href="tarifas.html" class="upgrade-btn">Upgrade a Premium</a>
+                    </div>
+                `;
+            } else {
+                // Contenido completo
+                contentHTML += '<div class="article-content">';
+                article.content.forEach(paragraph => {
+                    contentHTML += `<p>${paragraph}</p>`;
+                });
+                contentHTML += '</div>';
+                
+                // Referencias
+                if (article.references && article.references.length > 0) {
+                    contentHTML += '<div class="article-references">';
+                    contentHTML += '<h4>Referencias Científicas:</h4>';
+                    article.references.forEach(ref => {
+                        const pmidLink = `https://pubmed.ncbi.nlm.nih.gov/${ref.pmid}`;
+                        contentHTML += `
+                            <div class="reference-item">
+                                <strong>${ref.title}</strong> - 
+                                <a href="${pmidLink}" target="_blank" rel="noopener noreferrer">
+                                    PMID: ${ref.pmid}
+                                </a>
+                            </div>
+                        `;
+                    });
+                    contentHTML += '</div>';
+                }
+                
+                // Tags
+                if (article.tags && article.tags.length > 0) {
+                    contentHTML += '<div class="article-tags">';
+                    article.tags.forEach(tag => {
+                        contentHTML += `<span class="tag">${tag}</span>`;
+                    });
+                    contentHTML += '</div>';
+                }
+            }
+            
+            card.innerHTML = contentHTML;
+            
+            return card;
+        }
+        
+        // Exponer logout globalmente
+        window.logout = logout;
+        
+        // Cargar artículos al iniciar
+        loadArticles();
+    </script>
+</body>
+</html>
+

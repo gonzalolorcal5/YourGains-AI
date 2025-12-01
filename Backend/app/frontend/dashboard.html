@@ -21,7 +21,7 @@
           
           .logo {
               position: absolute;
-              top: 45px;
+              top: 80px;
               left: 40px;
               display: flex;
               align-items: center;
@@ -275,7 +275,7 @@
           
           .navigation {
               position: absolute;
-            top: 60px;
+            top: 100px;
             right: 100px;
               display: flex;
             gap: 20px;
@@ -807,7 +807,7 @@
               /* Logo - centrado en la parte superior */
               .logo {
                   position: absolute;
-                  top: 40px;
+                  top: 80px;
                   left: 50%;
                   transform: translateX(-50%);
                   gap: 3px;
@@ -842,7 +842,7 @@
               /* Navegación - debajo del logo, centrada y compacta */
               .navigation {
                   position: absolute;
-                  top: 140px;
+                  top: 180px;
                   left: 50%;
                   transform: translateX(-50%);
                   gap: 2px;
@@ -947,14 +947,10 @@
                   transform: translateY(-1px);
               }
 
-              /* PASO 1: Fondo negro con imagen del entrenador */
+              /* Fondo negro absoluto */
               body {
                   background-color: #000000 !important;
-                  background-image: url('./images/gym-training-dark.jpg');
-                  background-size: 180% auto;
-                  background-position: center -200px;
-                  background-repeat: no-repeat;
-                  z-index: 0;
+                  background-image: none !important;
               }
 
               /* Ocultar el contenedor de imagen original */
@@ -1351,9 +1347,8 @@
           </div>
       </div>
 
-      <!-- Gym Image Container -->
-      <div class="gym-image-container">
-          <img src="./images/gym-training-dark.jpg" alt="Gimnasio moderno con persona entrenando - Your Gains AI" class="gym-image">
+      <!-- Gym Image Container - Ocultado -->
+      <div class="gym-image-container" style="display: none;">
       </div>
 
       <script type="module">
@@ -1775,7 +1770,9 @@
                 rutinaBtn.addEventListener('click', () => openOverlay('rutinaDietaOverlay'));
             }
             if (consejosBtn) {
-                consejosBtn.addEventListener('click', () => openOverlay('consejosEstudiosOverlay'));
+                consejosBtn.addEventListener('click', () => {
+                    window.location.href = './consejos-estudios.html';
+                });
             }
             if (terminosBtn) {
                 terminosBtn.addEventListener('click', () => openOverlay('terminosPrivacidadOverlay'));
@@ -2895,8 +2892,7 @@
             });
             
             document.getElementById('consejosEstudios').addEventListener('click', function() {
-                openOverlay('consejosEstudiosOverlay');
-                loadAdviceAndStudiesContent();
+                window.location.href = './consejos-estudios.html';
             });
             
             document.getElementById('terminosPrivacidad').addEventListener('click', function() {
