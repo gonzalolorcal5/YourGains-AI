@@ -1,3 +1,30 @@
+<!--
+CONFIGURACIÓN DE MÉTODOS DE PAGO ADICIONALES:
+
+Para que aparezcan más métodos de pago, actívalos en Stripe Dashboard:
+
+1. Modo TEST:
+   - Ve a: https://dashboard.stripe.com/test/settings/payment_methods
+   - Activa: Link, Apple Pay, Google Pay
+   
+
+2. Modo PRODUCCIÓN:
+   - Ve a: https://dashboard.stripe.com/settings/payment_methods
+   - Activa: Link, Apple Pay, Google Pay, Bizum, SEPA (opcional)
+
+Payment Element los detectará y mostrará automáticamente.
+
+MÉTODOS RECOMENDADOS:
+- Link: Checkout 1-click (gratis)
+- Apple Pay: +30% conversión en iPhone/Mac
+- Google Pay: +30% conversión en Android/Chrome
+- Bizum: Popular en España
+
+COMISIONES:
+- Tarjetas/Apple Pay/Google Pay/Link: 1.5% + 0.25€
+- Bizum: ~1.5%
+- SEPA: 0.8% (más barato)
+-->
 <!doctype html>
 <html lang="es">
 <head>
@@ -16,10 +43,55 @@
 <body class="min-h-screen bg-neutral-950 text-white">
   <header class="border-b border-neutral-800">
     <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-      <div class="text-xl font-bold">YourGains <span class="text-lime-400">AI</span></div>
-      <a href="./rutina.html" class="text-sm bg-neutral-800 px-3 py-1.5 rounded-lg hover:bg-neutral-700">Ir a mi área</a>
+      <div class="flex items-center gap-2">
+        <div class="dna-icon">
+          <svg viewBox="0 0 800 800" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <path transform="translate(237)" d="m0 0h19l10 5 8 6 4 4 4 8v5h1v10h234v-10l1-1 1-6 5-9 5-3 3-5 5-1 7-3h19l12 6 7 7h2l2 5 3 13v38l-2 20-3 15v8l-2 3-1 5h-2l-6 15-2 6-1 2-1 4-9 15-5 7-2 1-1 3-2 1-2 4-2 1-2 4-4 2-2 3-2 4-7 7-4 1-8 8-10 8-1 3-4 1-5 1-20-12-24-12-26-10-4-1v-2l10-4 14-8 10-7 1-1-91-1-16-10-13-11-10-9-6-4-1-4-4-2v-5l1-2 186-1 1-6 6-14 3-10 2-1h-232l2 1 2 6v7l4 5 9 17 5 7 1 3 3 2 1 4 4 2 2 5 10 10 17 13 14 9 23 12 21 8 26 8 22 9 22 11 8 5 5 1v2l12 8 12 9 4 1 3 5 4 1 3 5 15 15 4 2 1 4 5 3 1 3 5 5 7 10 7 11 8 16 1 8 6 18h2l1 7-1 1 3 17 1 14v12l-2 21-2 11 1 4-2 3-2 4-6 17v5l-10 19-12 18-5 5-2 4-4 2-2 5-5 3-15 15-2 4-4 1-15 12-5-2-23-13-23-11-24-9 1-3 19-10 15-10-94-1-14-9-14-11-15-15-4-2-1-4h-2l2-5h184l2-5h2l2-9h2l5-15h-229l1 7 2 1 1 7h2l2 4v5h2l6 10 1 3 5 5 1 3 3 2 1 4 5 3 7 7 2 4 8 6 3 1 2 4 17 11 23 12 21 8 36 12 20 9 21 11 21 14 14 11 11 10 4 1 3 5 4 2 3 3 1 4 4 3 3 2 1 4 3 1 1 3 2 1 1 3 4 4 10 16 1 6 3 1 3 9 2 7h2l1 8 2 4 2 2v8l3 14 2 21v38l-2 9-2 7-2 2-7 6-8 5-5 2h-18l-10-4-8-7-3-1-5-9-1-7h-1v-10h-234v10l-1 1-1 6-5 9-5 3-8 6-8 3h-18l-12-6-7-7h-2l-2-5-3-13v-38l2-21 3-14v-8l3-3 2-8 1-3 2-2 5-15h2l2-8 12-18 2-1 1-3 2-1 1-3 3-1 1-4 5-3 2-3 2-4 10-10 4-1 11-10 11-8 5 1 16 10 26 13 24 9 5 3-3 2-17 9-12 8-2 2 91 1 16 10 13 11 10 9 6 4 1 4 4 2v5l-1 2-184 1-7 15-5 15-2 1h232l-2-1-5-15-8-17-7-10-1-3-3-2-1-4-4-2-2-5-10-10-17-13-14-9-23-12-21-8-29-9-23-10-25-13-6-2v-2l-12-8-13-10-7-5-4-2-2-4-16-16-4-2-2-5-3-1-1-4-3-1-1-3-5-5-12-20-6-12v-5h-2l-1-8-6-20-3-18-1-13v-14l2-20 4-19 5-15v-5h2l1-7 9-17 9-14 6-8 3-1 1-4 3-1 1-4 6-4 16-16 2-4 4-1 3-5 4-1 8-6 5 2 23 13 23 11 24 9-1 3-19 10-15 10 98 1 1 3 13 9 11 9 14 14 4 2 1 4h2l-2 5h-184l-2 5h-2l-2 9h-2l-5 15h230l-5-15h-2l-2-9h-2l-6-10-1-3-5-5-1-3-3-2-1-4-5-3-7-7-2-4-3-2-3-1-1-3-4-1-2-4-17-11-23-12-21-8-36-12-20-9-21-11-21-14-14-11-12-11-5-2-8-8-1-4-4-3-3-2-1-4-3-1-1-3-2-1-1-3-4-4-10-16-1-6-3-1-2-9-3-7h-2l-1-8-2-4-2-2v-8l-3-14-2-21v-38l2-9 2-7 2-2 7-6 8-5zm296 5m-259 8m251 0m-250 1m249 0m-308 1m367 0m-307 1m247 0m-308 1m62 0m245 0m62 0m-306 2 1 2zm243 0 1 2zm-242 2 1 2zm241 0 1 2zm-240 3 1 3zm239 0 1 3zm-238 15v1h238v-1zm3 48m231 0m-230 1 1 3zm229 0 1 3zm-228 4 1 3zm227 0 1 2zm-1 3 1 2zm-1 3 1 2zm-1 2 1 2zm-1 3 1 2zm-219 1m1 1 1 2zm217 1m-291 2 1 3zm75 0m215 0m75 0 1 3zm-289 2m213 0m-212 2m211 0m-210 2m1 1m284 0 1 2zm-283 2m1 2m1 1m19 1m-18 1m19 0m-18 1m1 2m1 1m20 1m-19 1m20 0m-17 4m1 1m-80 5m84 0m-83 1 1 2zm84 0m1 1m253 5m-334 2m333 0m-332 2m331 0m-330 2m329 0m-328 1m327 0m-326 2m325 0m-324 2m323 0m-322 1m321 0m-320 2m319 0m-318 1m317 0m-316 2m315 0m-314 1m216 0m97 0m-312 2m311 0m-310 1m309 0m-306 4m303 0m-300 4m297 0m-293 5m289 0m-288 1m287 0m-280 8m273 0m-272 1m271 0m-270 1m269 0m-268 2m266 0m-264 2m263 0m-261 2m259 0m-25 21m-22 12m-193 20m221 0m-222 1m223 0m-229 5m235 0m-236 1m237 0m-259 22m281 0m-282 1m-1 1m-4 5m293 0m3 4m-300 1m301 0m-302 1m303 0m1 2m-306 1m307 0m-308 1m309 0m-310 2m311 0m-312 1m313 0m-314 1 1 2zm315 1m-316 1m195 0m122 0m-94 1m-224 1m319 0m-320 1m321 0m-322 2m231 0m92 0m-324 1m325 0m-326 2m327 0m-328 2m329 0m-330 1 1 2zm331 1m-332 1m244 0m89 0m-87 1m-247 1m248 0m87 0m-86 1m-250 1m251 0m86 0m-338 2m253 0m86 0m-340 2m341 0m-342 2m343 0m-344 2m262 0m83 0m-346 1 1 2zm264 0m83 1m-348 2 1 2zm349 0 1 2zm-81 1m1 1m1 2m1 1m-18 2m1 1m20 2m1 1m1 2m1 1m-206 2m207 0m-208 2m209 0m-213 8m217 0m-224 21v1h232v-1zm0 45v1h232v-1zm0 2m3 10m4 9m217 0m-216 2 1 2zm3 6m209 0m-208 2m207 0m-206 2m1 1m1 2m1 1m20 2m1 1m-18 2m1 1m1 2m-80 1 1 2zm81 0m268 0 1 2zm-348 3 1 2zm347 0m-264 1m-82 1m83 0m262 0m-344 2m343 0m-342 2m341 0m-340 2m86 0m253 0m-338 2m86 0m251 0m-250 1m-86 1m87 0m248 0m-247 1m-87 1m88 0m245 0m-332 1 1 2zm331 0m-330 2m329 0m-328 2m327 0m-326 2m325 0m-324 1m323 0m-322 2m321 0m-320 1m319 0m-224 1m-94 1m317 0m-316 1m315 0m-314 2m313 0m-312 1m311 0m-310 2m309 0m-308 1m307 0m-1 1m-1 2m-302 1m301 0m-1 1m-296 4m293 0m-289 5m1 1m282 1m-259 22m237 0m-236 1m235 0m-200 26m-42 29m-3 2m255 0m-257 2m-2 2m-2 2m267 0m-268 2m269 0m-270 1m271 0m-272 1m273 0m-280 8m287 0m-288 1m289 0m-293 5m297 0m-300 4m303 0m-306 4m309 0m-310 1m311 0m-312 2m97 0m216 0m-314 1m315 0m-316 2m317 0m-318 1m319 0m-320 2m321 0m-322 1m323 0m-324 2m325 0m-326 2m327 0m-328 1m329 0m-330 2m331 0m-332 2m333 0m-337 7m256 0m85 0m-84 1m-258 1m259 0m84 0m1 2 1 2zm-81 3m82 0m-81 1m-17 4m20 0m-19 1m20 1m1 1m1 2m-18 1m19 0m-18 1m19 1m1 1m1 2m-206 2m207 0m-208 1m209 0m-210 2m211 0m-288 2 1 3zm76 0m213 0m76 0 1 3zm-290 2m215 0m-216 2 1 2zm217 0 1 2zm-218 2m219 0m-220 3 1 2zm221 0 1 2zm-222 2 1 2zm223 0 1 2zm-224 3 1 2zm225 0 1 2zm-226 2 1 3zm227 0 1 3zm-228 4 1 3zm229 0 1 3zm-230 3m231 0m-234 48v1h238v-1zm-1 13 1 3zm239 0 1 3zm-240 4 1 2zm241 0 1 2zm-242 2 1 2zm243 0 1 2z" fill="#84cc16"/>
+          </svg>
+        </div>
+        <div class="text-xl font-bold">YourGains <span class="text-lime-400">AI</span></div>
+      </div>
+      <button id="closeUpgradeBtn" class="close-upgrade" onclick="goToDashboard()">✕</button>
     </div>
   </header>
+  
+  <style>
+    .dna-icon {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .dna-icon svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 4px rgba(132, 204, 22, 0.45));
+    }
+    
+    .close-upgrade {
+      font-size: 22px;
+      background: transparent;
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+      transition: color 0.15s ease-in-out;
+    }
+    
+    .close-upgrade:hover {
+      color: #84cc16;
+    }
+    
+    .plan-actual-label {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: #b3ff00;
+      font-weight: 600;
+      text-align: center;
+    }
+  </style>
 
   <main class="max-w-6xl mx-auto px-4 py-10">
     <div class="text-center mb-12">
@@ -56,7 +128,7 @@
         </ul>
         
         <div class="text-center">
-          <span class="text-neutral-500 text-sm">Plan actual</span>
+          <span id="free-current-label" class="text-neutral-500 text-sm">Plan actual</span>
         </div>
       </div>
 
@@ -99,6 +171,7 @@
            class="block w-full bg-black text-lime-400 font-bold rounded-xl px-5 py-3 hover:bg-neutral-800 transition text-center">
           Mejorar a Pro
         </button>
+        <p id="pro-current-label"></p>
       </div>
 
       <!-- Plan Pro Anual -->
@@ -159,10 +232,6 @@
         <div class="bg-neutral-900 rounded-xl p-6">
           <h3 class="font-semibold mb-2">¿Qué incluye el plan gratuito?</h3>
           <p class="text-neutral-400 text-sm">2 mensajes de IA por día y acceso al 25% de tu rutina personalizada.</p>
-        </div>
-        <div class="bg-neutral-900 rounded-xl p-6">
-          <h3 class="font-semibold mb-2">¿Hay garantía de devolución?</h3>
-          <p class="text-neutral-400 text-sm">Ofrecemos 7 días de garantía de devolución sin preguntas.</p>
         </div>
         <div class="bg-neutral-900 rounded-xl p-6">
           <h3 class="font-semibold mb-2">¿Cómo funciona el pago?</h3>
@@ -228,13 +297,18 @@
   <script type="module">
     import { API_BASE } from "./config.js";
     import { getAuthHeaders } from "./auth.js";
+    
+    // Función para volver al dashboard
+    window.goToDashboard = function() {
+      window.location.href = './dashboard.html';
+    };
 
     // Variables globales para Stripe
     let stripe;
     let elements;
     let paymentElement;
     let stripeConfig;
-    let currentClientSecret;  // ✅ Guardar clientSecret globalmente
+    let currentClientSecret;
 
     // Cargar configuración de Stripe de forma segura
     async function loadStripeConfig() {
@@ -280,14 +354,12 @@
      */
     function getCurrentUserId() {
         try {
-            // Buscar token con la clave correcta (accessToken, no token)
             const token = localStorage.getItem('accessToken');
             if (!token) {
                 console.error('❌ No se encontró accessToken en localStorage');
                 return null;
             }
             
-            // Decodificar JWT para obtener user_id
             const payload = JSON.parse(atob(token.split('.')[1]));
             const userId = payload.user_id || payload.sub;
             console.log('✅ User ID obtenido:', userId);
@@ -306,7 +378,7 @@
       }
 
       const modal = document.getElementById('paymentModal');
-      hideError(); // Limpiar errores anteriores
+      hideError();
       
       // Configurar información del plan
       if (planType === 'monthly') {
@@ -337,67 +409,81 @@
       }
     });
 
-    // Inicializar pago
-    async function initializePayment(planType) {
-      try {
-        if (!stripeConfig) {
-          throw new Error('Configuración de Stripe no cargada');
-        }
-
-        const priceId = planType === 'monthly' ? stripeConfig.price_ids.monthly : stripeConfig.price_ids.yearly;
-        
-        // Obtener user_id del token
-        const userId = getCurrentUserId();
-        if (!userId) {
-          throw new Error('No se pudo obtener el ID del usuario');
-        }
-
-        // Crear intent de pago en el backend
-        const response = await fetch(`${API_BASE}/create-payment-intent`, {
-          method: 'POST',
-          headers: getAuthHeaders(),
-          body: JSON.stringify({ 
-            plan_type: planType,
-            price_id: priceId,
-            user_id: parseInt(userId)  // Convertir a int
-          })
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.detail || 'Error al crear intent de pago');
-        }
-
-        const { client_secret } = await response.json();
-        currentClientSecret = client_secret;  // ✅ Guardar para confirmPayment
-
-        // Crear elementos de Stripe
-        elements = stripe.elements({
-          clientSecret: client_secret,
-          appearance: {
-            theme: 'night',  // ✅ Cambiado de 'dark' a 'night'
-            variables: {
-              colorPrimary: '#84cc16',
-              colorBackground: '#1f2937',
-              colorText: '#ffffff',
-              colorDanger: '#ef4444',
-              fontFamily: 'system-ui, sans-serif',
-              spacingUnit: '4px',
-              borderRadius: '8px'
-            }
-          }
-        });
-
-        paymentElement = elements.create('payment');
-        paymentElement.mount('#payment-element');
-
-      } catch (error) {
-        console.error('Error inicializando pago:', error);
-        showError(error.message || 'Error al inicializar el pago. Inténtalo de nuevo.');
-      }
+// Inicializar pago
+async function initializePayment(planType) {
+  try {
+    if (!stripeConfig) {
+      throw new Error('Configuración de Stripe no cargada');
     }
 
-    // Manejar envío del formulario
+    const priceId = planType === 'monthly' ? stripeConfig.price_ids.monthly : stripeConfig.price_ids.yearly;
+    
+    const userId = getCurrentUserId();
+    if (!userId) {
+      throw new Error('No se pudo obtener el ID del usuario');
+    }
+
+    // 🔧 Crear subscription en el backend
+    console.log('📝 Creando subscription...');
+    const response = await fetch(`${API_BASE}/create-payment-intent`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ 
+        plan_type: planType,
+        price_id: priceId,
+        user_id: parseInt(userId)
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || 'Error al crear suscripción');
+    }
+
+    // 🔧 Ahora recibimos subscription_id también
+    const { client_secret, subscription_id } = await response.json();
+    currentClientSecret = client_secret;
+
+    console.log('✅ Subscription creada:', subscription_id);
+    console.log('💳 Client secret obtenido');
+
+    // Crear elementos de Stripe (funciona igual para subscriptions)
+    // NOTA: Los métodos de pago adicionales (Apple Pay, Google Pay, Link, Bizum)
+    // deben estar activados en Stripe Dashboard para que aparezcan automáticamente.
+    // Payment Element los detecta y muestra según disponibilidad del usuario.
+    // El orden puede personalizarse con paymentMethodOrder.
+    elements = stripe.elements({
+      clientSecret: client_secret,
+      appearance: {
+        theme: 'night',
+        variables: {
+          colorPrimary: '#84cc16',
+          colorBackground: '#1f2937',
+          colorText: '#ffffff',
+          colorDanger: '#ef4444',
+          fontFamily: 'system-ui, sans-serif',
+          spacingUnit: '4px',
+          borderRadius: '8px'
+        }
+      },
+      // Configurar orden de métodos de pago
+      // Payment Element mostrará automáticamente los métodos activados en Dashboard
+      // que estén disponibles para el usuario (ej: Apple Pay solo en Safari/Mac/iPhone)
+      paymentMethodOrder: ['card', 'apple_pay', 'google_pay', 'link']
+    });
+
+    paymentElement = elements.create('payment');
+    paymentElement.mount('#payment-element');
+
+    console.log('✅ Payment Element montado');
+
+  } catch (error) {
+    console.error('❌ Error inicializando pago:', error);
+    showMessage(error.message || 'Error al inicializar el pago. Inténtalo de nuevo.', 'error');
+  }
+}    
+
+    // 🔧 CORREGIDO: Manejar envío del formulario
     document.getElementById('payment-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       
@@ -411,69 +497,43 @@
       spinner.classList.remove('hidden');
 
       try {
-        // ✅ Primero validar elementos
+        // Validar elementos
         const { error: submitError } = await elements.submit();
         
         if (submitError) {
           showMessage(submitError.message, 'error');
-          // ✅ Restaurar botón si hay error en submit
           submitButton.disabled = false;
           buttonText.classList.remove('hidden');
           spinner.classList.add('hidden');
           return;
         }
 
-        // ✅ Luego confirmar pago
+        // Confirmar pago - Stripe redirigirá automáticamente si es exitoso
         const { error } = await stripe.confirmPayment({
           elements,
           clientSecret: currentClientSecret,
           confirmParams: {
-            return_url: `${window.location.origin}/dashboard.html`,
+            return_url: `${window.location.origin}/dashboard.html?payment=success`,
           },
         });
 
+        // ✅ Este código solo se ejecuta si HAY ERROR
+        // Si el pago es exitoso, Stripe ya redirigió y este código no se ejecuta
         if (error) {
           showMessage(error.message, 'error');
-        } else {
-          // El pago fue exitoso
-          showMessage('¡Pago exitoso! Actualizando tu cuenta...', 'success');
-          
-          // Actualizar estado del usuario a premium
-          await updateUserToPremium();
-          
-          // Cerrar modal y recargar
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
+          submitButton.disabled = false;
+          buttonText.classList.remove('hidden');
+          spinner.classList.add('hidden');
         }
+        
       } catch (error) {
         console.error('Error procesando pago:', error);
         showMessage('Error procesando el pago. Inténtalo de nuevo.', 'error');
-      } finally {
-        // Restaurar botón
         submitButton.disabled = false;
         buttonText.classList.remove('hidden');
         spinner.classList.add('hidden');
       }
     });
-
-    // Actualizar usuario a premium
-    async function updateUserToPremium() {
-      try {
-        const response = await fetch(`${API_BASE}/upgrade-to-premium`, {
-          method: 'POST',
-          headers: getAuthHeaders()
-        });
-
-        if (response.ok) {
-          // Actualizar localStorage
-          localStorage.setItem('plan', 'premium');
-          console.log('Usuario actualizado a premium');
-        }
-      } catch (error) {
-        console.error('Error actualizando usuario:', error);
-      }
-    }
 
     // Mostrar mensajes
     function showMessage(message, type) {
@@ -482,6 +542,131 @@
       messageDiv.className = `mt-4 p-3 rounded-lg text-sm ${type === 'error' ? 'bg-red-900 text-red-200' : 'bg-green-900 text-green-200'}`;
       messageDiv.classList.remove('hidden');
     }
+  </script>
+  
+  <script type="module">
+    import { API_BASE } from "./config.js";
+    import { getAuthHeaders } from "./auth.js";
+
+    // Ejecutar al cargar la página
+    checkUserPlan();
+
+    // Verificar estado del usuario al cargar la página
+    async function checkUserPlan() {
+      try {
+        const userId = getCurrentUserId();
+        if (!userId) return;
+
+        const response = await fetch(`${API_BASE}/user-status?user_id=${userId}`, {
+          headers: getAuthHeaders()
+        });
+
+        if (!response.ok) throw new Error('Error obteniendo estado del usuario');
+
+        const userData = await response.json();
+        updatePlanUI(userData);
+      } catch (error) {
+        console.error('Error verificando plan:', error);
+      }
+    }
+
+    // Actualizar UI según el plan del usuario
+    function updatePlanUI(userData) {
+      const freeLabel = document.getElementById('free-current-label');
+      const proMonthlyBtn = document.querySelector('[onclick*="monthly"]');
+      const proYearlyBtn = document.querySelector('[onclick*="yearly"]');
+      
+      // Limpiar labels existentes
+      document.querySelectorAll('.plan-actual-label').forEach(el => el.remove());
+
+      if (!userData.is_premium || !userData.subscription_type) {
+        // Usuario FREE
+        freeLabel.textContent = 'Plan actual';
+        freeLabel.className = 'text-lime-400 text-sm font-semibold';
+      } else if (userData.subscription_type === 'monthly') {
+        // Usuario Pro Mensual
+        const monthlyLabel = document.createElement('p');
+        monthlyLabel.className = 'plan-actual-label mt-3 text-lime-400 text-sm font-semibold text-center';
+        monthlyLabel.textContent = 'Plan actual';
+        proMonthlyBtn.parentElement.appendChild(monthlyLabel);
+        
+        proMonthlyBtn.style.display = 'none';
+        proYearlyBtn.textContent = 'Cambiar a Anual';
+        
+        freeLabel.textContent = '';
+      } else if (userData.subscription_type === 'yearly') {
+        // Usuario Pro Anual
+        const yearlyLabel = document.createElement('p');
+        yearlyLabel.className = 'plan-actual-label mt-3 text-lime-400 text-sm font-semibold text-center';
+        yearlyLabel.textContent = 'Plan actual';
+        proYearlyBtn.parentElement.appendChild(yearlyLabel);
+        
+        proMonthlyBtn.style.display = 'none';
+        proYearlyBtn.style.display = 'none';
+        
+        freeLabel.textContent = '';
+      }
+
+      // Añadir botón de gestionar suscripción para usuarios premium
+      if (userData.is_premium && userData.subscription_type) {
+        const manageBtn = document.createElement('button');
+        manageBtn.textContent = '⚙️ Gestionar suscripción';
+        manageBtn.className = 'mt-3 w-full bg-neutral-800 text-white font-semibold py-2 px-4 rounded-xl hover:bg-neutral-700 transition';
+        manageBtn.onclick = () => openCustomerPortal();
+        
+        if (userData.subscription_type === 'monthly') {
+          proMonthlyBtn.parentElement.appendChild(manageBtn);
+        } else if (userData.subscription_type === 'yearly') {
+          proYearlyBtn.parentElement.appendChild(manageBtn);
+        }
+      }
+    }
+
+    // Función auxiliar para obtener user_id
+    function getCurrentUserId() {
+      try {
+        const token = localStorage.getItem('accessToken');
+        if (!token) return null;
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.user_id || payload.sub;
+      } catch (error) {
+        console.error('Error obteniendo user ID:', error);
+        return null;
+      }
+    }
+
+    async function openCustomerPortal() {
+      try {
+        const userId = getCurrentUserId();
+        if (!userId) {
+          alert('Error: No se pudo obtener el ID del usuario');
+          return;
+        }
+
+        const response = await fetch(`${API_BASE}/create-customer-portal-session`, {
+          method: 'POST',
+          headers: {
+            ...getAuthHeaders(),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ user_id: parseInt(userId) })
+        });
+
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({}));
+          throw new Error(error.detail || 'Error al crear sesión del portal');
+        }
+
+        const { url } = await response.json();
+        window.location.href = url;
+      } catch (error) {
+        console.error('Error abriendo portal:', error);
+        alert('Error al abrir el portal de gestión. Inténtalo de nuevo.');
+      }
+    }
+
+    // Hacer la función global
+    window.openCustomerPortal = openCustomerPortal;
   </script>
 </body>
 </html>

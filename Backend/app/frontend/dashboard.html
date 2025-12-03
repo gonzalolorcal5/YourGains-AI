@@ -1,9 +1,12 @@
-  <!DOCTYPE html>
-  <html lang="es">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>YourGains AI</title>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>YourGains AI</title>
       <style>
           * {
               margin: 0;
@@ -19,18 +22,124 @@
               position: relative;
           }
           
+          /* Botón hamburger */
+          .hamburger-btn {
+              position: absolute;
+              top: 75px;
+              left: 40px;
+              background: transparent;
+              border: none;
+              color: white;
+              font-size: 24px;
+              cursor: pointer;
+              padding: 8px;
+              z-index: 100;
+              transition: all 0.3s ease;
+          }
+          
+          .hamburger-btn:hover {
+              color: #84cc16;
+          }
+          
           .logo {
               position: absolute;
               top: 80px;
-              left: 40px;
+              left: 100px;
               display: flex;
               align-items: center;
               gap: 3px;
           }
           
+          /* Menú lateral */
+          .sidebar {
+              position: fixed;
+              top: 0;
+              left: -300px;
+              width: 280px;
+              height: 100vh;
+              background: #1a1a1a;
+              z-index: 1000;
+              transition: left 0.3s ease;
+              box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+              overflow-y: auto;
+          }
+          
+          .sidebar.open {
+              left: 0;
+          }
+          
+          .sidebar-overlay {
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: rgba(0, 0, 0, 0.7);
+              z-index: 999;
+              display: none;
+              transition: opacity 0.3s ease;
+          }
+          
+          .sidebar-overlay.active {
+              display: block;
+          }
+          
+          .sidebar-header {
+              padding: 20px;
+              border-bottom: 1px solid #333;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+          }
+          
+          .sidebar-header h3 {
+              color: white;
+              font-size: 18px;
+          }
+          
+          .sidebar-close {
+              background: transparent;
+              border: none;
+              color: white;
+              font-size: 24px;
+              cursor: pointer;
+              padding: 0;
+              width: 30px;
+              height: 30px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+          }
+          
+          .sidebar-close:hover {
+              color: #84cc16;
+          }
+          
+          .sidebar-menu {
+              padding: 20px 0;
+          }
+          
+          .sidebar-item {
+              padding: 15px 20px;
+              color: white;
+              cursor: pointer;
+              transition: all 0.3s ease;
+              border-left: 3px solid transparent;
+          }
+          
+          .sidebar-item:hover {
+              background: rgba(132, 204, 22, 0.1);
+              border-left-color: #84cc16;
+              color: #84cc16;
+          }
+          
+          .sidebar-item:active {
+              background: rgba(132, 204, 22, 0.2);
+          }
+          
           .dna-icon {
-              width: 40px;
-              height: 40px;
+              width: 28px;
+              height: 28px;
               border-radius: 8px;
               display: flex;
               align-items: center;
@@ -45,7 +154,7 @@
           }
           
           .logo-text {
-              font-size: 24px;
+              font-size: 20px;
               font-weight: bold;
           }
           
@@ -58,155 +167,236 @@
           }
           
           .chat-container {
-              position: absolute;
-            top: 60%;
-            left: 35%;
-              transform: translate(-50%, -50%);
-            width: 45%;
-            max-width: 450px;
-            height: 45%;
-            border: 2px solid #84cc16;
-            border-radius: 16px;
+              position: fixed;
+              top: 140px;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              width: 100%;
+              height: calc(100vh - 140px);
+              border: none;
+              border-radius: 0;
               display: flex;
               flex-direction: column;
               overflow: hidden;
-              box-shadow: 0 8px 32px rgba(132, 204, 22, 0.15);
-              backdrop-filter: blur(10px);
-              background: rgba(255, 255, 255, 0.95);
+              background: #000000;
           }
           
           .chat-header {
-              padding: 14px 20px;
-              text-align: center;
-              background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
-              color: white;
-              border-radius: 14px 14px 0 0;
-          }
-          
-          .chat-header h2 {
-              font-size: 18px;
-              margin-bottom: 4px;
-              font-weight: 600;
-          }
-          
-          .chat-header p {
-              font-size: 12px;
-              opacity: 0.9;
-              margin: 0;
+              display: none;
           }
           
           
           .chat-messages {
               flex: 1;
-            padding: 16px;
+              padding: 80px 20px 60px 20px;
               overflow-y: auto;
-              color: black;
-              background: white;
-              height: calc(100% - 140px);
-              max-height: calc(100% - 140px);
-              scrollbar-width: none;
+              color: white;
+              background: #000000;
+              min-height: 0;
+              scrollbar-width: thin;
+              scrollbar-color: #333 #000;
               -ms-overflow-style: none;
           }
           
           .chat-messages::-webkit-scrollbar {
-              display: none;
+              width: 8px;
+          }
+          
+          .chat-messages::-webkit-scrollbar-track {
+              background: #000000;
+          }
+          
+          .chat-messages::-webkit-scrollbar-thumb {
+              background: #333;
+              border-radius: 4px;
+          }
+          
+          .chat-messages::-webkit-scrollbar-thumb:hover {
+              background: #444;
           }
           
           .chat-input-area {
-            padding: 14px 18px;
-              background: #f8f9fa;
-              border-radius: 0 0 14px 14px;
-              border-top: 1px solid #e9ecef;
+              position: sticky;
+              bottom: 26px;
+              padding: 16px;
+              background: #000000;
+              border-top: none;
               flex-shrink: 0;
+              width: 100%;
+              box-sizing: border-box;
+              box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.6);
+              min-height: 70px;
+              display: flex;
+              align-items: center;
           }
           
           .input-row {
               display: flex;
-              gap: 10px;
+              gap: 12px;
               align-items: center;
+              width: 100%;
+              max-width: 100%;
           }
           
           .chat-input {
               flex: 1;
-              padding: 12px 16px;
-              border: 2px solid #e9ecef;
-            border-radius: 18px;
+              padding: 12px 14px;
+              border: 1px solid #1a1a1a;
+              border-radius: 14px;
               outline: none;
-              color: #333;
-              font-size: 13px;
-              transition: all 0.3s ease;
-              background: white;
+              color: #e5e5e5;
+              font-size: 14px;
+              transition: all 0.15s ease-in-out;
+              background: #0a0a0a;
+              min-width: 0;
+              width: 100%;
+              resize: none;
+              overflow-y: hidden;
+              overflow-x: hidden;
+              white-space: pre-wrap;
+              word-break: break-word;
+              min-height: 44px;
+              max-height: 180px;
+              line-height: 1.5;
+              font-family: inherit;
+              scrollbar-width: none;
+              -ms-overflow-style: none;
+          }
+          
+          .chat-input::-webkit-scrollbar {
+              display: none;
+          }
+          
+          .chat-input-max {
+              overflow-y: auto;
+          }
+          
+          .chat-input-max::-webkit-scrollbar {
+              display: none;
+          }
+          
+          .chat-input::placeholder {
+              color: #777;
           }
           
           .chat-input:focus {
-              border-color: #84cc16;
-              box-shadow: 0 0 0 3px rgba(132, 204, 22, 0.1);
+              border-color: #1a1a1a;
+              box-shadow: none;
           }
           
           .chat-input:disabled {
-              background: #f5f5f5;
-              color: #999;
+              background: #0a0a0a;
+              color: #666;
               cursor: not-allowed;
-              border-color: #ddd;
+              border-color: #1a1a1a;
+              opacity: 0.6;
           }
           
           .chat-input:disabled::placeholder {
-              color: #bbb;
+              color: #555;
           }
           
           .send-btn {
-              width: 40px;
-              height: 40px;
-              background: #4a4a4a;
-              color: #9ca3af;
-              border: none;
-              border-radius: 10px;
+              width: 44px;
+              height: 44px;
+              background: #000000;
+              color: white;
+              border: 1px solid #1a1a1a;
+              border-radius: 50%;
               cursor: not-allowed;
-              font-weight: bold;
-              font-size: 20px;
-              transition: all 0.3s ease;
+              transition: all 0.15s ease-in-out;
               display: flex;
               align-items: center;
               justify-content: center;
               flex-shrink: 0;
+              padding: 0;
+          }
+          
+          .send-btn svg {
+              width: 20px;
+              height: 20px;
+              stroke: white;
+              transition: stroke 0.15s ease-in-out, filter 0.15s ease-in-out;
+          }
+          
+          .send-btn:hover {
+              background: #0d0d0d;
+          }
+          
+          .send-btn:hover svg {
+              stroke: #b3ff00;
+              filter: drop-shadow(0 0 4px #b3ff00);
+          }
+          
+          .send-btn:active {
+              background: #1a1a1a;
+              box-shadow: 0 0 6px #b3ff00;
+          }
+          
+          .send-btn:active svg {
+              stroke: #b3ff00;
           }
           
           .send-btn.active {
-              background: #84cc16;
-              color: #000000;
+              background: #000000;
+              color: white;
               cursor: pointer;
           }
           
           .send-btn.active:hover {
-              background: #65a30d;
-              transform: translateY(-1px);
+              background: #0d0d0d;
+          }
+          
+          .send-btn.active:hover svg {
+              stroke: #b3ff00;
+              filter: drop-shadow(0 0 4px #b3ff00);
+          }
+          
+          .send-btn.active:active {
+              background: #1a1a1a;
+              box-shadow: 0 0 6px #b3ff00;
+          }
+          
+          .send-btn.active:active svg {
+              stroke: #b3ff00;
           }
           
           .send-btn:disabled {
-              background: #e9ecef;
-              color: #6c757d;
+              background: #000000;
+              color: #666;
               cursor: not-allowed;
-              transform: none;
+              opacity: 0.5;
+          }
+          
+          .send-btn:disabled:hover {
+              background: #000000;
+          }
+          
+          .send-btn:disabled:hover svg {
+              filter: none;
           }
           
           .message {
             margin: 10px 0;
-              padding: 10px 15px;
-            border-radius: 15px;
-              max-width: 90%;
+              padding: 12px 16px;
+            border-radius: 12px;
+              max-width: 85%;
               word-wrap: break-word;
+              line-height: 1.5;
           }
           
           .user-message {
               background: #84cc16;
-              color: white;
+              color: #000000;
               margin-left: auto;
-              text-align: right;
+              text-align: left;
           }
           
           .ai-message {
-              background: #f0f0f0;
-              color: black;
+              background: #1a1a1a;
+              color: white;
+              border: 1px solid #333;
           }
           
           .placeholder {
@@ -275,20 +465,25 @@
           
           .navigation {
               position: absolute;
-            top: 100px;
-            right: 100px;
-              display: flex;
-            gap: 20px;
+            top: 90px;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: auto !important;
+            display: flex !important;
+            justify-content: center !important;
+            gap: 0px;
               align-items: center;
               color: white;
               white-space: nowrap;
+              z-index: 10;
           }
           
           .nav-item {
-            padding: 8px 16px;
+            padding: 6px 2px;
               border-radius: 8px;
               transition: all 0.3s ease;
               cursor: pointer;
+              font-size: 12px;
           }
           
           .nav-item:hover {
@@ -296,7 +491,7 @@
           }
 
           .nav-text {
-              font-size: 14px;
+              font-size: 12px;
               font-weight: 500;
           }
           
@@ -306,7 +501,7 @@
               left: 0;
               width: 100%;
               height: 100%;
-              background: rgba(0, 0, 0, 0.8);
+              background: rgba(0, 0, 0, 0.85);
               display: none;
               align-items: center;
               justify-content: center;
@@ -314,14 +509,34 @@
           }
           
           .overlay-content {
-              background: white;
-            color: black;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 80%;
-              max-height: 80%;
+              background: #111111;
+              color: white;
+              padding: 40px;
+              border-radius: 15px;
+              max-width: 90%;
+              width: 800px;
+              max-height: 85vh;
               overflow-y: auto;
               position: relative;
+              border: 1px solid #333;
+              box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+          }
+          
+          .overlay-content::-webkit-scrollbar {
+              width: 8px;
+          }
+          
+          .overlay-content::-webkit-scrollbar-track {
+              background: #1a1a1a;
+          }
+          
+          .overlay-content::-webkit-scrollbar-thumb {
+              background: #333;
+              border-radius: 4px;
+          }
+          
+          .overlay-content::-webkit-scrollbar-thumb:hover {
+              background: #444;
           }
           
           .close-btn {
@@ -330,25 +545,88 @@
               right: 20px;
               background: none;
               border: none;
-              font-size: 24px;
+              font-size: 32px;
               cursor: pointer;
-              color: #666;
+              color: #888;
+              width: 40px;
+              height: 40px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 50%;
+              transition: all 0.3s ease;
           }
           
           .close-btn:hover {
               color: #84cc16;
+              background: rgba(132, 204, 22, 0.1);
           }
           
-          .overlay h2 {
+          .overlay-content h2 {
               color: #ffffff;
-              margin-bottom: 20px;
-              font-size: 24px;
+              margin-bottom: 30px;
+              font-size: 28px;
+              font-weight: 600;
+              padding-right: 50px;
           }
           
-          .overlay h3 {
-            color: #333;
+          .overlay-content h3 {
+              color: #84cc16;
+              margin-top: 30px;
+              margin-bottom: 15px;
+              font-size: 20px;
+              font-weight: 600;
+          }
+          
+          .overlay-content h4 {
+              color: #ccc;
               margin-top: 20px;
               margin-bottom: 10px;
+              font-size: 16px;
+              font-weight: 600;
+          }
+          
+          .overlay-content p {
+              color: #e0e0e0;
+              line-height: 1.8;
+              margin-bottom: 15px;
+              font-size: 15px;
+          }
+          
+          .overlay-content ul {
+              color: #e0e0e0;
+              line-height: 1.8;
+              margin-bottom: 15px;
+              padding-left: 25px;
+          }
+          
+          .overlay-content li {
+              margin-bottom: 8px;
+              font-size: 15px;
+          }
+          
+          .overlay-content strong {
+              color: #84cc16;
+          }
+
+          /* Forzar texto completamente blanco en el overlay de "Quiénes somos" */
+          #aboutOverlay .overlay-content h3,
+          #aboutOverlay .overlay-content h4,
+          #aboutOverlay .overlay-content p,
+          #aboutOverlay .overlay-content ul,
+          #aboutOverlay .overlay-content li,
+          #aboutOverlay .overlay-content strong {
+              color: #ffffff !important;
+          }
+          
+          /* Forzar texto completamente blanco en el overlay de "Términos y Privacidad" */
+          #terminosPrivacidadOverlay .overlay-content h3,
+          #terminosPrivacidadOverlay .overlay-content h4,
+          #terminosPrivacidadOverlay .overlay-content p,
+          #terminosPrivacidadOverlay .overlay-content ul,
+          #terminosPrivacidadOverlay .overlay-content li,
+          #terminosPrivacidadOverlay .overlay-content strong {
+              color: #ffffff !important;
           }
           
           .isPremium-lock {
@@ -407,7 +685,8 @@
           
           .nav-separator {
               color: #666;
-              font-size: 18px;
+              font-size: 12px;
+              opacity: 0.5;
           }
           
           .logout-btn {
@@ -427,9 +706,9 @@
               border-color: #777;
           }
 
-          /* Controles móviles - ocultos en desktop */
+          /* Controles móviles - eliminados, ahora en sidebar */
           .mobile-controls {
-              display: none;
+              display: none !important;
           }
 
           /* Gym Image Container */
@@ -484,29 +763,44 @@
               }
           }
           
-          .overlay {
-              position: fixed;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              background: rgba(0, 0, 0, 0.8);
-              display: none;
-              justify-content: center;
-              align-items: center;
-              z-index: 1000;
-          }
+              .overlay {
+                  position: fixed;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                  background: rgba(0, 0, 0, 0.85);
+                  display: none;
+                  justify-content: center;
+                  align-items: center;
+                  z-index: 1000;
+              }
 
-          .overlay-content {
-              background: #1a1a1a;
-              border-radius: 12px;
-              padding: 2rem;
-              max-width: 800px;
-              max-height: 80vh;
-              overflow-y: auto;
-              border: 1px solid #333;
-              position: relative;
-          }
+              .overlay-content {
+                  background: #111111;
+                  color: white;
+                  border-radius: 12px;
+                  padding: 25px;
+                  max-width: 95%;
+                  width: 100%;
+                  max-height: 85vh;
+                  overflow-y: auto;
+                  border: 1px solid #333;
+                  position: relative;
+              }
+              
+              .overlay-content h2 {
+                  font-size: 22px;
+                  padding-right: 40px;
+              }
+              
+              .overlay-content h3 {
+                  font-size: 18px;
+              }
+              
+              .overlay-content p, .overlay-content li {
+                  font-size: 14px;
+              }
 
           .overlay-content.large {
               max-width: 1200px;
@@ -805,26 +1099,41 @@
 
               /* PASO 1: Estructura superior móvil */
               /* Logo - centrado en la parte superior */
+              .hamburger-btn {
+                  top: 75px;
+                  left: 20px;
+                  font-size: 28px;
+              }
+              
               .logo {
                   position: absolute;
                   top: 80px;
-                  left: 50%;
-                  transform: translateX(-50%);
+                  left: 70px !important;
+                  transform: none !important;
                   gap: 3px;
                   z-index: 3;
                   display: flex;
                   align-items: center;
-                  justify-content: center;
+                  justify-content: flex-start;
+              }
+              
+              .sidebar {
+                  width: 260px;
+              }
+              
+              .chat-container {
+                  top: 170px;
+                  height: calc(100vh - 170px);
               }
 
               .dna-icon {
-                  width: 56px;
-                  height: 56px;
+                  width: 38px;
+                  height: 38px;
                   flex-shrink: 0;
               }
 
               .logo-text {
-                  font-size: 36px;
+                  font-size: 28px;
                   line-height: 1;
                   display: flex;
                   align-items: center;
@@ -842,20 +1151,21 @@
               /* Navegación - debajo del logo, centrada y compacta */
               .navigation {
                   position: absolute;
-                  top: 180px;
-                  left: 50%;
-                  transform: translateX(-50%);
-                  gap: 2px;
+                  top: 170px;
+                  left: 50% !important;
+                  transform: translateX(-50%) !important;
+                  width: auto !important;
+                  display: flex !important;
+                  justify-content: center !important;
+                  gap: 0px;
                   flex-wrap: nowrap;
-                  justify-content: center;
-                  width: auto;
                   z-index: 3;
               }
 
               .nav-item {
-                  padding: 16px 24px;
-                  font-size: 18px;
-                  min-height: 60px; /* Mucho más grande y táctil */
+                  padding: 12px 4px;
+                  font-size: 16px;
+                  min-height: 50px;
                   display: flex;
                   align-items: center;
                   white-space: nowrap;
@@ -961,18 +1271,16 @@
               /* Chat Container - diseño profesional oscuro */
               .chat-container {
                   position: fixed;
-                  top: 62.5%;
-                  left: 50%;
-                  transform: translate(-50%, -50%);
-                  width: 85%;
-                  max-width: 280px;
-                  height: 35vh;
-                  max-height: 240px;
-                  min-height: 200px;
+                  top: 170px;
+                  left: 0;
+                  right: 0;
+                  bottom: 0;
+                  width: 100%;
+                  height: calc(100vh - 170px);
                   z-index: 2;
                   background: #000000;
-                  border-radius: 20px;
-                  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+                  border-radius: 0;
+                  box-shadow: none;
                   overflow: hidden;
                   display: flex;
                   flex-direction: column;
@@ -980,44 +1288,47 @@
               }
 
               .chat-header {
-                  padding: 20px 20px 10px 20px;
-                  background: #000000;
-                  flex-shrink: 0;
+                  display: none;
               }
-
-              .chat-header h2 {
-                  font-size: 16px;
-                  color: #ffffff;
-                  margin: 0;
-                  font-weight: 600;
-                  line-height: 1.3;
-                  text-align: center;
-              }
-
 
               .chat-messages {
-                  padding: 10px 20px;
+                  padding: 80px 20px 50px 20px;
                   font-size: 14px;
                   background: #000000;
                   flex: 1;
                   overflow-y: auto;
                   min-height: 0;
                   line-height: 1.4;
-                  height: calc(100% - 120px);
-                  max-height: calc(100% - 120px);
-                  scrollbar-width: none;
-                  -ms-overflow-style: none;
+                  scrollbar-width: thin;
+                  scrollbar-color: #333 #000;
               }
               
               .chat-messages::-webkit-scrollbar {
-                  display: none;
+                  width: 6px;
+              }
+              
+              .chat-messages::-webkit-scrollbar-track {
+                  background: #000000;
+              }
+              
+              .chat-messages::-webkit-scrollbar-thumb {
+                  background: #333;
+                  border-radius: 3px;
               }
               
               .chat-input-area {
-                  padding: 10px 20px;
+                  position: sticky;
+                  bottom: 20px;
+                  padding: 16px;
                   background: #000000;
                   flex-shrink: 0;
-                  border-top: 1px solid #333;
+                  border-top: none;
+                  width: 100%;
+                  box-sizing: border-box;
+                  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.6);
+                  min-height: 70px;
+                  display: flex;
+                  align-items: center;
               }
 
               .input-placeholder {
@@ -1038,31 +1349,62 @@
                   display: flex;
                   align-items: center;
                   gap: 12px;
+                  width: 100%;
               }
 
               .chat-input {
                   flex: 1;
-                  padding: 12px 16px;
+                  padding: 12px 14px;
                   font-size: 14px;
-                  background: transparent;
-                  border: none;
+                  background: #0a0a0a;
+                  border: 1px solid #1a1a1a;
+                  border-radius: 14px;
                   outline: none;
-                  color: #ffffff;
+                  color: #e5e5e5;
                   font-family: inherit;
-                  line-height: 1.4;
+                  line-height: 1.5;
                   text-align: left;
+                  transition: all 0.15s ease-in-out;
+                  width: 100%;
+                  resize: none;
+                  overflow-y: hidden;
+                  overflow-x: hidden;
+                  white-space: pre-wrap;
+                  word-break: break-word;
+                  min-height: 44px;
+                  max-height: 180px;
+                  scrollbar-width: none;
+                  -ms-overflow-style: none;
+              }
+              
+              .chat-input::-webkit-scrollbar {
+                  display: none;
+              }
+              
+              .chat-input-max {
+                  overflow-y: auto;
+              }
+              
+              .chat-input-max::-webkit-scrollbar {
+                  display: none;
               }
 
               .chat-input::placeholder {
-                  color: #666;
+                  color: #777;
                   font-weight: 400;
               }
               
+              .chat-input:focus {
+                  border-color: #1a1a1a;
+                  box-shadow: none;
+              }
+              
               .chat-input:disabled {
-                  background: #222;
+                  background: #0a0a0a;
                   color: #666;
                   cursor: not-allowed;
-                  border-color: #444;
+                  border-color: #1a1a1a;
+                  opacity: 0.6;
               }
               
               .chat-input:disabled::placeholder {
@@ -1070,38 +1412,83 @@
               }
 
               .send-btn {
-                  font-size: 20px;
-                  width: 40px;
-                  height: 40px;
-                  background: #4a4a4a;
-                  border: none;
-                  border-radius: 10px;
-                  color: #9ca3af;
+                  width: 44px;
+                  height: 44px;
+                  background: #000000;
+                  border: 1px solid #1a1a1a;
+                  border-radius: 50%;
+                  color: white;
                   cursor: not-allowed;
-                  transition: all 0.3s ease;
+                  transition: all 0.15s ease-in-out;
                   display: flex;
                   align-items: center;
                   justify-content: center;
-                  font-weight: bold;
                   flex-shrink: 0;
+                  padding: 0;
+              }
+              
+              .send-btn svg {
+                  width: 20px;
+                  height: 20px;
+                  stroke: white;
+                  transition: stroke 0.15s ease-in-out, filter 0.15s ease-in-out;
+              }
+
+              .send-btn:hover {
+                  background: #0d0d0d;
+              }
+              
+              .send-btn:hover svg {
+                  stroke: #b3ff00;
+                  filter: drop-shadow(0 0 4px #b3ff00);
+              }
+              
+              .send-btn:active {
+                  background: #1a1a1a;
+                  box-shadow: 0 0 6px #b3ff00;
+              }
+              
+              .send-btn:active svg {
+                  stroke: #b3ff00;
               }
 
               .send-btn.active {
-                  background: #84cc16;
-                  color: #000000;
+                  background: #000000;
+                  color: white;
                   cursor: pointer;
               }
 
               .send-btn.active:hover {
-                  background: #65a30d;
-                  transform: translateY(-1px);
+                  background: #0d0d0d;
+              }
+              
+              .send-btn.active:hover svg {
+                  stroke: #b3ff00;
+                  filter: drop-shadow(0 0 4px #b3ff00);
+              }
+              
+              .send-btn.active:active {
+                  background: #1a1a1a;
+                  box-shadow: 0 0 6px #b3ff00;
+              }
+              
+              .send-btn.active:active svg {
+                  stroke: #b3ff00;
               }
 
               .send-btn:disabled {
-                  background: #e9ecef;
-                  color: #6c757d;
+                  background: #000000;
+                  color: #666;
                   cursor: not-allowed;
-                  transform: none;
+                  opacity: 0.5;
+              }
+              
+              .send-btn:disabled:hover {
+                  background: #000000;
+              }
+              
+              .send-btn:disabled:hover svg {
+                  filter: none;
               }
 
 
@@ -1219,9 +1606,30 @@
       </style>
   </head>
   <body>
-    <div class="logo">
+    <!-- Botón hamburger -->
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()">☰</button>
+    
+    <!-- Overlay para el menú lateral -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    
+    <!-- Menú lateral -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menú</h3>
+            <button class="sidebar-close" onclick="closeSidebar()">&times;</button>
+        </div>
+        <div class="sidebar-menu">
+            <div class="sidebar-item" onclick="handleUpgrade()">Mejora tu plan</div>
+            <div class="sidebar-item" onclick="handleNewRoutine()">Genera rutina nueva</div>
+            <div class="sidebar-item" onclick="handleAbout()">Quiénes somos</div>
+            <div class="sidebar-item" onclick="handleTerms()">Términos y privacidad</div>
+            <div class="sidebar-item" onclick="handleLogout()">Cerrar sesión</div>
+        </div>
+    </aside>
+    
+    <div class="logo" style="left: 100px !important; transform: none !important;">
         <div class="dna-icon">
-            <svg viewBox="0 0 800 800" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 800 800" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
                 <path transform="translate(237)" d="m0 0h19l10 5 8 6 4 4 4 8v5h1v10h234v-10l1-1 1-6 5-9 5-3 3-5 5-1 7-3h19l12 6 7 7h2l2 5 3 13v38l-2 20-3 15v8l-2 3-1 5h-2l-6 15-2 6-1 2-1 4-9 15-5 7-2 1-1 3-2 1-2 4-2 1-2 4-4 2-2 3-2 4-7 7-4 1-8 8-10 8-1 3-4 1-5 1-20-12-24-12-26-10-4-1v-2l10-4 14-8 10-7 1-1-91-1-16-10-13-11-10-9-6-4-1-4-4-2v-5l1-2 186-1 1-6 6-14 3-10 2-1h-232l2 1 2 6v7l4 5 9 17 5 7 1 3 3 2 1 4 4 2 2 5 10 10 17 13 14 9 23 12 21 8 26 8 22 9 22 11 8 5 5 1v2l12 8 12 9 4 1 3 5 4 1 3 5 15 15 4 2 1 4 5 3 1 3 5 5 7 10 7 11 8 16 1 8 6 18h2l1 7-1 1 3 17 1 14v12l-2 21-2 11 1 4-2 3-2 4-6 17v5l-10 19-12 18-5 5-2 4-4 2-2 5-5 3-15 15-2 4-4 1-15 12-5-2-23-13-23-11-24-9 1-3 19-10 15-10-94-1-14-9-14-11-15-15-4-2-1-4h-2l2-5h184l2-5h2l2-9h2l5-15h-229l1 7 2 1 1 7h2l2 4v5h2l6 10 1 3 5 5 1 3 3 2 1 4 5 3 7 7 2 4 8 6 3 1 2 4 17 11 23 12 21 8 36 12 20 9 21 11 21 14 14 11 11 10 4 1 3 5 4 2 3 3 1 4 4 3 3 2 1 4 3 1 1 3 2 1 1 3 4 4 10 16 1 6 3 1 3 9 2 7h2l1 8 2 4 2 2v8l3 14 2 21v38l-2 9-2 7-2 2-7 6-8 5-5 2h-18l-10-4-8-7-3-1-5-9-1-7h-1v-10h-234v10l-1 1-1 6-5 9-5 3-8 6-8 3h-18l-12-6-7-7h-2l-2-5-3-13v-38l2-21 3-14v-8l3-3 2-8 1-3 2-2 5-15h2l2-8 12-18 2-1 1-3 2-1 1-3 3-1 1-4 5-3 2-3 2-4 10-10 4-1 11-10 11-8 5 1 16 10 26 13 24 9 5 3-3 2-17 9-12 8-2 2 91 1 16 10 13 11 10 9 6 4 1 4 4 2v5l-1 2-184 1-7 15-5 15-2 1h232l-2-1-5-15-8-17-7-10-1-3-3-2-1-4-4-2-2-5-10-10-17-13-14-9-23-12-21-8-29-9-23-10-25-13-6-2v-2l-12-8-13-10-7-5-4-2-2-4-16-16-4-2-2-5-3-1-1-4-3-1-1-3-5-5-12-20-6-12v-5h-2l-1-8-6-20-3-18-1-13v-14l2-20 4-19 5-15v-5h2l1-7 9-17 9-14 6-8 3-1 1-4 3-1 1-4 6-4 16-16 2-4 4-1 3-5 4-1 8-6 5 2 23 13 23 11 24 9-1 3-19 10-15 10 98 1 1 3 13 9 11 9 14 14 4 2 1 4h2l-2 5h-184l-2 5h-2l-2 9h-2l-5 15h230l-5-15h-2l-2-9h-2l-6-10-1-3-5-5-1-3-3-2-1-4-5-3-7-7-2-4-3-2-3-1-1-3-4-1-2-4-17-11-23-12-21-8-36-12-20-9-21-11-21-14-14-11-12-11-5-2-8-8-1-4-4-3-3-2-1-4-3-1-1-3-2-1-1-3-4-4-10-16-1-6-3-1-2-9-3-7h-2l-1-8-2-4-2-2v-8l-3-14-2-21v-38l2-9 2-7 2-2 7-6 8-5zm296 5m-259 8m251 0m-250 1m249 0m-308 1m367 0m-307 1m247 0m-308 1m62 0m245 0m62 0m-306 2 1 2zm243 0 1 2zm-242 2 1 2zm241 0 1 2zm-240 3 1 3zm239 0 1 3zm-238 15v1h238v-1zm3 48m231 0m-230 1 1 3zm229 0 1 3zm-228 4 1 3zm227 0 1 2zm-1 3 1 2zm-1 3 1 2zm-1 2 1 2zm-1 3 1 2zm-219 1m1 1 1 2zm217 1m-291 2 1 3zm75 0m215 0m75 0 1 3zm-289 2m213 0m-212 2m211 0m-210 2m1 1m284 0 1 2zm-283 2m1 2m1 1m19 1m-18 1m19 0m-18 1m1 2m1 1m20 1m-19 1m20 0m-17 4m1 1m-80 5m84 0m-83 1 1 2zm84 0m1 1m253 5m-334 2m333 0m-332 2m331 0m-330 2m329 0m-328 1m327 0m-326 2m325 0m-324 2m323 0m-322 1m321 0m-320 2m319 0m-318 1m317 0m-316 2m315 0m-314 1m216 0m97 0m-312 2m311 0m-310 1m309 0m-306 4m303 0m-300 4m297 0m-293 5m289 0m-288 1m287 0m-280 8m273 0m-272 1m271 0m-270 1m269 0m-268 2m266 0m-264 2m263 0m-261 2m259 0m-25 21m-22 12m-193 20m221 0m-222 1m223 0m-229 5m235 0m-236 1m237 0m-259 22m281 0m-282 1m-1 1m-4 5m293 0m3 4m-300 1m301 0m-302 1m303 0m1 2m-306 1m307 0m-308 1m309 0m-310 2m311 0m-312 1m313 0m-314 1 1 2zm315 1m-316 1m195 0m122 0m-94 1m-224 1m319 0m-320 1m321 0m-322 2m231 0m92 0m-324 1m325 0m-326 2m327 0m-328 2m329 0m-330 1 1 2zm331 1m-332 1m244 0m89 0m-87 1m-247 1m248 0m87 0m-86 1m-250 1m251 0m86 0m-338 2m253 0m86 0m-340 2m341 0m-342 2m343 0m-344 2m262 0m83 0m-346 1 1 2zm264 0m83 1m-348 2 1 2zm349 0 1 2zm-81 1m1 1m1 2m1 1m-18 2m1 1m20 2m1 1m1 2m1 1m-206 2m207 0m-208 2m209 0m-213 8m217 0m-224 21v1h232v-1zm0 45v1h232v-1zm0 2m3 10m4 9m217 0m-216 2 1 2zm3 6m209 0m-208 2m207 0m-206 2m1 1m1 2m1 1m20 2m1 1m-18 2m1 1m1 2m-80 1 1 2zm81 0m268 0 1 2zm-348 3 1 2zm347 0m-264 1m-82 1m83 0m262 0m-344 2m343 0m-342 2m341 0m-340 2m86 0m253 0m-338 2m86 0m251 0m-250 1m-86 1m87 0m248 0m-247 1m-87 1m88 0m245 0m-332 1 1 2zm331 0m-330 2m329 0m-328 2m327 0m-326 2m325 0m-324 1m323 0m-322 2m321 0m-320 1m319 0m-224 1m-94 1m317 0m-316 1m315 0m-314 2m313 0m-312 1m311 0m-310 2m309 0m-308 1m307 0m-1 1m-1 2m-302 1m301 0m-1 1m-296 4m293 0m-289 5m1 1m282 1m-259 22m237 0m-236 1m235 0m-200 26m-42 29m-3 2m255 0m-257 2m-2 2m-2 2m267 0m-268 2m269 0m-270 1m271 0m-272 1m273 0m-280 8m287 0m-288 1m289 0m-293 5m297 0m-300 4m303 0m-306 4m309 0m-310 1m311 0m-312 2m97 0m216 0m-314 1m315 0m-316 2m317 0m-318 1m319 0m-320 2m321 0m-322 1m323 0m-324 2m325 0m-326 2m327 0m-328 1m329 0m-330 2m331 0m-332 2m333 0m-337 7m256 0m85 0m-84 1m-258 1m259 0m84 0m1 2 1 2zm-81 3m82 0m-81 1m-17 4m20 0m-19 1m20 1m1 1m1 2m-18 1m19 0m-18 1m19 1m1 1m1 2m-206 2m207 0m-208 1m209 0m-210 2m211 0m-288 2 1 3zm76 0m213 0m76 0 1 3zm-290 2m215 0m-216 2 1 2zm217 0 1 2zm-218 2m219 0m-220 3 1 2zm221 0 1 2zm-222 2 1 2zm223 0 1 2zm-224 3 1 2zm225 0 1 2zm-226 2 1 3zm227 0 1 3zm-228 4 1 3zm229 0 1 3zm-230 3m231 0m-234 48v1h238v-1zm-1 13 1 3zm239 0 1 3zm-240 4 1 2zm241 0 1 2zm-242 2 1 2zm243 0 1 2z" fill="#84CC16"/>
             </svg>
         </div>
@@ -1230,39 +1638,29 @@
         </div>
     </div>
 
-    <div class="navigation">
+    <div class="navigation" style="left: 50% !important; transform: translateX(-50%) !important; width: auto !important; display: flex !important; justify-content: center !important; gap: 0px;">
         <div class="nav-item" id="rutinaDieta">Rutina y Dieta</div>
         <div class="nav-separator">|</div>
         <div class="nav-item" id="consejosEstudios">Consejos y Estudios</div>
     </div>
 
     <div class="chat-container">
-        <div class="chat-header">
-            <h2>¡Hola! Soy tu entrenador personal de IA</h2>
-                  </div>
-        
         <!-- Área de mensajes scrolleable -->
-            <div class="chat-messages" id="chatMessages">
-                </div>
+        <div class="chat-messages" id="chatMessages">
+        </div>
         
         <!-- Área de input fija abajo -->
         <div class="chat-input-area">
             <div class="input-row">
-              <input type="text" id="chatInput" class="chat-input" maxlength="500" placeholder="Escribe tu mensaje...">
+              <textarea id="chatInput" class="chat-input" maxlength="500" placeholder="Escribe tu mensaje..." rows="1"></textarea>
               <button id="sendBtn" class="send-btn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2L4 14h4v8h8v-8h4L12 2z"/>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 19V5" />
+                  <path d="M5 12l7-7 7 7" />
                 </svg>
               </button>
             </div>
         </div>
-      </div>
-
-    <!-- Botones de Upgrade y Logout para móvil -->
-    <div class="mobile-controls">
-        <div class="nav-item" id="terminosPrivacidad">Términos y Privacidad</div>
-        <button class="upgrade-btn" onclick="window.location.href='./tarifas.html'">Upgrade</button>
-        <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
 
     <!-- Overlay para Rutina y Dieta -->
@@ -1307,12 +1705,23 @@
       </div>
 
     <!-- Overlay para Términos y Privacidad -->
-    <div class="overlay" id="terminosPrivacidadOverlay">
-        <div class="overlay-content">
+    <div class="overlay" id="terminosPrivacidadOverlay" onclick="if(event.target === this) closeOverlay('terminosPrivacidadOverlay')">
+        <div class="overlay-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeOverlay('terminosPrivacidadOverlay')">&times;</button>
-            <h2>Términos y Privacidad</h2>
+            <h2>Términos de Servicio y Política de Privacidad</h2>
             <div id="terminosContent">
-                <p>Contenido de términos y condiciones...</p>
+                <!-- El contenido se carga dinámicamente -->
+            </div>
+          </div>
+      </div>
+      
+    <!-- Overlay para Quiénes somos -->
+    <div class="overlay" id="aboutOverlay" onclick="if(event.target === this) closeOverlay('aboutOverlay')">
+        <div class="overlay-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeOverlay('aboutOverlay')">&times;</button>
+            <h2>Quiénes somos</h2>
+            <div id="aboutContent">
+                <!-- El contenido se carga dinámicamente -->
             </div>
           </div>
       </div>
@@ -1351,6 +1760,68 @@
       <div class="gym-image-container" style="display: none;">
       </div>
 
+      <script>
+          // Funciones para el menú lateral
+          function toggleSidebar() {
+              const sidebar = document.getElementById('sidebar');
+              const overlay = document.getElementById('sidebarOverlay');
+              sidebar.classList.toggle('open');
+              overlay.classList.toggle('active');
+          }
+          
+          function closeSidebar() {
+              const sidebar = document.getElementById('sidebar');
+              const overlay = document.getElementById('sidebarOverlay');
+              sidebar.classList.remove('open');
+              overlay.classList.remove('active');
+          }
+          
+          // Handlers del menú lateral
+          function handleUpgrade() {
+              closeSidebar();
+              window.location.href = './tarifas.html';
+          }
+          
+          function handleNewRoutine() {
+              closeSidebar();
+              console.log("Generar nueva rutina");
+          }
+          
+          function handleAbout() {
+              closeSidebar();
+              openOverlay('aboutOverlay');
+              loadAboutContent();
+          }
+          
+          function handleTerms() {
+              closeSidebar();
+              openOverlay('terminosPrivacidadOverlay');
+              loadTermsContent();
+          }
+          
+          function handleLogout() {
+              closeSidebar();
+              logout();
+          }
+          
+          // Forzar posición del logo y navegación al cargar
+          document.addEventListener('DOMContentLoaded', function() {
+              // Forzar posición del logo (sobrescribe media queries)
+              const logo = document.querySelector('.logo');
+              if (logo) {
+                  logo.style.cssText = 'position: absolute !important; top: 80px !important; left: 100px !important; transform: none !important; display: flex !important; align-items: center !important; gap: 3px !important;';
+              }
+              
+              // Forzar centrado de navegación al cargar
+              const nav = document.querySelector('.navigation');
+              if (nav) {
+                  // Mantener el top con más espacio del logo y centrado compacto
+                  const currentTop = window.innerWidth <= 768 ? '170px' : '90px';
+                  nav.style.cssText = `position: absolute !important; top: ${currentTop} !important; left: 50% !important; transform: translateX(-50%) !important; width: auto !important; display: flex !important; justify-content: center !important; align-items: center !important; gap: 0px !important; z-index: 10 !important;`;
+              }
+          });
+      </script>
+      
       <script type="module">
           import { API_BASE } from "./config.js";
           import { checkAuthOrRedirect, getAuthHeaders, logout, isTokenExpired, decodeJwt } from "./auth.js";
@@ -1581,6 +2052,7 @@
 
                 addMessage(message, true);
                 chatInput.value = '';
+                autoResizeTextarea();
                 
                 // Mostrar indicador de escritura
                 showTypingIndicator();
@@ -1720,6 +2192,7 @@
                 sendBtn.disabled = true;
                 sendBtn.style.opacity = '0.5';
                 sendBtn.style.cursor = 'not-allowed';
+                autoResizeTextarea();
             }
 
             // Función para habilitar el input (para usuarios isPremium)
@@ -1729,6 +2202,7 @@
                 sendBtn.disabled = false;
                 sendBtn.style.opacity = '';
                 sendBtn.style.cursor = 'pointer';
+                autoResizeTextarea();
             }
 
             // Manejar el estado del botón de envío
@@ -1746,15 +2220,38 @@
                 }
             }
 
+            // Función para auto-resize del textarea
+            function autoResizeTextarea() {
+                const textarea = chatInput;
+                textarea.style.height = 'auto';
+                const scrollHeight = textarea.scrollHeight;
+                const maxHeight = 180; // max-height en px
+                
+                if (scrollHeight <= maxHeight) {
+                    textarea.style.height = scrollHeight + 'px';
+                    textarea.classList.remove('chat-input-max');
+                } else {
+                    textarea.style.height = maxHeight + 'px';
+                    textarea.classList.add('chat-input-max');
+                }
+            }
+            
             // Event listeners básicos y funcionales
             sendBtn.addEventListener('click', sendMessage);
-            chatInput.addEventListener('input', updateSendButton);
-            chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') sendMessage();
+            chatInput.addEventListener('input', () => {
+                updateSendButton();
+                autoResizeTextarea();
+            });
+            chatInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
             });
             
-            // Inicializar estado del botón
+            // Inicializar estado del botón y altura del textarea
             updateSendButton();
+            autoResizeTextarea();
 
             // No verificar límites al cargar - permitir escribir hasta intentar enviar
 
@@ -1764,7 +2261,6 @@
             // Event listeners para los overlays
             const rutinaBtn = document.getElementById('rutinaDieta');
             const consejosBtn = document.getElementById('consejosEstudios');
-            const terminosBtn = document.getElementById('terminosPrivacidad');
             
             if (rutinaBtn) {
                 rutinaBtn.addEventListener('click', () => openOverlay('rutinaDietaOverlay'));
@@ -1773,9 +2269,6 @@
                 consejosBtn.addEventListener('click', () => {
                     window.location.href = './consejos-estudios.html';
                 });
-            }
-            if (terminosBtn) {
-                terminosBtn.addEventListener('click', () => openOverlay('terminosPrivacidadOverlay'));
             }
 
             // Hacer funciones disponibles globalmente
@@ -2080,47 +2573,79 @@
                         #rutinaContent, #dietaContent {
                             background: #000000;
                             color: #ffffff;
-                            padding: 30px;
-                            font-family: 'Inter', -apple-system, sans-serif;
+                            padding: 40px 35px;
+                            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                            line-height: 1.6;
                         }
                         .section-title {
-                            font-size: 32px;
+                            font-size: 28px;
                             font-weight: 700;
-                            margin-bottom: 10px;
+                            margin-bottom: 8px;
                             color: #ffffff;
+                            letter-spacing: -0.5px;
                         }
                         .section-subtitle {
-                            font-size: 18px;
-                            color: #888888;
-                            margin-bottom: 30px;
-                            font-weight: 500;
-                        }
-                        .day-title {
-                            font-size: 20px;
-                            font-weight: 600;
-                            margin-top: 25px;
-                            margin-bottom: 15px;
-                            color: #ffffff;
-                        }
-                        .exercise-item {
-                            font-size: 16px;
-                            color: #cccccc;
-                            margin-left: 20px;
-                            margin-bottom: 8px;
+                            font-size: 15px;
+                            color: #999999;
+                            margin-bottom: 35px;
+                            font-weight: 400;
                             line-height: 1.5;
                         }
-                        .meal-title {
-                            font-size: 20px;
+                        .day-title {
+                            font-size: 18px;
                             font-weight: 600;
-                            margin-top: 25px;
-                            margin-bottom: 15px;
+                            margin-top: 32px;
+                            margin-bottom: 16px;
                             color: #ffffff;
+                            padding-bottom: 8px;
+                            border-bottom: 2px solid rgba(179, 255, 0, 0.3);
+                            letter-spacing: 0.3px;
+                        }
+                        .exercise-item {
+                            font-size: 15px;
+                            color: #e0e0e0;
+                            margin-left: 0;
+                            margin-bottom: 10px;
+                            line-height: 1.6;
+                            padding: 8px 0;
+                            padding-left: 24px;
+                            position: relative;
+                        }
+                        .exercise-item::before {
+                            content: "•";
+                            position: absolute;
+                            left: 8px;
+                            color: #b3ff00;
+                            font-weight: bold;
+                            font-size: 18px;
+                        }
+                        .meal-title {
+                            font-size: 18px;
+                            font-weight: 600;
+                            margin-top: 32px;
+                            margin-bottom: 16px;
+                            color: #ffffff;
+                            padding-bottom: 8px;
+                            border-bottom: 2px solid rgba(179, 255, 0, 0.3);
+                            letter-spacing: 0.3px;
                         }
                         .food-item {
-                            font-size: 16px;
-                            color: #cccccc;
-                            margin-left: 20px;
-                            margin-bottom: 6px;
+                            font-size: 15px;
+                            color: #e0e0e0;
+                            margin-left: 0;
+                            margin-bottom: 10px;
+                            line-height: 1.6;
+                            padding: 8px 0;
+                            padding-left: 24px;
+                            position: relative;
+                        }
+                        .food-item::before {
+                            content: "•";
+                            position: absolute;
+                            left: 8px;
+                            color: #b3ff00;
+                            font-weight: bold;
+                            font-size: 18px;
                         }
                         .censored-content {
                             filter: blur(8px);
@@ -2181,7 +2706,7 @@
                     if (index === 0) {
                         rutinaHtml += `<div class="day-title">${day}</div>`;
                         exercisesByDay[day].forEach(ej => {
-                            rutinaHtml += `<div class="exercise-item">• ${ej.name} ${ej.sets}x${ej.reps}</div>`;
+                            rutinaHtml += `<div class="exercise-item">${ej.name} ${ej.sets}x${ej.reps}</div>`;
                         });
                     } 
                     // Resto censurado para FREE
@@ -2191,7 +2716,7 @@
                                 <div class="censored-content">
                                     <div class="day-title">${day}</div>
                                     ${exercisesByDay[day].map(ej => 
-                                        `<div class="exercise-item">• ${ej.name} ${ej.sets}x${ej.reps}</div>`
+                                        `<div class="exercise-item">${ej.name} ${ej.sets}x${ej.reps}</div>`
                                     ).join('')}
                                 </div>
                             `;
@@ -2235,8 +2760,8 @@
                             rutinaHtml += `
                                 <div class="censored-content">
                                     <div class="day-title">${day}</div>
-                                    <div class="exercise-item">• ████████ ████</div>
-                                    <div class="exercise-item">• ████████ ████</div>
+                                    <div class="exercise-item">████████ ████</div>
+                                    <div class="exercise-item">████████ ████</div>
                                 </div>
                             `;
                         }
@@ -2245,7 +2770,7 @@
                     else {
                         rutinaHtml += `<div class="day-title">${day}</div>`;
                         exercisesByDay[day].forEach(ej => {
-                            rutinaHtml += `<div class="exercise-item">• ${ej.name} ${ej.sets}x${ej.reps}</div>`;
+                            rutinaHtml += `<div class="exercise-item">${ej.name} ${ej.sets}x${ej.reps}</div>`;
                         });
                     }
                 });
@@ -2273,7 +2798,7 @@
                         : 0);
                 let dietaHtml = `
                     <h1 class="section-title" style="margin-top: 50px;">Dieta</h1>
-                    <p class="section-subtitle">Plan personalizado - ${totalKcal} kcal diarias<br><span style="color:#00ff00;font-size:14px">Proteínas: ${(plan.dieta?.macros?.proteinas ?? plan.dieta?.macros?.proteina) || 0}g | Carbos: ${plan.dieta?.macros?.carbohidratos||0}g | Grasas: ${plan.dieta?.macros?.grasas||0}g</span></p>
+                    <p class="section-subtitle">Plan personalizado - ${totalKcal} kcal diarias<br><span style="color:#b3ff00;font-size:14px;font-weight:500;margin-top:8px;display:inline-block;">Proteínas: ${(plan.dieta?.macros?.proteinas ?? plan.dieta?.macros?.proteina) || 0}g | Carbos: ${plan.dieta?.macros?.carbohidratos||0}g | Grasas: ${plan.dieta?.macros?.grasas||0}g</span></p>
                 `;
                 
                 let upgradeShown = false;
@@ -2292,7 +2817,7 @@
                             
                             comida.alimentos.forEach(alimento => {
                                 const alimentoText = renderAlimento(alimento);
-                                dietaHtml += `<div class="food-item">• ${alimentoText}</div>`;
+                                dietaHtml += `<div class="food-item">${alimentoText}</div>`;
                             });
                         }
                     }
@@ -2301,8 +2826,8 @@
                         dietaHtml += `
                             <div class="censored-content">
                                 <div class="meal-title">${comida.nombre}</div>
-                                <div class="food-item">• ████████ ████</div>
-                                <div class="food-item">• ████████ ████</div>
+                                <div class="food-item">████████ ████</div>
+                                <div class="food-item">████████ ████</div>
                             </div>
                         `;
                         
@@ -2350,7 +2875,7 @@
                         if (comida.alimentos) {
                             comida.alimentos.forEach(alimento => {
                                 const alimentoText = renderAlimento(alimento);
-                                dietaHtml += `<div class="food-item">• ${alimentoText}</div>`;
+                                dietaHtml += `<div class="food-item">${alimentoText}</div>`;
                             });
                         }
                     }
@@ -2738,26 +3263,122 @@
             const contentArea = document.getElementById('terminosContent');
             
             const termsHTML = `
-                <h3>Términos de Servicio</h3>
-                <p>Al utilizar YourGains AI, aceptas estos términos de servicio. Si no estás de acuerdo con alguna parte de estos términos, no debes usar nuestros servicios.</p>
+                <h3>1. Aceptación de los términos</h3>
+                <p>YourGains AI es una plataforma de inteligencia artificial que genera planes de entrenamiento y nutrición personalizados. Al usar este servicio aceptas estos términos y confirmas que tienes al menos 18 años o utilizas la plataforma bajo la supervisión de un adulto responsable.</p>
                 
-                <h4>Descripción del Servicio</h4>
-                <p>YourGains AI es una plataforma de inteligencia artificial que proporciona planes de entrenamiento personalizados, recomendaciones nutricionales y consejos de fitness basados en tus objetivos y preferencias.</p>
+                <h3>2. Naturaleza del servicio (no es asesoramiento médico)</h3>
+                <p>Los planes de entrenamiento y las recomendaciones nutricionales que ofrece YourGains AI son sugerencias generales basadas en los datos que introduces (peso, altura, experiencia, objetivos, lesiones, etc.).</p>
+                <p>No constituyen asesoramiento médico, ni sustituyen la opinión de un profesional sanitario, nutricionista o entrenador titulado.</p>
+                <p><strong>Antes de comenzar cualquier rutina de ejercicio o dieta, consulta siempre con tu médico, especialmente si tienes patologías previas, lesiones o tomas medicación.</strong></p>
                 
-                <h4>Limitaciones de Responsabilidad</h4>
-                <p><strong>Importante:</strong> Los planes de entrenamiento y recomendaciones nutricionales son sugerencias generales. Siempre consulta con un profesional médico o de fitness antes de comenzar cualquier programa de ejercicios o dieta.</p>
+                <h3>3. Uso permitido de la plataforma</h3>
+                <p>Te comprometes a:</p>
+                <ul>
+                    <li>Introducir datos reales y actualizados.</li>
+                    <li>No usar la plataforma para actividades ilegales o que puedan dañar a terceros.</li>
+                    <li>No intentar acceder al código, base de datos o sistemas internos de forma no autorizada.</li>
+                </ul>
+                <p>Podremos suspender o cerrar tu cuenta si detectamos un uso fraudulento o abusivo.</p>
                 
-                <h3>Política de Privacidad</h3>
-                <p>Recopilamos información para proporcionarte un servicio personalizado, incluyendo datos de perfil, historial de entrenamiento y preferencias. Utilizamos esta información para generar planes personalizados y mejorar nuestros algoritmos de IA.</p>
+                <h3>4. Limitación de responsabilidad</h3>
+                <p>YourGains AI no se hace responsable de:</p>
+                <ul>
+                    <li>Lesiones, daños físicos o problemas de salud derivados del uso de los planes generados.</li>
+                    <li>Resultados no obtenidos (por ejemplo, no ganar músculo, no perder grasa, etc.).</li>
+                    <li>Errores puntuales en el contenido generado por la IA.</li>
+                </ul>
+                <p>El uso de la plataforma es exclusivamente bajo tu responsabilidad.</p>
                 
-                <h4>Protección de Datos</h4>
-                <p>Implementamos medidas de seguridad técnicas y organizativas para proteger tu información personal contra acceso no autorizado, alteración, divulgación o destrucción.</p>
+                <h3>5. Cuentas, suscripciones y pagos</h3>
+                <p>Al crear una cuenta, eres responsable de mantener la confidencialidad de tu usuario y contraseña.</p>
+                <p>En los planes de pago:</p>
+                <ul>
+                    <li>El precio, la moneda y la periodicidad (mensual/anual) se indicarán antes de la contratación.</li>
+                    <li>Las renovaciones son automáticas hasta que canceles tu suscripción.</li>
+                    <li>Puedes cancelar en cualquier momento; el acceso al plan se mantendrá hasta el final del periodo ya pagado.</li>
+                </ul>
                 
-                <h4>Contacto</h4>
-                <p>Si tienes preguntas sobre estos términos y políticas, puedes contactarnos en: legal@yourgainsai.com</p>
+                <h3>6. Política de Privacidad (resumen)</h3>
+                
+                <h4>Datos que recogemos:</h4>
+                <ul>
+                    <li><strong>Datos de registro:</strong> nombre, email, contraseña (encriptada).</li>
+                    <li><strong>Datos de entrenamiento:</strong> peso, altura, experiencia, objetivos, tipo de cuerpo, materiales disponibles, lesiones, preferencias alimentarias.</li>
+                    <li><strong>Datos técnicos básicos:</strong> dirección IP, dispositivo, uso de la app (para análisis y mejoras).</li>
+                </ul>
+                
+                <h4>Para qué usamos tus datos:</h4>
+                <ul>
+                    <li>Para generar tus rutinas y dietas personalizadas.</li>
+                    <li>Para mostrar tu historial y progresos.</li>
+                    <li>Para mejorar la plataforma (estadísticas de uso, detección de errores).</li>
+                    <li>Para enviarte comunicaciones relacionadas con el servicio (confirmaciones, avisos importantes, etc.).</li>
+                </ul>
+                
+                <h4>Base legal (RGPD y normativa aplicable):</h4>
+                <ul>
+                    <li>Ejecución del contrato (cuando te damos el servicio que has solicitado).</li>
+                    <li>Consentimiento (por ejemplo, envío de comunicaciones comerciales si lo aceptas).</li>
+                    <li>Interés legítimo (mejorar la seguridad y el rendimiento del sistema).</li>
+                </ul>
+                
+                <h4>Conservación y protección:</h4>
+                <ul>
+                    <li>Conservamos tus datos mientras mantengas tu cuenta activa.</li>
+                    <li>Puedes solicitar la eliminación de tu cuenta y de tus datos, salvo los que debamos conservar por obligación legal (por ejemplo, facturación).</li>
+                    <li>Aplicamos medidas razonables de seguridad para proteger tu información.</li>
+                </ul>
+                
+                <h4>Tus derechos:</h4>
+                <ul>
+                    <li>Acceder, rectificar y suprimir tus datos.</li>
+                    <li>Limitar u oponerte al tratamiento en ciertos casos.</li>
+                    <li>Portabilidad de los datos.</li>
+                </ul>
+                <p>Para ejercer tus derechos o resolver dudas sobre privacidad, podrás contactar con nosotros en el email de soporte que se muestre en la web.</p>
+                
+                <h3>7. Cambios en los términos</h3>
+                <p>Podremos actualizar estos términos y la política de privacidad para adaptarnos a cambios legales o mejoras del servicio.</p>
+                <p>Cuando haya cambios importantes, te lo notificaremos dentro de la plataforma o por email.</p>
+                
+                <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #333; color: #ffffff; font-weight: 600;">
+                    Al seguir usando YourGains AI aceptas estos términos y condiciones de uso.
+                </p>
             `;
             
             contentArea.innerHTML = termsHTML;
+        }
+        
+        // Función para cargar contenido de "Quiénes somos"
+        function loadAboutContent() {
+            const contentArea = document.getElementById('aboutContent');
+            
+            const aboutHTML = `
+                <p>YourGains AI surgió de la necesidad de llevar el entrenamiento personalizado al alcance de todo tipo de personas. En un mundo de sobreinformación, vimos el problema de muchísima gente que no sabe por dónde empezar y de otras que quieren acceder a conocimiento de calidad a un precio asequible.</p>
+                
+                <p>Nosotros hemos hecho eso posible haciendo el trabajo por ti: recopilamos y actualizamos la información que necesitas para que sepas qué hacer en todo momento con tu entrenamiento y tu nutrición, sin tener que vivir pegado a foros, vídeos o estudios.</p>
+                
+                <p>Nuestra misión es ayudarte a entrenar de forma inteligente, ahorrándote tiempo y dudas. Combinamos:</p>
+                <ul>
+                    <li>Conocimiento de entrenamiento de fuerza, hipertrofia y nutrición.</li>
+                    <li>Modelos de inteligencia artificial que analizan tus datos y generan planes personalizados.</li>
+                    <li>Una interfaz sencilla para que entiendas qué tienes que hacer cada día en el gimnasio y en la cocina.</li>
+                </ul>
+                
+                <h3>¿Qué hace diferente a YourGains AI?</h3>
+                <ul>
+                    <li><strong>Planes adaptados</strong> a tu experiencia, material disponible y puntos débiles (por ejemplo, pecho, espalda, piernas, brazos).</li>
+                    <li><strong>Dietas personalizadas</strong> con calorías ajustadas, reparto de macros y sugerencias de alimentos realistas.</li>
+                    <li><strong>Capacidad de actualizar</strong> tu plan cuando cambias de peso, gimnasio, objetivos o sufres una lesión.</li>
+                    <li><strong>Contenido de "Consejos y estudios"</strong> basado en evidencia, explicado en lenguaje simple.</li>
+                </ul>
+                
+                <p>YourGains AI no pretende sustituir a un entrenador personal humano, sino darte una herramienta potente para organizar tu entrenamiento y tu nutrición de forma coherente, constante y sostenible.</p>
+                
+                <p>Si tienes dudas, sugerencias o quieres colaborar con el proyecto, encontrarás nuestro contacto en la sección de soporte de la web.</p>
+            `;
+            
+            contentArea.innerHTML = aboutHTML;
         }
 
         // Función para mostrar mensajes de no contenido - COMENTADA PARA EVITAR CONFLICTOS
@@ -2771,6 +3392,8 @@
         // Hacer funciones globales
         window.openOverlay = openOverlay;
         window.closeOverlay = closeOverlay;
+        window.loadTermsContent = loadTermsContent;
+        window.loadAboutContent = loadAboutContent;
 
         // ═══════════════════════════════════════════════════════════
         // DETECCIÓN AUTOMÁTICA DE PAGO PREMIUM
@@ -2895,10 +3518,7 @@
                 window.location.href = './consejos-estudios.html';
             });
             
-            document.getElementById('terminosPrivacidad').addEventListener('click', function() {
-                openOverlay('terminosPrivacidadOverlay');
-                loadTermsContent();
-            });
+            // El botón de términos ahora está en el menú lateral, manejado por handleTerms()
         });
 
         // Inicializar el dashboard cuando se carga la página

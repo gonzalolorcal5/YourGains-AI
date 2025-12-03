@@ -82,7 +82,8 @@ try:
     print("[INFO] Stripe routes enabled")
 except Exception as e:
     print("[WARN] Stripe routes disabled:", e)
-
+    import traceback
+    traceback.print_exc()
 # --------- paths de frontend ---------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))   # .../app
 FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")       # .../app/frontend
