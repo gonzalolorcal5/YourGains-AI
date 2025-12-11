@@ -508,6 +508,49 @@
               z-index: 1000;
           }
           
+          /* Overlay de consejos y estudios como página completa */
+          #consejosEstudiosOverlay {
+              background: #0a0a0a;
+              display: none;
+          }
+          
+          #consejosEstudiosOverlay[style*="display: block"] {
+              display: block !important;
+          }
+          
+          /* Estilos específicos para la página de Consejos y Estudios */
+          .consejos-estudios-page {
+              background: #0a0a0a;
+          }
+          
+          .consejos-estudios-page::-webkit-scrollbar {
+              width: 10px;
+          }
+          
+          .consejos-estudios-page::-webkit-scrollbar-track {
+              background: #0a0a0a;
+          }
+          
+          .consejos-estudios-page::-webkit-scrollbar-thumb {
+              background: #262626;
+              border-radius: 5px;
+          }
+          
+          .consejos-estudios-page::-webkit-scrollbar-thumb:hover {
+              background: #404040;
+          }
+          
+          .article-card {
+              background: #171717;
+              border: 1px solid #262626;
+          }
+          
+          .article-card:hover {
+              border-color: #84cc16;
+              box-shadow: 0 10px 30px rgba(132, 204, 22, 0.1);
+              transform: scale(1.02);
+          }
+          
           .overlay-content {
               background: #111111;
               color: white;
@@ -520,6 +563,11 @@
               position: relative;
               border: 1px solid #333;
               box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+          }
+          
+          .overlay-content.large {
+              width: 95%;
+              max-width: 1400px;
           }
           
           .overlay-content::-webkit-scrollbar {
@@ -1012,6 +1060,17 @@
           .study-journal {
               color: rgba(255, 255, 255, 0.6);
               font-style: italic;
+          }
+
+          /* Estilos para enlaces de estudios */
+          .study-card a {
+              transition: all 0.2s ease;
+          }
+
+          .study-card a:hover {
+              background: rgba(59, 130, 246, 0.2) !important;
+              border-color: rgba(59, 130, 246, 0.5) !important;
+              transform: translateY(-1px);
           }
 
           /* Premium overlay */
@@ -1603,6 +1662,13 @@
               }
           }
 
+          /* Responsive para cards de consejos y estudios */
+          @media (max-width: 768px) {
+              #consejosEstudiosContent {
+                  grid-template-columns: 1fr !important;
+              }
+          }
+
       </style>
   </head>
   <body>
@@ -1683,26 +1749,44 @@
       </div>
 
     <!-- Overlay para Consejos y Estudios -->
-    <div class="overlay" id="consejosEstudiosOverlay">
-        <div class="overlay-content large">
-            <button class="close-btn" onclick="closeOverlay('consejosEstudiosOverlay')">&times;</button>
-            <h2>Consejos y Estudios</h2>
-            <div class="tab-content-grid">
-                <div class="content-column">
-                    <h3>Consejos Técnicos</h3>
-            <div id="consejosContent">
-                        <p>Cargando consejos...</p>
+    <div class="overlay" id="consejosEstudiosOverlay" style="background: #0a0a0a; overflow-y: auto; position: relative;">
+        <!-- HEADER FIXED -->
+        <header style="position: fixed; top: 0; left: 0; right: 0; z-index: 10000; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); border-bottom: 1px solid #262626;">
+            <!-- Barra superior con logo y botón cerrar -->
+            <div style="max-width: 1200px; margin: 0 auto; padding: 20px; display: flex; align-items: center; justify-content: space-between;">
+                <!-- Logo izquierda -->
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="dna-icon" style="display: flex; align-items: center;">
+                        <svg viewBox="0 0 800 800" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+                            <path transform="translate(237)" d="m0 0h19l10 5 8 6 4 4 4 8v5h1v10h234v-10l1-1 1-6 5-9 5-3 3-5 5-1 7-3h19l12 6 7 7h2l2 5 3 13v38l-2 20-3 15v8l-2 3-1 5h-2l-6 15-2 6-1 2-1 4-9 15-5 7-2 1-1 3-2 1-2 4-2 1-2 4-4 2-2 3-2 4-7 7-4 1-8 8-10 8-1 3-4 1-5 1-20-12-24-12-26-10-4-1v-2l10-4 14-8 10-7 1-1-91-1-16-10-13-11-10-9-6-4-1-4-4-2v-5l1-2 186-1 1-6 6-14 3-10 2-1h-232l2 1 2 6v7l4 5 9 17 5 7 1 3 3 2 1 4 4 2 2 5 10 10 17 13 14 9 23 12 21 8 26 8 22 9 22 11 8 5 5 1v2l12 8 12 9 4 1 3 5 4 1 3 5 15 15 4 2 1 4 5 3 1 3 5 5 7 10 7 11 8 16 1 8 6 18h2l1 7-1 1 3 17 1 14v12l-2 21-2 11 1 4-2 3-2 4-6 17v5l-10 19-12 18-5 5-2 4-4 2-2 5-5 3-15 15-2 4-4 1-15 12-5-2-23-13-23-11-24-9 1-3 19-10 15-10-94-1-14-9-14-11-15-15-4-2-1-4h-2l2-5h184l2-5h2l2-9h2l5-15h-229l1 7 2 1 1 7h2l2 4v5h2l6 10 1 3 5 5 1 3 3 2 1 4 5 3 7 7 2 4 8 6 3 1 2 4 17 11 23 12 21 8 36 12 20 9 21 11 21 14 14 11 11 10 4 1 3 5 4 2 3 3 1 4 4 3 3 2 1 4 3 1 1 3 2 1 1 3 4 4 10 16 1 6 3 1 3 9 2 7h2l1 8 2 4 2 2v8l3 14 2 21v38l-2 9-2 7-2 2-7 6-8 5-5 2h-18l-10-4-8-7-3-1-5-9-1-7h-1v-10h-234v10l-1 1-1 6-5 9-5 3-8 6-8 3h-18l-12-6-7-7h-2l-2-5-3-13v-38l2-21 3-14v-8l3-3 2-8 1-3 2-2 5-15h2l2-8 12-18 2-1 1-3 2-1 1-3 3-1 1-4 5-3 2-3 2-4 10-10 4-1 11-10 11-8 5 1 16 10 26 13 24 9 5 3-3 2-17 9-12 8-2 2 91 1 16 10 13 11 10 9 6 4 1 4 4 2v5l-1 2-184 1-7 15-5 15-2 1h232l-2-1-5-15-8-17-7-10-1-3-3-2-1-4-4-2-2-5-10-10-17-13-14-9-23-12-21-8-29-9-23-10-25-13-6-2v-2l-12-8-13-10-7-5-4-2-2-4-16-16-4-2-2-5-3-1-1-4-3-1-1-3-5-5-12-20-6-12v-5h-2l-1-8-6-20-3-18-1-13v-14l2-20 4-19 5-15v-5h2l1-7 9-17 9-14 6-8 3-1 1-4 3-1 1-4 6-4 16-16 2-4 4-1 3-5 4-1 8-6 5 2 23 13 23 11 24 9-1 3-19 10-15 10 98 1 1 3 13 9 11 9 14 14 4 2 1 4h2l-2 5h-184l-2 5h-2l-2 9h-2l-5 15h230l-5-15h-2l-2-9h-2l-6-10-1-3-5-5-1-3-3-2-1-4-5-3-7-7-2-4-3-2-3-1-1-3-4-1-2-4-17-11-23-12-21-8-36-12-20-9-21-11-21-14-14-11-12-11-5-2-8-8-1-4-4-3-3-2-1-4-3-1-1-3-2-1-1-3-4-4-10-16-1-6-3-1-2-9-3-7h-2l-1-8-2-4-2-2v-8l-3-14-2-21v-38l2-9 2-7 2-2 7-6 8-5zm296 5m-259 8m251 0m-250 1m249 0m-308 1m367 0m-307 1m247 0m-308 1m62 0m245 0m62 0m-306 2 1 2zm243 0 1 2zm-242 2 1 2zm241 0 1 2zm-240 3 1 3zm239 0 1 3zm-238 15v1h238v-1zm3 48m231 0m-230 1 1 3zm229 0 1 3zm-228 4 1 3zm227 0 1 2zm-1 3 1 2zm-1 3 1 2zm-1 2 1 2zm-1 3 1 2zm-219 1m1 1 1 2zm217 1m-291 2 1 3zm75 0m215 0m75 0 1 3zm-289 2m213 0m-212 2m211 0m-210 2m1 1m284 0 1 2zm-283 2m1 2m1 1m19 1m-18 1m19 0m-18 1m1 2m1 1m20 1m-19 1m20 0m-17 4m1 1m-80 5m84 0m-83 1 1 2zm84 0m1 1m253 5m-334 2m333 0m-332 2m331 0m-330 2m329 0m-328 1m327 0m-326 2m325 0m-324 2m323 0m-322 1m321 0m-320 2m319 0m-318 1m317 0m-316 2m315 0m-314 1m216 0m97 0m-312 2m311 0m-310 1m309 0m-306 4m303 0m-300 4m297 0m-293 5m289 0m-288 1m287 0m-280 8m273 0m-272 1m271 0m-270 1m269 0m-268 2m266 0m-264 2m263 0m-261 2m259 0m-25 21m-22 12m-193 20m221 0m-222 1m223 0m-229 5m235 0m-236 1m237 0m-259 22m281 0m-282 1m-1 1m-4 5m293 0m3 4m-300 1m301 0m-302 1m303 0m1 2m-306 1m307 0m-308 1m309 0m-310 2m311 0m-312 1m313 0m-314 1 1 2zm315 1m-316 1m195 0m122 0m-94 1m-224 1m319 0m-320 1m321 0m-322 2m231 0m92 0m-324 1m325 0m-326 2m327 0m-328 2m329 0m-330 1 1 2zm331 1m-332 1m244 0m89 0m-87 1m-247 1m248 0m87 0m-86 1m-250 1m251 0m86 0m-338 2m253 0m86 0m-340 2m341 0m-342 2m343 0m-344 2m262 0m83 0m-346 1 1 2zm264 0m83 1m-348 2 1 2zm349 0 1 2zm-81 1m1 1m1 2m1 1m-18 2m1 1m20 2m1 1m1 2m1 1m-206 2m207 0m-208 2m209 0m-213 8m217 0m-224 21v1h232v-1zm0 45v1h232v-1zm0 2m3 10m4 9m217 0m-216 2 1 2zm3 6m209 0m-208 2m207 0m-206 2m1 1m1 2m1 1m20 2m1 1m-18 2m1 1m1 2m-80 1 1 2zm81 0m268 0 1 2zm-348 3 1 2zm347 0m-264 1m-82 1m83 0m262 0m-344 2m343 0m-342 2m341 0m-340 2m86 0m253 0m-338 2m86 0m251 0m-250 1m-86 1m87 0m248 0m-247 1m-87 1m88 0m245 0m-332 1 1 2zm331 0m-330 2m329 0m-328 2m327 0m-326 2m325 0m-324 1m323 0m-322 2m321 0m-320 1m319 0m-224 1m-94 1m317 0m-316 1m315 0m-314 2m313 0m-312 1m311 0m-310 2m309 0m-308 1m307 0m-1 1m-1 2m-302 1m301 0m-1 1m-296 4m293 0m-289 5m1 1m282 1m-259 22m237 0m-236 1m235 0m-200 26m-42 29m-3 2m255 0m-257 2m-2 2m-2 2m267 0m-268 2m269 0m-270 1m271 0m-272 1m273 0m-280 8m287 0m-288 1m289 0m-293 5m297 0m-300 4m303 0m-306 4m309 0m-310 1m311 0m-312 2m97 0m216 0m-314 1m315 0m-316 2m317 0m-318 1m319 0m-320 2m321 0m-322 1m323 0m-324 2m325 0m-326 2m327 0m-328 1m329 0m-330 2m331 0m-332 2m333 0m-337 7m256 0m85 0m-84 1m-258 1m259 0m84 0m1 2 1 2zm-81 3m82 0m-81 1m-17 4m20 0m-19 1m20 1m1 1m1 2m-18 1m19 0m-18 1m19 1m1 1m1 2m-206 2m207 0m-208 1m209 0m-210 2m211 0m-288 2 1 3zm76 0m213 0m76 0 1 3zm-290 2m215 0m-216 2 1 2zm217 0 1 2zm-218 2m219 0m-220 3 1 2zm221 0 1 2zm-222 2 1 2zm223 0 1 2zm-224 3 1 2zm225 0 1 2zm-226 2 1 3zm227 0 1 3zm-228 4 1 3zm229 0 1 3zm-230 3m231 0m-234 48v1h238v-1zm-1 13 1 3zm239 0 1 3zm-240 4 1 2zm241 0 1 2zm-242 2 1 2zm243 0 1 2z" fill="#84CC16"/>
+                        </svg>
                     </div>
+                    <span style="color: white; font-size: 18px; font-weight: bold;">
+                        YourGains <span style="color: #84cc16;">AI</span>
+                    </span>
                 </div>
-                <div class="content-column">
-                    <h3>Evidencia Científica</h3>
-                    <div id="estudiosContent">
-                        <p>Cargando estudios...</p>
-                    </div>
-                </div>
-          </div>
-          </div>
-      </div>
+                
+                <!-- Botón cerrar derecha -->
+                <button onclick="closeOverlay('consejosEstudiosOverlay')" style="background: rgba(255, 255, 255, 0.1); border: 1px solid #404040; color: #a3a3a3; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.borderColor='#525252'; this.style.color='white'" onmouseout="this.style.borderColor='#404040'; this.style.color='#a3a3a3'">&times;</button>
+            </div>
+            
+            <!-- Título sección -->
+            <div style="text-align: center; padding: 20px 20px 30px 20px;">
+                <h1 style="font-size: 32px; font-weight: bold; color: white; margin-bottom: 8px;">Consejos y Estudios</h1>
+                <p style="font-size: 16px; color: #999;">Conocimiento científico aplicado al fitness</p>
+            </div>
+        </header>
+        
+        <!-- SPACER para que el contenido no quede debajo del header -->
+        <div style="height: 180px;"></div>
+        
+        <!-- CONTENEDOR DE CARDS -->
+        <main style="max-width: 1200px; margin: 0 auto; padding: 0 20px 40px 20px; position: relative; z-index: 1;">
+            <div id="consejosEstudiosContent" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
+                <!-- El contenido se carga dinámicamente aquí -->
+            </div>
+        </main>
+    </div>
 
     <!-- Overlay para Términos y Privacidad -->
     <div class="overlay" id="terminosPrivacidadOverlay" onclick="if(event.target === this) closeOverlay('terminosPrivacidadOverlay')">
@@ -1936,9 +2020,12 @@
         }
         
         // Función principal
-        function initDashboard() {
+        async function initDashboard() {
             // Verificar autenticación al cargar la página
             checkAuthOrRedirect();
+            
+            // Verificar estado isPremium al cargar
+            await checkPremiumStatus();
           
             const chatMessages = document.getElementById('chatMessages');
             const chatInput = document.getElementById('chatInput');
@@ -2263,11 +2350,15 @@
             const consejosBtn = document.getElementById('consejosEstudios');
             
             if (rutinaBtn) {
-                rutinaBtn.addEventListener('click', () => openOverlay('rutinaDietaOverlay'));
+                rutinaBtn.addEventListener('click', () => {
+                    openOverlay('rutinaDietaOverlay');
+                    loadRoutineAndDietContent();
+                });
             }
             if (consejosBtn) {
                 consejosBtn.addEventListener('click', () => {
-                    window.location.href = './consejos-estudios.html';
+                    openOverlay('consejosEstudiosOverlay');
+                    loadAdviceAndStudiesContent();
                 });
             }
 
@@ -2987,7 +3078,15 @@
                 console.error('Overlay no encontrado:', overlayId);
                 return;
             }
-            overlay.style.display = 'flex';
+            
+            // Si es el overlay de consejos y estudios, mostrar como página completa
+            if (overlayId === 'consejosEstudiosOverlay') {
+                overlay.style.display = 'block';
+                // Cargar contenido cuando se abre
+                loadAdviceAndStudiesContent();
+            } else {
+                overlay.style.display = 'flex';
+            }
         }
 
         // Función para cerrar overlays
@@ -3159,103 +3258,404 @@
 
         // Función para cargar contenido de consejos y estudios
         function loadAdviceAndStudiesContent() {
-            const storedPlan = localStorage.getItem('userPlan');
-            const isPremium = isPremiumUser();
+            const contentArea = document.getElementById('consejosEstudiosContent');
+            if (!contentArea) {
+                console.error('No se encontró el contenedor consejosEstudiosContent');
+                return;
+            }
             
-            loadAdviceContent(storedPlan, isPremium);
-            loadStudiesContent();
+            // Estilos por categoría (fondo oscuro, texto brillante, borde)
+            const categoryStyles = {
+                'Entrenamiento': {
+                    bg: '#1a3a0d',      // Verde muy oscuro (casi negro verdoso)
+                    text: '#84cc16',    // Verde lima neón (brand color)
+                    border: '#84cc16'   // Borde verde para destacar
+                },
+                'Nutrición': {
+                    bg: '#0f1f3d',      // Azul muy oscuro
+                    text: '#3b82f6',    // Azul brillante
+                    border: '#3b82f6'
+                },
+                'Recuperación': {
+                    bg: '#2d1b4e',      // Púrpura oscuro
+                    text: '#a78bfa',    // Púrpura claro
+                    border: '#a78bfa'
+                },
+                'Suplementación': {
+                    bg: '#3d1f0f',      // Naranja oscuro
+                    text: '#fb923c',    // Naranja brillante
+                    border: '#fb923c'
+                }
+            };
+            
+            // Array de artículos
+            const articulos = [
+                {
+                    categoria: 'Entrenamiento',
+                    titulo: '¿Por qué no crecen tus músculos?',
+                    contenido: [
+                        'La hipertrofia responde a tres mecanismos: tensión mecánica, daño muscular y estrés metabólico. Las series pesadas de 6-8 repeticiones maximizan la tensión, mientras que las de 12-15 reps generan mayor estrés metabólico. La clave está en integrarlos estratégicamente.',
+                        'El volumen es crucial: 10-20 series semanales por grupo muscular. La proximidad al fallo también importa: las últimas 5 repeticiones (RIR 1-3) generan el estímulo real. Acumula 10-20 series/músculo/semana, entrena cada grupo 2-3 veces/semana y termina series a RIR 1-3.'
+                    ],
+                    referencias: [
+                        { titulo: 'The mechanisms of muscle hypertrophy and their application to resistance training', pmid: '20847704' },
+                        { titulo: 'Dose-response relationship between weekly resistance training volume and increases in muscle mass', pmid: '28834797' },
+                        { titulo: 'A Systematic Review of The Effects of Different Resistance Training Volumes on Muscle Hypertrophy', pmid: '35291645' }
+                    ]
+                },
+                {
+                    categoria: 'Nutrición',
+                    titulo: 'No ingieras proteína justo al acabar de entrenar',
+                    contenido: [
+                        'Si solo ingieres proteína post-entreno, tu cuerpo activa la gluconeogénesis: convierte los aminoácidos en glucosa para reponer el glucógeno vacío. El problema: esa proteína que debería reparar fibras musculares se desvía para fabricar energía, desaprovechando el recurso más valioso para la hipertrofia.',
+                        'La estrategia óptima es combinar carbohidratos + proteína. Los carbohidratos reponen rápidamente el glucógeno, mientras que la proteína se destina completamente a la síntesis proteica. Combina 20-40g de proteína + 40-80g de carbohidratos en tu comida post-entreno (batido con plátano, arroz con pollo, patatas con atún).'
+                    ],
+                    referencias: [
+                        { titulo: 'Carbohydrate and protein co-ingestion augments skeletal muscle glycogen synthesis', pmid: '33507402' },
+                        { titulo: 'Impact of Muscle Glycogen Availability on the Capacity for Repeated Exercise in Man', pmid: '29519691' },
+                        { titulo: 'Biochemistry, Gluconeogenesis', pmid: '31082163' }
+                    ]
+                },
+                {
+                    categoria: 'Nutrición',
+                    titulo: 'Proteína: Cantidad, Distribución y el Mito de los 30g',
+                    contenido: [
+                        'Para hipertrofia necesitas 1.6-2.2g/kg/día según Morton (2018). De 0.8 a 1.5g/kg ves mejoras significativas, de 1.5 a 2.0g/kg las mejoras son pequeñas pero presentes, y más allá de 2.2g/kg no hay beneficios adicionales. En déficit calórico aumenta a 2.0-2.4g/kg para preservar músculo. La distribución es menos importante: estudios con ayuno intermitente 16/8 muestran ganancias equivalentes a 4-5 comidas. Lo determinante es la proteína total diaria, no el número de comidas.',
+                        'El mito de "solo absorbes 30g por comida" es falso. Estudios de 2024 demuestran que el cuerpo absorbe y utiliza 100g+ en una comida. La leucina es clave: necesitas 2-3g por comida (equivalente a 20-30g de proteína de calidad) para activar mTOR y maximizar la síntesis muscular. Estrategia: alcanza 1.6-2.2g/kg diariamente, distribuye en 3-5 comidas o practica ayuno si prefieres, y asegura 20-30g por comida para activar leucina.'
+                    ],
+                    referencias: [
+                        { titulo: 'A systematic review, meta-analysis and meta-regression of the effect of protein supplementation on resistance training-induced gains in muscle mass and strength', pmid: '28698222' },
+                        { titulo: 'Evidence-based recommendations for natural bodybuilding contest preparation: nutrition and supplementation', pmid: '24864135' },
+                        { titulo: 'How much protein can the body use in a single meal for muscle-building?', pmid: '29497353' }
+                    ]
+                },
+                {
+                    categoria: 'Entrenamiento',
+                    titulo: '¿Cuánto debo entrenar?',
+                    contenido: [
+                        'El volumen óptimo es 12-20 series efectivas semanales por grupo muscular según Baz-Valle (2022). Menos de 12 deja ganancias sobre la mesa, más de 20 no produce beneficio adicional. Una serie solo es efectiva si alcanzas RIR 5 o menos (dejar máximo 5 reps en el tanque). El punto dulce es RIR 1-3: suficiente intensidad para maximizar síntesis proteica sin la fatiga desproporcionada del fallo absoluto.',
+                        'Tu capacidad de tolerar volumen depende de tu estado calórico. En superávit puedes operar en el rango alto (16-20 series), en déficit reduce al rango bajo (10-14 series). Principiantes: 6-12 series/semana. Intermedios/Avanzados: 12-20 series/semana. Entrena cada músculo 2 veces/semana distribuyendo 6-10 series por sesión. Una vez alcances tu rango óptimo, progresa aumentando carga y esfuerzo, no añadiendo más series indefinidamente.'
+                    ],
+                    referencias: [
+                        { titulo: 'Dose-response relationship between weekly resistance training volume and increases in muscle mass', pmid: '27433992' },
+                        { titulo: 'A Systematic Review of The Effects of Different Resistance Training Volumes on Muscle Hypertrophy', pmid: '35291645' },
+                        { titulo: 'Training volume increases or maintenance: effects on muscular adaptations', pmid: '38970765' },
+                        { titulo: 'Resistance Training Volume Enhances Muscle Hypertrophy but Not Strength in Trained Men', pmid: '30153194' }
+                    ]
+                },
+                {
+                    categoria: 'Entrenamiento',
+                    titulo: 'Frecuencia de Entrenamiento: ¿Cuántas Veces por Semana Entrenar Cada Músculo?',
+                    contenido: [
+                        'La frecuencia no es el driver, es la herramienta. El volumen semanal total (12-20 series efectivas) es lo que impulsa la hipertrofia. Entrenar cada músculo 2 veces por semana produce significativamente más hipertrofia que 1 vez según Schoenfeld (2016, 2019). Existe un límite práctico de 10-12 series efectivas por grupo muscular por sesión. A partir de ese punto, la fatiga degrada la calidad de las series subsecuentes.',
+                        'La estrategia ganadora: divide tu volumen semanal objetivo (12-20 series) en 2 sesiones de 6-10 series cada una. Fullbody 3 días/semana es ideal para principiantes. Upper/Lower 4 días o PPL 6 días (frecuencia 2x) es ideal para intermedios/avanzados. El bro-split (1 músculo/día) es subóptimo. Nunca pases de 10-12 series efectivas por grupo muscular en una sola sesión.'
+                    ],
+                    referencias: [
+                        { titulo: 'Effects of Resistance Training Frequency on Measures of Muscle Hypertrophy: A Systematic Review and Meta-Analysis', pmid: '27102172' },
+                        { titulo: 'How many times per week should a muscle be trained to maximize muscle hypertrophy?', pmid: '30558493' },
+                        { titulo: 'Dose-response relationship between weekly resistance training volume and increases in muscle mass', pmid: '27433992' }
+                    ]
+                },
+                {
+                    categoria: 'Entrenamiento',
+                    titulo: 'Rango de Repeticiones: El Mito Más Grande del Fitness Desacreditado',
+                    contenido: [
+                        'El continuum tradicional (1-5 reps fuerza, 6-12 hipertrofia, 15+ resistencia) es un mito. El meta-análisis de Schoenfeld (2021) demuestra que todos los rangos de 3-30 reps producen hipertrofia IDÉNTICA cuando el volumen total y la proximidad al fallo se equiparan. Lo que realmente importa es el RIR (Repeticiones en Reserva): series a RIR 0-1 producen 100% de síntesis proteica máxima, RIR 2-3 producen 95-98%.',
+                        'El rango 6-12 reps no produce más músculo pero tiene ventajas prácticas: mejor balance de los 3 mecanismos de hipertrofia, más eficiente en tiempo, técnica se mantiene bien. Si prefieres cargas pesadas: 3-8 reps funciona perfectamente con más series. Si prefieres pump: 15-25 reps es igualmente efectivo con menos series. La clave: lleva las series a RIR 1-3 en cualquier rango.'
+                    ],
+                    referencias: [
+                        { titulo: 'A Re-Examination of the Repetition Continuum', pmid: 'No disponible - Journal ACSM-MSSE 2021' },
+                        { titulo: 'Muscular adaptations in response to three different resistance-training regimens', pmid: '12436270' },
+                        { titulo: 'Neither load nor systemic hormones determine resistance training-mediated hypertrophy', pmid: '27928218' },
+                        { titulo: 'Effects of Low- vs. High-Load Resistance Training on Muscle Strength and Hypertrophy', pmid: '25530577' }
+                    ]
+                },
+                {
+                    categoria: 'Nutrición',
+                    titulo: 'Déficit Calórico Óptimo: Perder Grasa Sin Perder Músculo',
+                    contenido: [
+                        'Cuando creas déficit solo reduciendo calorías, pierdes aproximadamente 24-28% del peso total en forma de músculo. Si pierdes 10kg solo con dieta, 2.5-3kg serán músculo. En contraste, cuando combinas déficit moderado por dieta más ejercicio, solo pierdes ~13% en músculo. La fórmula ganadora: déficit pequeño por dieta (10-15% bajo TDEE) más gasto calórico por ejercicio.',
+                        'La velocidad óptima es 0.5-0.7% del peso corporal por semana. El estudio de Garthe (2011) comparó déficit lento vs rápido: el grupo lento ganó +2.1% de masa muscular mientras perdía grasa. Calcula tu TDEE, aplica déficit del 10-15% por dieta, añade 2-3 sesiones semanales de cardio moderado. CRÍTICO: mantén o aumenta el volumen de entrenamiento de fuerza y aumenta proteína a 2.0-2.4g/kg.'
+                    ],
+                    referencias: [
+                        { titulo: 'Exercise-training enhances fat-free mass preservation during diet-induced weight loss', pmid: '8130813' },
+                        { titulo: 'Effects of Weight Loss on Lean Mass, Strength, Bone, and Aerobic Capacity', pmid: '27580151' },
+                        { titulo: 'Effect of two different weight-loss rates on body composition and strength in elite athletes', pmid: '21558571' }
+                    ]
+                },
+                {
+                    categoria: 'Entrenamiento',
+                    titulo: 'RIR y Fallo Muscular: La Verdad Que Necesitas Saber',
+                    contenido: [
+                        'Los meta-análisis de Grgic (2022), Vieira (2021) y Refalo (2023) son contundentes: cuando el volumen total se iguala, NO hay diferencias en hipertrofia entre entrenar al fallo (RIR 0) o cerca del fallo (RIR 1-3). El fallo no es superior pero genera fatiga sistémica desproporcionada: tu rendimiento en series siguientes cae, tu volumen total disminuye, y tu recuperación se alarga.',
+                        'En ejercicios compuestos pesados (sentadilla, press banca, peso muerto), EVITA el fallo. Trabaja a RIR 2-3. En ejercicios de aislamiento (curls, extensiones, elevaciones laterales), es seguro ir al fallo o muy cerca (RIR 0-1). Estrategia óptima: última serie al fallo. Haz las series 1-3 a RIR 1-2, y solo la serie final llévala al fallo técnico. Principiantes: NUNCA entrenen al fallo, trabajen a RIR 3-5.'
+                    ],
+                    referencias: [
+                        { titulo: 'Effects of resistance training performed to repetition failure or non-failure on muscular strength and hypertrophy', pmid: 'No disponible - Sci-Space 2022' },
+                        { titulo: 'Effects of Resistance Training Performed to Failure or Not to Failure on Muscle Strength, Hypertrophy, and Power Output', pmid: '33555822' },
+                        { titulo: 'Influence of Resistance Training Proximity-to-Failure on Skeletal Muscle Hypertrophy', pmid: 'No disponible - Sports Medicine 2023' },
+                        { titulo: 'Exploring the Dose-Response Relationship Between Estimated Resistance Training Proximity to Failure', pmid: '38970765' }
+                    ]
+                },
+                {
+                    categoria: 'Entrenamiento',
+                    titulo: 'Selección de Ejercicios: La Combinación Ganadora para Hipertrofia',
+                    contenido: [
+                        'Ambos son necesarios: compuestos (multiarticulares) y aislamientos (monoarticulares). Los compuestos son la base: eficientes en tiempo, permiten cargas máximas. Los aislamientos son el complemento: atacan músculos rezagados, añaden volumen con mínima fatiga sistémica. Gentil (2018) demostró que añadir aislamientos a un programa de solo compuestos produjo ganancias adicionales significativas. SIEMPRE haz los compuestos al principio cuando tu energía está fresca.',
+                        'Para hipertrofia pura, pesos libres y máquinas son igual de efectivos. Pero en máquinas toda tu energía se dirige 100% al músculo objetivo porque la estabilización está resuelta. Por eso máquinas son superiores para: aislar sin que auxiliares fallen, entrenar al fallo seguro, acumular volumen cuando fatigado. Usa rango de movimiento completo siempre que sea posible. Schoenfeld (2020) confirmó que ROM completo es superior para hipertrofia.'
+                    ],
+                    referencias: [
+                        { titulo: 'Resistance Training with Single vs. Multi-joint Exercises at Equal Total Load Volume', pmid: 'No disponible - Frontiers Physiology 2017' },
+                        { titulo: 'Effects of Adding Single Joint Exercises to a Resistance Training Programme in Trained Women', pmid: 'No disponible - MDPI Sports 2018' },
+                        { titulo: 'The effects of pre-exhaustion, exercise order, and rest intervals in a full-body resistance training', pmid: 'No disponible - Applied Physiology 2015' },
+                        { titulo: 'Effects of range of motion on muscle development during resistance training interventions', pmid: 'PMC6977096' }
+                    ]
+                },
+                {
+                    categoria: 'Entrenamiento',
+                    titulo: 'Sobrecarga Progresiva: El Factor Más Importante Para Crecer',
+                    contenido: [
+                        'Sin progresión no hay crecimiento. Si haces exactamente lo mismo semana tras semana, tu cuerpo NO tiene razón para cambiar. McLeod (2024) confirma: la falta de progresión es el motivo más común de estancamiento. El método de doble progresión: define un rango (ej: 8-12 reps), progresa PRIMERO en repeticiones manteniendo el peso fijo. Cuando llegues al límite ALTO en TODAS las series, sube el peso y vuelve al límite BAJO.',
+                        'Chaves (2024) comparó progresar en peso vs repeticiones—ambos grupos ganaron músculo idéntico. Ventajas: progresión más gradual, mejor técnica, menos lesiones, tracking claro. Principiantes pueden progresar casi cada sesión. Intermedios: progresión semanal o quincenal. Avanzados: progresión muy lenta, a veces solo por mesociclo completo. Si te estancas 3-4 semanas: deload (reduce series 30-50%), cambia variable, aumenta descanso, mejora técnica.'
+                    ],
+                    referencias: [
+                        { titulo: 'Effects of Resistance Training Overload Progression Protocols on Strength and Muscle Mass', pmid: '38286426' },
+                        { titulo: 'Progressive overload without progressing load? The effects of progressing load vs. repetitions', pmid: 'PMC9528903' },
+                        { titulo: 'The influence of resistance exercise training prescription on muscle mass and strength', pmid: 'No disponible - Science Direct 2024' },
+                        { titulo: 'Low-Load vs. High-Load Resistance Training: A Systematic Review and Meta-analysis', pmid: '28834797' }
+                    ]
+                },
+                {
+                    categoria: 'Recuperación',
+                    titulo: 'Sueño y Recuperación: El Pilar Olvidado de la Hipertrofia',
+                    contenido: [
+                        'El músculo NO crece en el gimnasio. El crecimiento real ocurre durante el sueño. El estudio Brasil (2011): Grupo A durmió 5.5h/noche durante 3 días y perdió 60% de masa muscular. Grupo B durmió 8.5h/noche y ganó 40% en el mismo período. Rango no negociable: 7-9 horas por noche. El 60-90% de testosterona se secreta DURANTE LA NOCHE. Una semana de 5h/noche reduce testosterona 15%. Sin sueño, el cortisol permanece ALTO (+40-50%), activando proteólisis muscular.',
+                        'La MAYORÍA de síntesis proteica ocurre mientras duermes, especialmente 12-36h post-entreno. Consumir 20-30g proteína (caseína, yogur griego) 30-60min antes de dormir amplifica MPS nocturna. Descanso entre series: 1-2 minutos maximiza hipertrofia. Frecuencia: 2 veces por semana es el sweet spot. Regla 48 horas: espera mínimo 48h entre entrenamientos intensos del mismo músculo. Señales de sobreentrenamiento: pérdida de fuerza persistente, fatiga que no se resuelve con 8h sueño, frecuencia cardíaca reposo +10 latidos.'
+                    ],
+                    referencias: [
+                        { titulo: 'Sleep quality and muscular strength in college students', pmid: '28490639' },
+                        { titulo: 'One night of total sleep deprivation impairs implicit learning', pmid: 'No disponible - BioRxiv 2021' },
+                        { titulo: 'Sleep and testosterone: effects of sleep deprivation on hormonal balance', pmid: 'No disponible - PubMed 2022' },
+                        { titulo: 'The effects of protein supplementation before sleep on muscle mass and strength', pmid: 'No disponible - PubMed 2024' },
+                        { titulo: 'Effects of resistance training frequency on measures of muscle hypertrophy', pmid: '27102172' }
+                    ]
+                },
+                {
+                    categoria: 'Entrenamiento',
+                    titulo: 'Adaptaciones Neurales: Por Qué Progresas Tan Rápido Al Principio',
+                    contenido: [
+                        'El músculo NO crece las primeras 4-6 semanas de entrenamiento, pero tu fuerza puede duplicarse o triplicarse. Este fenómeno se llama newbie gains y tiene una explicación: adaptaciones neurales. Durante las primeras semanas, tu cerebro aprende a reclutar unidades motoras que antes estaban dormidas, aumenta la frecuencia de disparo neural, mejora la coordinación. Grgic & Schoenfeld (2018) confirman: principiantes mejoran dramáticamente el reclutamiento antes de cualquier hipertrofia medible.',
+                        'Semanas 1-4: Adaptaciones neurales DOMINAN completamente. Fuerza sube rápido, músculo no crece. Semanas 6-8+: La hipertrofia estructural se vuelve medible. Principiantes pueden añadir 2.5-5kg semanal. Avanzados: progresión extremadamente lenta, tal vez 5-15% en 12 semanas. Memoria muscular: si entrenaste años, paraste 6 meses y perdiste músculo, recuperarás todo mucho más rápido. Los mionúcleos adicionales permanecen años después de atrofia completa.'
+                    ],
+                    referencias: [
+                        { titulo: 'The Mechanisms of Muscle Hypertrophy and Their Application to Resistance Training', pmid: '20847704' },
+                        { titulo: 'Neural adaptations to resistance training: Mechanisms and recommendations', pmid: 'No disponible - Frontiers Physiology 2018' },
+                        { titulo: 'Skeletal muscle memory: myonuclear accretion and their potential role in hypertrophy', pmid: 'No disponible - Frontiers 2013' },
+                        { titulo: 'Muscle hypertrophy response to resistance training in trained versus untrained', pmid: 'No disponible - Frontiers 2011' }
+                    ]
+                },
+                {
+                    categoria: 'Nutrición',
+                    titulo: 'Síntesis Proteica Muscular: Cómo Se Construye Músculo A Nivel Biológico',
+                    contenido: [
+                        'El músculo crece cuando la Síntesis de Proteínas Musculares (MPS) supera la Degradación (MPB). Balance Proteico Neto = MPS - MPB. Si MPS > MPB → ganas músculo. La MPS puede aumentar 400-500% tras entrenamiento más proteína. Solo la síntesis MIOFIBRILAR (MyoPS, actina/miosina) correlaciona con hipertrofia funcional y fuerza. El complejo mTORC1 es el nodo central que decide si construyes músculo. Para encenderlo necesitas 2 señales: tensión mecánica (entrenamiento) y leucina suficiente (2-3g por comida, equivalente a 20-30g proteína de calidad).',
+                        'NOVATOS experimentan picos MPS masivos y prolongados (>24-48h), pero esa MPS va principalmente a reparar daño muscular. AVANZADOS tienen MPS más corta (12-24h) pero correlaciona CASI PERFECTAMENTE con hipertrofia real. Trommelen et al. (2023) demostraron que 100g proteína de leche (absorción lenta) mantiene MPS elevada por >12 HORAS sin saturación. Con proteína lenta NO HAY LÍMITE SUPERIOR práctico. Timing peri-entreno es crítico para avanzados. Post-entreno: 30-40g whey dentro 1-2h. Pre-sueño: 30-50g caseína para MPS nocturna.'
+                    ],
+                    referencias: [
+                        { titulo: 'The anabolic response to protein ingestion has no upper limit in vivo in humans', pmid: '38118410' },
+                        { titulo: 'Resistance training-induced changes in myofibrillar protein synthesis related to hypertrophy after attenuation of muscle damage', pmid: 'No disponible - J Physiology 2016 DOI: 10.1113/JP272472' },
+                        { titulo: 'A review of resistance training-induced changes in skeletal muscle protein synthesis', pmid: '25739559' },
+                        { titulo: 'Muscle protein synthesis response greater following 40g than 20g whey protein', pmid: 'No disponible - Physiological Reports 2016' },
+                        { titulo: 'Ingested protein dose response of muscle and albumin protein synthesis after resistance exercise', pmid: '19056590' },
+                        { titulo: 'Evaluating the Leucine Trigger Hypothesis for Post-prandial Regulation of Muscle Protein Synthesis', pmid: 'No disponible - Frontiers Nutrition 2020' }
+                    ]
+                },
+                {
+                    categoria: 'Entrenamiento',
+                    titulo: 'Tipos de Fibras Musculares: Cómo Entrenar Cada Una Para Máxima Hipertrofia',
+                    contenido: [
+                        'Tu músculo es un mosaico de 3 tipos de fibras. TIPO I (lentas): alta densidad mitocondrial, queman grasa, inagotables. TIPO IIa (rápidas versátiles): LAS MÁS PLÁSTICAS—pueden aumentar mitocondrias o hipertrofiarse masivamente según estímulo. Dominan (60-80% área) en culturistas. TIPO IIx (explosivas puras): velocidad máxima suprema, se agotan en 5-10s. El gen ACTN3 determina tu techo de velocidad: RR tienen mayor % fibras IIx (15-25%), mayor potencia explosiva. XX tienen fibras más eficientes pero menos explosivas.',
+                        'TIPO I—Estrés Metabólico Extremo: cargas 40-50% 1RM, tempo ultra-lento 6-10s/rep, sin relajación (tensión continua 60-90s). Alternativa: BFR (Blood Flow Restriction) con 20-30% 1RM. TIPO IIa—Tensión Mecánica Máxima: cargas 70-85% 1RM, 6-12 reps, 3-5 series. TIPO IIx—Minimizar Fatiga más VBT: detener serie cuando velocidad cae >10-20% vs primera rep (RIR 3-5). Cargas 85-95%, 1-5 reps, descansos 3-5min. Para hipertrofia máxima: combina cargas 70-85% para maximizar IIa (80% volumen) más 1-2 ejercicios BFR para crecer Tipo I.'
+                    ],
+                    referencias: [
+                        { titulo: 'Human Skeletal Muscle Fiber Type Classifications', pmid: 'No disponible - Oxford Academic 2011' },
+                        { titulo: 'Effect of ACTN3 Genotype on Sports Performance and Exercise-Induced Muscle Damage', pmid: 'No disponible - MDPI Sports 2019' },
+                        { titulo: 'ACTN3 (R577X) genotype is associated with fiber type distribution', pmid: 'No disponible - Physiological Genomics 2007' },
+                        { titulo: 'Physiological effects of low intensity strength training without relaxation', pmid: 'No disponible - PubMed 2013' },
+                        { titulo: 'Type 1 Muscle Fiber Hypertrophy after Blood Flow-restricted Training in Powerlifters', pmid: 'No disponible - PubMed 2019' },
+                        { titulo: 'Effects of velocity loss during resistance training on athletic performance', pmid: 'No disponible - PubMed 2017' }
+                    ]
+                },
+                {
+                    categoria: 'Entrenamiento',
+                    titulo: 'Prevención de Lesiones: Calentamiento, Detección y Entrenamiento Adaptado',
+                    contenido: [
+                        'Las 3 lesiones más comunes: (1) HOMBRO (tendinitis manguito rotador), (2) ESPALDA BAJA (distensiones lumbares, hernias), (3) RODILLA (condromalacia, esguinces). Saltar calentamiento eleva riesgo lesión un 30%. Calentamiento efectivo: (1) General 5-10min—elevar temperatura. (2) Específico—movilidad más estiramientos DINÁMICOS. HOMBROS: Rotaciones externas/internas banda elástica 15-20 reps/lado, pull-aparts banda 2x15. PIERNAS: Monster walks banda, puentes glúteos 2x15, sentadillas sin peso 2x10-15.',
+                        'Señales de alarma: dolor agudo DURANTE entrenamiento = DETENTE INMEDIATAMENTE. Tendinitis hombro: dolor hombro/brazo, pérdida movilidad, dolor nocturno. Condromalacia rodilla: dolor FRONTAL rodilla, dolor subir escaleras. Hernia discal (MUY GRAVE): dolor lumbar IRRADIA PIERNA (ciática), entumecimiento, hormigueo. Si tienes lesión: consulta médico/fisio. Entrena zonas no afectadas, usa ejercicios alternativos, sigue protocolo RICE (Reposo, Hielo, Compresión, Elevación) las primeras 48-72h.'
+                    ],
+                    referencias: [
+                        { titulo: 'Cómo evitar lesiones relacionadas con el ejercicio', pmid: 'No disponible - MedlinePlus NIH' },
+                        { titulo: 'Ejercicios para el manguito de los rotadores', pmid: 'No disponible - MedlinePlus NIH' },
+                        { titulo: 'Esguince: primeros auxilios', pmid: 'No disponible - Mayo Clinic' },
+                        { titulo: 'Injury Prevention in the Gym: How To Safely Maximize Your Workouts', pmid: 'No disponible - MS Physical Therapy' },
+                        { titulo: 'Lesiones deportivas: cómo volver a entrenar después', pmid: 'No disponible - Actimove' }
+                    ]
+                }
+            ];
+            
+            // Función para generar HTML de una card
+            function generarCard(articulo) {
+                const colors = categoryStyles[articulo.categoria] || { bg: '#1a3a0d', text: '#84cc16', border: '#84cc16' };
+                
+                return `
+                    <div style="
+                        background: linear-gradient(135deg, #84cc16 0%, #6ea30d 100%);
+                        border: 2px solid #84cc16;
+                        border-radius: 16px;
+                        padding: 20px;
+                        box-shadow: 0 8px 24px rgba(132, 204, 22, 0.25);
+                        transition: transform 0.3s ease, box-shadow 0.3s ease;
+                        cursor: pointer;
+                        width: 100%;
+                        display: flex;
+                        flex-direction: column;
+                    " 
+                    onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 12px 32px rgba(132, 204, 22, 0.35)'"
+                    onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 8px 24px rgba(132, 204, 22, 0.25)'">
+                        
+                        <!-- TAG CATEGORÍA -->
+                        <span style="display: inline-block; background: ${colors.bg}; color: ${colors.text}; border: 2px solid ${colors.border}; padding: 4px 10px; border-radius: 8px; font-size: 9px; font-weight: 700; text-transform: capitalize; letter-spacing: 0.5px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); margin-bottom: 12px; align-self: flex-start;">
+                            ${articulo.categoria}
+                        </span>
+                        
+                        <!-- TÍTULO -->
+                        <h3 style="color: white; font-size: 20px; font-weight: bold; margin-bottom: 12px; margin-top: 0; line-height: 1.3;">
+                            ${articulo.titulo}
+                        </h3>
+                        
+                        <!-- CONTENIDO -->
+                        ${articulo.contenido.map(parrafo => 
+                            `<p style="color: rgba(255,255,255,0.9); font-size: 14px; line-height: 1.5; margin-bottom: 10px;">${parrafo}</p>`
+                        ).join('')}
+                        
+                        <!-- REFERENCIAS -->
+                        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.2); flex-grow: 1; display: flex; flex-direction: column;">
+                            <div style="color: white; font-weight: 600; font-size: 13px; margin-bottom: 10px; letter-spacing: 0.5px;">
+                                Referencias
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                ${articulo.referencias.map(ref => `
+                                    <a href="https://pubmed.ncbi.nlm.nih.gov/${ref.pmid}/" 
+                                       target="_blank"
+                                       style="display: block; color: rgba(255,255,255,0.85); text-decoration: none; font-size: 12px; line-height: 1.4; padding: 8px 10px; background: rgba(0,0,0,0.15); border-radius: 6px; border-left: 3px solid rgba(255,255,255,0.3); transition: all 0.2s ease;"
+                                       onmouseover="this.style.background='rgba(0,0,0,0.25)'; this.style.color='#ffffff'; this.style.borderLeftColor='rgba(255,255,255,0.5)'; this.style.transform='translateX(4px)'"
+                                       onmouseout="this.style.background='rgba(0,0,0,0.15)'; this.style.color='rgba(255,255,255,0.85)'; this.style.borderLeftColor='rgba(255,255,255,0.3)'; this.style.transform='translateX(0)'">
+                                        <div style="font-weight: 500; margin-bottom: 3px; font-size: 11px;">${ref.titulo}</div>
+                                        <div style="font-size: 10px; color: rgba(255,255,255,0.7);">PMID: ${ref.pmid}</div>
+                                    </a>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                    </div>
+                `;
+            }
+            
+            // Generar HTML de todas las cards
+            const cardsHTML = articulos.map(articulo => generarCard(articulo)).join('');
+            
+            contentArea.innerHTML = cardsHTML;
         }
 
-        // Función para mostrar consejos
+        // Función para mostrar consejos - Cards Verdes con texto blanco
         function loadAdviceContent(storedPlan, isPremium) {
             const contentArea = document.getElementById('consejosContent');
             
-            const consejosTecnicos = [
-                {
-                    title: "SOBRECARGA PROGRESIVA SISTEMÁTICA",
-                    content: "Implementa un sistema de progresión basado en el rendimiento. Aumenta el peso cuando puedas completar todas las series con 2-3 repeticiones en reserva. Para ejercicios de fuerza, incrementa 2.5-5kg; para hipertrofia, 1.25-2.5kg. Documenta cada sesión para asegurar progresión consistente."
-                },
-                {
-                    title: "OPTIMIZACIÓN DEL VOLUMEN DE ENTRENAMIENTO",
-                    content: "Mantén 10-20 series por grupo muscular por semana para maximizar la hipertrofia. Distribuye el volumen a lo largo de la semana, evitando sesiones excesivamente largas. Monitorea la fatiga acumulada y ajusta el volumen según tu capacidad de recuperación."
-                }
-            ];
-
-            let adviceHTML = '';
-            consejosTecnicos.forEach(consejo => {
-                adviceHTML += `<div class="advice-card">`;
-                adviceHTML += `<div class="advice-title">${consejo.title}</div>`;
-                adviceHTML += `<div class="advice-content">${consejo.content}</div>`;
-                adviceHTML += `</div>`;
-            });
-
-            // Consejos censurados para usuarios no isPremium
-            if (!isPremium) {
-                const consejosCensurados = [
+            // Tema: Fundamentos de la Hipertrofia Muscular
+            const tema = {
+                title: "¿Por qué no crecen tus músculos?",
+                category: "Entrenamiento",
+                content: [
+                    "¿Por qué tus músculos crecen? No es solo 'levantar peso'. La hipertrofia responde a tres mecanismos científicos: tensión mecánica (la carga que levantas), daño muscular (microlesiones que se reparan más grandes) y estrés metabólico (acumulación de lactato que activa señales anabólicas). Entender esto te permite entrenar de forma inteligente, no solo intensa.",
+                    "Volumen e Intensidad: Los Factores Decisivos. La ciencia es clara: necesitas 10-20 series semanales por grupo muscular para maximizar hipertrofia. Menos de 10 deja ganancias sobre la mesa, más de 20 puede sobreentrenarte. Y no todas las repeticiones cuentan igual: solo las últimas 5 reps de cada serie (cerca del fallo muscular) generan el estímulo real. Por eso trabajar a RIR 1-3 (dejar 1-3 reps en el tanque) es la estrategia óptima: suficiente intensidad sin fatiga excesiva.",
+                    "Aplicación Práctica. Acumula 10-20 series por músculo/semana, entrena cada grupo 2-3 veces/semana, termina series a RIR 1-3, y combina rangos: 6-8 reps para tensión mecánica, 10-15 para volumen, 15-20 para estrés metabólico. Estos son los fundamentos no negociables del crecimiento muscular."
+                ],
+                references: [
                     {
-                        title: "TÉCNICA Y ACTIVACIÓN MUSCULAR",
-                        content: "La ejecución técnica correcta es fundamental para la activación óptima del músculo objetivo. Realiza movimientos controlados con rango completo de movimiento, manteniendo tensión constante durante la fase excéntrica y concéntrica."
+                        title: "The mechanisms of muscle hypertrophy and their application to resistance training",
+                        pmid: "20847704"
                     },
                     {
-                        title: "TIMING DE NUTRIENTES ESTRATÉGICO",
-                        content: "Consume 20-40g de proteína de alta calidad dentro de 2 horas post-entrenamiento. Combina con 30-60g de carbohidratos de rápida absorción para maximizar la síntesis de proteínas musculares y la reposición de glucógeno."
+                        title: "Dose-response relationship between weekly resistance training volume and increases in muscle mass",
+                        pmid: "28834797"
                     }
-                ];
+                ]
+            };
 
-                consejosCensurados.forEach(consejo => {
-                    adviceHTML += `<div class="advice-card isPremium-overlay">`;
-                    adviceHTML += `<div class="advice-title">${consejo.title}</div>`;
-                    adviceHTML += `<div class="advice-content">${consejo.content}</div>`;
-                    adviceHTML += `<div class="isPremium-badge">`;
-                    adviceHTML += `<h4>Consejos Avanzados Disponibles</h4>`;
-                    adviceHTML += `<p>Contenido técnico adicional para usuarios Pro</p>`;
-                    adviceHTML += `<button class="isPremium-btn" onclick="window.location.href='./tarifas.html'">Mejorar a Pro</button>`;
-                    adviceHTML += `</div>`;
-                    adviceHTML += `</div>`;
+            let adviceHTML = '';
+            
+            // Determinar color del tag según categoría
+            let tagBgClass = 'bg-lime-700';
+            if (tema.category === 'Nutrición') tagBgClass = 'bg-blue-600';
+            else if (tema.category === 'Recuperación') tagBgClass = 'bg-purple-600';
+            else if (tema.category === 'Suplementación') tagBgClass = 'bg-orange-600';
+            
+            adviceHTML += `<div class="bg-gradient-to-br from-lime-500 to-lime-600 rounded-2xl p-6 border-2 border-lime-400 hover:scale-[1.02] transition duration-300">`;
+            
+            // Tag categoría
+            adviceHTML += `<span class="${tagBgClass} text-white text-xs font-bold uppercase px-3 py-1 rounded-full inline-block mb-4">`;
+            adviceHTML += tema.category;
+            adviceHTML += `</span>`;
+            
+            // Título pregunta
+            adviceHTML += `<h3 class="text-2xl font-bold text-white mb-4">`;
+            adviceHTML += tema.title;
+            adviceHTML += `</h3>`;
+            
+            // Contenido (todos los párrafos)
+            tema.content.forEach((parrafo, index) => {
+                adviceHTML += `<p class="text-white text-sm mb-3 leading-relaxed">`;
+                adviceHTML += parrafo;
+                adviceHTML += `</p>`;
+            });
+            
+            // Referencias
+            if (tema.references && tema.references.length > 0) {
+                adviceHTML += `<div class="mt-6 pt-4 border-t-2 border-white/20">`;
+                adviceHTML += `<div class="text-white font-semibold text-sm mb-3">📚 Referencias:</div>`;
+                adviceHTML += `<ul class="space-y-2">`;
+                
+                tema.references.forEach(ref => {
+                    const pubmedUrl = `https://pubmed.ncbi.nlm.nih.gov/${ref.pmid}/`;
+                    adviceHTML += `<li>`;
+                    adviceHTML += `<a href="${pubmedUrl}" target="_blank" rel="noopener noreferrer" class="text-white/90 text-sm hover:text-white hover:underline inline-flex items-center gap-1">`;
+                    adviceHTML += `<span>• ${ref.title}</span>`;
+                    adviceHTML += `<span class="font-mono text-xs">(PMID: ${ref.pmid})</span>`;
+                    adviceHTML += `<span>→</span>`;
+                    adviceHTML += `</a>`;
+                    adviceHTML += `</li>`;
                 });
+                
+                adviceHTML += `</ul>`;
+                adviceHTML += `</div>`;
             }
+            
+            adviceHTML += `</div>`;
 
             contentArea.innerHTML = adviceHTML;
         }
+        
+        // Función para abrir detalle del artículo (se implementará después)
+        function openArticleDetail(articleId) {
+            // Por ahora, mostrar el contenido completo en el mismo overlay
+            console.log('Abriendo artículo:', articleId);
+            // TODO: Implementar vista detallada del artículo
+        }
 
-        // Función para mostrar estudios
+        // Función para mostrar estudios (ya no se usa en el nuevo diseño, pero se mantiene por compatibilidad)
         function loadStudiesContent() {
-            const contentArea = document.getElementById('estudiosContent');
-            
-            const estudios = [
-                {
-                    title: "Progresión Lineal en Entrenamiento de Fuerza",
-                    content: "Estudio longitudinal que demuestra la efectividad de la sobrecarga progresiva sistemática en el desarrollo de la fuerza muscular. Los participantes que siguieron un protocolo de progresión lineal mostraron aumentos del 23% en fuerza máxima comparado con el grupo control.",
-                    author: "Schoenfeld, B.J., Grgic, J., Ogborn, D., & Krieger, J.W. (2017)",
-                    journal: "Journal of Strength and Conditioning Research, 31(12), 3508-3523"
-                },
-                {
-                    title: "Timing de Proteínas y Síntesis Muscular",
-                    content: "Investigación que evalúa el momento óptimo de consumo de proteínas post-entrenamiento. Los resultados indican que la ventana anabólica se extiende hasta 4 horas post-ejercicio, con beneficios máximos en los primeros 2 horas.",
-                    author: "Areta, J.L., Burke, L.M., Ross, M.L., et al. (2013)",
-                    journal: "Journal of the International Society of Sports Nutrition, 10(1), 5"
-                },
-                {
-                    title: "Volumen de Entrenamiento y Hipertrofia",
-                    content: "Meta-análisis de 15 estudios que examina la relación entre volumen de entrenamiento y crecimiento muscular. Los hallazgos sugieren que 10-20 series por grupo muscular por semana optimizan la hipertrofia en entrenados.",
-                    author: "Schoenfeld, B.J., Ogborn, D., & Krieger, J.W. (2017)",
-                    journal: "Sports Medicine, 47(8), 1681-1696"
-                }
-            ];
-
-            let studiesHTML = '';
-            estudios.forEach(estudio => {
-                studiesHTML += `<div class="study-card">`;
-                studiesHTML += `<div class="study-title">${estudio.title}</div>`;
-                studiesHTML += `<div class="study-content">${estudio.content}</div>`;
-                studiesHTML += `<div class="study-meta">`;
-                studiesHTML += `<span class="study-author">${estudio.author}</span>`;
-                studiesHTML += `<span class="study-journal">${estudio.journal}</span>`;
-                studiesHTML += `</div>`;
-                studiesHTML += `</div>`;
-            });
-
-            contentArea.innerHTML = studiesHTML;
+            // Los estudios ahora se muestran dentro de cada artículo
+            // Esta función se puede usar para cargar estudios relacionados si es necesario
         }
 
         // Función para cargar contenido de términos
@@ -3504,25 +3904,13 @@
             }
         })();
 
-        // Event listeners para los botones de navegación
-        document.addEventListener('DOMContentLoaded', async function() {
-            // ✅ Verificar estado isPremium al cargar
-            await checkPremiumStatus();
-            
-            document.getElementById('rutinaDieta').addEventListener('click', function() {
-                openOverlay('rutinaDietaOverlay');
-                loadRoutineAndDietContent();
-            });
-            
-            document.getElementById('consejosEstudios').addEventListener('click', function() {
-                window.location.href = './consejos-estudios.html';
-            });
-            
-            // El botón de términos ahora está en el menú lateral, manejado por handleTerms()
-        });
-
         // Inicializar el dashboard cuando se carga la página
-        initDashboard();
+        // initDashboard() ahora maneja todos los event listeners y checkPremiumStatus()
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initDashboard);
+        } else {
+            initDashboard();
+        }
 
         // FUNCIONES AUXILIARES PARA FUNCTION CALLING
         // =========================================
