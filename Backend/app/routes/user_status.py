@@ -32,6 +32,5 @@ def user_status(email: str = Query(...), db: Session = Depends(get_db)):
         "exists": True,
         "is_premium": bool(user.is_premium),
         "plan_type": user.plan_type,
-        "subscription_type": user.subscription_type,
         "chat_uses_free": user.chat_uses_free
     }

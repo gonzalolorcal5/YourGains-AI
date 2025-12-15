@@ -12,6 +12,7 @@ class PlanRequest(BaseModel):
     objetivo: str
     materiales: str
     dias_entrenamiento: int
+    training_days: Optional[List[str]] = None  # ["lunes", "martes", "miércoles", ...]
     tipo_cuerpo: Optional[str] = None
     idioma: str = "es"
     puntos_fuertes: Optional[str] = None

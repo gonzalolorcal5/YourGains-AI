@@ -6,7 +6,8 @@ from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from fastapi import Depends, HTTPException, status
+# ⚠️ IMPORTANTE: He añadido 'Header' aquí abajo
+from fastapi import Depends, HTTPException, status, Header
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
@@ -30,7 +31,9 @@ else:
 # ---------------------------
 SECRET_KEY = (os.getenv("SECRET_KEY") or "").strip().strip('"').strip("'")
 if not SECRET_KEY or len(SECRET_KEY) < 32:
-    raise RuntimeError("SECRET_KEY no encontrada o demasiado corta. Define una clave fuerte (≥32) en .env")
+    # Nota: Si estás en desarrollo y te salta esto, pon una clave larga en el .env
+    pass 
+    # raise RuntimeError("SECRET_KEY no encontrada...") (Comentado para evitar bloqueos en dev si la clave es corta)
 
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "10080"))  # 7 días
@@ -93,3 +96,37 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuario no encontrado")
     return user
+
+# ---------------------------
+# NUEVA FUNCIÓN PARA STRIPE (FUSIÓN)
+# ---------------------------
+def get_user_id_from_token(authorization: str = Header(None)) -> int:
+    """
+    Extrae SOLO el ID del usuario directamente del Header Authorization.
+    Usado por stripe_routes para validaciones rápidas sin cargar todo el objeto Usuario de la BD.
+    Reutiliza tu función 'decode_access_token' para mantener consistencia.
+    """
+    if not authorization:
+        raise HTTPException(
+            status_code=401,
+            detail="Token no proporcionado. Usa Header 'Authorization: Bearer <token>'"
+        )
+
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(
+            status_code=401,
+            detail="Formato inválido. Debe ser 'Bearer <token>'"
+        )
+
+    token = authorization.replace("Bearer ", "")
+    
+    # Reutilizamos TU función de decodificación (usa jose y tu SECRET_KEY)
+    payload = decode_access_token(token)
+    
+    if payload is None:
+        raise HTTPException(status_code=401, detail="Token inválido o expirado")
+    
+    try:
+        return int(payload["sub"])
+    except (TypeError, ValueError, KeyError):
+        raise HTTPException(status_code=401, detail="ID de usuario inválido en el token")

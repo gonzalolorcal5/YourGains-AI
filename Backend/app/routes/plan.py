@@ -105,7 +105,7 @@ def _generar_plan_basico_local(datos: PlanRequest) -> dict:
 # ---------- endpoints ----------
 
 @router.post("/generar-rutina", response_model=PlanResponse, dependencies=[Depends(security)])
-def generar_rutina(
+async def generar_rutina(
     datos: PlanRequest = Body(...),
     db: Session = Depends(get_db),
     usuario: Usuario = Depends(get_current_user)
@@ -113,9 +113,42 @@ def generar_rutina(
     try:
         es_premium = bool(usuario.is_premium) or (usuario.plan_type == "PREMIUM")
 
+        # Convertir PlanRequest (Pydantic) a diccionario y mapear campos
+        datos_dict = datos.model_dump() if hasattr(datos, 'model_dump') else datos.dict()
+        
+        # Mapear 'objetivo' a 'gym_goal' para generar_plan_personalizado
+        # El schema PlanRequest usa 'objetivo', pero generar_plan_personalizado espera 'gym_goal'
+        if 'objetivo' in datos_dict and 'gym_goal' not in datos_dict:
+            datos_dict['gym_goal'] = datos_dict['objetivo']
+        
+        # Mapear 'dias_entrenamiento' a 'training_frequency' si no existe
+        if 'dias_entrenamiento' in datos_dict and 'training_frequency' not in datos_dict:
+            datos_dict['training_frequency'] = datos_dict['dias_entrenamiento']
+        
+        # Agregar 'training_days' si está disponible (días específicos de la semana)
+        if hasattr(datos, 'training_days') and datos.training_days:
+            datos_dict['training_days'] = datos.training_days
+        
+        # Agregar 'nutrition_goal' por defecto si no existe (usar 'objetivo_nutricional' si está disponible)
+        if 'nutrition_goal' not in datos_dict:
+            # Intentar obtener de objetivo_nutricional si existe en el request
+            if hasattr(datos, 'objetivo_nutricional') and datos.objetivo_nutricional:
+                datos_dict['nutrition_goal'] = datos.objetivo_nutricional
+            else:
+                # Mapear desde 'objetivo' si es un objetivo nutricional
+                objetivo = datos_dict.get('objetivo', 'mantener_forma')
+                if objetivo in ['perder_grasa', 'mantener_forma']:
+                    datos_dict['nutrition_goal'] = 'definicion' if objetivo == 'perder_grasa' else 'mantenimiento'
+                else:
+                    datos_dict['nutrition_goal'] = 'volumen'
+        
+        # Agregar 'nivel_actividad' si no existe
+        if 'nivel_actividad' not in datos_dict:
+            datos_dict['nivel_actividad'] = 'moderado'
+
         if es_premium:
             # Plan completo con GPT
-            plan_generado = generar_plan_personalizado(datos)
+            plan_generado = await generar_plan_personalizado(datos_dict)
         else:
             # Plan parcial local (sin GPT)
             plan_generado = _generar_plan_basico_local(datos)
@@ -194,6 +227,83 @@ def obtener_planes(
         ]
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error obteniendo datos actuales: {str(e)}")
+
+
+@router.get("/plan/datos-actuales", dependencies=[Depends(security)])
+def obtener_datos_actuales(
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(get_current_user)
+):
+    """
+    Obtiene los datos del último Plan del usuario para pre-llenar formulario de nueva rutina.
+    Solo lectura, no modifica nada.
+    """
+    try:
+        # Obtener último Plan del usuario
+        plan = db.query(Plan).filter(Plan.user_id == usuario.id).order_by(Plan.fecha_creacion.desc()).first()
+        
+        if not plan:
+            # Si no hay plan, retornar valores por defecto
+            return {
+                "altura": 175,
+                "peso": 75.0,
+                "edad": 25,
+                "sexo": "hombre",
+                "experiencia": "principiante",
+                "objetivo_gym": "ganar_musculo",
+                "objetivo_nutricional": "volumen",
+                "materiales": "",
+                "tipo_cuerpo": None,
+                "nivel_actividad": "moderado",
+                "puntos_fuertes": None,
+                "puntos_debiles": None,
+                "entrenar_fuerte": None,
+                "lesiones": None,
+                "alergias": None,
+                "restricciones_dieta": None
+            }
+        
+        # Retornar datos del plan
+        peso_float = float(plan.peso) if plan.peso else 75.0
+        
+        return {
+            "altura": plan.altura,
+            "peso": peso_float,
+            "edad": plan.edad,
+            "sexo": plan.sexo,
+            "experiencia": plan.experiencia,
+            "objetivo_gym": plan.objetivo_gym or plan.objetivo or "ganar_musculo",
+            "objetivo_nutricional": plan.objetivo_nutricional or plan.objetivo_dieta or "volumen",
+            "materiales": plan.materiales or "",
+            "tipo_cuerpo": plan.tipo_cuerpo,
+            "nivel_actividad": plan.nivel_actividad or "moderado",
+            "puntos_fuertes": plan.puntos_fuertes,
+            "puntos_debiles": plan.puntos_debiles,
+            "entrenar_fuerte": plan.entrenar_fuerte,
+            "lesiones": plan.lesiones or None,
+            "alergias": plan.alergias or None,
+            "restricciones_dieta": plan.restricciones_dieta or None
+        }
+    except Exception as e:
+        # Si hay error, retornar valores por defecto (no fallar)
+        return {
+            "altura": 175,
+            "peso": 75.0,
+            "edad": 25,
+            "sexo": "hombre",
+            "experiencia": "principiante",
+            "objetivo_gym": "ganar_musculo",
+            "objetivo_nutricional": "volumen",
+            "materiales": "",
+            "tipo_cuerpo": None,
+            "nivel_actividad": "moderado",
+            "puntos_fuertes": None,
+            "puntos_debiles": None,
+            "entrenar_fuerte": None,
+            "lesiones": None,
+            "alergias": None,
+            "restricciones_dieta": None
+        }
 
 
 @router.get("/user/current-routine")

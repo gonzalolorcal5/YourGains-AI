@@ -137,6 +137,50 @@
               background: rgba(132, 204, 22, 0.2);
           }
           
+          /* Estilos para menú desplegable Usuario */
+          .sidebar-item.has-submenu {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+          }
+          
+          .submenu-arrow {
+              transition: transform 0.3s ease;
+              font-size: 12px;
+              color: rgba(255, 255, 255, 0.6);
+          }
+          
+          .sidebar-item.has-submenu.active .submenu-arrow {
+              transform: rotate(90deg);
+              color: #84cc16;
+          }
+          
+          .sidebar-submenu {
+              max-height: 0;
+              overflow: hidden;
+              transition: max-height 0.3s ease;
+              background: rgba(0, 0, 0, 0.3);
+          }
+          
+          .sidebar-submenu.open {
+              max-height: 300px;
+          }
+          
+          .sidebar-submenu-item {
+              padding: 12px 20px 12px 40px;
+              color: rgba(255, 255, 255, 0.8);
+              cursor: pointer;
+              transition: all 0.3s ease;
+              border-left: 3px solid transparent;
+              font-size: 14px;
+          }
+          
+          .sidebar-submenu-item:hover {
+              background: rgba(132, 204, 22, 0.15);
+              border-left-color: #84cc16;
+              color: #84cc16;
+          }
+          
           .dna-icon {
               width: 28px;
               height: 28px;
@@ -1686,7 +1730,14 @@
         </div>
         <div class="sidebar-menu">
             <div class="sidebar-item" onclick="handleUpgrade()">Mejora tu plan</div>
-            <div class="sidebar-item" onclick="handleNewRoutine()">Genera rutina nueva</div>
+            <div class="sidebar-item has-submenu" onclick="toggleUserSubmenu()">
+                <span>👤 Usuario</span>
+                <span class="submenu-arrow">▶</span>
+            </div>
+            <div class="sidebar-submenu" id="userSubmenu">
+                <div class="sidebar-submenu-item" onclick="handleViewProfile()">Ver datos</div>
+                <div class="sidebar-submenu-item" onclick="handleNewRoutine()">Generar nuevo plan</div>
+            </div>
             <div class="sidebar-item" onclick="handleAbout()">Quiénes somos</div>
             <div class="sidebar-item" onclick="handleTerms()">Términos y privacidad</div>
             <div class="sidebar-item" onclick="handleLogout()">Cerrar sesión</div>
@@ -1810,6 +1861,32 @@
           </div>
       </div>
 
+    <!-- Overlay para Ver Datos del Perfil -->
+    <div class="overlay" id="verDatosOverlay" onclick="if(event.target === this) closeOverlay('verDatosOverlay')">
+        <div class="overlay-content" onclick="event.stopPropagation()" style="max-width: 1200px; margin: 0 auto; padding: 40px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h2 style="color: white; font-size: 28px; font-weight: bold; margin: 0;">Mis Datos</h2>
+                <button class="close-btn" onclick="closeOverlay('verDatosOverlay')" style="background: rgba(255, 255, 255, 0.1); border: 1px solid #404040; color: #a3a3a3; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.borderColor='#525252'; this.style.color='white'" onmouseout="this.style.borderColor='#404040'; this.style.color='#a3a3a3'">&times;</button>
+            </div>
+            <div id="verDatosContent">
+                <!-- El contenido se cargará aquí -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay para Generar Rutina Nueva -->
+    <div class="overlay" id="nuevaRutinaOverlay" onclick="if(event.target === this) closeOverlay('nuevaRutinaOverlay')">
+        <div class="overlay-content" onclick="event.stopPropagation()" style="max-width: 1200px; margin: 0 auto; padding: 40px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h2 style="color: white; font-size: 28px; font-weight: bold; margin: 0;">Generación de rutina nueva</h2>
+                <button class="close-btn" onclick="closeOverlay('nuevaRutinaOverlay')" style="background: rgba(255, 255, 255, 0.1); border: 1px solid #404040; color: #a3a3a3; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.borderColor='#525252'; this.style.color='white'" onmouseout="this.style.borderColor='#404040'; this.style.color='#a3a3a3'">&times;</button>
+            </div>
+            <div id="nuevaRutinaContent">
+                <!-- El contenido se cargará aquí -->
+            </div>
+        </div>
+    </div>
+
     <!-- Modal de Upgrade -->
     <div class="overlay" id="upgradeModal">
         <div class="overlay-content">
@@ -1866,10 +1943,157 @@
               window.location.href = './tarifas.html';
           }
           
-          function handleNewRoutine() {
-              closeSidebar();
-              console.log("Generar nueva rutina");
+          function toggleUserSubmenu() {
+              const submenu = document.getElementById('userSubmenu');
+              const menuItem = event.currentTarget;
+              menuItem.classList.toggle('active');
+              submenu.classList.toggle('open');
           }
+          
+          async function handleNewRoutine() {
+              closeSidebar();
+              
+              try {
+                  console.log('🔄 handleNewRoutine llamado');
+                  
+                  // Esperar a que las funciones del módulo estén disponibles
+                  let checkPremium = window.checkPremiumStatus;
+                  let attempts = 0;
+                  while (!checkPremium && attempts < 10) {
+                      await new Promise(resolve => setTimeout(resolve, 100));
+                      checkPremium = window.checkPremiumStatus;
+                      attempts++;
+                  }
+                  
+                  if (!checkPremium) {
+                      console.error('❌ checkPremiumStatus no está disponible');
+                      alert('Error: Las funciones del sistema no están cargadas. Por favor, recarga la página.');
+                      return;
+                  }
+                  
+                  // Verificar si es premium
+                  const isPremium = await checkPremium();
+                  console.log('💎 Usuario premium:', isPremium);
+                  
+                  if (!isPremium) {
+                      // Mostrar modal de upgrade
+                      // Esperar a que showPremiumModal esté disponible
+                      let showModal = window.showPremiumModal;
+                      let attempts = 0;
+                      while (!showModal && attempts < 10) {
+                          await new Promise(resolve => setTimeout(resolve, 100));
+                          showModal = window.showPremiumModal;
+                          attempts++;
+                      }
+                      
+                      if (showModal) {
+                          showModal({
+                              title: "Función Premium",
+                              message: "Generar rutinas personalizadas ilimitadas es una función exclusiva para usuarios Premium.",
+                              features: [
+                                  "Rutinas personalizadas con IA",
+                                  "Adaptación automática a tu progreso",
+                                  "Modificaciones ilimitadas via chat",
+                                  "Planes nutricionales detallados"
+                              ],
+                              ctaText: "Actualizar a Premium",
+                              ctaLink: "./tarifas.html"
+                          });
+                      } else {
+                          // Fallback: redirigir a tarifas
+                          alert('Esta función es exclusiva para usuarios Premium. Redirigiendo a la página de tarifas...');
+                          window.location.href = './tarifas.html';
+                      }
+                      return;
+                  }
+                  
+                  // Si es premium, abrir overlay
+                  const open = window.openOverlay;
+                  if (!open) {
+                      console.error('❌ openOverlay no está disponible');
+                      alert('Error: No se puede abrir el formulario. Por favor, recarga la página.');
+                      return;
+                  }
+                  
+                  console.log('📂 Abriendo overlay nuevaRutinaOverlay');
+                  open('nuevaRutinaOverlay');
+                  
+                  // Esperar a que el overlay se renderice y las funciones estén disponibles
+                  let loadForm = window.loadNewRoutineForm;
+                  attempts = 0;
+                  while (!loadForm && attempts < 10) {
+                      await new Promise(resolve => setTimeout(resolve, 100));
+                      loadForm = window.loadNewRoutineForm;
+                      attempts++;
+                  }
+                  
+                  if (loadForm) {
+                      console.log('📝 Cargando formulario...');
+                      await loadForm();
+                      console.log('✅ Formulario cargado');
+                  } else {
+                      console.error('❌ loadNewRoutineForm no está disponible después de esperar');
+                      // Mostrar mensaje de error en el overlay
+                      const contentDiv = document.getElementById('nuevaRutinaContent');
+                      if (contentDiv) {
+                          contentDiv.innerHTML = '<p style="color: #ef4444; text-align: center; padding: 40px;">Error al cargar el formulario. Por favor, recarga la página.</p>';
+                      }
+                  }
+              } catch (error) {
+                  console.error('❌ Error en handleNewRoutine:', error);
+                  alert('Error al abrir el formulario: ' + error.message);
+              }
+          }
+          
+          // Exponer función globalmente
+          window.handleNewRoutine = handleNewRoutine;
+          
+          // Función para ver datos del perfil (solo lectura)
+          async function handleViewProfile() {
+              closeSidebar();
+              
+              try {
+                  console.log('👤 handleViewProfile llamado');
+                  
+                  // Abrir overlay
+                  const open = window.openOverlay;
+                  if (!open) {
+                      console.error('❌ openOverlay no está disponible');
+                      alert('Error: No se puede abrir la vista. Por favor, recarga la página.');
+                      return;
+                  }
+                  
+                  console.log('📂 Abriendo overlay verDatosOverlay');
+                  open('verDatosOverlay');
+                  
+                  // Esperar a que el overlay se renderice y las funciones estén disponibles
+                  let loadProfile = window.loadProfileView;
+                  let attempts = 0;
+                  while (!loadProfile && attempts < 10) {
+                      await new Promise(resolve => setTimeout(resolve, 100));
+                      loadProfile = window.loadProfileView;
+                      attempts++;
+                  }
+                  
+                  if (loadProfile) {
+                      console.log('📝 Cargando datos del perfil...');
+                      await loadProfile();
+                      console.log('✅ Datos del perfil cargados');
+                  } else {
+                      console.error('❌ loadProfileView no está disponible después de esperar');
+                      const contentDiv = document.getElementById('verDatosContent');
+                      if (contentDiv) {
+                          contentDiv.innerHTML = '<p style="color: #ef4444; text-align: center; padding: 40px;">Error al cargar los datos. Por favor, recarga la página.</p>';
+                      }
+                  }
+              } catch (error) {
+                  console.error('❌ Error en handleViewProfile:', error);
+                  alert('Error al abrir la vista: ' + error.message);
+              }
+          }
+          
+          // Exponer función globalmente
+          window.handleViewProfile = handleViewProfile;
           
           function handleAbout() {
               closeSidebar();
@@ -1916,31 +2140,52 @@
         
         async function checkPremiumStatus() {
             try {
-                const userId = getCurrentUserId();
-                if (!userId) return false;
+                // Usar el mismo método que tarifas.html: /subscription-status con autenticación
+                const headers = getAuthHeaders();
+                const response = await fetch(`${API_BASE}/subscription-status`, {
+                    method: 'GET',
+                    headers: headers
+                });
                 
-                const response = await fetch(`${API_BASE}/user-status?user_id=${userId}`);
                 if (response.ok) {
                     const data = await response.json();
-                    userPremiumStatus = data.is_premium === true || data.plan_type === 'PREMIUM';
-                    return userPremiumStatus;
+                    console.log('📊 Estado del usuario (checkPremiumStatus):', data);
+                    
+                    // Verificar si es premium: is_premium o plan_type PREMIUM_MONTHLY/YEARLY
+                    const isPremium = data.is_premium === true || 
+                                    data.plan_type === 'PREMIUM_MONTHLY' || 
+                                    data.plan_type === 'PREMIUM_YEARLY' ||
+                                    data.plan_type === 'PREMIUM';
+                    
+                    userPremiumStatus = isPremium;
+                    console.log('💎 Usuario premium detectado:', isPremium, '(plan_type:', data.plan_type, ', is_premium:', data.is_premium, ')');
+                    return isPremium;
+                } else {
+                    console.warn('⚠️ No se pudo obtener status de suscripción, status:', response.status);
+                    // Si falla la autenticación, intentar fallback
                 }
             } catch (error) {
-                console.error('Error verificando isPremium:', error);
+                console.error('❌ Error verificando isPremium:', error);
             }
             
-            // Fallback al método anterior
-            const token = localStorage.getItem('accessToken');
-            if (token) {
-                const payload = decodeJwt(token) || {};
-                if (payload.plan === 'isPremium' || payload.tier === 'isPremium' || payload.isPremium === true) {
-                    userPremiumStatus = true;
-                    return true;
+            // Fallback: intentar con token JWT
+            try {
+                const token = localStorage.getItem('accessToken');
+                if (token) {
+                    const payload = decodeJwt(token) || {};
+                    if (payload.plan === 'isPremium' || payload.tier === 'isPremium' || payload.isPremium === true) {
+                        userPremiumStatus = true;
+                        return true;
+                    }
                 }
+            } catch (e) {
+                console.warn('Fallback JWT falló:', e);
             }
+            
+            // Último fallback: localStorage
             const storedPlan = localStorage.getItem('plan');
             userPremiumStatus = storedPlan === 'isPremium';
-            return userPremiumStatus;
+            return userPremiumStatus || false;
         }
         
         function isPremiumUser() {
@@ -2017,6 +2262,487 @@
         function canUseChat() {
             if (isPremiumUser()) return true;
             return getChatUsageCount() < 2; // 2 prompts for free tier
+        }
+        
+        // Función para mostrar modal de premium (MOVIDA FUERA DE initDashboard para scope global)
+        function showPremiumModal(options) {
+            const modal = document.getElementById('upgradeModal');
+            if (!modal) return;
+            
+            // Actualizar contenido del modal
+            const title = modal.querySelector('h2');
+            const message = modal.querySelector('p');
+            const ctaButton = modal.querySelector('button[onclick*="tarifas.html"]');
+            
+            if (title) title.textContent = options.title || '🚀 Función Premium';
+            if (message) {
+                message.textContent = options.message || 'Esta función es exclusiva para usuarios Premium.';
+            }
+            if (ctaButton && options.ctaText) {
+                ctaButton.textContent = options.ctaText;
+            }
+            
+            // Mostrar modal
+            modal.style.display = 'flex';
+        }
+        
+        // Función para cargar datos actuales del usuario (MOVIDA FUERA DE initDashboard)
+        async function loadCurrentUserData() {
+            try {
+                const headers = getAuthHeaders();
+                const response = await fetch(`${API_BASE}/plan/datos-actuales`, {
+                    method: 'GET',
+                    headers: headers
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    return data;
+                } else {
+                    console.log('No hay datos previos, formulario vacío');
+                    return null;
+                }
+            } catch (error) {
+                console.error('Error cargando datos del usuario:', error);
+                return null;
+            }
+        }
+        
+        // Función para generar el HTML del formulario (MOVIDA FUERA DE initDashboard)
+        function generateNewRoutineForm(userData) {
+            return `
+                <form id="newRoutineForm" style="color: white;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                        <!-- Datos Básicos -->
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; color: #84cc16; font-weight: 600;">Altura (cm)</label>
+                            <input type="number" id="altura" name="altura" min="100" max="250" required 
+                                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #404040; background: #1a1a1a; color: white;">
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; color: #84cc16; font-weight: 600;">Peso (kg)</label>
+                            <input type="number" id="peso" name="peso" min="30" max="200" step="0.1" required
+                                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #404040; background: #1a1a1a; color: white;">
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; color: #84cc16; font-weight: 600;">Edad</label>
+                            <input type="number" id="edad" name="edad" min="13" max="100" required
+                                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #404040; background: #1a1a1a; color: white;">
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; color: #84cc16; font-weight: 600;">Sexo</label>
+                            <select id="sexo" name="sexo" required
+                                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #404040; background: #1a1a1a; color: white;">
+                                <option value="hombre">Hombre</option>
+                                <option value="mujer">Mujer</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; color: #84cc16; font-weight: 600;">Experiencia</label>
+                            <select id="experiencia" name="experiencia" required
+                                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #404040; background: #1a1a1a; color: white;">
+                                <option value="principiante">Principiante</option>
+                                <option value="intermedio">Intermedio</option>
+                                <option value="avanzado">Avanzado</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; color: #84cc16; font-weight: 600;">Objetivo Gym</label>
+                            <select id="objetivo_gym" name="objetivo_gym" required
+                                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #404040; background: #1a1a1a; color: white;">
+                                <option value="ganar_musculo">Ganar Músculo</option>
+                                <option value="ganar_fuerza">Ganar Fuerza</option>
+                                <option value="perder_grasa">Perder Grasa</option>
+                                <option value="mantener_forma">Mantener Forma</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; color: #84cc16; font-weight: 600;">Objetivo Nutricional</label>
+                            <select id="objetivo_nutricional" name="objetivo_nutricional" required
+                                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #404040; background: #1a1a1a; color: white;">
+                                <option value="volumen">Volumen</option>
+                                <option value="definicion">Definición</option>
+                                <option value="mantenimiento">Mantenimiento</option>
+                                <option value="recomposicion">Recomposición</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; color: #84cc16; font-weight: 600;">Nivel de Actividad</label>
+                            <select id="nivel_actividad" name="nivel_actividad" required
+                                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #404040; background: #1a1a1a; color: white;">
+                                <option value="sedentario">Sedentario</option>
+                                <option value="ligero">Ligero</option>
+                                <option value="moderado">Moderado</option>
+                                <option value="activo">Activo</option>
+                                <option value="muy_activo">Muy Activo</option>
+                            </select>
+                        </div>
+                        
+                        <div style="grid-column: 1 / -1;">
+                            <label style="display: block; margin-bottom: 8px; color: #84cc16; font-weight: 600;">Días de Entrenamiento por Semana</label>
+                            <select id="dias_entrenamiento" name="dias_entrenamiento" required
+                                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #404040; background: #1a1a1a; color: white; margin-bottom: 16px;">
+                                <option value="">Selecciona frecuencia</option>
+                                <option value="3">3 días/semana</option>
+                                <option value="4">4 días/semana</option>
+                                <option value="5">5 días/semana</option>
+                                <option value="6">6 días/semana</option>
+                            </select>
+                            
+                            <!-- Días específicos de entrenamiento -->
+                            <div id="specific_days_container" style="margin-top: 16px;">
+                                <label style="display: block; margin-bottom: 8px; color: #84cc16; font-weight: 600;">Selecciona los días específicos</label>
+                                <p style="font-size: 12px; color: #999; margin-bottom: 12px;">Debe coincidir con la frecuencia elegida</p>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px;">
+                                    <label style="display: block; padding: 12px; border: 2px solid #404040; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s; background: #1a1a1a; user-select: none;" 
+                                        onmouseover="if(!this.querySelector('input').checked) this.style.borderColor='#84cc16'; this.style.background='rgba(132, 204, 22, 0.05)'" 
+                                        onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='#404040'; this.style.background='#1a1a1a'">
+                                        <input type="checkbox" id="day_lunes" name="training_days" value="lunes" style="display: none;" 
+                                            onchange="this.parentElement.style.borderColor=this.checked?'#84cc16':'#404040'; this.parentElement.style.background=this.checked?'rgba(132, 204, 22, 0.15)':'#1a1a1a'; validateTrainingDays();">
+                                        <span style="color: white; font-weight: 500; font-size: 14px;">Lunes</span>
+                                    </label>
+                                    <label style="display: block; padding: 12px; border: 2px solid #404040; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s; background: #1a1a1a; user-select: none;" 
+                                        onmouseover="if(!this.querySelector('input').checked) this.style.borderColor='#84cc16'; this.style.background='rgba(132, 204, 22, 0.05)'" 
+                                        onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='#404040'; this.style.background='#1a1a1a'">
+                                        <input type="checkbox" id="day_martes" name="training_days" value="martes" style="display: none;" 
+                                            onchange="this.parentElement.style.borderColor=this.checked?'#84cc16':'#404040'; this.parentElement.style.background=this.checked?'rgba(132, 204, 22, 0.15)':'#1a1a1a'; validateTrainingDays();">
+                                        <span style="color: white; font-weight: 500; font-size: 14px;">Martes</span>
+                                    </label>
+                                    <label style="display: block; padding: 12px; border: 2px solid #404040; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s; background: #1a1a1a; user-select: none;" 
+                                        onmouseover="if(!this.querySelector('input').checked) this.style.borderColor='#84cc16'; this.style.background='rgba(132, 204, 22, 0.05)'" 
+                                        onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='#404040'; this.style.background='#1a1a1a'">
+                                        <input type="checkbox" id="day_miercoles" name="training_days" value="miércoles" style="display: none;" 
+                                            onchange="this.parentElement.style.borderColor=this.checked?'#84cc16':'#404040'; this.parentElement.style.background=this.checked?'rgba(132, 204, 22, 0.15)':'#1a1a1a'; validateTrainingDays();">
+                                        <span style="color: white; font-weight: 500; font-size: 14px;">Miércoles</span>
+                                    </label>
+                                    <label style="display: block; padding: 12px; border: 2px solid #404040; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s; background: #1a1a1a; user-select: none;" 
+                                        onmouseover="if(!this.querySelector('input').checked) this.style.borderColor='#84cc16'; this.style.background='rgba(132, 204, 22, 0.05)'" 
+                                        onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='#404040'; this.style.background='#1a1a1a'">
+                                        <input type="checkbox" id="day_jueves" name="training_days" value="jueves" style="display: none;" 
+                                            onchange="this.parentElement.style.borderColor=this.checked?'#84cc16':'#404040'; this.parentElement.style.background=this.checked?'rgba(132, 204, 22, 0.15)':'#1a1a1a'; validateTrainingDays();">
+                                        <span style="color: white; font-weight: 500; font-size: 14px;">Jueves</span>
+                                    </label>
+                                    <label style="display: block; padding: 12px; border: 2px solid #404040; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s; background: #1a1a1a; user-select: none;" 
+                                        onmouseover="if(!this.querySelector('input').checked) this.style.borderColor='#84cc16'; this.style.background='rgba(132, 204, 22, 0.05)'" 
+                                        onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='#404040'; this.style.background='#1a1a1a'">
+                                        <input type="checkbox" id="day_viernes" name="training_days" value="viernes" style="display: none;" 
+                                            onchange="this.parentElement.style.borderColor=this.checked?'#84cc16':'#404040'; this.parentElement.style.background=this.checked?'rgba(132, 204, 22, 0.15)':'#1a1a1a'; validateTrainingDays();">
+                                        <span style="color: white; font-weight: 500; font-size: 14px;">Viernes</span>
+                                    </label>
+                                    <label style="display: block; padding: 12px; border: 2px solid #404040; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s; background: #1a1a1a; user-select: none;" 
+                                        onmouseover="if(!this.querySelector('input').checked) this.style.borderColor='#84cc16'; this.style.background='rgba(132, 204, 22, 0.05)'" 
+                                        onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='#404040'; this.style.background='#1a1a1a'">
+                                        <input type="checkbox" id="day_sabado" name="training_days" value="sábado" style="display: none;" 
+                                            onchange="this.parentElement.style.borderColor=this.checked?'#84cc16':'#404040'; this.parentElement.style.background=this.checked?'rgba(132, 204, 22, 0.15)':'#1a1a1a'; validateTrainingDays();">
+                                        <span style="color: white; font-weight: 500; font-size: 14px;">Sábado</span>
+                                    </label>
+                                    <label style="display: block; padding: 12px; border: 2px solid #404040; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s; background: #1a1a1a; user-select: none;" 
+                                        onmouseover="if(!this.querySelector('input').checked) this.style.borderColor='#84cc16'; this.style.background='rgba(132, 204, 22, 0.05)'" 
+                                        onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='#404040'; this.style.background='#1a1a1a'">
+                                        <input type="checkbox" id="day_domingo" name="training_days" value="domingo" style="display: none;" 
+                                            onchange="this.parentElement.style.borderColor=this.checked?'#84cc16':'#404040'; this.parentElement.style.background=this.checked?'rgba(132, 204, 22, 0.15)':'#1a1a1a'; validateTrainingDays();">
+                                        <span style="color: white; font-weight: 500; font-size: 14px;">Domingo</span>
+                                    </label>
+                                </div>
+                                <p id="days-error" style="display: none; color: #ef4444; font-size: 13px; margin-top: 12px; font-weight: 500;">
+                                    ⚠️ Debes seleccionar exactamente <span id="required-days"></span> días
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Campos adicionales -->
+                    <div style="margin-bottom: 30px;">
+                        <label style="display: block; margin-bottom: 8px; color: #84cc16; font-weight: 600;">Materiales Disponibles</label>
+                        <textarea id="materiales" name="materiales" rows="3" placeholder="Ej: Barra libre, mancuernas, banco plano..."
+                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #404040; background: #1a1a1a; color: white; resize: vertical;"></textarea>
+                    </div>
+                    
+                    <div style="margin-bottom: 30px;">
+                        <label style="display: block; margin-bottom: 8px; color: #84cc16; font-weight: 600;">Lesiones (opcional)</label>
+                        <input type="text" id="lesiones" name="lesiones" placeholder="Ej: Lesión en rodilla izquierda"
+                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #404040; background: #1a1a1a; color: white;">
+                    </div>
+                    
+                    <div style="margin-bottom: 30px;">
+                        <label style="display: block; margin-bottom: 8px; color: #84cc16; font-weight: 600;">Alergias Alimentarias (opcional)</label>
+                        <input type="text" id="alergias" name="alergias" placeholder="Ej: Lactosa, gluten"
+                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #404040; background: #1a1a1a; color: white;">
+                    </div>
+                    
+                    <div style="margin-bottom: 30px;">
+                        <label style="display: block; margin-bottom: 8px; color: #84cc16; font-weight: 600;">Restricciones Dietéticas (opcional)</label>
+                        <input type="text" id="restricciones_dieta" name="restricciones_dieta" placeholder="Ej: Vegetariano, vegano"
+                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #404040; background: #1a1a1a; color: white;">
+                    </div>
+                    
+                    <!-- Botón de envío -->
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button type="submit" 
+                            style="background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%); color: white; border: none; padding: 15px 40px; border-radius: 10px; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.3s ease;"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(132, 204, 22, 0.4)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            Generar Nueva Rutina
+                        </button>
+                    </div>
+                </form>
+            `;
+        }
+        
+        // Función para validar días de entrenamiento
+        function validateTrainingDays() {
+            const frequency = parseInt(document.getElementById('dias_entrenamiento').value) || 0;
+            const selectedDays = document.querySelectorAll('input[name="training_days"]:checked').length;
+            const errorMsg = document.getElementById('days-error');
+            const requiredDaysSpan = document.getElementById('required-days');
+            
+            if (frequency === 0) {
+                if (errorMsg) errorMsg.style.display = 'none';
+                return true;
+            }
+            
+            if (selectedDays > frequency) {
+                // Desmarcar el último checkbox
+                const checkboxes = document.querySelectorAll('input[name="training_days"]:checked');
+                if (checkboxes.length > 0) {
+                    checkboxes[checkboxes.length - 1].checked = false;
+                    const lastLabel = checkboxes[checkboxes.length - 1].parentElement;
+                    lastLabel.style.borderColor = '#404040';
+                    lastLabel.style.background = '#1a1a1a';
+                }
+                if (errorMsg) {
+                    if (requiredDaysSpan) requiredDaysSpan.textContent = frequency;
+                    errorMsg.style.display = 'block';
+                }
+                return false;
+            } else if (selectedDays === frequency) {
+                if (errorMsg) errorMsg.style.display = 'none';
+                return true;
+            } else {
+                if (errorMsg) {
+                    if (requiredDaysSpan) requiredDaysSpan.textContent = frequency;
+                    errorMsg.style.display = 'none'; // Ocultar hasta que se intente enviar
+                }
+                return selectedDays > 0;
+            }
+        }
+        
+        // Función para pre-llenar el formulario con datos del usuario (MOVIDA FUERA DE initDashboard)
+        function prefillForm(userData) {
+            if (!userData) return;
+            
+            // Pre-llenar campos básicos
+            if (userData.altura) document.getElementById('altura').value = userData.altura;
+            if (userData.peso) document.getElementById('peso').value = userData.peso;
+            if (userData.edad) document.getElementById('edad').value = userData.edad;
+            if (userData.sexo) document.getElementById('sexo').value = userData.sexo;
+            if (userData.experiencia) document.getElementById('experiencia').value = userData.experiencia;
+            if (userData.objetivo_gym) document.getElementById('objetivo_gym').value = userData.objetivo_gym;
+            if (userData.objetivo_nutricional) document.getElementById('objetivo_nutricional').value = userData.objetivo_nutricional;
+            if (userData.nivel_actividad) document.getElementById('nivel_actividad').value = userData.nivel_actividad;
+            
+            // Pre-llenar días de entrenamiento
+            const diasEntrenamiento = document.getElementById('dias_entrenamiento');
+            if (diasEntrenamiento) {
+                diasEntrenamiento.value = userData.dias_entrenamiento || '';
+                // Limpiar días seleccionados cuando cambia la frecuencia
+                diasEntrenamiento.addEventListener('change', function() {
+                    const checkboxes = document.querySelectorAll('input[name="training_days"]');
+                    checkboxes.forEach(cb => {
+                        cb.checked = false;
+                        const label = cb.parentElement;
+                        label.style.borderColor = '#404040';
+                        label.style.background = '#1a1a1a';
+                    });
+                    validateTrainingDays();
+                });
+            }
+            
+            // Pre-llenar días específicos si existen
+            if (userData.training_days && Array.isArray(userData.training_days)) {
+                userData.training_days.forEach(day => {
+                    const checkbox = document.getElementById(`day_${day}`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                        const label = checkbox.parentElement;
+                        label.style.borderColor = '#84cc16';
+                        label.style.background = 'rgba(132, 204, 22, 0.15)';
+                    }
+                });
+            }
+            
+            if (userData.materiales) document.getElementById('materiales').value = userData.materiales;
+            if (userData.lesiones) document.getElementById('lesiones').value = userData.lesiones;
+            if (userData.alergias) document.getElementById('alergias').value = userData.alergias;
+            if (userData.restricciones_dieta) document.getElementById('restricciones_dieta').value = userData.restricciones_dieta;
+        }
+        
+        // Función para cargar el formulario de nueva rutina (MOVIDA FUERA DE initDashboard)
+        async function loadNewRoutineForm() {
+            const contentDiv = document.getElementById('nuevaRutinaContent');
+            if (!contentDiv) return;
+            
+            // Mostrar loading
+            contentDiv.innerHTML = '<p style="color: white; text-align: center; padding: 40px;">Cargando formulario...</p>';
+            
+            // Cargar datos del usuario
+            const userData = await loadCurrentUserData();
+            
+            // Generar formulario HTML
+            const formHTML = generateNewRoutineForm(userData);
+            contentDiv.innerHTML = formHTML;
+            
+            // Si hay datos, pre-llenar formulario
+            if (userData) {
+                prefillForm(userData);
+            }
+            
+            // Agregar event listener al formulario
+            const form = document.getElementById('newRoutineForm');
+            if (form) {
+                form.addEventListener('submit', handleNewRoutineSubmit);
+            }
+            
+            // Agregar event listener al select de frecuencia para limpiar días cuando cambie
+            const diasEntrenamientoSelect = document.getElementById('dias_entrenamiento');
+            if (diasEntrenamientoSelect) {
+                diasEntrenamientoSelect.addEventListener('change', function() {
+                    const checkboxes = document.querySelectorAll('input[name="training_days"]');
+                    checkboxes.forEach(cb => {
+                        cb.checked = false;
+                        const label = cb.parentElement;
+                        label.style.borderColor = '#404040';
+                        label.style.background = '#1a1a1a';
+                    });
+                    const errorMsg = document.getElementById('days-error');
+                    if (errorMsg) errorMsg.style.display = 'none';
+                });
+            }
+        }
+        
+        // Función para manejar el envío del formulario (MOVIDA FUERA DE initDashboard)
+        async function handleNewRoutineSubmit(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            
+            // Deshabilitar botón y mostrar loading
+            submitButton.disabled = true;
+            submitButton.textContent = 'Generando rutina...';
+            
+            try {
+                // Recopilar datos del formulario
+                const objetivoGym = document.getElementById('objetivo_gym').value;
+                
+                // Mapear objetivo_gym a objetivo (el schema espera 'objetivo', no 'objetivo_gym')
+                const objetivoMapping = {
+                    'ganar_musculo': 'ganar_musculo',
+                    'ganar_fuerza': 'ganar_fuerza',
+                    'perder_grasa': 'perder_grasa',
+                    'mantener_forma': 'mantener_forma'
+                };
+                const objetivo = objetivoMapping[objetivoGym] || objetivoGym;
+                
+                // Validar días de entrenamiento antes de enviar
+                const frequency = parseInt(document.getElementById('dias_entrenamiento').value);
+                const selectedDaysRaw = Array.from(document.querySelectorAll('input[name="training_days"]:checked')).map(cb => cb.value);
+                
+                if (frequency > 0 && selectedDaysRaw.length !== frequency) {
+                    const errorMsg = document.getElementById('days-error');
+                    const requiredDaysSpan = document.getElementById('required-days');
+                    if (errorMsg) {
+                        if (requiredDaysSpan) requiredDaysSpan.textContent = frequency;
+                        errorMsg.style.display = 'block';
+                    }
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalText;
+                    document.getElementById('dias_entrenamiento').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+                
+                // Capitalizar días correctamente (primera letra mayúscula)
+                const selectedDays = selectedDaysRaw.length > 0 ? selectedDaysRaw.map(day => {
+                    // Capitalizar: "lunes" -> "Lunes", "miércoles" -> "Miércoles"
+                    return day.charAt(0).toUpperCase() + day.slice(1);
+                }) : null;
+                
+                const formData = {
+                    altura: parseInt(document.getElementById('altura').value),
+                    peso: parseInt(Math.round(parseFloat(document.getElementById('peso').value))), // Convertir a int
+                    edad: parseInt(document.getElementById('edad').value),
+                    sexo: document.getElementById('sexo').value,
+                    experiencia: document.getElementById('experiencia').value,
+                    objetivo: objetivo, // El schema espera 'objetivo', no 'objetivo_gym'
+                    materiales: document.getElementById('materiales').value || '',
+                    dias_entrenamiento: parseInt(document.getElementById('dias_entrenamiento').value), // Requerido por schema
+                    training_days: selectedDays, // Días específicos de la semana (capitalizados)
+                    lesiones: document.getElementById('lesiones').value || null,
+                    alergias: document.getElementById('alergias').value || null,
+                    restricciones_dieta: document.getElementById('restricciones_dieta').value || null,
+                    idioma: 'es'
+                };
+                
+                console.log('📤 Datos a enviar:', formData);
+                
+                // Enviar al backend
+                const headers = getAuthHeaders();
+                const response = await fetch(`${API_BASE}/generar-rutina`, {
+                    method: 'POST',
+                    headers: {
+                        ...headers,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('❌ Error del servidor:', errorData);
+                    
+                    // Mejorar el mensaje de error
+                    let errorMessage = 'Error al generar rutina';
+                    if (errorData.detail) {
+                        if (Array.isArray(errorData.detail)) {
+                            // Si es un array de errores de validación
+                            errorMessage = errorData.detail.map(err => {
+                                const field = err.loc ? err.loc.join('.') : 'campo';
+                                return `${field}: ${err.msg}`;
+                            }).join(', ');
+                        } else {
+                            errorMessage = errorData.detail;
+                        }
+                    }
+                    throw new Error(errorMessage);
+                }
+                
+                const planData = await response.json();
+                
+                // Cerrar overlay
+                closeOverlay('nuevaRutinaOverlay');
+                
+                // Recargar plan desde servidor para mostrar la nueva rutina
+                await reloadPlanFromServer();
+                
+                // Mostrar notificación de éxito
+                showReloadNotification('¡Nueva rutina generada exitosamente!');
+                
+            } catch (error) {
+                console.error('Error generando rutina:', error);
+                alert('Error al generar la rutina: ' + error.message);
+            } finally {
+                // Restaurar botón
+                submitButton.disabled = false;
+                submitButton.textContent = originalText;
+            }
         }
         
         // Función principal
@@ -3794,6 +4520,262 @@
         window.closeOverlay = closeOverlay;
         window.loadTermsContent = loadTermsContent;
         window.loadAboutContent = loadAboutContent;
+        window.checkPremiumStatus = checkPremiumStatus;
+        window.showPremiumModal = showPremiumModal;
+        window.loadNewRoutineForm = loadNewRoutineForm;
+        window.validateTrainingDays = validateTrainingDays;
+        
+        // Función para generar el HTML de visualización de datos (solo lectura) - DISEÑO PREMIUM
+        function generateProfileViewHTML(userData) {
+            if (!userData) {
+                return `
+                    <div style="text-align: center; padding: 80px 20px;">
+                        <div style="width: 80px; height: 80px; margin: 0 auto 24px; background: rgba(132, 204, 22, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <h3 style="color: #e5e5e5; font-size: 20px; font-weight: 600; margin-bottom: 12px;">No hay datos disponibles</h3>
+                        <p style="color: #999; font-size: 15px; line-height: 1.6;">Genera tu primer plan para ver tus datos aquí</p>
+                    </div>
+                `;
+            }
+            
+            // Función auxiliar para formatear valores
+            const formatValue = (value) => {
+                if (value === null || value === undefined || value === '') return 'No especificado';
+                return value;
+            };
+            
+            // Función auxiliar para formatear opciones
+            const formatOption = (value, options) => {
+                if (!value) return 'No especificado';
+                const option = options.find(opt => opt.value === value);
+                return option ? option.label : value;
+            };
+            
+            const objetivoGymOptions = [
+                { value: 'ganar_musculo', label: 'Ganar Músculo' },
+                { value: 'ganar_fuerza', label: 'Ganar Fuerza' },
+                { value: 'perder_grasa', label: 'Perder Grasa' },
+                { value: 'mantener_forma', label: 'Mantener Forma' }
+            ];
+            
+            const objetivoNutricionalOptions = [
+                { value: 'volumen', label: 'Volumen' },
+                { value: 'definicion', label: 'Definición' },
+                { value: 'mantenimiento', label: 'Mantenimiento' },
+                { value: 'recomposicion', label: 'Recomposición' }
+            ];
+            
+            const experienciaOptions = [
+                { value: 'principiante', label: 'Principiante' },
+                { value: 'intermedio', label: 'Intermedio' },
+                { value: 'avanzado', label: 'Avanzado' }
+            ];
+            
+            const nivelActividadOptions = [
+                { value: 'sedentario', label: 'Sedentario' },
+                { value: 'ligero', label: 'Ligero' },
+                { value: 'moderado', label: 'Moderado' },
+                { value: 'activo', label: 'Activo' },
+                { value: 'muy_activo', label: 'Muy Activo' }
+            ];
+            
+            const sexoOptions = [
+                { value: 'hombre', label: 'Hombre' },
+                { value: 'mujer', label: 'Mujer' }
+            ];
+            
+            // Iconos SVG
+            const iconHeight = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>`;
+            const iconWeight = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4z"></path><path d="M12 8v8M8 12h8"></path></svg>`;
+            const iconAge = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`;
+            const iconGender = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="14" r="8"></circle><path d="M22 2l-8 8M16 2h6v6"></path></svg>`;
+            const iconTarget = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>`;
+            const iconActivity = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>`;
+            const iconDays = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`;
+            const iconEquipment = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 14h12v8H6z"></path></svg>`;
+            const iconInjury = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
+            const iconAllergy = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>`;
+            const iconDiet = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4z"></path></svg>`;
+            
+            return `
+                <style>
+                    @keyframes fadeInUp {
+                        from {
+                            opacity: 0;
+                            transform: translateY(20px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+                    .profile-card {
+                        animation: fadeInUp 0.4s ease-out;
+                        animation-fill-mode: both;
+                    }
+                    .profile-card:nth-child(1) { animation-delay: 0.05s; }
+                    .profile-card:nth-child(2) { animation-delay: 0.1s; }
+                    .profile-card:nth-child(3) { animation-delay: 0.15s; }
+                    .profile-card:nth-child(4) { animation-delay: 0.2s; }
+                    .profile-card:nth-child(5) { animation-delay: 0.25s; }
+                </style>
+                <div style="color: white; max-width: 1400px; margin: 0 auto;">
+                    <!-- Datos Físicos -->
+                    <div style="margin-bottom: 48px;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 28px;">
+                            <div style="width: 4px; height: 32px; background: linear-gradient(180deg, #84cc16 0%, #65a30d 100%); border-radius: 2px;"></div>
+                            <h3 style="color: #e5e5e5; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin: 0;">Datos Físicos</h3>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+                            <div class="profile-card" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%); border: 1px solid rgba(132, 204, 22, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(132, 204, 22, 0.2) inset'; this.style.borderColor='rgba(132, 204, 22, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset'; this.style.borderColor='rgba(132, 204, 22, 0.15)'">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                    <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconHeight}</div>
+                                    <div style="color: #a3a3a3; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Altura</div>
+                                </div>
+                                <div style="font-size: 28px; font-weight: 700; color: #e5e5e5; letter-spacing: -0.5px;">${formatValue(userData.altura)} <span style="font-size: 18px; font-weight: 500; color: #84cc16;">cm</span></div>
+                            </div>
+                            <div class="profile-card" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%); border: 1px solid rgba(132, 204, 22, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(132, 204, 22, 0.2) inset'; this.style.borderColor='rgba(132, 204, 22, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset'; this.style.borderColor='rgba(132, 204, 22, 0.15)'">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                    <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconWeight}</div>
+                                    <div style="color: #a3a3a3; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Peso</div>
+                                </div>
+                                <div style="font-size: 28px; font-weight: 700; color: #e5e5e5; letter-spacing: -0.5px;">${formatValue(userData.peso)} <span style="font-size: 18px; font-weight: 500; color: #84cc16;">kg</span></div>
+                            </div>
+                            <div class="profile-card" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%); border: 1px solid rgba(132, 204, 22, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(132, 204, 22, 0.2) inset'; this.style.borderColor='rgba(132, 204, 22, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset'; this.style.borderColor='rgba(132, 204, 22, 0.15)'">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                    <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconAge}</div>
+                                    <div style="color: #a3a3a3; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Edad</div>
+                                </div>
+                                <div style="font-size: 28px; font-weight: 700; color: #e5e5e5; letter-spacing: -0.5px;">${formatValue(userData.edad)} <span style="font-size: 18px; font-weight: 500; color: #84cc16;">años</span></div>
+                            </div>
+                            <div class="profile-card" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%); border: 1px solid rgba(132, 204, 22, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(132, 204, 22, 0.2) inset'; this.style.borderColor='rgba(132, 204, 22, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset'; this.style.borderColor='rgba(132, 204, 22, 0.15)'">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                    <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconGender}</div>
+                                    <div style="color: #a3a3a3; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Sexo</div>
+                                </div>
+                                <div style="font-size: 28px; font-weight: 700; color: #e5e5e5; letter-spacing: -0.5px;">${formatOption(userData.sexo, sexoOptions)}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Objetivos y Experiencia -->
+                    <div style="margin-bottom: 48px;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 28px;">
+                            <div style="width: 4px; height: 32px; background: linear-gradient(180deg, #84cc16 0%, #65a30d 100%); border-radius: 2px;"></div>
+                            <h3 style="color: #e5e5e5; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin: 0;">Objetivos y Experiencia</h3>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+                            <div class="profile-card" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%); border: 1px solid rgba(132, 204, 22, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(132, 204, 22, 0.2) inset'; this.style.borderColor='rgba(132, 204, 22, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset'; this.style.borderColor='rgba(132, 204, 22, 0.15)'">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                    <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconTarget}</div>
+                                    <div style="color: #a3a3a3; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Experiencia</div>
+                                </div>
+                                <div style="font-size: 22px; font-weight: 600; color: #e5e5e5;">${formatOption(userData.experiencia, experienciaOptions)}</div>
+                            </div>
+                            <div class="profile-card" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%); border: 1px solid rgba(132, 204, 22, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(132, 204, 22, 0.2) inset'; this.style.borderColor='rgba(132, 204, 22, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset'; this.style.borderColor='rgba(132, 204, 22, 0.15)'">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                    <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconTarget}</div>
+                                    <div style="color: #a3a3a3; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Objetivo Gym</div>
+                                </div>
+                                <div style="font-size: 22px; font-weight: 600; color: #e5e5e5;">${formatOption(userData.objetivo_gym, objetivoGymOptions)}</div>
+                            </div>
+                            <div class="profile-card" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%); border: 1px solid rgba(132, 204, 22, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(132, 204, 22, 0.2) inset'; this.style.borderColor='rgba(132, 204, 22, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset'; this.style.borderColor='rgba(132, 204, 22, 0.15)'">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                    <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconTarget}</div>
+                                    <div style="color: #a3a3a3; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Objetivo Nutricional</div>
+                                </div>
+                                <div style="font-size: 22px; font-weight: 600; color: #e5e5e5;">${formatOption(userData.objetivo_nutricional, objetivoNutricionalOptions)}</div>
+                            </div>
+                            <div class="profile-card" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%); border: 1px solid rgba(132, 204, 22, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(132, 204, 22, 0.2) inset'; this.style.borderColor='rgba(132, 204, 22, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset'; this.style.borderColor='rgba(132, 204, 22, 0.15)'">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                    <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconActivity}</div>
+                                    <div style="color: #a3a3a3; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Nivel de Actividad</div>
+                                </div>
+                                <div style="font-size: 22px; font-weight: 600; color: #e5e5e5;">${formatOption(userData.nivel_actividad, nivelActividadOptions)}</div>
+                            </div>
+                            <div class="profile-card" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%); border: 1px solid rgba(132, 204, 22, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(132, 204, 22, 0.2) inset'; this.style.borderColor='rgba(132, 204, 22, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset'; this.style.borderColor='rgba(132, 204, 22, 0.15)'">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                    <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconDays}</div>
+                                    <div style="color: #a3a3a3; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Días de Entrenamiento</div>
+                                </div>
+                                <div style="font-size: 22px; font-weight: 600; color: #e5e5e5;">${formatValue(userData.dias_entrenamiento)} <span style="font-size: 16px; font-weight: 500; color: #84cc16;">días/semana</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Preferencias y Restricciones -->
+                    <div style="margin-bottom: 48px;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 28px;">
+                            <div style="width: 4px; height: 32px; background: linear-gradient(180deg, #84cc16 0%, #65a30d 100%); border-radius: 2px;"></div>
+                            <h3 style="color: #e5e5e5; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin: 0;">Preferencias y Restricciones</h3>
+                        </div>
+                        <div style="display: grid; gap: 20px;">
+                            <div class="profile-card" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%); border: 1px solid rgba(132, 204, 22, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(132, 204, 22, 0.2) inset'; this.style.borderColor='rgba(132, 204, 22, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset'; this.style.borderColor='rgba(132, 204, 22, 0.15)'">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                    <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconEquipment}</div>
+                                    <div style="color: #a3a3a3; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Materiales Disponibles</div>
+                                </div>
+                                <div style="font-size: 16px; color: #d4d4d4; line-height: 1.7; font-weight: 400;">${formatValue(userData.materiales)}</div>
+                            </div>
+                            <div class="profile-card" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%); border: 1px solid rgba(132, 204, 22, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(132, 204, 22, 0.2) inset'; this.style.borderColor='rgba(132, 204, 22, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset'; this.style.borderColor='rgba(132, 204, 22, 0.15)'">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                    <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconInjury}</div>
+                                    <div style="color: #a3a3a3; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Lesiones</div>
+                                </div>
+                                <div style="font-size: 16px; color: #d4d4d4; line-height: 1.7; font-weight: 400;">${formatValue(userData.lesiones)}</div>
+                            </div>
+                            <div class="profile-card" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%); border: 1px solid rgba(132, 204, 22, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(132, 204, 22, 0.2) inset'; this.style.borderColor='rgba(132, 204, 22, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset'; this.style.borderColor='rgba(132, 204, 22, 0.15)'">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                    <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconAllergy}</div>
+                                    <div style="color: #a3a3a3; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Alergias Alimentarias</div>
+                                </div>
+                                <div style="font-size: 16px; color: #d4d4d4; line-height: 1.7; font-weight: 400;">${formatValue(userData.alergias)}</div>
+                            </div>
+                            <div class="profile-card" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%); border: 1px solid rgba(132, 204, 22, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(132, 204, 22, 0.2) inset'; this.style.borderColor='rgba(132, 204, 22, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset'; this.style.borderColor='rgba(132, 204, 22, 0.15)'">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                    <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconDiet}</div>
+                                    <div style="color: #a3a3a3; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Restricciones Dietéticas</div>
+                                </div>
+                                <div style="font-size: 16px; color: #d4d4d4; line-height: 1.7; font-weight: 400;">${formatValue(userData.restricciones_dieta)}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Botón para generar nuevo plan -->
+                    <div style="text-align: center; margin-top: 56px; padding-top: 40px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+                        <button onclick="closeOverlay('verDatosOverlay'); handleNewRoutine();" 
+                            style="background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%); color: white; border: none; padding: 18px 48px; border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 16px rgba(132, 204, 22, 0.3); letter-spacing: 0.3px;"
+                            onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 24px rgba(132, 204, 22, 0.4)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 16px rgba(132, 204, 22, 0.3)'">
+                            Generar Nuevo Plan
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Función para cargar la vista de datos del perfil
+        async function loadProfileView() {
+            const contentDiv = document.getElementById('verDatosContent');
+            if (!contentDiv) return;
+            
+            // Mostrar loading
+            contentDiv.innerHTML = '<p style="color: white; text-align: center; padding: 40px;">Cargando datos...</p>';
+            
+            // Cargar datos del usuario
+            const userData = await loadCurrentUserData();
+            
+            // Generar HTML de visualización
+            const viewHTML = generateProfileViewHTML(userData);
+            contentDiv.innerHTML = viewHTML;
+        }
+        
+        // Exponer funciones globalmente
+        window.loadProfileView = loadProfileView;
 
         // ═══════════════════════════════════════════════════════════
         // DETECCIÓN AUTOMÁTICA DE PAGO PREMIUM

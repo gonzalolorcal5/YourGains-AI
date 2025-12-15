@@ -102,19 +102,6 @@ export function decodeJwt(token) {
   }
 }
 
-export function getCurrentUserId() {
-  const token = localStorage.getItem("accessToken");
-  if (!token) return null;
-  
-  try {
-    const payload = decodeJwt(token);
-    return payload?.sub || null;
-  } catch (e) {
-    console.error("Error obteniendo ID de usuario:", e);
-    return null;
-  }
-}
-
 // Hacer funciones disponibles globalmente para compatibilidad
 if (typeof window !== 'undefined') {
   window.logout = logout;

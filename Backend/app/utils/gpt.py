@@ -2,13 +2,18 @@ import os
 import json
 import regex as re
 import asyncio
-from typing import Dict, Any
+from typing import Dict, Any, List
 from dotenv import load_dotenv
 from app.schemas import PlanRequest
 from openai import AsyncOpenAI
 import logging
 from app.utils.nutrition_calculator import get_complete_nutrition_plan
 from fastapi import HTTPException
+
+# ═══════════════════════════════════════════════════════
+# 🔥 NUEVO: Importar sistema RAG
+# ═══════════════════════════════════════════════════════
+from app.utils.vectorstore import KnowledgeStore
 
 # Cargar .env desde la raíz del proyecto Backend
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), '.env'))
@@ -34,6 +39,418 @@ else:
 if ENVIRONMENT != 'production':
     MODEL = "gpt-3.5-turbo"
     print("🔒 FORZANDO GPT-3.5 Turbo para desarrollo")
+
+logger = logging.getLogger(__name__)
+
+
+# ═══════════════════════════════════════════════════════
+# 🔥 NUEVA FUNCIÓN: Generar embedding de texto
+# ═══════════════════════════════════════════════════════
+async def generate_embedding(text: str) -> List[float]:
+    """
+    Genera embedding de un texto usando OpenAI.
+    
+    Args:
+        text: Texto a convertir en embedding
+        
+    Returns:
+        Vector de embeddings (lista de floats)
+    """
+    try:
+        response = await client.embeddings.create(
+            model="text-embedding-3-small",  # Modelo de embeddings de OpenAI
+            input=text
+        )
+        return response.data[0].embedding
+    except Exception as e:
+        logger.error(f"❌ Error generando embedding: {e}")
+        return []
+
+
+# ═══════════════════════════════════════════════════════
+# 🔥 NUEVA FUNCIÓN: Obtener contexto RAG para el plan
+# ═══════════════════════════════════════════════════════
+async def get_rag_context_for_plan(datos: Dict[str, Any]) -> str:
+    """
+    Recupera contexto científico del RAG según el perfil del usuario.
+    
+    Hace queries específicas para:
+    - Rutina de entrenamiento (según gym_goal y experiencia)
+    - Plan nutricional (según nutrition_goal)
+    - Recuperación y consejos avanzados
+    
+    Args:
+        datos: Diccionario con datos del usuario
+        
+    Returns:
+        String con contexto científico formateado para inyectar en el prompt
+    """
+    
+    logger.info("🔍 Recuperando contexto científico del RAG...")
+    
+    # Extraer datos del usuario
+    gym_goal = datos.get('gym_goal', 'ganar_musculo')
+    nutrition_goal = datos.get('nutrition_goal', 'mantenimiento')
+    experiencia = datos.get('experiencia', 'principiante')
+    training_frequency = datos.get('training_frequency', 4)
+    
+    # Mapear objetivos a goals del RAG
+    goal_mapping = {
+        'ganar_musculo': 'hipertrofia',
+        'ganar_fuerza': 'fuerza',
+        'perder_grasa': 'perdida_grasa',
+        'mantenimiento': 'definicion'
+    }
+    
+    gym_goal_rag = goal_mapping.get(gym_goal, 'hipertrofia')
+    nutrition_goal_rag = goal_mapping.get(nutrition_goal, 'definicion')
+    
+    # ═══════════════════════════════════════════════════════
+    # CONSTRUIR QUERIES ESPECÍFICAS
+    # ═══════════════════════════════════════════════════════
+    
+    queries = []
+    
+    # 1️⃣ QUERY PARA RUTINA - Hipertrofia/Fuerza según objetivo
+    if gym_goal == 'ganar_musculo':
+        queries.append({
+            'text': f'entrenamiento hipertrofia muscular {experiencia} series repeticiones volumen óptimo',
+            'category': 'training_knowledge',
+            'goal': 'hipertrofia',
+            'weight': 1.5  # Mayor peso para queries de rutina
+        })
+    elif gym_goal == 'ganar_fuerza':
+        queries.append({
+            'text': f'entrenamiento fuerza powerlifting {experiencia} series repeticiones descanso',
+            'category': 'training_knowledge',
+            'goal': 'fuerza',
+            'weight': 1.5
+        })
+    
+    # 2️⃣ QUERY PARA FRECUENCIA - Según días disponibles
+    queries.append({
+        'text': f'frecuencia entrenamiento óptima {training_frequency} días semana {gym_goal_rag}',
+        'category': 'training_knowledge',
+        'goal': gym_goal_rag,
+        'weight': 1.2
+    })
+    
+    # 3️⃣ QUERY PARA NUTRICIÓN - Según objetivo nutricional
+    if nutrition_goal == 'volumen':
+        queries.append({
+            'text': 'superávit calórico volumen muscular macronutrientes distribución proteína',
+            'category': 'nutrition_knowledge',
+            'goal': 'volumen',
+            'weight': 1.5
+        })
+    elif nutrition_goal == 'definicion':
+        queries.append({
+            'text': 'déficit calórico definición muscular macronutrientes proteína preservar masa',
+            'category': 'nutrition_knowledge',
+            'goal': 'perdida_grasa',
+            'weight': 1.5
+        })
+    else:  # mantenimiento
+        queries.append({
+            'text': 'mantenimiento calórico macronutrientes distribución óptima',
+            'category': 'nutrition_knowledge',
+            'goal': 'definicion',
+            'weight': 1.0
+        })
+    
+    # 4️⃣ QUERY PARA MACROS - Distribución específica
+    queries.append({
+        'text': f'distribución macronutrientes {nutrition_goal_rag} proteína carbohidratos grasas',
+        'category': 'nutrition_knowledge',
+        'goal': nutrition_goal_rag,
+        'weight': 1.3
+    })
+    
+    # 5️⃣ QUERY PARA RECUPERACIÓN
+    queries.append({
+        'text': 'recuperación muscular descanso sueño hipertrofia',
+        'category': 'training_knowledge',
+        'goal': gym_goal_rag,
+        'weight': 0.8
+    })
+    
+    # ═══════════════════════════════════════════════════════
+    # 🔥 NUEVO: QUERIES ESPECÍFICAS PARA MODIFICACIONES
+    # ═══════════════════════════════════════════════════════
+    
+    # 6️⃣ QUERY PARA LESIONES (si hay información de lesión específica)
+    lesiones = datos.get('lesiones', '')
+    if lesiones and lesiones.lower() != 'ninguna' and len(lesiones) > 20:
+        # Detectar parte del cuerpo lesionada
+        body_parts = ['hombro', 'rodilla', 'espalda', 'codo', 'muñeca', 'tobillo', 'cadera', 'cuello', 'muñeca']
+        detected_part = None
+        for part in body_parts:
+            if part in lesiones.lower():
+                detected_part = part
+                break
+        
+        if detected_part and ('evitar' in lesiones.lower() or 'lesión' in lesiones.lower() or 'dolor' in lesiones.lower()):
+            queries.append({
+                'text': f'lesión {detected_part} ejercicios alternativos entrenamiento seguro evitar',
+                'category': 'training_knowledge',
+                'goal': gym_goal_rag,
+                'weight': 2.0  # Mayor peso porque es crítico para seguridad
+            })
+            queries.append({
+                'text': f'adaptación rutina {detected_part} lesión ejercicios sustitutos',
+                'category': 'training_knowledge',
+                'goal': gym_goal_rag,
+                'weight': 1.8
+            })
+            logger.info(f"🏥 Añadidas queries RAG para lesión: {detected_part}")
+    
+    # 7️⃣ QUERY PARA ALERGIAS ALIMENTARIAS (si hay alergias específicas)
+    alergias = datos.get('alergias', '')
+    if alergias and alergias.lower() != 'ninguna' and len(alergias) > 5:
+        alergias_lower = alergias.lower()
+        
+        # Detectar tipo de alergia
+        if 'lactosa' in alergias_lower or 'lácteo' in alergias_lower:
+            queries.append({
+                'text': 'dieta sin lactosa proteínas alternativas lácteos fitness',
+                'category': 'nutrition_knowledge',
+                'goal': nutrition_goal_rag,
+                'weight': 2.0  # Crítico para salud
+            })
+            logger.info("🥛 Añadida query RAG para alergia a lactosa")
+        
+        if 'gluten' in alergias_lower or 'celíaco' in alergias_lower or 'celiaco' in alergias_lower:
+            queries.append({
+                'text': 'dieta celíaco sin gluten carbohidratos fitness',
+                'category': 'nutrition_knowledge',
+                'goal': nutrition_goal_rag,
+                'weight': 2.0  # Crítico para salud
+            })
+            logger.info("🌾 Añadida query RAG para celiaquía")
+        
+        if 'frutos secos' in alergias_lower or 'fruto seco' in alergias_lower:
+            queries.append({
+                'text': 'proteínas alternativas frutos secos alergia dieta fitness',
+                'category': 'nutrition_knowledge',
+                'goal': nutrition_goal_rag,
+                'weight': 2.0  # Crítico para salud
+            })
+            logger.info("🥜 Añadida query RAG para alergia a frutos secos")
+        
+        if 'huevo' in alergias_lower or 'huevos' in alergias_lower:
+            queries.append({
+                'text': 'proteínas alternativas huevo dieta fitness aminoácidos',
+                'category': 'nutrition_knowledge',
+                'goal': nutrition_goal_rag,
+                'weight': 2.0  # Crítico para salud
+            })
+            logger.info("🥚 Añadida query RAG para alergia a huevo")
+    
+    # 8️⃣ QUERY PARA MATERIALES NO DISPONIBLES (si hay restricción de equipamiento)
+    missing_equipment = datos.get('missing_equipment', '')
+    if missing_equipment and missing_equipment.lower() != 'ninguno' and len(missing_equipment) > 3:
+        missing_lower = missing_equipment.lower()
+        
+        if 'barra' in missing_lower or 'barra olímpica' in missing_lower:
+            queries.append({
+                'text': 'entrenamiento sin barra olímpica mancuernas alternativas ejercicios compuestos',
+                'category': 'training_knowledge',
+                'goal': gym_goal_rag,
+                'weight': 1.8
+            })
+            logger.info("🏋️ Añadida query RAG para falta de barra olímpica")
+        
+        if 'banco' in missing_lower or 'banco press' in missing_lower:
+            queries.append({
+                'text': 'entrenamiento pecho sin banco flexiones variaciones peso corporal',
+                'category': 'training_knowledge',
+                'goal': gym_goal_rag,
+                'weight': 1.8
+            })
+            logger.info("🪑 Añadida query RAG para falta de banco de press")
+        
+        if 'rack' in missing_lower or 'soporte' in missing_lower:
+            queries.append({
+                'text': 'sentadillas alternativas sin rack prensa máquina ejercicios piernas',
+                'category': 'training_knowledge',
+                'goal': gym_goal_rag,
+                'weight': 1.8
+            })
+            logger.info("🏋️ Añadida query RAG para falta de rack")
+    
+    # 9️⃣ QUERY PARA ENFOQUE EN ÁREAS (si hay focus_area)
+    focus_area = datos.get('focus_area')
+    if focus_area:
+        # Normalizar nombre del área
+        area_mapping = {
+            'brazos': 'brazos',
+            'biceps': 'brazos',
+            'triceps': 'brazos',
+            'pecho': 'pecho',
+            'pectoral': 'pecho',
+            'piernas': 'piernas',
+            'cuadriceps': 'piernas',
+            'cuádriceps': 'piernas',
+            'gluteos': 'glúteos',
+            'glúteos': 'glúteos',
+            'espalda': 'espalda',
+            'dorsales': 'espalda',
+            'hombros': 'hombros',
+            'deltoides': 'hombros'
+        }
+        mapped_area = area_mapping.get(focus_area.lower(), focus_area.lower())
+        
+        queries.append({
+            'text': f'hipertrofia {mapped_area} volumen óptimo series repeticiones frecuencia',
+            'category': 'training_knowledge',
+            'goal': 'hipertrofia',  # Siempre hipertrofia para enfoque
+            'weight': 1.8
+        })
+        queries.append({
+            'text': f'entrenamiento {mapped_area} frecuencia semanal volumen máximo',
+            'category': 'training_knowledge',
+            'goal': 'hipertrofia',
+            'weight': 1.5
+        })
+        logger.info(f"🎯 Añadidas queries RAG para enfoque en: {mapped_area}")
+    
+    # 🔟 QUERY PARA RESTRICCIONES DIETÉTICAS (si hay restricciones específicas)
+    restricciones = datos.get('restricciones', '') or datos.get('restricciones_dieta', '')
+    if restricciones and restricciones.lower() != 'ninguna' and len(restricciones) > 5:
+        restricciones_lower = restricciones.lower()
+        
+        if 'vegetariano' in restricciones_lower or 'vegetariana' in restricciones_lower:
+            queries.append({
+                'text': 'dieta vegetariana fitness proteínas completas combinaciones',
+                'category': 'nutrition_knowledge',
+                'goal': nutrition_goal_rag,
+                'weight': 1.8
+            })
+            logger.info("🌱 Añadida query RAG para dieta vegetariana")
+        
+        if 'vegano' in restricciones_lower or 'vegana' in restricciones_lower:
+            queries.append({
+                'text': 'dieta vegana fitness proteínas completas B12 creatina',
+                'category': 'nutrition_knowledge',
+                'goal': nutrition_goal_rag,
+                'weight': 1.8
+            })
+            logger.info("🌿 Añadida query RAG para dieta vegana")
+        
+        if 'halal' in restricciones_lower:
+            queries.append({
+                'text': 'dieta halal fitness proteínas permitidas nutrición deportiva',
+                'category': 'nutrition_knowledge',
+                'goal': nutrition_goal_rag,
+                'weight': 1.8
+            })
+            logger.info("🕌 Añadida query RAG para dieta halal")
+    
+    # ═══════════════════════════════════════════════════════
+    # EJECUTAR QUERIES RAG EN PARALELO (OPTIMIZACIÓN)
+    # ═══════════════════════════════════════════════════════
+    
+    async def execute_query(query_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Ejecuta una query RAG individual"""
+        try:
+            # Generar embedding de la query
+            query_embedding = await generate_embedding(query_data['text'])
+            
+            if not query_embedding:
+                logger.warning(f"⚠️ No se pudo generar embedding para query: {query_data['text'][:50]}")
+                return []
+            
+            # Buscar en RAG con filtros
+            results = KnowledgeStore.search(
+                query_embedding=query_embedding,
+                k=2,  # Top 2 documentos por query
+                language='es',
+                category=query_data.get('category')
+            )
+            
+            # Añadir peso a los resultados
+            for result in results:
+                result['query_weight'] = query_data.get('weight', 1.0)
+            
+            logger.info(f"✅ Query RAG: '{query_data['text'][:40]}...' → {len(results)} docs")
+            return results
+            
+        except Exception as e:
+            logger.error(f"❌ Error en query RAG: {e}")
+            return []
+    
+    # Ejecutar todas las queries en paralelo para reducir latencia
+    logger.info(f"🚀 Ejecutando {len(queries)} queries RAG en paralelo...")
+    query_tasks = [execute_query(query_data) for query_data in queries]
+    query_results = await asyncio.gather(*query_tasks, return_exceptions=True)
+    
+    # Consolidar resultados
+    all_results = []
+    for results in query_results:
+        if isinstance(results, Exception):
+            logger.error(f"❌ Error en query: {results}")
+            continue
+        if isinstance(results, list):
+            all_results.extend(results)
+    
+    # ═══════════════════════════════════════════════════════
+    # FORMATEAR CONTEXTO PARA EL PROMPT
+    # ═══════════════════════════════════════════════════════
+    
+    if not all_results:
+        logger.warning("⚠️ No se recuperaron documentos del RAG, continuando sin contexto")
+        return ""
+    
+    # Ordenar por similitud (ya vienen ordenados) y peso
+    all_results.sort(key=lambda x: x.get('similarity', 0) * x.get('query_weight', 1.0), reverse=True)
+    
+    # Tomar top 8 documentos únicos
+    unique_docs = []
+    seen_titles = set()
+    
+    for doc in all_results:
+        title = doc.get('title', '')
+        if title not in seen_titles:
+            unique_docs.append(doc)
+            seen_titles.add(title)
+        
+        if len(unique_docs) >= 8:
+            break
+    
+    # Formatear contexto
+    context_parts = []
+    context_parts.append("═" * 80)
+    context_parts.append("📚 CONTEXTO CIENTÍFICO DE LA BASE DE CONOCIMIENTO")
+    context_parts.append("═" * 80)
+    context_parts.append("")
+    context_parts.append("⚠️ INSTRUCCIÓN CRÍTICA: Usa la siguiente información científica respaldada por")
+    context_parts.append("estudios peer-reviewed para generar el plan. NO ignores este contexto.")
+    context_parts.append("")
+    
+    for i, doc in enumerate(unique_docs, 1):
+        title = doc.get('title', 'Sin título')
+        content = doc.get('content', '')
+        source = doc.get('source', '')
+        similarity = doc.get('similarity', 0)
+        
+        context_parts.append(f"📄 DOCUMENTO {i}: {title}")
+        context_parts.append(f"   Relevancia: {similarity:.3f}")
+        context_parts.append(f"   Fuente: {source}")
+        context_parts.append(f"   Contenido:")
+        context_parts.append(f"   {content}")
+        context_parts.append("")
+    
+    context_parts.append("═" * 80)
+    context_parts.append("✅ Fin del contexto científico - ÚSALO para generar el plan")
+    context_parts.append("═" * 80)
+    context_parts.append("")
+    
+    final_context = "\n".join(context_parts)
+    
+    logger.info(f"✅ Contexto RAG generado: {len(unique_docs)} documentos únicos")
+    
+    return final_context
+
 
 async def generar_plan_safe(user_data, user_id):
     """
@@ -89,9 +506,22 @@ async def generar_plan_safe(user_data, user_id):
         logger.exception(e)
         raise  # Lanzar para que function_handlers use estrategia 2
 
-logger = logging.getLogger(__name__)
 
 async def generar_plan_personalizado(datos):
+    # ═══════════════════════════════════════════════════════
+    # 🔥 NUEVO: RECUPERAR CONTEXTO RAG ANTES DE CALCULAR
+    # ═══════════════════════════════════════════════════════
+    logger.info("=" * 80)
+    logger.info("🔍 PASO 1: RECUPERANDO CONTEXTO CIENTÍFICO DEL RAG")
+    logger.info("=" * 80)
+    
+    rag_context = await get_rag_context_for_plan(datos)
+    
+    if rag_context:
+        logger.info(f"✅ Contexto RAG recuperado ({len(rag_context)} caracteres)")
+    else:
+        logger.warning("⚠️ No se recuperó contexto RAG - continuando sin él")
+    
     # ═══════════════════════════════════════════════════════
     # CALCULAR NUTRICIÓN CIENTÍFICAMENTE CON TMB/TDEE
     # ═══════════════════════════════════════════════════════
@@ -102,7 +532,7 @@ async def generar_plan_personalizado(datos):
     target_calories_override = datos.get('target_calories_override')
     
     logger.info("=" * 70)
-    logger.info("🧮 CALCULANDO PLAN NUTRICIONAL CIENTÍFICO")
+    logger.info("🧮 PASO 2: CALCULANDO PLAN NUTRICIONAL CIENTÍFICO")
     logger.info("=" * 70)
     logger.info(f"📊 Objetivo nutricional: {nutrition_goal}")
     if target_calories_override:
@@ -150,7 +580,9 @@ async def generar_plan_personalizado(datos):
     gym_goal = datos.get('gym_goal', 'ganar_musculo')
     nutrition_goal = datos.get('nutrition_goal', 'mantenimiento')
     training_frequency = datos.get('training_frequency', 4)
-    training_days = datos.get('training_days', ['lunes', 'martes', 'jueves', 'viernes'])
+    training_days_raw = datos.get('training_days', ['lunes', 'martes', 'jueves', 'viernes'])
+    # Normalizar días: capitalizar primera letra (Lunes, Martes, etc.)
+    training_days = [day.capitalize() if day else day for day in training_days_raw] if training_days_raw else ['Lunes', 'Martes', 'Jueves', 'Viernes']
     
     texto_dieta = f"""
 Quiero que ahora generes una dieta hiperpersonalizada basada en cálculos científicos (fórmula Mifflin-St Jeor).
@@ -269,8 +701,14 @@ Genera también una rutina personalizada según el perfil. Formato obligatorio:
 IMPORTANTE: Las repeticiones deben ser strings como "8-10", "12-15", etc. NO números.
 """
 
+    # ═══════════════════════════════════════════════════════
+    # 🔥 MODIFICACIÓN PRINCIPAL: INYECTAR CONTEXTO RAG
+    # ═══════════════════════════════════════════════════════
+    
     prompt = f"""
 Eres un entrenador profesional de fuerza y nutrición. Genera un plan completo y personalizado.
+
+{rag_context}
 
 ═══════════════════════════════════════════════
 PERFIL DEL USUARIO:
@@ -420,8 +858,12 @@ REVISA LA RUTINA COMPLETA antes de devolverla y asegúrate de que:
 
 1. RUTINA DE ENTRENAMIENTO:
    - Diseña la rutina para EXACTAMENTE {training_frequency} días
-   - Distribuye los entrenamientos en los días: {', '.join(training_days)}
-   - Cada día debe tener su nombre específico (ej: "Lunes - Pecho y Tríceps")
+   - ⚠️⚠️⚠️ DÍAS ESPECÍFICOS OBLIGATORIOS: {', '.join(training_days)} ⚠️⚠️⚠️
+   - ⚠️ CRÍTICO: El array "dias" DEBE tener EXACTAMENTE {len(training_days)} elementos
+   - ⚠️ CRÍTICO: El campo "dia" de cada objeto DEBE ser EXACTAMENTE uno de estos (en este orden): {', '.join(training_days)}
+   - ⚠️ CRÍTICO: NO uses días que no estén en esta lista: {', '.join(training_days)}
+   - Cada día debe tener su nombre específico con el día de la semana (ej: "Lunes - Pecho y Tríceps", "Martes - Espalda y Bíceps")
+   - El orden de los días en el array DEBE seguir: {', '.join(training_days)}
    - Ajusta los ejercicios y volumen según el objetivo de gym: {gym_goal}
      * Si es "ganar_musculo": Hipertrofia - 8-12 reps, 3-4 series, descansos 60-90s
      * Si es "ganar_fuerza": Fuerza - 4-6 reps, 4-5 series, descansos 2-3min
@@ -476,7 +918,13 @@ REVISA LA RUTINA COMPLETA antes de devolverla y asegúrate de que:
    - Evitar alergias: {datos.get('alergias', 'ninguna')}
    - Generar exactamente 5 comidas al día
 
-3. FORMATO DE RESPUESTA:
+3. ⚠️⚠️⚠️ USO OBLIGATORIO DEL CONTEXTO CIENTÍFICO ⚠️⚠️⚠️
+   - DEBES usar la información científica proporcionada en la sección "CONTEXTO CIENTÍFICO"
+   - Los estudios citados son peer-reviewed y respaldados por investigación real
+   - Aplica las recomendaciones de volumen, frecuencia, macros según los documentos
+   - NO ignores el contexto científico - es la base de tu respuesta
+
+4. FORMATO DE RESPUESTA:
    Devuelve únicamente un JSON válido, con esta estructura exacta:
 
 {{
@@ -534,7 +982,9 @@ REGLAS CRÍTICAS:
 """
 
     # 🛡️ PROTECCIÓN: Logging antes de generar plan
-    logger.info(f"🔄 Generando plan personalizado para usuario (modelo: {MODEL})")
+    logger.info("=" * 80)
+    logger.info(f"🔄 PASO 3: GENERANDO PLAN CON GPT (modelo: {MODEL})")
+    logger.info("=" * 80)
     
     try:
         response = await client.chat.completions.create(
@@ -628,7 +1078,8 @@ REGLAS CRÍTICAS:
         'fecha_calculo': datetime.now().isoformat(),
         'nivel_actividad': datos.get('nivel_actividad', 'moderado'),
         'metodo_calculo': 'Mifflin-St Jeor',
-        'diferencia_mantenimiento': diferencia_mantenimiento
+        'diferencia_mantenimiento': diferencia_mantenimiento,
+        'rag_used': bool(rag_context)  # 🔥 NUEVO: Indicar si se usó RAG
     })
     
     logger.info("📦 Metadatos científicos añadidos a la dieta:")
@@ -636,6 +1087,7 @@ REGLAS CRÍTICAS:
     logger.info(f"   TDEE: {tdee} kcal/día")
     logger.info(f"   Calorías objetivo: {kcal_objetivo} kcal/día")
     logger.info(f"   Método: Mifflin-St Jeor")
+    logger.info(f"   RAG usado: {bool(rag_context)}")
     
     # ═══════════════════════════════════════════════════════
     # AÑADIR MACROS A NIVEL RAIZ DE LA DIETA (CRÍTICO)

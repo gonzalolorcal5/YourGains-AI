@@ -13,12 +13,10 @@ class Usuario(Base):
     # Stripe / gating
     is_premium = Column(Boolean, default=False, nullable=False)
     stripe_customer_id = Column(String, nullable=True)
-    subscription_type = Column(String, nullable=True)  # 'monthly', 'yearly', o None
-    subscription_start_date = Column(DateTime, nullable=True)
-    last_payment_intent_id = Column(String, nullable=True)  # 🔧 NUEVO: Para idempotencia de webhooks
+    stripe_subscription_id = Column(String, nullable=True)  # 🆕 NUEVO campo
 
     # NUEVO: plan y cupo de chat
-    plan_type = Column(String, default="FREE", nullable=False)   # FREE | PREMIUM
+    plan_type = Column(String, default="FREE", nullable=False)   # FREE | PREMIUM_MONTHLY | PREMIUM_YEARLY
     chat_uses_free = Column(Integer, default=2, nullable=False)  # preguntas gratis disponibles
     
     # Onboarding

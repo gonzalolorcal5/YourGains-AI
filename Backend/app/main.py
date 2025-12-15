@@ -1,7 +1,4 @@
 from fastapi import FastAPI
-from contextlib import asynccontextmanager
-import asyncio
-import logging
 from dotenv import load_dotenv
 import os
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,41 +15,22 @@ from app.routes import (
     chat,
     onboarding,
     chat_modify_optimized,
-    articles,
+    # Importamos Stripe directamente aqui para que si falla, explote y veamos el error
+    stripe_routes,
+    stripe_webhook,
 )
 
-from app.routers import rag
+# Intento importar el CLI si existe, si no, no pasa nada
+try:
+    from app.routes import stripe_webhook_cli
+    HAS_STRIPE_CLI = True
+except ImportError:
+    HAS_STRIPE_CLI = False
+    print("[WARN] stripe_webhook_cli no encontrado, ruta /stripe/webhook-cli deshabilitada")
+
 
 load_dotenv()
-
-# Lifespan para startup/shutdown limpios (evita CancelledError al salir)
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Startup
-    try:
-        yield
-    finally:
-        # Shutdown: cancelar tareas pendientes de forma ordenada
-        try:
-            loop = asyncio.get_event_loop()
-            if loop.is_closed():
-                return
-            # Cancelar todas las tareas excepto la actual
-            tasks = [t for t in asyncio.all_tasks(loop) if t is not asyncio.current_task(loop)]
-            if tasks:
-                logging.getLogger(__name__).info(f"🔄 Cancelando {len(tasks)} tareas pendientes durante shutdown...")
-                for task in tasks:
-                    if not task.done():
-                        task.cancel()
-                try:
-                    await asyncio.wait_for(asyncio.gather(*tasks, return_exceptions=True), timeout=2.0)
-                except (asyncio.TimeoutError, asyncio.CancelledError):
-                    pass
-        except Exception:
-            # No propagar errores en shutdown
-            pass
-
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 # CORS abierto mientras probamos
 app.add_middleware(
@@ -71,19 +49,18 @@ app.include_router(user_status.router)
 app.include_router(chat.router)
 app.include_router(onboarding.router)
 app.include_router(chat_modify_optimized.router)
-app.include_router(rag.router)
-app.include_router(articles.router)
-# Stripe (protegido por si faltan variables)
-try:
-    from app.routes import stripe_routes, stripe_webhook, stripe_webhook_cli
-    app.include_router(stripe_routes.router)
-    app.include_router(stripe_webhook.router)
-    app.include_router(stripe_webhook_cli.router, prefix="/stripe", tags=["stripe-cli"])
-    print("[INFO] Stripe routes enabled")
-except Exception as e:
-    print("[WARN] Stripe routes disabled:", e)
-    import traceback
-    traceback.print_exc()
+
+# --------- STRIPE ROUTERS (Sin try-except gigante) ---------
+# Estos son CRITICOS para que tarifas.html funcione.
+app.include_router(stripe_routes.router)
+app.include_router(stripe_webhook.router)
+
+if HAS_STRIPE_CLI:
+     app.include_router(stripe_webhook_cli.router, prefix="/stripe", tags=["stripe-cli"])
+
+print("[INFO] Stripe routes enabled")
+
+
 # --------- paths de frontend ---------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))   # .../app
 FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")       # .../app/frontend
@@ -107,19 +84,43 @@ def __debug_ls():
     except Exception as e:
         return {"error": str(e)}
 
-# --------- servir HTMLs (sin conflictos) ---------
+# --------- servir HTMLs (CON ANTI-CACHE y DEBUG) ---------
+
+def _html(name: str):
+    """
+    Función helper para servir HTMLs con debug y sin caché
+    """
+    file_path = os.path.join(FRONTEND_DIR, name)
+    
+    # --- DEBUG: EL CHIVATO ---
+    print(f"--- [REQUEST HTML] ---")
+    print(f"📄 Solicitado: {name}")
+    print(f"📂 Buscando en: {file_path}")
+    print(f"✅ Existe: {os.path.exists(file_path)}")
+    print(f"----------------------")
+
+    # Crear respuesta
+    response = FileResponse(file_path)
+    
+    # --- ANTI-CACHE: BOMBA NUCLEAR ---
+    # Obliga al navegador a revalidar siempre y no guardar nada
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    
+    return response
+
 @app.get("/")
 def root_redirect():
     return RedirectResponse(url="/login.html")
-
-def _html(name: str):
-    return FileResponse(os.path.join(FRONTEND_DIR, name))
 
 @app.get("/login.html")
 def _login(): return _html("login.html")
 
 @app.get("/dashboard.html")
-def _dashboard(): return _html("dashboard.html")
+def _dashboard(): 
+    # Usamos la función helper que ya incluye el debug
+    return _html("dashboard.html")
 
 @app.get("/rutina.html")
 def _rutina(): return _html("rutina.html")
@@ -133,20 +134,24 @@ def _tarifas(): return _html("tarifas.html")
 @app.get("/pago.html")
 def _pago(): return _html("pago.html")
 
-@app.get("/consejos-estudios.html")
-def _consejos_estudios(): return _html("consejos-estudios.html")
+# Servir archivos JS específicos (Añadimos anti-cache aquí también por si acaso)
+def _serve_js_no_cache(filename):
+    path = os.path.join(FRONTEND_DIR, filename)
+    response = FileResponse(path, media_type="application/javascript")
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    return response
 
-# Servir archivos JS específicos
 @app.get("/auth.js")
-def _auth_js(): return FileResponse(os.path.join(FRONTEND_DIR, "auth.js"), media_type="application/javascript")
+def _auth_js(): return _serve_js_no_cache("auth.js")
 
 @app.get("/config.js")
-def _config_js(): return FileResponse(os.path.join(FRONTEND_DIR, "config.js"), media_type="application/javascript")
+def _config_js(): return _serve_js_no_cache("config.js")
 
 @app.get("/onboarding.js")
-def _onboarding_js(): return FileResponse(os.path.join(FRONTEND_DIR, "onboarding.js"), media_type="application/javascript")
+def _onboarding_js(): return _serve_js_no_cache("onboarding.js")
 
-# estáticos (css/js/img) si los tienes en la misma carpeta
+# estáticos (css/js/img)
+# NOTA: StaticFiles maneja su propio caché, pero para desarrollo suele estar bien.
 app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
 # Montar carpeta de imágenes específicamente
@@ -181,7 +186,7 @@ async def _print_routes():
     try:
         paths = sorted({getattr(r, "path", "") for r in app.routes})
         print("[ROUTES]", paths)
+        # Debug inicial de directorios
+        print(f"[STARTUP DEBUG] FRONTEND_DIR es: {FRONTEND_DIR}")
     except Exception as e:
         print("[ROUTES-ERROR]", e)
-
-# Shutdown ahora gestionado por lifespan() de arriba para evitar CancelledError
