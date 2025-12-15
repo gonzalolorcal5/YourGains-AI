@@ -9,6 +9,7 @@ from fastapi.responses import RedirectResponse, FileResponse
 # Routers "seguros" (no fallan al importar)
 from app.routes import (
     auth,
+    oauth,
     plan,
     analisis_cuerpo,
     user_status,
@@ -43,6 +44,7 @@ app.add_middleware(
 
 # --------- incluir routers ---------
 app.include_router(auth.router)
+app.include_router(oauth.router)
 app.include_router(plan.router)
 app.include_router(analisis_cuerpo.router)
 app.include_router(user_status.router)

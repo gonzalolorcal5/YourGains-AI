@@ -1731,7 +1731,7 @@
         <div class="sidebar-menu">
             <div class="sidebar-item" onclick="handleUpgrade()">Mejora tu plan</div>
             <div class="sidebar-item has-submenu" onclick="toggleUserSubmenu()">
-                <span>👤 Usuario</span>
+                <span>Usuario</span>
                 <span class="submenu-arrow">▶</span>
             </div>
             <div class="sidebar-submenu" id="userSubmenu">
@@ -4589,7 +4589,18 @@
             ];
             
             // Iconos SVG
-            const iconHeight = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>`;
+            // Altura: monigote humano estilizado (más limpio y proporcionado)
+            const iconHeight = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Cabeza -->
+                <circle cx="12" cy="5" r="2.5"></circle>
+                <!-- Columna -->
+                <path d="M12 7.8v6.2"></path>
+                <!-- Brazos (ligeramente en V) -->
+                <path d="M8.2 10.2L12 9.2l3.8 1"></path>
+                <!-- Piernas -->
+                <path d="M10 14.2L8.7 18.5"></path>
+                <path d="M14 14.2L15.3 18.5"></path>
+            </svg>`;
             const iconWeight = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4z"></path><path d="M12 8v8M8 12h8"></path></svg>`;
             const iconAge = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`;
             const iconGender = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="14" r="8"></circle><path d="M22 2l-8 8M16 2h6v6"></path></svg>`;

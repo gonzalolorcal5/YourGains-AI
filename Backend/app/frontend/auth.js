@@ -60,9 +60,20 @@ export function getAuthHeaders() {
 
 export function checkAuthOrRedirect() {
   const token = localStorage.getItem("accessToken");
-  const email = localStorage.getItem("email");
-  if (!token || !email) {
-    window.location.href = "./login.html";
+  let email = localStorage.getItem("email");
+
+  // Intentar recuperar email del JWT si falta en localStorage
+  if (token && !email) {
+    const decoded = decodeJwt(token);
+    if (decoded && decoded.email) {
+      email = decoded.email;
+      localStorage.setItem("email", decoded.email);
+    }
+  }
+
+  // Si no hay token o email, o el token está expirado, forzar logout
+  if (!token || !email || isTokenExpired()) {
+    logout();
     return false;
   }
   return true;

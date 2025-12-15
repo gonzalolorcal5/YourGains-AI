@@ -51,8 +51,23 @@ def login(
     db: Session = Depends(get_db)
 ):
     db_user = db.query(models.Usuario).filter(models.Usuario.email == user.email).first()
-    if not db_user or not verify_password(user.password, db_user.hashed_password):
+    if not db_user:
         raise HTTPException(status_code=400, detail="Credenciales incorrectas")
+
+    # Bloquear login tradicional SOLO para cuentas OAuth puras (sin password)
+    if getattr(db_user, "oauth_provider", None) and not db_user.hashed_password:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Esta cuenta usa inicio de sesión con {db_user.oauth_provider.title()}. Usa el botón correspondiente."
+        )
+
+    # Verificar password (funciona tanto para cuentas tradicionales como vinculadas)
+    if db_user.hashed_password and not verify_password(user.password, db_user.hashed_password):
+        raise HTTPException(status_code=400, detail="Credenciales incorrectas")
+
+    # Si llegamos aquí sin password pero sin oauth_provider, el estado de la cuenta es inconsistente
+    if not db_user.hashed_password and not getattr(db_user, "oauth_provider", None):
+        raise HTTPException(status_code=500, detail="Cuenta en estado inválido, contacta soporte")
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
