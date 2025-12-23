@@ -211,10 +211,6 @@
           <p class="text-neutral-400 text-sm">2 mensajes de IA por día y acceso al 25% de tu rutina personalizada.</p>
         </div>
         <div class="bg-neutral-900 rounded-xl p-6">
-          <h3 class="font-semibold mb-2">¿Hay garantía de devolución?</h3>
-          <p class="text-neutral-400 text-sm">Ofrecemos 7 días de garantía de devolución sin preguntas.</p>
-        </div>
-        <div class="bg-neutral-900 rounded-xl p-6">
           <h3 class="font-semibold mb-2">¿Cómo funciona el pago?</h3>
           <p class="text-neutral-400 text-sm">Procesamos los pagos de forma segura a través de Stripe.</p>
         </div>
@@ -222,63 +218,6 @@
     </div>
   </main>
 
-  <!-- ============================================ -->
-  <!-- MODAL DE PAGO (Diseño del código viejo) -->
-  <!-- ============================================ -->
-  <div id="paymentModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" style="backdrop-filter: blur(8px); background: rgba(0, 0, 0, 0.7);">
-    <div class="bg-neutral-900 rounded-2xl p-8 max-w-md w-full border border-neutral-800 shadow-2xl">
-      <!-- Header -->
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold">Mejorar a Pro</h2>
-        <button id="closeModal" class="text-neutral-400 hover:text-white text-2xl">&times;</button>
-      </div>
-
-      <!-- Plan Seleccionado -->
-      <div id="planInfo" class="mb-6 p-4 bg-neutral-800 rounded-xl">
-        <div class="flex justify-between items-center">
-          <div>
-            <h3 id="planName" class="font-semibold text-lg">Pro Mensual</h3>
-            <p id="planDescription" class="text-neutral-400 text-sm">Acceso completo a todas las funciones</p>
-          </div>
-          <div class="text-right">
-            <p id="planPrice" class="text-2xl font-bold text-lime-400">9,99 €</p>
-            <p id="planPeriod" class="text-neutral-400 text-sm">por mes</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Formulario de Pago -->
-      <form id="payment-form">
-        <div class="mb-6">
-          <label class="block text-sm font-medium mb-2">Información de Pago</label>
-          <div id="payment-element" class="min-h-[200px]">
-            <!-- Loading mientras se carga Stripe Elements -->
-            <div class="flex items-center justify-center py-10">
-              <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-lime-400"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Botón de Pago -->
-        <button id="submit-payment" type="submit" class="w-full bg-lime-400 text-black font-bold py-3 px-4 rounded-xl hover:bg-lime-300 transition disabled:opacity-50 disabled:cursor-not-allowed">
-          <span id="button-text">Pagar Ahora</span>
-          <div id="spinner" class="hidden inline-block">
-            <div class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-black"></div>
-          </div>
-        </button>
-      </form>
-
-      <!-- Mensajes de Error/Éxito -->
-      <div id="payment-message" class="hidden mt-4 p-3 rounded-lg text-sm"></div>
-
-      <!-- Seguridad -->
-      <div class="mt-6 text-center">
-        <p class="text-xs text-neutral-500">
-          🔒 Pago seguro procesado por Stripe
-        </p>
-      </div>
-    </div>
-  </div>
 
   <!-- ============================================ -->
   <!-- JAVASCRIPT (Funcionalidad del código nuevo) -->
@@ -289,9 +228,7 @@
 
     // Variables globales
     let stripe;
-    let elements;
     let stripeConfig;
-    let currentClientSecret;
     let userStatus = { plan_type: 'FREE' };
 
     // ==========================================
@@ -456,7 +393,7 @@
     };
 
     // ==========================================
-    // 4. ABRIR MODAL DE PAGO
+    // 4. REDIRIGIR A CHECKOUT SESSION
     // ==========================================
     window.showPaymentModal = async function(planType) {
         if (!stripe) {
@@ -464,132 +401,49 @@
             return;
         }
         
-        const modal = document.getElementById('paymentModal');
-        const nameEl = document.getElementById('planName');
-        const descEl = document.getElementById('planDescription');
-        const priceEl = document.getElementById('planPrice');
-        const periodEl = document.getElementById('planPeriod');
-
-        // Configurar textos del modal
-        if (planType === 'monthly') {
-            nameEl.textContent = 'Pro Mensual';
-            descEl.textContent = 'Acceso completo a todas las funciones';
-            priceEl.textContent = '9,99 €';
-            periodEl.textContent = 'Renovación mensual';
-        } else {
-            nameEl.textContent = 'Pro Anual';
-            descEl.textContent = 'Ahorra más de 35€ al año';
-            priceEl.textContent = '79,99 €';
-            periodEl.textContent = 'Renovación anual';
-        }
-
-        // Mostrar modal
-        modal.classList.remove('hidden');
-        document.getElementById('payment-message').classList.add('hidden');
-
-        // Iniciar pago
-        await initializePayment(planType);
-    };
-
-    // ==========================================
-    // 5. INICIALIZAR STRIPE ELEMENTS
-    // ==========================================
-    async function initializePayment(planType) {
-        const userId = getCurrentUserId();
-        if (!userId) {
-            showMessage('Error: No se pudo obtener tu ID de usuario', 'error');
-            return;
-        }
-
         const priceId = planType === 'monthly' 
             ? stripeConfig.price_ids.monthly 
             : stripeConfig.price_ids.yearly;
 
         try {
-            // Crear Payment Intent
-            const response = await fetch(`${API_BASE}/create-payment-intent`, {
+            // Mostrar loading
+            const btn = planType === 'monthly' 
+                ? document.getElementById('btn-monthly')
+                : document.getElementById('btn-yearly');
+            
+            const originalText = btn.textContent;
+            btn.textContent = 'Redirigiendo...';
+            btn.disabled = true;
+
+            // Crear Checkout Session
+            const response = await fetch(`${API_BASE}/create-checkout-session`, {
                 method: 'POST',
                 headers: getAuthHeaders(),
-                body: JSON.stringify({ 
-                    plan_type: planType, 
-                    price_id: priceId, 
-                    user_id: userId 
-                })
+                body: JSON.stringify({ price_id: priceId })
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.detail || 'Error creando payment intent');
+                throw new Error(errorData.detail || 'Error creando sesión de pago');
             }
 
-            const { client_secret } = await response.json();
-            currentClientSecret = client_secret;
-
-            // Limpiar contenedor
-            const container = document.getElementById('payment-element');
-            container.innerHTML = '';
-
-            // Crear Elements
-            elements = stripe.elements({
-                clientSecret: currentClientSecret,
-                appearance: { 
-                    theme: 'night', 
-                    variables: { 
-                        colorPrimary: '#84cc16',
-                        colorBackground: '#1f2937',
-                        colorText: '#ffffff'
-                    } 
-                }
-            });
-
-            const paymentElement = elements.create('payment');
-            paymentElement.mount('#payment-element');
-
-            console.log('✅ Stripe Elements montado');
+            const { url } = await response.json();
+            
+            // Redirigir a Stripe Checkout
+            window.location.href = url;
 
         } catch (error) {
-            console.error('❌ Error inicializando pago:', error);
-            document.getElementById('payment-element').innerHTML = 
-                '<p class="text-red-500 text-center py-4">Error de conexión. Cierra el modal y reintenta.</p>';
+            console.error('❌ Error iniciando pago:', error);
+            alert('Error: ' + error.message);
+            
+            // Restaurar botón
+            const btn = planType === 'monthly' 
+                ? document.getElementById('btn-monthly')
+                : document.getElementById('btn-yearly');
+            btn.textContent = originalText;
+            btn.disabled = false;
         }
-    }
-
-    // ==========================================
-    // 6. CONFIRMAR PAGO
-    // ==========================================
-    document.getElementById('payment-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        setLoading(true);
-
-        try {
-            // Validar elementos
-            const { error: submitError } = await elements.submit();
-            if (submitError) {
-                showMessage(submitError.message, 'error');
-                setLoading(false);
-                return;
-            }
-
-            // Confirmar pago
-            const { error } = await stripe.confirmPayment({
-                elements,
-                confirmParams: {
-                    return_url: `${window.location.origin}/dashboard.html?payment_success=true`,
-                },
-            });
-
-            if (error) {
-                showMessage(error.message, 'error');
-                setLoading(false);
-            }
-            // Si sale bien, Stripe redirige automáticamente
-
-        } catch (error) {
-            console.error('❌ Error confirmando pago:', error);
-            showMessage('Error procesando el pago. Inténtalo de nuevo.', 'error');
-            setLoading(false);
-        }
-    });
+    };
 
     // ==========================================
     // 7. GESTIONAR SUSCRIPCIÓN (PORTAL)
@@ -637,38 +491,6 @@
     // ==========================================
     // HELPERS
     // ==========================================
-    
-    // Cerrar modal
-    document.getElementById('closeModal').addEventListener('click', () => {
-        document.getElementById('paymentModal').classList.add('hidden');
-        if(elements) {
-            elements = null;
-            document.getElementById('payment-element').innerHTML = '';
-        }
-    });
-
-    // Loading en botón
-    function setLoading(isLoading) {
-        const btn = document.getElementById('submit-payment');
-        const text = document.getElementById('button-text');
-        const spinner = document.getElementById('spinner');
-        
-        btn.disabled = isLoading;
-        text.classList.toggle('hidden', isLoading);
-        spinner.classList.toggle('hidden', !isLoading);
-    }
-
-    // Mostrar mensajes
-    function showMessage(msg, type) {
-        const el = document.getElementById('payment-message');
-        el.textContent = msg;
-        el.classList.remove('hidden');
-        el.className = `mt-4 p-3 rounded-lg text-sm ${
-            type === 'error' 
-                ? 'bg-red-900/50 text-red-200' 
-                : 'bg-green-900/50 text-green-200'
-        }`;
-    }
 
     // Obtener user_id del JWT
     function getCurrentUserId() {
@@ -684,6 +506,57 @@
             console.error('❌ Error obteniendo user_id:', e);
             return null;
         }
+    }
+
+    // ==========================================
+    // MANEJAR REDIRECCIÓN DE ÉXITO/CANCEL
+    // ==========================================
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === '1') {
+        // Recargar estado del usuario
+        checkUserStatus();
+        
+        // Mostrar mensaje de éxito
+        const successDiv = document.createElement('div');
+        successDiv.className = 'fixed top-4 right-4 bg-lime-400 text-black px-6 py-4 rounded-xl shadow-2xl z-50';
+        successDiv.innerHTML = `
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">✓</span>
+                <div>
+                    <p class="font-bold">¡Pago Exitoso!</p>
+                    <p class="text-sm">Ya eres usuario Premium</p>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(successDiv);
+        
+        // Ocultar después de 5 segundos
+        setTimeout(() => {
+            successDiv.remove();
+            // Limpiar URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }, 5000);
+    }
+    
+    if (urlParams.get('cancel') === '1') {
+        // Usuario canceló el pago
+        const cancelDiv = document.createElement('div');
+        cancelDiv.className = 'fixed top-4 right-4 bg-neutral-800 text-white px-6 py-4 rounded-xl shadow-2xl z-50';
+        cancelDiv.innerHTML = `
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">ℹ️</span>
+                <div>
+                    <p class="font-bold">Pago Cancelado</p>
+                    <p class="text-sm">Puedes intentarlo de nuevo cuando quieras</p>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(cancelDiv);
+        
+        setTimeout(() => {
+            cancelDiv.remove();
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }, 5000);
     }
 
     // ==========================================

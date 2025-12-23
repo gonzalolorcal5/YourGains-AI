@@ -1067,7 +1067,290 @@
                 font-size: 0.9rem;
             }
 
-            /* Estilos para consejos */
+            /* ═══════════════════════════════════════════════════════════════
+               CONSEJOS Y ESTUDIOS - SCIENTIFIC DARK REDESIGN
+               ═══════════════════════════════════════════════════════════════ */
+
+            /* Contenedor Principal de Consejos */
+            .consejos-estudios-section {
+                background: #0a0a0a;
+                min-height: 100vh;
+                padding: 24px;
+            }
+
+            /* Header de la Sección */
+            .consejos-header {
+                background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+                border-bottom: 1px solid #2a2a2a;
+                padding: 48px 24px 32px;
+                text-align: center;
+                margin-bottom: 32px;
+                border-radius: 16px;
+            }
+
+            .consejos-title {
+                color: #ffffff;
+                font-size: 40px;
+                font-weight: 800;
+                margin-bottom: 12px;
+                letter-spacing: -1px;
+            }
+
+            .consejos-title-highlight {
+                color: #39ff14;
+                position: relative;
+            }
+
+            .consejos-subtitle {
+                color: #a3a3a3;
+                font-size: 18px;
+                font-weight: 400;
+                letter-spacing: 0.5px;
+            }
+
+            /* Grid de Artículos */
+            .consejos-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+                gap: 24px;
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+
+            /* Card Individual de Artículo */
+            .article-card {
+                background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+                border: 1px solid #2a2a2a;
+                border-radius: 16px;
+                padding: 32px;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .article-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 4px;
+                height: 100%;
+                background: linear-gradient(180deg, #39ff14 0%, transparent 100%);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .article-card:hover {
+                border-color: rgba(57, 255, 20, 0.3);
+                transform: translateY(-4px);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 
+                            0 0 0 1px rgba(57, 255, 20, 0.1);
+            }
+
+            .article-card:hover::before {
+                opacity: 1;
+            }
+
+            /* Badge de Categoría */
+            .article-badge {
+                display: inline-block;
+                background: rgba(57, 255, 20, 0.15);
+                border: 1px solid rgba(57, 255, 20, 0.3);
+                color: #39ff14;
+                font-size: 12px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                padding: 6px 12px;
+                border-radius: 6px;
+                margin-bottom: 16px;
+                width: fit-content;
+            }
+
+            /* Título del Artículo */
+            .article-title {
+                color: #ffffff;
+                font-size: 24px;
+                font-weight: 700;
+                line-height: 1.3;
+                margin-bottom: 16px;
+                letter-spacing: -0.3px;
+            }
+
+            /* Contenido del Artículo */
+            .article-content {
+                color: #e5e5e5;
+                font-size: 15px;
+                line-height: 1.8;
+                margin-bottom: 20px;
+                flex: 1;
+            }
+
+            .article-content p {
+                margin-bottom: 14px;
+            }
+
+            .article-content p:last-child {
+                margin-bottom: 0;
+            }
+
+            /* Sección de Referencias */
+            .article-references {
+                border-top: 1px solid #2a2a2a;
+                padding-top: 20px;
+                margin-top: auto;
+            }
+
+            .references-title {
+                color: #a3a3a3;
+                font-size: 13px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 12px;
+            }
+
+            .reference-item {
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 10px;
+                border-radius: 8px;
+                margin-bottom: 8px;
+                transition: background 0.2s ease;
+            }
+
+            .reference-item:hover {
+                background: rgba(255, 255, 255, 0.03);
+            }
+
+            .reference-item:last-child {
+                margin-bottom: 0;
+            }
+
+            .reference-icon {
+                font-size: 18px;
+                flex-shrink: 0;
+                opacity: 0.8;
+                margin-top: 2px;
+                color: #a3a3a3;
+                font-weight: bold;
+            }
+
+            .reference-content {
+                flex: 1;
+            }
+
+            .reference-text {
+                color: #cccccc;
+                font-size: 13px;
+                line-height: 1.5;
+                margin-bottom: 4px;
+            }
+
+            .reference-link {
+                color: #39ff14;
+                font-size: 12px;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                transition: all 0.2s ease;
+            }
+
+            .reference-link:hover {
+                color: #2ee00f;
+                gap: 8px;
+            }
+
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                .consejos-header {
+                    padding: 32px 20px 24px;
+                }
+                
+                .consejos-title {
+                    font-size: 32px;
+                }
+                
+                .consejos-subtitle {
+                    font-size: 16px;
+                }
+                
+                .consejos-grid {
+                    grid-template-columns: 1fr;
+                    gap: 20px;
+                }
+                
+                .article-card {
+                    padding: 24px 20px;
+                }
+                
+                .article-title {
+                    font-size: 22px;
+                }
+                
+                .article-content {
+                    font-size: 14px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .consejos-estudios-section {
+                    padding: 16px;
+                }
+                
+                .consejos-title {
+                    font-size: 28px;
+                }
+                
+                .article-card {
+                    padding: 20px 16px;
+                }
+            }
+
+            /* ═══════════════════════════════════════════════════════════════
+               RUTINA Y DIETA - RESPONSIVE
+               ═══════════════════════════════════════════════════════════════ */
+            @media (max-width: 1200px) {
+                #rutinaDietaOverlay main {
+                    max-width: 100%;
+                    padding: 0 16px 40px 16px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                #rutinaDietaOverlay header > div {
+                    padding: 16px;
+                }
+                
+                #rutinaDietaOverlay header h1 {
+                    font-size: 28px;
+                }
+                
+                #rutinaContent, #dietaContent {
+                    padding: 24px 20px !important;
+                }
+                
+                .section-title {
+                    font-size: 26px !important;
+                }
+                
+                .macros-summary {
+                    grid-template-columns: repeat(2, 1fr) !important;
+                    gap: 12px !important;
+                    padding: 20px !important;
+                }
+                
+                .macro-value {
+                    font-size: 24px !important;
+                }
+            }
+
+            /* ❌ ESTILOS ANTIGUOS - DEPRECADOS (mantenidos por compatibilidad) */
             .advice-card {
                 background: rgba(132, 204, 22, 0.05);
                 border: 1px solid rgba(132, 204, 22, 0.2);
@@ -1087,7 +1370,6 @@
                 line-height: 1.6;
             }
 
-            /* Estilos para estudios */
             .study-card {
                 background: rgba(59, 130, 246, 0.05);
                 border: 1px solid rgba(59, 130, 246, 0.2);
@@ -1126,7 +1408,6 @@
                 font-style: italic;
             }
 
-            /* Estilos para enlaces de estudios */
             .study-card a {
                 transition: all 0.2s ease;
             }
@@ -1802,22 +2083,41 @@
         </div>
 
         <!-- Overlay para Rutina y Dieta -->
-        <div class="overlay" id="rutinaDietaOverlay">
-            <div class="overlay-content large">
-                <button class="close-btn" onclick="closeOverlay('rutinaDietaOverlay')">&times;</button>
-                <div class="tab-content-grid">
-                    <div class="content-column">
-                <div id="rutinaContent">
-                    <p>Cargando rutina...</p>
+        <div class="overlay" id="rutinaDietaOverlay" style="background: #0a0a0a; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100dvh; z-index: 1000; display: none; flex-direction: column; overflow: hidden;">
+            
+            <header style="flex-shrink: 0; background: rgba(10, 10, 10, 0.98); border-bottom: 1px solid #262626; z-index: 10;">
+                <div style="max-width: 1600px; margin: 0 auto; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="dna-icon" style="display: flex; align-items: center;">
+                            <svg viewBox="0 0 800 800" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+                                <path transform="translate(237)" d="m0 0h19l10 5 8 6 4 4 4 8v5h1v10h234v-10l1-1 1-6 5-9 5-3 3-5 5-1 7-3h19l12 6 7 7h2l2 5 3 13v38l-2 20-3 15v8l-2 3-1 5h-2l-6 15-2 6-1 2-1 4-9 15-5 7-2 1-1 3-2 1-2 4-2 1-2 4-4 2-2 3-2 4-7 7-4 1-8 8-10 8-1 3-4 1-5 1-20-12-24-12-26-10-4-1v-2l10-4 14-8 10-7 1-1-91-1-16-10-13-11-10-9-6-4-1-4-4-2v-5l1-2 186-1 1-6 6-14 3-10 2-1h-232l2 1 2 6v7l4 5 9 17 5 7 1 3 3 2 1 4 4 2 2 5 10 10 17 13 14 9 23 12 21 8 26 8 22 9 22 11 8 5 5 1v2l12 8 12 9 4 1 3 5 4 1 3 5 15 15 4 2 1 4 5 3 1 3 5 5 7 10 7 11 8 16 1 8 6 18h2l1 7-1 1 3 17 1 14v12l-2 21-2 11 1 4-2 3-2 4-6 17v5l-10 19-12 18-5 5-2 4-4 2-2 5-5 3-15 15-2 4-4 1-15 12-5-2-23-13-23-11-24-9 1-3 19-10 15-10-94-1-14-9-14-11-15-15-4-2-1-4h-2l2-5h184l2-5h2l2-9h2l5-15h-229l1 7 2 1 1 7h2l2 4v5h2l6 10 1 3 5 5 1 3 3 2 1 4 5 3 7 7 2 4 8 6 3 1 2 4 17 11 23 12 21 8 36 12 20 9 21 11 21 14 14 11 11 10 4 1 3 5 4 2 3 3 1 4 4 3 3 2 1 4 3 1 1 3 2 1 1 3 4 4 10 16 1 6 3 1 3 9 2 7h2l1 8 2 4 2 2v8l3 14 2 21v38l-2 9-2 7-2 2-7 6-8 5-5 2h-18l-10-4-8-7-3-1-5-9-1-7h-1v-10h-234v10l-1 1-1 6-5 9-5 3-8 6-8 3h-18l-12-6-7-7h-2l-2-5-3-13v-38l2-21 3-14v-8l3-3 2-8 1-3 2-2 5-15h2l2-8 12-18 2-1 1-3 2-1 1-3 3-1 1-4 5-3 2-3 2-4 10-10 4-1 11-10 11-8 5 1 16 10 26 13 24 9 5 3-3 2-17 9-12 8-2 2 91 1 16 10 13 11 10 9 6 4 1 4 4 2v5l-1 2-184 1-7 15-5 15-2 1h232l-2-1-5-15-8-17-7-10-1-3-3-2-1-4-4-2-2-5-10-10-17-13-14-9-23-12-21-8-29-9-23-10-25-13-6-2v-2l-12-8-13-10-7-5-4-2-2-4-16-16-4-2-2-5-3-1-1-4-3-1-1-3-5-5-12-20-6-12v-5h-2l-1-8-6-20-3-18-1-13v-14l2-20 4-19 5-15v-5h2l1-7 9-17 9-14 6-8 3-1 1-4 3-1 1-4 6-4 16-16 2-4 4-1 3-5 4-1 8-6 5 2 23 13 23 11 24 9-1 3-19 10-15 10 98 1 1 3 13 9 11 9 14 14 4 2 1 4h2l-2 5h-184l-2 5h-2l-2 9h-2l-5 15h230l-5-15h-2l-2-9h-2l-6-10-1-3-5-5-1-3-3-2-1-4-5-3-7-7-2-4-3-2-3-1-1-3-4-1-2-4-17-11-23-12-21-8-36-12-20-9-21-11-21-14-14-11-12-11-5-2-8-8-1-4-4-3-3-2-1-4-3-1-1-3-2-1-1-3-4-4-10-16-1-6-3-1-2-9-3-7h-2l-1-8-2-4-2-2v-8l-3-14-2-21v-38l2-9 2-7 2-2 7-6 8-5zm296 5m-259 8m251 0m-250 1m249 0m-308 1m367 0m-307 1m247 0m-308 1m62 0m245 0m62 0m-306 2 1 2zm243 0 1 2zm-242 2 1 2zm241 0 1 2zm-240 3 1 3zm239 0 1 3zm-238 15v1h238v-1zm3 48m231 0m-230 1 1 3zm229 0 1 3zm-228 4 1 3zm227 0 1 2zm-1 3 1 2zm-1 3 1 2zm-1 2 1 2zm-1 3 1 2zm-219 1m1 1 1 2zm217 1m-291 2 1 3zm75 0m215 0m75 0 1 3zm-289 2m213 0m-212 2m211 0m-210 2m1 1m284 0 1 2zm-283 2m1 2m1 1m19 1m-18 1m19 0m-18 1m1 2m1 1m20 1m-19 1m20 0m-17 4m1 1m-80 5m84 0m-83 1 1 2zm84 0m1 1m253 5m-334 2m333 0m-332 2m331 0m-330 2m329 0m-328 1m327 0m-326 2m325 0m-324 2m323 0m-322 1m321 0m-320 2m319 0m-318 1m317 0m-316 2m315 0m-314 1m216 0m97 0m-312 2m311 0m-310 1m309 0m-306 4m303 0m-300 4m297 0m-293 5m289 0m-288 1m287 0m-280 8m273 0m-272 1m271 0m-270 1m269 0m-268 2m266 0m-264 2m263 0m-261 2m259 0m-25 21m-22 12m-193 20m221 0m-222 1m223 0m-229 5m235 0m-236 1m237 0m-259 22m281 0m-282 1m-1 1m-4 5m293 0m3 4m-300 1m301 0m-302 1m303 0m1 2m-306 1m307 0m-308 1m309 0m-310 2m311 0m-312 1m313 0m-314 1 1 2zm315 1m-316 1m195 0m122 0m-94 1m-224 1m319 0m-320 1m321 0m-322 2m231 0m92 0m-324 1m325 0m-326 2m327 0m-328 2m329 0m-330 1 1 2zm331 1m-332 1m244 0m89 0m-87 1m-247 1m248 0m87 0m-86 1m-250 1m251 0m86 0m-338 2m253 0m86 0m-340 2m341 0m-342 2m343 0m-344 2m262 0m83 0m-346 1 1 2zm264 0m83 1m-348 2 1 2zm349 0 1 2zm-81 1m1 1m1 2m1 1m-18 2m1 1m20 2m1 1m1 2m1 1m-206 2m207 0m-208 2m209 0m-213 8m217 0m-224 21v1h232v-1zm0 45v1h232v-1zm0 2m3 10m4 9m217 0m-216 2 1 2zm3 6m209 0m-208 2m207 0m-206 2m1 1m1 2m1 1m20 2m1 1m-18 2m1 1m1 2m-80 1 1 2zm81 0m268 0 1 2zm-348 3 1 2zm347 0m-264 1m-82 1m83 0m262 0m-344 2m343 0m-342 2m341 0m-340 2m86 0m253 0m-338 2m86 0m251 0m-250 1m-86 1m87 0m248 0m-247 1m-87 1m88 0m245 0m-332 1 1 2zm331 0m-330 2m329 0m-328 2m327 0m-326 2m325 0m-324 1m323 0m-322 2m321 0m-320 1m319 0m-224 1m-94 1m317 0m-316 1m315 0m-314 2m313 0m-312 1m311 0m-310 2m309 0m-308 1m307 0m-1 1m-1 2m-302 1m301 0m-1 1m-296 4m293 0m-289 5m1 1m282 1m-259 22m237 0m-236 1m235 0m-200 26m-42 29m-3 2m255 0m-257 2m-2 2m-2 2m267 0m-268 2m269 0m-270 1m271 0m-272 1m273 0m-280 8m287 0m-288 1m289 0m-293 5m297 0m-300 4m303 0m-306 4m309 0m-310 1m311 0m-312 2m97 0m216 0m-314 1m315 0m-316 2m317 0m-318 1m319 0m-320 2m321 0m-322 1m323 0m-324 2m325 0m-326 2m327 0m-328 1m329 0m-330 2m331 0m-332 2m333 0m-337 7m256 0m85 0m-84 1m-258 1m259 0m84 0m1 2 1 2zm-81 3m82 0m-81 1m-17 4m20 0m-19 1m20 1m1 1m1 2m-18 1m19 0m-18 1m19 1m1 1m1 2m-206 2m207 0m-208 1m209 0m-210 2m211 0m-288 2 1 3zm76 0m213 0m76 0 1 3zm-290 2m215 0m-216 2 1 2zm217 0 1 2zm-218 2m219 0m-220 3 1 2zm221 0 1 2zm-222 2 1 2zm223 0 1 2zm-224 3 1 2zm225 0 1 2zm-226 2 1 3zm227 0 1 3zm-228 4 1 3zm229 0 1 3zm-230 3m231 0m-234 48v1h238v-1zm-1 13 1 3zm239 0 1 3zm-240 4 1 2zm241 0 1 2zm-242 2 1 2zm243 0 1 2z" fill="#84CC16"/>
+                            </svg>
                         </div>
+                        <span style="color: white; font-size: 18px; font-weight: bold;">
+                            YourGains <span style="color: #84cc16;">AI</span>
+                        </span>
                     </div>
-                    <div class="content-column">
-                        <div id="dietaContent">
-                            <p>Cargando dieta...</p>
-                        </div>
+                    
+                    <button onclick="closeOverlay('rutinaDietaOverlay')" style="background: rgba(255, 255, 255, 0.1); border: 1px solid #404040; color: #a3a3a3; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.borderColor='#525252'; this.style.color='white'" onmouseout="this.style.borderColor='#404040'; this.style.color='#a3a3a3'">&times;</button>
+                </div>
+                
+                <div style="text-align: center; padding: 20px 20px 24px 20px;">
+                    <h1 style="font-size: 40px; font-weight: 800; color: white; margin-bottom: 10px; letter-spacing: -1px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">Rutina y Dieta</h1>
+                    <p style="font-size: 16px; color: #a8b3c1; margin: 0; letter-spacing: 0.2px;">Tu plan personalizado de entrenamiento y nutrición</p>
+                </div>
+            </header>
+            
+            <main style="flex: 1; overflow-y: auto; padding: 40px 32px 80px 32px; position: relative;">
+                <div style="max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px;">
+                    <div id="rutinaContent" style="width: 100%;">
+                        <p style="color: #999; text-align: center; padding: 40px;">Cargando rutina...</p>
+                    </div>
+                    
+                    <div id="dietaContent" style="width: 100%;">
+                        <p style="color: #999; text-align: center; padding: 40px;">Cargando dieta...</p>
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
 
         <!-- Overlay para Consejos y Estudios -->
@@ -1853,8 +2153,8 @@
             <div style="height: 180px;"></div>
             
             <!-- CONTENEDOR DE CARDS -->
-            <main style="max-width: 1200px; margin: 0 auto; padding: 0 20px 40px 20px; position: relative; z-index: 1;">
-                <div id="consejosEstudiosContent" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
+            <main style="max-width: 1400px; margin: 0 auto; padding: 0 20px 40px 20px; position: relative; z-index: 1;">
+                <div id="consejosEstudiosContent" class="consejos-grid">
                     <!-- El contenido se carga dinámicamente aquí -->
                 </div>
             </main>
@@ -3410,50 +3710,18 @@
                 console.log('🔄 displayPlanRetry() llamado');
                 if (plan.rutina && plan.rutina.exercises) {
                     const exercises = plan.rutina.exercises;
-                    const total = exercises.length;
-                    const isPremium = userPremiumStatus !== null ? userPremiumStatus : isPremiumUser();
-                    const visibles = isPremium ? total : Math.max(3, Math.ceil(total * 0.25));
 
                     let rutinaHTML = '';
 
-                    // Mostrar ejercicios con censura para usuarios FREE (retry)
-                    exercises.forEach((exercise, index) => {
+                    // Mostrar todos los ejercicios sin restricciones
+                    exercises.forEach((exercise) => {
                         const exerciseName = typeof exercise === 'object' ? exercise.name : exercise;
                         const sets = typeof exercise === 'object' ? (exercise.sets || 'N/A') : 'N/A';
                         const reps = typeof exercise === 'object' ? (exercise.reps || 'N/A') : 'N/A';
                         const weight = typeof exercise === 'object' ? (exercise.weight || 'N/A') : 'N/A';
                         const notes = typeof exercise === 'object' ? (exercise.notes || '') : '';
                         
-                        // 🔒 CENSURA: Solo mostrar primeros 2 ejercicios para usuarios FREE (retry)
-                        if (!isPremium && index >= 2) {
-                            // Ejercicio censurado
-                            rutinaHTML += `<div style="margin-bottom: 15px; padding: 12px; background: #f8fafc; border-radius: 8px; position: relative; overflow: hidden; border-left: 4px solid #cbd5e1;">`;
-                            rutinaHTML += `<div style="filter: blur(5px); color: #64748b; user-select: none; pointer-events: none;">`;
-                            rutinaHTML += `<strong>${exerciseName}</strong><br>`;
-                            rutinaHTML += `<span>Series: ${sets} | Reps: ${reps} | Peso: ${weight}</span>`;
-                            rutinaHTML += `</div>`;
-                            rutinaHTML += `<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(132, 204, 22, 0.9); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">PRO</div>`;
-                            rutinaHTML += `</div>`;
-                            
-                            // Mostrar mensaje de upgrade después del segundo ejercicio censurado
-                            if (index === 2) {
-                                rutinaHTML += `
-                                    <div style="margin: 20px 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; text-align: center;">
-                                        <h3 style="color: white; margin-bottom: 10px;">🔒 Desbloquea tu rutina completa</h3>
-                                        <p style="color: rgba(255,255,255,0.9); margin-bottom: 15px;">
-                                            Accede a tu plan personalizado completo, modificaciones ilimitadas y seguimiento de progreso
-                                        </p>
-                                        <button onclick="window.location.href='./tarifas.html'" 
-                                                style="background: white; color: #667eea; padding: 12px 30px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
-                                            Mejorar a Premium - €9.99/mes
-                                        </button>
-                                    </div>
-                                `;
-                            }
-                            return; // No mostrar más ejercicios para usuarios FREE
-                        }
-                        
-                        // Ejercicio visible (premium o primeros 2 para free)
+                        // Ejercicio visible
                         rutinaHTML += `<div style="margin-bottom: 15px; padding: 12px; background: #f5f5f5; border-radius: 8px; border-left: 4px solid #84cc16;">`;
                         rutinaHTML += `<strong style="color: #2d5016;">${exerciseName}</strong><br>`;
                         rutinaHTML += `<span style="color: #365314;">Series: ${sets} | Reps: ${reps} | Peso: ${weight}</span>`;
@@ -3518,319 +3786,512 @@
                     return;
                 }
                 
-                if (plan.rutina && plan.rutina.exercises) {
-                    // RUTINA - DISEÑO MINIMALISTA (SIN DUPLICADOS)
+                // RUTINA - Manejar ambos formatos (exercises y dias)
+                console.log('🔍 Verificando rutina:', plan.rutina);
+                console.log('🔍 Tiene exercises?', plan.rutina?.exercises);
+                console.log('🔍 Tiene dias?', plan.rutina?.dias);
+                console.log('🔍 Exercises count:', plan.rutina?.exercises?.length);
+                console.log('🔍 Dias count:', plan.rutina?.dias?.length);
+                
+                if (plan.rutina) {
                     let rutinaHtml = `
                         <style>
-                            #rutinaContent, #dietaContent {
-                                background: #000000;
+                            #rutinaContent {
+                                background: #0f0f0f;
+                                border: none;
+                                border-radius: 0;
+                                padding: 0;
                                 color: #ffffff;
-                                padding: 40px 35px;
-                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
                                 line-height: 1.6;
+                                width: 100%;
+                                min-height: auto;
+                                height: auto;
+                                overflow: visible;
+                            }
+                            .routine-header {
+                                margin-bottom: 56px;
+                                padding-bottom: 40px;
+                                border-bottom: 2px solid rgba(132, 204, 22, 0.15);
                             }
                             .section-title {
-                                font-size: 28px;
-                                font-weight: 700;
-                                margin-bottom: 8px;
+                                font-size: 48px;
+                                font-weight: 800;
+                                margin-bottom: 12px;
                                 color: #ffffff;
-                                letter-spacing: -0.5px;
+                                letter-spacing: -2px;
+                                background: linear-gradient(135deg, #ffffff 0%, #84cc16 100%);
+                                -webkit-background-clip: text;
+                                -webkit-text-fill-color: transparent;
+                                background-clip: text;
+                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
                             }
                             .section-subtitle {
-                                font-size: 15px;
-                                color: #999999;
-                                margin-bottom: 35px;
+                                font-size: 19px;
+                                color: #a8b3c1;
+                                margin-top: 12px;
                                 font-weight: 400;
-                                line-height: 1.5;
+                                line-height: 1.7;
+                                letter-spacing: 0.2px;
+                            }
+                            .day-card {
+                                background: #1e1e1e;
+                                border: 1px solid rgba(132, 204, 22, 0.12);
+                                border-radius: 16px;
+                                padding: 40px;
+                                margin-bottom: 40px;
+                                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+                                transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+                            }
+                            .day-card:hover {
+                                border-color: rgba(132, 204, 22, 0.25);
+                                transform: translateY(-3px);
+                                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(132, 204, 22, 0.1);
                             }
                             .day-title {
-                                font-size: 18px;
-                                font-weight: 600;
-                                margin-top: 32px;
-                                margin-bottom: 16px;
-                                color: #ffffff;
-                                padding-bottom: 8px;
-                                border-bottom: 2px solid rgba(179, 255, 0, 0.3);
-                                letter-spacing: 0.3px;
+                                font-size: 15px;
+                                font-weight: 700;
+                                margin-bottom: 28px;
+                                color: #84cc16;
+                                padding: 0;
+                                background: none;
+                                border: none;
+                                letter-spacing: 1.2px;
+                                text-transform: uppercase;
+                                display: flex;
+                                align-items: center;
+                                gap: 14px;
+                                position: relative;
+                                padding-bottom: 16px;
+                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                            }
+                            .day-title::before {
+                                content: "";
+                                width: 5px;
+                                height: 28px;
+                                background: linear-gradient(180deg, #84cc16 0%, #65a30d 100%);
+                                border-radius: 3px;
+                                box-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
+                            }
+                            .day-title::after {
+                                content: "";
+                                position: absolute;
+                                bottom: 0;
+                                left: 19px;
+                                right: 0;
+                                height: 1px;
+                                background: linear-gradient(90deg, rgba(132, 204, 22, 0.3) 0%, transparent 100%);
                             }
                             .exercise-item {
-                                font-size: 15px;
-                                color: #e0e0e0;
-                                margin-left: 0;
-                                margin-bottom: 10px;
-                                line-height: 1.6;
-                                padding: 8px 0;
-                                padding-left: 24px;
+                                font-size: 17px;
+                                color: #e8edf3;
+                                margin-bottom: 14px;
+                                line-height: 1.75;
+                                padding: 22px 28px;
+                                padding-left: 64px;
                                 position: relative;
+                                background: #252525;
+                                border-radius: 14px;
+                                border: 1px solid rgba(255, 255, 255, 0.06);
+                                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+                                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                            }
+                            .exercise-item:hover {
+                                background: #2a2a2a;
+                                border-color: rgba(132, 204, 22, 0.2);
+                                transform: translateX(6px);
+                                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(132, 204, 22, 0.1);
                             }
                             .exercise-item::before {
-                                content: "•";
+                                content: "→";
                                 position: absolute;
-                                left: 8px;
-                                color: #b3ff00;
-                                font-weight: bold;
-                                font-size: 18px;
-                            }
-                            .meal-title {
-                                font-size: 18px;
+                                left: 28px;
+                                color: #84cc16;
                                 font-weight: 600;
-                                margin-top: 32px;
-                                margin-bottom: 16px;
-                                color: #ffffff;
-                                padding-bottom: 8px;
-                                border-bottom: 2px solid rgba(179, 255, 0, 0.3);
+                                font-size: 18px;
+                                opacity: 0.7;
+                                transition: all 0.3s ease;
+                            }
+                            .exercise-item:hover::before {
+                                opacity: 1;
+                                transform: translateX(2px);
+                            }
+                            .exercise-name {
+                                font-weight: 600;
+                                color: #f5f7fa;
+                                font-size: 17px;
+                                letter-spacing: 0.1px;
+                            }
+                            .exercise-sets {
+                                color: #84cc16;
+                                font-weight: 700;
+                                font-size: 16px;
+                                background: rgba(132, 204, 22, 0.12);
+                                padding: 6px 16px;
+                                border-radius: 8px;
                                 letter-spacing: 0.3px;
-                            }
-                            .food-item {
-                                font-size: 15px;
-                                color: #e0e0e0;
-                                margin-left: 0;
-                                margin-bottom: 10px;
-                                line-height: 1.6;
-                                padding: 8px 0;
-                                padding-left: 24px;
-                                position: relative;
-                            }
-                            .food-item::before {
-                                content: "•";
-                                position: absolute;
-                                left: 8px;
-                                color: #b3ff00;
-                                font-weight: bold;
-                                font-size: 18px;
-                            }
-                            .censored-content {
-                                filter: blur(8px);
-                                background: #1a1a1a;
-                                padding: 20px;
-                                margin: 20px 0;
-                                border-radius: 8px;
-                                pointer-events: none;
-                                user-select: none;
-                            }
-                            .upgrade-overlay {
-                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                                padding: 30px;
-                                border-radius: 12px;
-                                text-align: center;
-                                margin: 30px 0;
-                            }
-                            .upgrade-overlay h3 {
-                                color: white;
-                                font-size: 24px;
-                                margin-bottom: 10px;
-                            }
-                            .upgrade-overlay p {
-                                color: rgba(255,255,255,0.9);
-                                font-size: 16px;
-                                margin-bottom: 20px;
-                            }
-                            .upgrade-button {
-                                background: white;
-                                color: #667eea;
-                                padding: 12px 30px;
-                                border: none;
-                                border-radius: 8px;
-                                font-weight: 600;
-                                cursor: pointer;
-                                font-size: 16px;
+                                border: 1px solid rgba(132, 204, 22, 0.2);
                             }
                         </style>
-                        <h1 class="section-title">Rutina</h1>
-                        <p class="section-subtitle">${plan.rutina.titulo || 'Plan personalizado'}</p>
+                        <div class="routine-header">
+                            <h1 class="section-title">Rutina de Entrenamiento</h1>
+                            <p class="section-subtitle">${plan.rutina.titulo || 'Plan personalizado diseñado para maximizar tus resultados'}</p>
+                        </div>
                     `;
                     
-                    // Agrupar ejercicios por día
-                    const exercisesByDay = {};
-                    plan.rutina.exercises.forEach(exercise => {
-                        const day = exercise.day || 'Sin día';
-                        if (!exercisesByDay[day]) {
-                            exercisesByDay[day] = [];
-                        }
-                        exercisesByDay[day].push(exercise);
-                    });
-                    
-                    const days = Object.keys(exercisesByDay);
-                    let upgradeShown = false;
-                    
-                    days.forEach((day, index) => {
-                        // Primer día siempre visible
-                        if (index === 0) {
-                            rutinaHtml += `<div class="day-title">${day}</div>`;
-                            exercisesByDay[day].forEach(ej => {
-                                rutinaHtml += `<div class="exercise-item">${ej.name} ${ej.sets}x${ej.reps}</div>`;
-                            });
-                        } 
-                        // Resto censurado para FREE
-                        else if (!isPremium) {
-                            if (index === 1 && !upgradeShown) {
-                                rutinaHtml += `
-                                    <div class="censored-content">
-                                        <div class="day-title">${day}</div>
-                                        ${exercisesByDay[day].map(ej => 
-                                            `<div class="exercise-item">${ej.name} ${ej.sets}x${ej.reps}</div>`
-                                        ).join('')}
-                                    </div>
-                                `;
-                                
-                                // Overlay de upgrade después del primer día censurado
-                                rutinaHtml += `
-                                    <div style="
-                                        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-                                        border: 2px solid #39ff14;
-                                        padding: 40px 30px;
-                                        border-radius: 16px;
-                                        text-align: center;
-                                        margin: 30px 0;
-                                        box-shadow: 0 0 30px rgba(57, 255, 20, 0.15);
-                                    ">
-                                        <h3 style="color: #39ff14; font-size: 24px; font-weight: 700; margin-bottom: 12px;">
-                                            Desbloquea la Rutina Completa
-                                        </h3>
-                                        <p style="color: #cccccc; font-size: 15px; margin-bottom: 25px;">
-                                            Accede a todos los días, modificaciones ilimitadas con IA y seguimiento de progreso
-                                        </p>
-                                        <button onclick="window.location.href='./tarifas.html'" style="
-                                            background: #39ff14;
-                                            color: #000000;
-                                            padding: 14px 40px;
-                                            border: none;
-                                            border-radius: 10px;
-                                            font-weight: 700;
-                                            cursor: pointer;
-                                            font-size: 16px;
-                                            text-transform: uppercase;
-                                            letter-spacing: 0.5px;
-                                            transition: all 0.3s ease;
-                                        ">
-                                            Mejorar a Premium - €9.99/mes
-                                        </button>
-                                    </div>
-                                `;
-                                upgradeShown = true;
-                            } else if (index > 1) {
-                                rutinaHtml += `
-                                    <div class="censored-content">
-                                        <div class="day-title">${day}</div>
-                                        <div class="exercise-item">████████ ████</div>
-                                        <div class="exercise-item">████████ ████</div>
-                                    </div>
-                                `;
+                    // Formato 1: exercises (formato nuevo del backend)
+                    if (plan.rutina.exercises && Array.isArray(plan.rutina.exercises) && plan.rutina.exercises.length > 0) {
+                        console.log('✅ Usando formato exercises, total:', plan.rutina.exercises.length);
+                        const exercisesByDay = {};
+                        plan.rutina.exercises.forEach(exercise => {
+                            const day = exercise.day || 'Sin día';
+                            if (!exercisesByDay[day]) {
+                                exercisesByDay[day] = [];
                             }
-                        }
-                        // Todo visible para PREMIUM
-                        else {
+                            exercisesByDay[day].push(exercise);
+                        });
+                        
+                        const days = Object.keys(exercisesByDay);
+                        console.log('📅 Días encontrados:', days);
+                        days.forEach((day) => {
+                            rutinaHtml += `<div class="day-card">`;
                             rutinaHtml += `<div class="day-title">${day}</div>`;
                             exercisesByDay[day].forEach(ej => {
-                                rutinaHtml += `<div class="exercise-item">${ej.name} ${ej.sets}x${ej.reps}</div>`;
+                                const name = ej.name || 'Ejercicio';
+                                const sets = ej.sets || 3;
+                                const reps = ej.reps || '10-12';
+                                rutinaHtml += `<div class="exercise-item">`;
+                                rutinaHtml += `<span class="exercise-name">${name}</span>`;
+                                rutinaHtml += `<span class="exercise-sets">${sets}x${reps}</span>`;
+                                rutinaHtml += `</div>`;
                             });
-                        }
-                    });
+                            rutinaHtml += `</div>`;
+                        });
+                    }
+                    // Formato 2: dias (formato antiguo)
+                    else if (plan.rutina.dias && Array.isArray(plan.rutina.dias) && plan.rutina.dias.length > 0) {
+                        console.log('✅ Usando formato dias, total:', plan.rutina.dias.length);
+                        plan.rutina.dias.forEach(dia => {
+                            rutinaHtml += `<div class="day-card">`;
+                            rutinaHtml += `<div class="day-title">${dia.dia || dia.nombre || 'Día'}</div>`;
+                            (dia.ejercicios || []).forEach(ejercicio => {
+                                const nombre = ejercicio.nombre || ejercicio.name || '';
+                                const series = ejercicio.series || ejercicio.sets || 3;
+                                const reps = ejercicio.repeticiones || ejercicio.reps || '10-12';
+                                rutinaHtml += `<div class="exercise-item">`;
+                                rutinaHtml += `<span class="exercise-name">${nombre}</span>`;
+                                rutinaHtml += `<span class="exercise-sets">${series}x${reps}</span>`;
+                                rutinaHtml += `</div>`;
+                            });
+                            rutinaHtml += `</div>`;
+                        });
+                    } else {
+                        console.warn('⚠️ No se encontraron ejercicios en ningún formato');
+                        rutinaHtml += `<p style="color: #999; text-align: center; padding: 40px;">No hay ejercicios disponibles en la rutina</p>`;
+                    }
                     
                     // Insertar rutina
                     if (rutinaContent) {
                         rutinaContent.style.display = 'block';
                         rutinaContent.style.visibility = 'visible';
                         rutinaContent.style.opacity = '1';
+                        rutinaContent.style.height = 'auto';
+                        rutinaContent.style.minHeight = 'auto';
+                        rutinaContent.style.overflow = 'visible';
                         rutinaContent.innerHTML = rutinaHtml;
-                        console.log('✅ Rutina insertada con diseño minimalista');
+                        console.log('✅ Rutina insertada con diseño profesional, HTML length:', rutinaHtml.length);
+                    } else {
+                        console.error('❌ rutinaContent no encontrado');
+                    }
+                } else {
+                    console.warn('⚠️ plan.rutina no existe');
+                    if (rutinaContent) {
+                        rutinaContent.innerHTML = '<p style="color: #999; text-align: center; padding: 40px;">No hay rutina disponible</p>';
                     }
                 }
                 
-                // DIETA - DISEÑO MINIMALISTA
+                // DIETA - DISEÑO MINIMALISTA - Manejar ambos formatos (meals y comidas)
                 console.log('🍽️ Verificando dieta:', plan.dieta);
                 console.log('🍽️ Tiene meals?', plan.dieta?.meals);
-                console.log('🍽️ Meals count:', plan.dieta?.meals?.length);
+                console.log('🍽️ Tiene comidas?', plan.dieta?.comidas);
                 
-                if (dietaContent && plan.dieta && plan.dieta.meals && plan.dieta.meals.length > 0) {
+                // Normalizar formato: usar meals si existe, sino comidas
+                const meals = plan.dieta?.meals || plan.dieta?.comidas || [];
+                
+                if (dietaContent && plan.dieta && meals.length > 0) {
                     const totalKcal = (typeof plan.dieta.total_kcal === 'number')
                         ? plan.dieta.total_kcal
-                        : (Array.isArray(plan.dieta.meals)
-                            ? plan.dieta.meals.reduce((acc, m) => acc + (Number(m.kcal) || 0), 0)
+                        : (Array.isArray(meals)
+                            ? meals.reduce((acc, m) => acc + (Number(m.kcal) || 0), 0)
                             : 0);
+                    const proteinas = (plan.dieta?.macros?.proteinas ?? plan.dieta?.macros?.proteina) || 0;
+                    const carbos = plan.dieta?.macros?.carbohidratos || 0;
+                    const grasas = plan.dieta?.macros?.grasas || 0;
+                    
                     let dietaHtml = `
-                        <h1 class="section-title" style="margin-top: 50px;">Dieta</h1>
-                        <p class="section-subtitle">Plan personalizado - ${totalKcal} kcal diarias<br><span style="color:#b3ff00;font-size:14px;font-weight:500;margin-top:8px;display:inline-block;">Proteínas: ${(plan.dieta?.macros?.proteinas ?? plan.dieta?.macros?.proteina) || 0}g | Carbos: ${plan.dieta?.macros?.carbohidratos||0}g | Grasas: ${plan.dieta?.macros?.grasas||0}g</span></p>
+                        <style>
+                            #dietaContent {
+                                background: #0f0f0f;
+                                border: none;
+                                border-radius: 0;
+                                padding: 0;
+                                color: #ffffff;
+                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+                                line-height: 1.6;
+                                width: 100%;
+                                min-height: auto;
+                                height: auto;
+                                overflow: visible;
+                            }
+                            .diet-header {
+                                margin-bottom: 56px;
+                                padding-bottom: 40px;
+                                border-bottom: 2px solid rgba(59, 130, 246, 0.15);
+                            }
+                            .section-title {
+                                font-size: 48px;
+                                font-weight: 800;
+                                margin-bottom: 12px;
+                                color: #ffffff;
+                                letter-spacing: -2px;
+                                background: linear-gradient(135deg, #ffffff 0%, #3b82f6 100%);
+                                -webkit-background-clip: text;
+                                -webkit-text-fill-color: transparent;
+                                background-clip: text;
+                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                            }
+                            .section-subtitle {
+                                font-size: 19px;
+                                color: #a8b3c1;
+                                margin-top: 12px;
+                                font-weight: 400;
+                                line-height: 1.7;
+                                letter-spacing: 0.2px;
+                            }
+                            .macros-grid {
+                                display: grid;
+                                grid-template-columns: repeat(4, 1fr);
+                                gap: 24px;
+                                margin-bottom: 56px;
+                            }
+                            .macro-card {
+                                background: #1e1e1e;
+                                border: 1px solid rgba(59, 130, 246, 0.12);
+                                border-radius: 16px;
+                                padding: 32px 28px;
+                                text-align: center;
+                                transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+                                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+                            }
+                            .macro-card:hover {
+                                border-color: rgba(59, 130, 246, 0.25);
+                                transform: translateY(-4px);
+                                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(59, 130, 246, 0.15);
+                            }
+                            .macro-value {
+                                font-size: 40px;
+                                font-weight: 800;
+                                color: #3b82f6;
+                                display: block;
+                                margin-bottom: 10px;
+                                line-height: 1;
+                                letter-spacing: -1px;
+                            }
+                            .macro-label {
+                                font-size: 12px;
+                                color: #a8b3c1;
+                                text-transform: uppercase;
+                                letter-spacing: 1.8px;
+                                font-weight: 600;
+                            }
+                            .meal-card {
+                                background: #1e1e1e;
+                                border: 1px solid rgba(59, 130, 246, 0.12);
+                                border-radius: 16px;
+                                padding: 40px;
+                                margin-bottom: 40px;
+                                transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+                                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+                            }
+                            .meal-card:hover {
+                                border-color: rgba(59, 130, 246, 0.25);
+                                transform: translateY(-3px);
+                                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(59, 130, 246, 0.1);
+                            }
+                            .meal-header {
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+                                margin-bottom: 28px;
+                                padding-bottom: 20px;
+                                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                            }
+                            .meal-name {
+                                font-size: 24px;
+                                font-weight: 700;
+                                color: #3b82f6;
+                                letter-spacing: 0.2px;
+                                display: flex;
+                                align-items: center;
+                                gap: 14px;
+                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                            }
+                            .meal-name::before {
+                                content: "";
+                                width: 5px;
+                                height: 28px;
+                                background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+                                border-radius: 3px;
+                                box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+                            }
+                            .meal-kcal {
+                                font-size: 17px;
+                                font-weight: 700;
+                                color: #a8b3c1;
+                                background: rgba(59, 130, 246, 0.12);
+                                padding: 8px 18px;
+                                border-radius: 10px;
+                                border: 1px solid rgba(59, 130, 246, 0.2);
+                                letter-spacing: 0.3px;
+                            }
+                            .food-item {
+                                font-size: 17px;
+                                color: #e8edf3;
+                                margin-bottom: 14px;
+                                line-height: 1.75;
+                                padding: 22px 28px;
+                                padding-left: 64px;
+                                position: relative;
+                                background: #252525;
+                                border-radius: 14px;
+                                border: 1px solid rgba(255, 255, 255, 0.06);
+                                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                            }
+                            .food-item:hover {
+                                background: #2a2a2a;
+                                border-color: rgba(59, 130, 246, 0.2);
+                                transform: translateX(6px);
+                                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(59, 130, 246, 0.1);
+                            }
+                            .food-item::before {
+                                content: "→";
+                                position: absolute;
+                                left: 28px;
+                                color: #3b82f6;
+                                font-weight: 600;
+                                font-size: 18px;
+                                opacity: 0.7;
+                                transition: all 0.3s ease;
+                            }
+                            .food-item:hover::before {
+                                opacity: 1;
+                                transform: translateX(2px);
+                            }
+                            .censored-content {
+                                filter: blur(8px);
+                                background: #1a1a1a;
+                                padding: 20px;
+                                margin: 20px 0;
+                                border-radius: 12px;
+                                pointer-events: none;
+                                user-select: none;
+                                border: 1px solid #2a2a2a;
+                            }
+                            .upgrade-overlay {
+                                background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+                                padding: 40px;
+                                border-radius: 16px;
+                                text-align: center;
+                                margin: 40px 0;
+                                border: 2px solid #3b82f6;
+                                box-shadow: 0 0 30px rgba(59, 130, 246, 0.15);
+                            }
+                            .upgrade-overlay h3 {
+                                color: #3b82f6;
+                                font-size: 26px;
+                                font-weight: 700;
+                                margin-bottom: 16px;
+                            }
+                            .upgrade-overlay p {
+                                color: #cccccc;
+                                font-size: 16px;
+                                margin-bottom: 30px;
+                                line-height: 1.6;
+                            }
+                            .upgrade-button {
+                                background: #3b82f6;
+                                color: #ffffff;
+                                padding: 16px 48px;
+                                border: none;
+                                border-radius: 10px;
+                                font-weight: 700;
+                                cursor: pointer;
+                                font-size: 16px;
+                                text-transform: uppercase;
+                                letter-spacing: 0.5px;
+                                transition: all 0.3s ease;
+                            }
+                            .upgrade-button:hover {
+                                background: #2563eb;
+                                transform: translateY(-2px);
+                                box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+                            }
+                        </style>
+                        <div class="diet-header">
+                            <h1 class="section-title">Plan Nutricional</h1>
+                            <p class="section-subtitle">Alimentación optimizada para tus objetivos</p>
+                        </div>
+                        <div class="macros-grid">
+                            <div class="macro-card">
+                                <span class="macro-value">${totalKcal}</span>
+                                <span class="macro-label">Calorías</span>
+                            </div>
+                            <div class="macro-card">
+                                <span class="macro-value">${proteinas}</span>
+                                <span class="macro-label">Proteínas</span>
+                            </div>
+                            <div class="macro-card">
+                                <span class="macro-value">${carbos}</span>
+                                <span class="macro-label">Carbohidratos</span>
+                            </div>
+                            <div class="macro-card">
+                                <span class="macro-value">${grasas}</span>
+                                <span class="macro-label">Grasas</span>
+                            </div>
+                        </div>
                     `;
                     
-                    let upgradeShown = false;
-                    
-                    plan.dieta.meals.forEach((comida, index) => {
-                        console.log(`🍽️ Comida ${index}:`, comida);
-                        // Primera comida siempre visible
-                        if (index === 0) {
-                            dietaHtml += `<div class="meal-title">${comida.nombre}</div>`;
-                            if (comida.alimentos) {
-                                // Debug: log del primer alimento para ver estructura
-                                if (comida.alimentos.length > 0) {
-                                    console.log('🍎 Estructura del primer alimento:', comida.alimentos[0]);
-                                    console.log('🔍 Tipo:', typeof comida.alimentos[0]);
-                                }
-                                
-                                comida.alimentos.forEach(alimento => {
-                                    const alimentoText = renderAlimento(alimento);
-                                    dietaHtml += `<div class="food-item">${alimentoText}</div>`;
-                                });
-                            }
+                    // Mostrar todas las comidas sin restricciones
+                    meals.forEach((comida) => {
+                        console.log(`🍽️ Comida:`, comida);
+                        const nombreComida = comida.nombre || comida.nombre_comida || 'Comida';
+                        const kcalComida = comida.kcal || '';
+                        dietaHtml += `<div class="meal-card">`;
+                        dietaHtml += `<div class="meal-header">`;
+                        dietaHtml += `<div class="meal-name">${nombreComida}</div>`;
+                        if (kcalComida) {
+                            dietaHtml += `<span class="meal-kcal">${kcalComida} kcal</span>`;
                         }
-                        // Resto censurado para FREE
-                        else if (!isPremium) {
-                            dietaHtml += `
-                                <div class="censored-content">
-                                    <div class="meal-title">${comida.nombre}</div>
-                                    <div class="food-item">████████ ████</div>
-                                    <div class="food-item">████████ ████</div>
-                                </div>
-                            `;
+                        dietaHtml += `</div>`;
+                        if (comida.alimentos) {
+                            // Debug: log del primer alimento para ver estructura
+                            if (comida.alimentos.length > 0) {
+                                console.log('🍎 Estructura del primer alimento:', comida.alimentos[0]);
+                                console.log('🔍 Tipo:', typeof comida.alimentos[0]);
+                            }
                             
-                            // Mostrar overlay después de la primera comida censurada
-                            if (index === 1 && !upgradeShown) {
-                                dietaHtml += `
-                                    <div style="
-                                        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-                                        border: 2px solid #39ff14;
-                                        padding: 40px 30px;
-                                        border-radius: 16px;
-                                        text-align: center;
-                                        margin: 30px 0;
-                                        box-shadow: 0 0 30px rgba(57, 255, 20, 0.15);
-                                    ">
-                                        <h3 style="color: #39ff14; font-size: 24px; font-weight: 700; margin-bottom: 12px;">
-                                            Desbloquea la Dieta Completa
-                                        </h3>
-                                        <p style="color: #cccccc; font-size: 15px; margin-bottom: 25px;">
-                                            Accede a todas las comidas, ajustes personalizados según tu progreso y recetas exclusivas
-                                        </p>
-                                        <button onclick="window.location.href='./tarifas.html'" style="
-                                            background: #39ff14;
-                                            color: #000000;
-                                            padding: 14px 40px;
-                                            border: none;
-                                            border-radius: 10px;
-                                            font-weight: 700;
-                                            cursor: pointer;
-                                            font-size: 16px;
-                                            text-transform: uppercase;
-                                            letter-spacing: 0.5px;
-                                            transition: all 0.3s ease;
-                                        ">
-                                            Mejorar a Premium - €9.99/mes
-                                        </button>
-                                    </div>
-                                `;
-                                upgradeShown = true;
-                            }
+                            comida.alimentos.forEach(alimento => {
+                                const alimentoText = renderAlimento(alimento);
+                                dietaHtml += `<div class="food-item">${alimentoText}</div>`;
+                            });
                         }
-                        // Todo visible para PREMIUM
-                        else {
-                            dietaHtml += `<div class="meal-title">${comida.nombre}</div>`;
-                            if (comida.alimentos) {
-                                comida.alimentos.forEach(alimento => {
-                                    const alimentoText = renderAlimento(alimento);
-                                    dietaHtml += `<div class="food-item">${alimentoText}</div>`;
-                                });
-                            }
-                        }
+                        dietaHtml += `</div>`;
                     });
                     
                     // Insertar dieta
@@ -3968,8 +4429,8 @@
                 if (storedPlan) {
                     try {
                         const plan = JSON.parse(storedPlan);
-                        displayRoutineContent(plan, isPremium);
-                        displayDietContent(plan, isPremium);
+                        // Usar displayPlan que maneja correctamente ambos formatos
+                        displayPlan(plan, isPremium);
                     } catch (e) {
                         console.error('Error parsing stored plan:', e);
                         // Intentar cargar desde la base de datos
@@ -3987,13 +4448,11 @@
                 
                 if (plan.rutina && plan.rutina.dias) {
                     const dias = plan.rutina.dias;
-                    const total = dias.length;
-                    const visibles = isPremium ? total : Math.max(1, Math.ceil(total * 0.2)); // 20% para usuarios básicos
 
                     let routineHTML = '';
                     
-                    // Mostrar días visibles
-                    dias.slice(0, visibles).forEach(dia => {
+                    // Mostrar todos los días sin restricciones
+                    dias.forEach(dia => {
                         routineHTML += `<div class="routine-item">`;
                         routineHTML += `<div class="routine-day">${dia.dia || dia.nombre}</div>`;
                         (dia.ejercicios || []).forEach(ejercicio => {
@@ -4004,29 +4463,6 @@
                         });
                         routineHTML += `</div>`;
                     });
-
-                    // Mostrar días censurados para usuarios no isPremium
-                    if (!isPremium && visibles < total) {
-                        const ocultos = total - visibles;
-                        
-                        // Agregar días censurados
-                        dias.slice(visibles, visibles + Math.min(ocultos, 2)).forEach(dia => {
-                            routineHTML += `<div class="routine-item isPremium-overlay">`;
-                            routineHTML += `<div class="routine-day">${dia.dia || dia.nombre}</div>`;
-                            (dia.ejercicios || []).forEach(ejercicio => {
-                                routineHTML += `<div class="exercise">`;
-                                routineHTML += `<div class="exercise-name">${ejercicio.nombre}</div>`;
-                                routineHTML += `<div class="exercise-details">Series: ${ejercicio.series} | Reps: ${ejercicio.repeticiones} | Descanso: ${ejercicio.descanso}</div>`;
-                                routineHTML += `</div>`;
-                            });
-                            routineHTML += `<div class="isPremium-badge">`;
-                            routineHTML += `<h4>Desbloquea contenido completo con Pro</h4>`;
-                            routineHTML += `<p>${ocultos} días adicionales disponibles</p>`;
-                            routineHTML += `<button class="isPremium-btn" onclick="window.location.href='./tarifas.html'">Mejorar a Pro</button>`;
-                            routineHTML += `</div>`;
-                            routineHTML += `</div>`;
-                        });
-                    }
 
                     contentArea.innerHTML = routineHTML;
                 } else {
@@ -4156,7 +4592,7 @@
                         titulo: '¿Por qué no crecen tus músculos?',
                         contenido: [
                             'La hipertrofia responde a tres mecanismos: tensión mecánica, daño muscular y estrés metabólico. Las series pesadas de 6-8 repeticiones maximizan la tensión, mientras que las de 12-15 reps generan mayor estrés metabólico. La clave está en integrarlos estratégicamente.',
-                            'El volumen es crucial: 10-20 series semanales por grupo muscular. La proximidad al fallo también importa: las últimas 5 repeticiones (RIR 1-3) generan el estímulo real. Acumula 10-20 series/músculo/semana, entrena cada grupo 2-3 veces/semana y termina series a RIR 1-3.'
+                            'El volumen es crucial: 10-20 series semanales por grupo muscular. La proximidad al fallo también importa: las últimas 5 repeticiones (RIR 1-3) generan el estímulo real. Acumula 10-20 series/músculo/semana, entrena cada grupo 2-3 veces por semana y termina series a RIR 1-3.'
                         ],
                         referencias: [
                             { titulo: 'The mechanisms of muscle hypertrophy and their application to resistance training', pmid: '20847704' },
@@ -4249,7 +4685,7 @@
                         titulo: 'RIR y Fallo Muscular: La Verdad Que Necesitas Saber',
                         contenido: [
                             'Los meta-análisis de Grgic (2022), Vieira (2021) y Refalo (2023) son contundentes: cuando el volumen total se iguala, NO hay diferencias en hipertrofia entre entrenar al fallo (RIR 0) o cerca del fallo (RIR 1-3). El fallo no es superior pero genera fatiga sistémica desproporcionada: tu rendimiento en series siguientes cae, tu volumen total disminuye, y tu recuperación se alarga.',
-                            'En ejercicios compuestos pesados (sentadilla, press banca, peso muerto), EVITA el fallo. Trabaja a RIR 2-3. En ejercicios de aislamiento (curls, extensiones, elevaciones laterales), es seguro ir al fallo o muy cerca (RIR 0-1). Estrategia óptima: última serie al fallo. Haz las series 1-3 a RIR 1-2, y solo la serie final llévala al fallo técnico. Principiantes: NUNCA entrenen al fallo, trabajen a RIR 3-5.'
+                            'En ejercicios compuestos pesados (sentadilla, press banca, peso muerto), EVITA el fallo. Trabaja a RIR 2-3. En ejercicios de aislamiento (curls, extensiones, elevaciones laterales), es seguro ir al fallo o muy cerca (RIR 0-1). Estrategia óptima: última serie al fallo. Haz las series 1-3 a RIR 1-2, y solo la serie final llévala al fallo técnico. Principiantes: NUNCA entrenen al fallo, trabajen a RIR 3 a 5.'
                         ],
                         referencias: [
                             { titulo: 'Effects of resistance training performed to repetition failure or non-failure on muscular strength and hypertrophy', pmid: 'No disponible - Sci-Space 2022' },
@@ -4266,10 +4702,9 @@
                             'Para hipertrofia pura, pesos libres y máquinas son igual de efectivos. Pero en máquinas toda tu energía se dirige 100% al músculo objetivo porque la estabilización está resuelta. Por eso máquinas son superiores para: aislar sin que auxiliares fallen, entrenar al fallo seguro, acumular volumen cuando fatigado. Usa rango de movimiento completo siempre que sea posible. Schoenfeld (2020) confirmó que ROM completo es superior para hipertrofia.'
                         ],
                         referencias: [
-                            { titulo: 'Resistance Training with Single vs. Multi-joint Exercises at Equal Total Load Volume', pmid: 'No disponible - Frontiers Physiology 2017' },
-                            { titulo: 'Effects of Adding Single Joint Exercises to a Resistance Training Programme in Trained Women', pmid: 'No disponible - MDPI Sports 2018' },
-                            { titulo: 'The effects of pre-exhaustion, exercise order, and rest intervals in a full-body resistance training', pmid: 'No disponible - Applied Physiology 2015' },
-                            { titulo: 'Effects of range of motion on muscle development during resistance training interventions', pmid: 'PMC6977096' }
+                            { titulo: 'Does the addition of single joint exercises to a resistance training program improve changes in performance and anthropometric measures in untrained men?', pmid: '30584485' },
+                            { titulo: 'Effect of free-weight vs. machine-based strength training on maximal strength, hypertrophy and jump performance – a systematic review and meta-analysis', pmid: '37592269' },
+                            { titulo: 'Effects of range of motion on muscle development during resistance training interventions: A systematic review', pmid: '32030125' }
                         ]
                     },
                     {
@@ -4339,12 +4774,9 @@
                             'TIPO I—Estrés Metabólico Extremo: cargas 40-50% 1RM, tempo ultra-lento 6-10s/rep, sin relajación (tensión continua 60-90s). Alternativa: BFR (Blood Flow Restriction) con 20-30% 1RM. TIPO IIa—Tensión Mecánica Máxima: cargas 70-85% 1RM, 6-12 reps, 3-5 series. TIPO IIx—Minimizar Fatiga más VBT: detener serie cuando velocidad cae >10-20% vs primera rep (RIR 3-5). Cargas 85-95%, 1-5 reps, descansos 3-5min. Para hipertrofia máxima: combina cargas 70-85% para maximizar IIa (80% volumen) más 1-2 ejercicios BFR para crecer Tipo I.'
                         ],
                         referencias: [
-                            { titulo: 'Human Skeletal Muscle Fiber Type Classifications', pmid: 'No disponible - Oxford Academic 2011' },
-                            { titulo: 'Effect of ACTN3 Genotype on Sports Performance and Exercise-Induced Muscle Damage', pmid: 'No disponible - MDPI Sports 2019' },
-                            { titulo: 'ACTN3 (R577X) genotype is associated with fiber type distribution', pmid: 'No disponible - Physiological Genomics 2007' },
-                            { titulo: 'Physiological effects of low intensity strength training without relaxation', pmid: 'No disponible - PubMed 2013' },
-                            { titulo: 'Type 1 Muscle Fiber Hypertrophy after Blood Flow-restricted Training in Powerlifters', pmid: 'No disponible - PubMed 2019' },
-                            { titulo: 'Effects of velocity loss during resistance training on athletic performance', pmid: 'No disponible - PubMed 2017' }
+                            { titulo: 'ACTN3 Genotype is Associated with Human Elite Athletic Performance', pmid: '12879365' },
+                            { titulo: 'Skeletal muscle fiber type switching, myosin isoforms and collagen content in bodybuilders', pmid: '16423842' },
+                            { titulo: 'Are the Hypertrophic Adaptations to High and Low-Load Resistance Training Muscle Fiber Type Specific?', pmid: '29773994' }
                         ]
                     },
                     {
@@ -4355,69 +4787,67 @@
                             'Señales de alarma: dolor agudo DURANTE entrenamiento = DETENTE INMEDIATAMENTE. Tendinitis hombro: dolor hombro/brazo, pérdida movilidad, dolor nocturno. Condromalacia rodilla: dolor FRONTAL rodilla, dolor subir escaleras. Hernia discal (MUY GRAVE): dolor lumbar IRRADIA PIERNA (ciática), entumecimiento, hormigueo. Si tienes lesión: consulta médico/fisio. Entrena zonas no afectadas, usa ejercicios alternativos, sigue protocolo RICE (Reposo, Hielo, Compresión, Elevación) las primeras 48-72h.'
                         ],
                         referencias: [
-                            { titulo: 'Cómo evitar lesiones relacionadas con el ejercicio', pmid: 'No disponible - MedlinePlus NIH' },
-                            { titulo: 'Ejercicios para el manguito de los rotadores', pmid: 'No disponible - MedlinePlus NIH' },
-                            { titulo: 'Esguince: primeros auxilios', pmid: 'No disponible - Mayo Clinic' },
-                            { titulo: 'Injury Prevention in the Gym: How To Safely Maximize Your Workouts', pmid: 'No disponible - MS Physical Therapy' },
-                            { titulo: 'Lesiones deportivas: cómo volver a entrenar después', pmid: 'No disponible - Actimove' }
+                            { titulo: 'The Epidemiology of Injuries Across the Weight-Training Sports: A Systematic Review', pmid: '27329683' },
+                            { titulo: 'Does warming up prevent injury in sport? The evidence from randomised controlled trials', pmid: '16790386' },
+                            { titulo: 'Cryotherapy for acute ankle sprains: a randomised controlled study of two different icing protocols', pmid: '16864561' }
                         ]
                     }
                 ];
                 
-                // Función para generar HTML de una card
+                // Función para generar HTML de una card (NUEVO DISEÑO OSCURO)
                 function generarCard(articulo) {
-                    const colors = categoryStyles[articulo.categoria] || { bg: '#1a3a0d', text: '#84cc16', border: '#84cc16' };
+                    // Mapear categoría a color de badge
+                    const badgeColors = {
+                        'Entrenamiento': { bg: 'rgba(57, 255, 20, 0.15)', border: 'rgba(57, 255, 20, 0.3)', text: '#39ff14' },
+                        'Nutrición': { bg: 'rgba(59, 130, 246, 0.15)', border: 'rgba(59, 130, 246, 0.3)', text: '#3b82f6' },
+                        'Recuperación': { bg: 'rgba(167, 139, 250, 0.15)', border: 'rgba(167, 139, 250, 0.3)', text: '#a78bfa' },
+                        'Suplementación': { bg: 'rgba(251, 146, 60, 0.15)', border: 'rgba(251, 146, 60, 0.3)', text: '#fb923c' }
+                    };
+                    
+                    const badgeStyle = badgeColors[articulo.categoria] || badgeColors['Entrenamiento'];
+                    
+                    // Filtrar referencias que no están disponibles (eliminar las que tienen "No disponible" en pmid)
+                    const referenciasValidas = articulo.referencias.filter(ref => 
+                        !ref.pmid.includes('No disponible') && 
+                        !ref.pmid.startsWith('PMC') && 
+                        /^\d+$/.test(ref.pmid.trim())
+                    );
                     
                     return `
-                        <div style="
-                            background: linear-gradient(135deg, #84cc16 0%, #6ea30d 100%);
-                            border: 2px solid #84cc16;
-                            border-radius: 16px;
-                            padding: 20px;
-                            box-shadow: 0 8px 24px rgba(132, 204, 22, 0.25);
-                            transition: transform 0.3s ease, box-shadow 0.3s ease;
-                            cursor: pointer;
-                            width: 100%;
-                            display: flex;
-                            flex-direction: column;
-                        " 
-                        onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 12px 32px rgba(132, 204, 22, 0.35)'"
-                        onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 8px 24px rgba(132, 204, 22, 0.25)'">
-                            
-                            <!-- TAG CATEGORÍA -->
-                            <span style="display: inline-block; background: ${colors.bg}; color: ${colors.text}; border: 2px solid ${colors.border}; padding: 4px 10px; border-radius: 8px; font-size: 9px; font-weight: 700; text-transform: capitalize; letter-spacing: 0.5px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); margin-bottom: 12px; align-self: flex-start;">
+                        <div class="article-card">
+                            <!-- Badge de Categoría -->
+                            <span class="article-badge" style="background: ${badgeStyle.bg}; border-color: ${badgeStyle.border}; color: ${badgeStyle.text};">
                                 ${articulo.categoria}
                             </span>
                             
-                            <!-- TÍTULO -->
-                            <h3 style="color: white; font-size: 20px; font-weight: bold; margin-bottom: 12px; margin-top: 0; line-height: 1.3;">
-                                ${articulo.titulo}
-                            </h3>
+                            <!-- Título del Artículo -->
+                            <h3 class="article-title">${articulo.titulo}</h3>
                             
-                            <!-- CONTENIDO -->
-                            ${articulo.contenido.map(parrafo => 
-                                `<p style="color: rgba(255,255,255,0.9); font-size: 14px; line-height: 1.5; margin-bottom: 10px;">${parrafo}</p>`
-                            ).join('')}
-                            
-                            <!-- REFERENCIAS -->
-                            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.2); flex-grow: 1; display: flex; flex-direction: column;">
-                                <div style="color: white; font-weight: 600; font-size: 13px; margin-bottom: 10px; letter-spacing: 0.5px;">
-                                    Referencias
-                                </div>
-                                <div style="display: flex; flex-direction: column; gap: 8px;">
-                                    ${articulo.referencias.map(ref => `
-                                        <a href="https://pubmed.ncbi.nlm.nih.gov/${ref.pmid}/" 
-                                        target="_blank"
-                                        style="display: block; color: rgba(255,255,255,0.85); text-decoration: none; font-size: 12px; line-height: 1.4; padding: 8px 10px; background: rgba(0,0,0,0.15); border-radius: 6px; border-left: 3px solid rgba(255,255,255,0.3); transition: all 0.2s ease;"
-                                        onmouseover="this.style.background='rgba(0,0,0,0.25)'; this.style.color='#ffffff'; this.style.borderLeftColor='rgba(255,255,255,0.5)'; this.style.transform='translateX(4px)'"
-                                        onmouseout="this.style.background='rgba(0,0,0,0.15)'; this.style.color='rgba(255,255,255,0.85)'; this.style.borderLeftColor='rgba(255,255,255,0.3)'; this.style.transform='translateX(0)'">
-                                            <div style="font-weight: 500; margin-bottom: 3px; font-size: 11px;">${ref.titulo}</div>
-                                            <div style="font-size: 10px; color: rgba(255,255,255,0.7);">PMID: ${ref.pmid}</div>
-                                        </a>
-                                    `).join('')}
-                                </div>
+                            <!-- Contenido del Artículo -->
+                            <div class="article-content">
+                                ${articulo.contenido.map(parrafo => `<p>${parrafo}</p>`).join('')}
                             </div>
                             
+                            <!-- Referencias -->
+                            ${referenciasValidas.length > 0 ? `
+                            <div class="article-references">
+                                <h3 class="references-title">Referencias</h3>
+                                ${referenciasValidas.map(ref => `
+                                    <div class="reference-item">
+                                        <span class="reference-icon">•</span>
+                                        <div class="reference-content">
+                                            <p class="reference-text">${ref.titulo}</p>
+                                            <a href="https://pubmed.ncbi.nlm.nih.gov/${ref.pmid}" 
+                                               target="_blank" 
+                                               rel="noopener noreferrer" 
+                                               class="reference-link">
+                                                PMID: ${ref.pmid}
+                                            </a>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            ` : ''}
                         </div>
                     `;
                 }

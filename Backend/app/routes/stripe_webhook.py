@@ -152,7 +152,7 @@ async def set_premium_by_customer(
     """
     Actualiza estado premium del usuario.
     🆕 Detecta PREMIUM_MONTHLY vs PREMIUM_YEARLY según price_id.
-    🆕 Guarda stripe_subscription_id.
+    🆕 Guarda stripe_subscription_id SIEMPRE que esté disponible.
     """
     user = db.query(Usuario).filter(Usuario.stripe_customer_id == customer_id).first()
     if not user:
@@ -161,23 +161,64 @@ async def set_premium_by_customer(
     
     user.is_premium = is_premium
     
-    # 🆕 Guardar subscription_id
+    # 🆕 Guardar subscription_id SIEMPRE
     if subscription_id:
         user.stripe_subscription_id = subscription_id
         print(f"✅ Subscription ID guardado: {subscription_id}")
+    elif is_premium and not user.stripe_subscription_id:
+        # Si es premium pero no tiene subscription_id, intentar obtenerlo
+        print(f"⚠️ Usuario premium sin subscription_id, consultando Stripe...")
+        try:
+            subscriptions = stripe.Subscription.list(
+                customer=customer_id,
+                limit=1,
+                status='active'
+            )
+            if subscriptions.data:
+                user.stripe_subscription_id = subscriptions.data[0].id
+                print(f"✅ Subscription ID recuperado: {user.stripe_subscription_id}")
+        except Exception as e:
+            print(f"⚠️ No se pudo obtener subscription_id: {e}")
     
-    # 🆕 Detectar tipo de plan
-    if is_premium and price_id:
+    # 🆕 Detectar tipo de plan SIEMPRE que is_premium=True
+    if is_premium:
         if price_id == PRICE_ID_ANUAL:
             user.plan_type = "PREMIUM_YEARLY"
         elif price_id == PRICE_ID_MENSUAL:
             user.plan_type = "PREMIUM_MONTHLY"
+        elif price_id:
+            # Fallback: Si hay price_id pero no coincide
+            user.plan_type = "PREMIUM_MONTHLY"
         else:
-            user.plan_type = "PREMIUM_MONTHLY"  # Fallback
-        print(f"✅ Plan type detectado: {user.plan_type}")
+            # Sin price_id: intentar inferir desde subscription
+            if user.stripe_subscription_id:
+                try:
+                    sub = stripe.Subscription.retrieve(
+                        user.stripe_subscription_id,
+                        expand=['items.data.price']
+                    )
+                    # Acceso compatible v12+
+                    items_data = sub.get('items', {}).get('data', [])
+                    if items_data and len(items_data) > 0:
+                        price_id_from_sub = items_data[0].get('price', {}).get('id')
+                        if price_id_from_sub == PRICE_ID_ANUAL:
+                            user.plan_type = "PREMIUM_YEARLY"
+                        else:
+                            user.plan_type = "PREMIUM_MONTHLY"
+                    else:
+                        user.plan_type = "PREMIUM_MONTHLY"
+                    print(f"✅ Plan type inferido: {user.plan_type}")
+                except Exception as e:
+                    print(f"⚠️ Error inferiendo plan: {e}")
+                    user.plan_type = "PREMIUM_MONTHLY"
+            else:
+                user.plan_type = "PREMIUM_MONTHLY"
+        
+        print(f"✅ Plan type establecido: {user.plan_type}")
     else:
         user.plan_type = "FREE"
         user.stripe_subscription_id = None
+        print(f"✅ Usuario downgradeado a FREE")
     
     # Resetear usos gratuitos si downgrade
     if not is_premium:
@@ -230,7 +271,11 @@ async def stripe_webhook(request: Request):
             payment_status = obj.get("payment_status")
             subscription_id = obj.get("subscription")
             
-            print(f"💳 Checkout completado: {email}, sub: {subscription_id}")
+            print(f"💳 Checkout completado:")
+            print(f"   customer_id: {customer_id}")
+            print(f"   email: {email}")
+            print(f"   payment_status: {payment_status}")
+            print(f"   subscription_id: {subscription_id}")
             
             if customer_id and email:
                 set_customer_id_by_email(db, email, customer_id)
@@ -238,12 +283,45 @@ async def stripe_webhook(request: Request):
                 # Si pago exitoso y hay suscripción, activar premium
                 if payment_status == "paid" and subscription_id:
                     try:
-                        subscription = stripe.Subscription.retrieve(subscription_id)
-                        price_id = subscription.items.data[0].price.id if subscription.items.data else None
+                        # Expandir items para obtener price_id
+                        subscription = stripe.Subscription.retrieve(
+                            subscription_id,
+                            expand=['items.data.price']
+                        )
                         
-                        await set_premium_by_customer(db, customer_id, True, subscription_id, price_id)
+                        # Obtener price_id de forma robusta (compatible v12+)
+                        price_id = None
+                        try:
+                            items_data = subscription.get('items', {}).get('data', [])
+                            if items_data and len(items_data) > 0:
+                                price_id = items_data[0].get('price', {}).get('id')
+                        except Exception as e:
+                            print(f"⚠️ Error obteniendo price_id: {e}")
+                        
+                        print(f"💎 Activando premium:")
+                        print(f"   customer_id: {customer_id}")
+                        print(f"   subscription_id: {subscription_id}")
+                        print(f"   price_id: {price_id}")
+                        print(f"   status: {subscription.get('status', 'unknown')}")
+                        
+                        await set_premium_by_customer(
+                            db, 
+                            customer_id, 
+                            True, 
+                            subscription_id, 
+                            price_id
+                        )
+                        
+                        print(f"✅ Premium activado correctamente")
+                        
                     except Exception as e:
-                        print(f"❌ Error obteniendo subscription: {e}")
+                        print(f"❌ Error procesando subscription: {e}")
+                        import traceback
+                        traceback.print_exc()
+                else:
+                    print(f"⚠️ Condiciones no cumplidas:")
+                    print(f"   payment_status: {payment_status}")
+                    print(f"   subscription_id: {subscription_id}")
 
         # ==========================================
         # SUSCRIPCIÓN CREADA/ACTUALIZADA
@@ -281,6 +359,8 @@ async def stripe_webhook(request: Request):
         # ==========================================
         elif etype == "payment_intent.succeeded":
             print("=" * 50)
+            print("⚠️ ADVERTENCIA: payment_intent.succeeded NO debe usarse para suscripciones")
+            print("⚠️ Este evento solo debe procesarse en modo de desarrollo o pagos únicos")
             print(f"💰 payment_intent.succeeded")
             print(f"📦 Payment Intent ID: {obj.get('id')}")
             print(f"📋 Metadata: {obj.get('metadata')}")
