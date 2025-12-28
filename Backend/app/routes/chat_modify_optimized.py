@@ -49,15 +49,13 @@ router = APIRouter()
 # Configurar OpenAI
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# 💰 MODELO DINÁMICO: Usar modelo barato en desarrollo, caro en producción
-ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
+# 🚀 CONFIGURACIÓN DE MODELO GPT-4o
+MODEL = os.getenv("OPENAI_MODEL", "gpt-4o")
 
-if ENVIRONMENT == 'production':
-    MODEL = "gpt-4-turbo-preview"  # Para usuarios reales (~$0.03/1K tokens)
-    logger.info("🚀 Usando GPT-4 Turbo para PRODUCCIÓN")
-else:
-    MODEL = "gpt-3.5-turbo"  # Para testing (~$0.0015/1K tokens - 20x más barato)
-    logger.info("💡 Usando GPT-3.5 Turbo para DESARROLLO (20x más barato)")
+logger.info("=" * 80)
+logger.info("🚀 CHAT MODIFICACIONES - Modelo GPT")
+logger.info(f"📦 Modelo: {MODEL}")
+logger.info("=" * 80)
 
 class ChatRequest(BaseModel):
     """Modelo para requests de chat con modificaciones"""

@@ -18,29 +18,39 @@ from app.utils.vectorstore import KnowledgeStore
 # Cargar .env desde la raíz del proyecto Backend
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), '.env'))
 
-# Cliente OpenAI con timeout configurado
+# ═══════════════════════════════════════════════════════
+# 🚀 CONFIGURACIÓN DE MODELO GPT-4o CON RAG
+# ═══════════════════════════════════════════════════════
+
+logger = logging.getLogger(__name__)
+
+# 🎯 MODELO PRINCIPAL: GPT-4o para aprovechar sistema RAG completo
+# Permite override con variable de entorno OPENAI_MODEL si es necesario
+MODEL = os.getenv("OPENAI_MODEL", "gpt-4o")
+
+# Validar que la API key existe ANTES de crear el cliente
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+if not OPENAI_API_KEY:
+    error_msg = "❌ OPENAI_API_KEY no encontrada en .env. Configura OPENAI_API_KEY en .env"
+    print(error_msg)  # Usar print porque logger podría no estar configurado aún
+    raise ValueError("API key de OpenAI requerida. Configura OPENAI_API_KEY en .env")
+
+# Cliente OpenAI con timeout configurado (después de validar API key)
 client = AsyncOpenAI(
-    api_key=os.getenv("OPENAI_API_KEY"),
+    api_key=OPENAI_API_KEY,
     timeout=120.0,  # 2 minutos para todas las llamadas
     max_retries=2    # Reintentar 2 veces automáticamente
 )
 
-# 💰 MODELO DINÁMICO: Usar modelo barato en desarrollo, caro en producción
-ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
-
-if ENVIRONMENT == 'production':
-    MODEL = "gpt-4o"  # Para usuarios reales
-    print("🚀 [ONBOARDING] Usando GPT-4o para PRODUCCIÓN")
-else:
-    MODEL = "gpt-3.5-turbo"  # Para testing (20x más barato)
-    print("💡 [ONBOARDING] Usando GPT-3.5 Turbo para DESARROLLO (20x más barato)")
-    
-# 🛡️ FORZAR GPT-3.5 EN DESARROLLO
-if ENVIRONMENT != 'production':
-    MODEL = "gpt-3.5-turbo"
-    print("🔒 FORZANDO GPT-3.5 Turbo para desarrollo")
-
-logger = logging.getLogger(__name__)
+# Logging de configuración
+logger.info("=" * 80)
+logger.info("🚀 CONFIGURACIÓN DE MODELO GPT")
+logger.info("=" * 80)
+logger.info(f"📦 Modelo seleccionado: {MODEL}")
+logger.info(f"📚 Sistema RAG: 46 documentos científicos activos")
+logger.info(f"💰 Costo estimado por plan: ~$0.015-0.025 (depende de tokens)")
+logger.info(f"🔑 API Key: {'✅ Configurada' if OPENAI_API_KEY else '❌ No encontrada'}")
+logger.info("=" * 80)
 
 
 # ═══════════════════════════════════════════════════════
@@ -983,27 +993,38 @@ REGLAS CRÍTICAS:
 
     # 🛡️ PROTECCIÓN: Logging antes de generar plan
     logger.info("=" * 80)
-    logger.info(f"🔄 PASO 3: GENERANDO PLAN CON GPT (modelo: {MODEL})")
+    logger.info(f"🔄 PASO 3: GENERANDO PLAN CON GPT-4o")
+    logger.info(f"📦 Modelo: {MODEL}")
+    logger.info(f"📚 RAG activo: {len(rag_context) > 0 if rag_context else False}")
     logger.info("=" * 80)
     
     try:
         response = await client.chat.completions.create(
-            model=MODEL,  # ✅ Usa modelo dinámico según ambiente
+            model=MODEL,  # ✅ GPT-4o con sistema RAG completo
             messages=[{"role": "user", "content": prompt}],
             temperature=0.85,
             max_tokens=2500,  # 🛡️ Limitar tokens para evitar excesos
             timeout=120.0  # 🛡️ Timeout aumentado a 2 minutos
         )
         
-        # 📊 Logging de tokens usados
+        # 📊 Logging de tokens usados y costo estimado
         if hasattr(response, 'usage') and response.usage:
             tokens_used = response.usage.total_tokens
-            logger.info(f"📊 Tokens usados en onboarding: {tokens_used}")
+            prompt_tokens = response.usage.prompt_tokens if hasattr(response.usage, 'prompt_tokens') else 0
+            completion_tokens = response.usage.completion_tokens if hasattr(response.usage, 'completion_tokens') else 0
+            
+            # Costo estimado GPT-4o (precios aproximados de OpenAI)
+            # Input: $0.005/1K tokens, Output: $0.015/1K tokens
+            estimated_cost = (prompt_tokens / 1000 * 0.005) + (completion_tokens / 1000 * 0.015)
+            
+            logger.info(f"📊 Tokens usados: {tokens_used} total ({prompt_tokens} prompt + {completion_tokens} completion)")
+            logger.info(f"💰 Costo estimado: ${estimated_cost:.4f}")
+            
             if tokens_used > 3000:
-                logger.warning(f"⚠️ Onboarding usando muchos tokens: {tokens_used}")
+                logger.warning(f"⚠️ Plan usando muchos tokens: {tokens_used} (costo: ${estimated_cost:.4f})")
         
         contenido = response.choices[0].message.content
-        logger.info(f"✅ Plan generado exitosamente (modelo: {MODEL})")
+        logger.info(f"✅ Plan generado exitosamente con GPT-4o")
         print("Respuesta cruda de GPT:", contenido[:200] + "...")  # Solo mostrar primeros 200 chars
         
     except asyncio.CancelledError:
