@@ -6,6 +6,7 @@ from typing import Dict, Any, List
 from dotenv import load_dotenv
 from app.schemas import PlanRequest
 from openai import AsyncOpenAI
+from openai import RateLimitError, APIError
 import logging
 from app.utils.nutrition_calculator import get_complete_nutrition_plan
 from fastapi import HTTPException
@@ -75,6 +76,98 @@ async def generate_embedding(text: str) -> List[float]:
     except Exception as e:
         logger.error(f"❌ Error generando embedding: {e}")
         return []
+
+
+# ═══════════════════════════════════════════════════════
+# 🔥 NUEVA FUNCIÓN: Obtener contexto RAG para el chat
+# ═══════════════════════════════════════════════════════
+async def get_rag_context_for_chat(user_message: str) -> str:
+    """
+    Recupera contexto científico del RAG basado en el mensaje del usuario.
+    
+    Analiza el mensaje y busca documentos relevantes en la base de conocimiento.
+    
+    Args:
+        user_message: Mensaje del usuario en el chat
+        
+    Returns:
+        String con contexto científico formateado para inyectar en el prompt
+    """
+    
+    logger.info("🔍 Recuperando contexto científico del RAG para chat...")
+    
+    # Generar embedding del mensaje del usuario
+    query_embedding = await generate_embedding(user_message)
+    
+    if not query_embedding:
+        logger.warning("⚠️ No se pudo generar embedding para el mensaje del chat")
+        return ""
+    
+    # Buscar documentos relevantes
+    try:
+        results = KnowledgeStore.search(
+            query_embedding=query_embedding,
+            k=5,  # Top 5 documentos más relevantes
+            language='es'
+        )
+        
+        if not results:
+            logger.info("⚠️ No se encontraron documentos relevantes en RAG")
+            return ""
+        
+        # Ordenar por similitud (ya vienen ordenados)
+        results.sort(key=lambda x: x.get('similarity', 0), reverse=True)
+        
+        # Tomar top 3 documentos únicos
+        unique_docs = []
+        seen_titles = set()
+        
+        for doc in results:
+            title = doc.get('title', '')
+            if title not in seen_titles:
+                unique_docs.append(doc)
+                seen_titles.add(title)
+            
+            if len(unique_docs) >= 3:
+                break
+        
+        # Formatear contexto de manera más concisa para el chat
+        context_parts = []
+        context_parts.append("═" * 60)
+        context_parts.append("📚 CONTEXTO CIENTÍFICO RELEVANTE")
+        context_parts.append("═" * 60)
+        context_parts.append("")
+        context_parts.append("⚠️ INSTRUCCIÓN: Usa esta información científica para responder.")
+        context_parts.append("Basate en estudios peer-reviewed. Si no hay información relevante, responde con tu conocimiento general.")
+        context_parts.append("")
+        
+        for i, doc in enumerate(unique_docs, 1):
+            title = doc.get('title', 'Sin título')
+            content = doc.get('content', '')
+            source = doc.get('source', '')
+            similarity = doc.get('similarity', 0)
+            
+            # Limitar contenido a 500 caracteres para no sobrecargar el prompt
+            content_short = content[:500] + "..." if len(content) > 500 else content
+            
+            context_parts.append(f"📄 {i}. {title}")
+            context_parts.append(f"   Fuente: {source}")
+            context_parts.append(f"   Relevancia: {similarity:.3f}")
+            context_parts.append(f"   {content_short}")
+            context_parts.append("")
+        
+        context_parts.append("═" * 60)
+        context_parts.append("")
+        
+        final_context = "\n".join(context_parts)
+        
+        logger.info(f"✅ Contexto RAG generado para chat: {len(unique_docs)} documentos")
+        
+        return final_context
+        
+    except Exception as e:
+        logger.error(f"❌ Error obteniendo contexto RAG para chat: {e}")
+        return ""
 
 
 # ═══════════════════════════════════════════════════════
@@ -360,20 +453,33 @@ async def get_rag_context_for_plan(datos: Dict[str, Any]) -> str:
     # EJECUTAR QUERIES RAG EN PARALELO (OPTIMIZACIÓN)
     # ═══════════════════════════════════════════════════════
     
+    # Contador global para tokens de embeddings (para calcular costo)
+    embedding_tokens_total = [0]  # Usar lista para modificar desde función anidada
+    
     async def execute_query(query_data: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Ejecuta una query RAG individual"""
         try:
             # Generar embedding de la query
-            query_embedding = await generate_embedding(query_data['text'])
+            query_embedding_response = await client.embeddings.create(
+                model="text-embedding-3-small",
+                input=query_data['text']
+            )
+            
+            # Obtener tokens reales de la respuesta (si está disponible)
+            if hasattr(query_embedding_response, 'usage') and query_embedding_response.usage:
+                tokens = getattr(query_embedding_response.usage, 'total_tokens', 0)
+                embedding_tokens_total[0] += tokens
+            
+            query_embedding = query_embedding_response.data[0].embedding
             
             if not query_embedding:
                 logger.warning(f"⚠️ No se pudo generar embedding para query: {query_data['text'][:50]}")
                 return []
             
-            # Buscar en RAG con filtros
+            # Buscar en RAG con filtros (reducido para evitar exceso de tokens)
             results = KnowledgeStore.search(
                 query_embedding=query_embedding,
-                k=2,  # Top 2 documentos por query
+                k=1,  # Top 1 documento por query (reducido de 2 para optimizar tokens)
                 language='es',
                 category=query_data.get('category')
             )
@@ -391,8 +497,19 @@ async def get_rag_context_for_plan(datos: Dict[str, Any]) -> str:
     
     # Ejecutar todas las queries en paralelo para reducir latencia
     logger.info(f"🚀 Ejecutando {len(queries)} queries RAG en paralelo...")
+    embedding_tokens_total[0] = 0  # Resetear contador
     query_tasks = [execute_query(query_data) for query_data in queries]
     query_results = await asyncio.gather(*query_tasks, return_exceptions=True)
+    
+    # Calcular costo de embeddings (text-embedding-3-small: $0.02 por 1M tokens)
+    if embedding_tokens_total[0] > 0:
+        embedding_cost = (embedding_tokens_total[0] / 1_000_000) * 0.02
+        logger.info(f"📊 Embeddings RAG: {embedding_tokens_total[0]} tokens (costo: ${embedding_cost:.6f})")
+    else:
+        # Fallback: estimación conservadora si no se pudieron contar tokens
+        estimated_tokens = len(queries) * 15  # ~15 tokens por query promedio
+        embedding_cost = (estimated_tokens / 1_000_000) * 0.02
+        logger.info(f"📊 Embeddings RAG: ~{estimated_tokens} tokens estimados (costo: ${embedding_cost:.6f})")
     
     # Consolidar resultados
     all_results = []
@@ -414,7 +531,7 @@ async def get_rag_context_for_plan(datos: Dict[str, Any]) -> str:
     # Ordenar por similitud (ya vienen ordenados) y peso
     all_results.sort(key=lambda x: x.get('similarity', 0) * x.get('query_weight', 1.0), reverse=True)
     
-    # Tomar top 8 documentos únicos
+    # Tomar top 6 documentos únicos (optimizado: balance entre contexto científico y costo)
     unique_docs = []
     seen_titles = set()
     
@@ -424,7 +541,7 @@ async def get_rag_context_for_plan(datos: Dict[str, Any]) -> str:
             unique_docs.append(doc)
             seen_titles.add(title)
         
-        if len(unique_docs) >= 8:
+        if len(unique_docs) >= 6:  # Aumentado a 6 documentos para mejor contexto científico
             break
     
     # Formatear contexto
@@ -443,11 +560,15 @@ async def get_rag_context_for_plan(datos: Dict[str, Any]) -> str:
         source = doc.get('source', '')
         similarity = doc.get('similarity', 0)
         
+        # Limitar contenido a 1000 caracteres por documento para optimizar tokens
+        # Priorizar el inicio del contenido que suele ser más relevante
+        content_limited = content[:1000] + "..." if len(content) > 1000 else content
+        
         context_parts.append(f"📄 DOCUMENTO {i}: {title}")
         context_parts.append(f"   Relevancia: {similarity:.3f}")
         context_parts.append(f"   Fuente: {source}")
         context_parts.append(f"   Contenido:")
-        context_parts.append(f"   {content}")
+        context_parts.append(f"   {content_limited}")
         context_parts.append("")
     
     context_parts.append("═" * 80)
@@ -457,7 +578,7 @@ async def get_rag_context_for_plan(datos: Dict[str, Any]) -> str:
     
     final_context = "\n".join(context_parts)
     
-    logger.info(f"✅ Contexto RAG generado: {len(unique_docs)} documentos únicos")
+    logger.info(f"✅ Contexto RAG generado: {len(unique_docs)} documentos únicos (objetivo: 6)")
     
     return final_context
 
@@ -508,13 +629,13 @@ async def generar_plan_safe(user_data, user_id):
     except (asyncio.CancelledError, asyncio.TimeoutError, HTTPException) as e:
         # 🔧 FIX: NO usar fallback silencioso - propagar excepción
         logger.error(f"❌ GPT falló ({type(e).__name__}): {e}")
-        raise  # Lanzar para que function_handlers use estrategia 2
+        raise  # Propagar excepción para manejo en capa superior
         
     except Exception as e:
         # 🔧 FIX: NO usar fallback silencioso - propagar excepción
         logger.error(f"❌ Error inesperado en GPT: {e}")
         logger.exception(e)
-        raise  # Lanzar para que function_handlers use estrategia 2
+        raise  # Propagar excepción para manejo en capa superior
 
 
 async def generar_plan_personalizado(datos):
@@ -529,6 +650,7 @@ async def generar_plan_personalizado(datos):
     
     if rag_context:
         logger.info(f"✅ Contexto RAG recuperado ({len(rag_context)} caracteres)")
+        # El costo de embeddings ya se loguea dentro de get_rag_context_for_plan
     else:
         logger.warning("⚠️ No se recuperó contexto RAG - continuando sin él")
     
@@ -998,16 +1120,95 @@ REGLAS CRÍTICAS:
     logger.info(f"📚 RAG activo: {len(rag_context) > 0 if rag_context else False}")
     logger.info("=" * 80)
     
-    try:
-        response = await client.chat.completions.create(
-            model=MODEL,  # ✅ GPT-4o con sistema RAG completo
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.85,
-            max_tokens=2500,  # 🛡️ Limitar tokens para evitar excesos
-            timeout=120.0  # 🛡️ Timeout aumentado a 2 minutos
+    # ═══════════════════════════════════════════════════════
+    # 🔄 RETRY LOGIC CON EXPONENTIAL BACKOFF
+    # ═══════════════════════════════════════════════════════
+    MAX_RETRIES = 3
+    BASE_DELAY = 2  # Segundos base para exponential backoff
+    
+    response = None
+    last_error = None
+    
+    for attempt in range(MAX_RETRIES):
+        try:
+            logger.info(f"🔄 Intento {attempt + 1}/{MAX_RETRIES} de generación de plan")
+            
+            response = await client.chat.completions.create(
+                model=MODEL,  # ✅ GPT-4o con sistema RAG completo
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.85,
+                max_tokens=2500,  # 🛡️ Limitar tokens para evitar excesos
+                timeout=120.0  # 🛡️ Timeout aumentado a 2 minutos
+            )
+            
+            # ✅ Éxito: salir del loop de retry
+            logger.info(f"✅ Plan generado exitosamente en intento {attempt + 1}")
+            break
+            
+        except RateLimitError as e:
+            last_error = e
+            if attempt < MAX_RETRIES - 1:
+                # Exponential backoff: 2s, 4s, 8s
+                delay = BASE_DELAY * (2 ** attempt)
+                logger.warning(f"⚠️ Rate limit alcanzado (intento {attempt + 1}/{MAX_RETRIES}). Esperando {delay}s antes de reintentar...")
+                await asyncio.sleep(delay)
+            else:
+                logger.error(f"❌ Rate limit después de {MAX_RETRIES} intentos")
+                raise HTTPException(
+                    status_code=429,
+                    detail="El servicio está temporalmente saturado. Por favor, espera unos segundos e intenta de nuevo."
+                )
+                
+        except APIError as e:
+            last_error = e
+            # Errores de API que pueden ser temporales (500, 502, 503)
+            if attempt < MAX_RETRIES - 1 and hasattr(e, 'status_code') and e.status_code in [500, 502, 503]:
+                delay = BASE_DELAY * (2 ** attempt)
+                logger.warning(f"⚠️ Error de API {e.status_code} (intento {attempt + 1}/{MAX_RETRIES}). Esperando {delay}s antes de reintentar...")
+                await asyncio.sleep(delay)
+            else:
+                logger.error(f"❌ Error de API no recuperable: {e}")
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Error temporal del servicio de IA. Por favor, intenta de nuevo en unos momentos."
+                )
+                
+        except asyncio.TimeoutError as e:
+            last_error = e
+            if attempt < MAX_RETRIES - 1:
+                delay = BASE_DELAY * (2 ** attempt)
+                logger.warning(f"⚠️ Timeout en generación (intento {attempt + 1}/{MAX_RETRIES}). Esperando {delay}s antes de reintentar...")
+                await asyncio.sleep(delay)
+            else:
+                logger.error(f"❌ Timeout después de {MAX_RETRIES} intentos")
+                raise HTTPException(
+                    status_code=504,
+                    detail="La generación del plan tardó demasiado. Intenta de nuevo."
+                )
+                
+        except Exception as e:
+            # Otros errores no esperados
+            last_error = e
+            if attempt < MAX_RETRIES - 1:
+                delay = BASE_DELAY * (2 ** attempt)
+                logger.warning(f"⚠️ Error inesperado: {type(e).__name__} (intento {attempt + 1}/{MAX_RETRIES}). Esperando {delay}s antes de reintentar...")
+                await asyncio.sleep(delay)
+            else:
+                logger.error(f"❌ Error no recuperable después de {MAX_RETRIES} intentos: {e}")
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Error al generar plan: {str(e)}"
+                )
+    
+    # Si llegamos aquí sin response, hubo un error no manejado
+    if response is None:
+        logger.error(f"❌ No se pudo generar plan después de {MAX_RETRIES} intentos. Último error: {last_error}")
+        raise HTTPException(
+            status_code=500,
+            detail="No se pudo generar el plan después de varios intentos. Por favor, intenta de nuevo más tarde."
         )
-        
-        # 📊 Logging de tokens usados y costo estimado
+    
+    # 📊 Logging de tokens usados y costo estimado
         if hasattr(response, 'usage') and response.usage:
             tokens_used = response.usage.total_tokens
             prompt_tokens = response.usage.prompt_tokens if hasattr(response.usage, 'prompt_tokens') else 0
@@ -1015,36 +1216,28 @@ REGLAS CRÍTICAS:
             
             # Costo estimado GPT-4o (precios aproximados de OpenAI)
             # Input: $0.005/1K tokens, Output: $0.015/1K tokens
-            estimated_cost = (prompt_tokens / 1000 * 0.005) + (completion_tokens / 1000 * 0.015)
+            gpt_cost = (prompt_tokens / 1000 * 0.005) + (completion_tokens / 1000 * 0.015)
             
-            logger.info(f"📊 Tokens usados: {tokens_used} total ({prompt_tokens} prompt + {completion_tokens} completion)")
-            logger.info(f"💰 Costo estimado: ${estimated_cost:.4f}")
+            # Costo de embeddings RAG (text-embedding-3-small: $0.02 por 1M tokens)
+            # Estimación conservadora: ~5-10 queries × ~15 tokens/query = ~75-150 tokens
+            # Costo: (150 / 1,000,000) * $0.02 = $0.000003 (muy bajo, ~0.006% del costo total)
+            # Nota: El costo real se calcula en get_rag_context_for_plan y se loguea allí
+            # Aquí usamos una estimación para el cálculo total
+            estimated_embedding_tokens = 150  # ~10 queries × 15 tokens promedio
+            embedding_cost = (estimated_embedding_tokens / 1_000_000) * 0.02
+            total_cost = gpt_cost + embedding_cost
+            
+            logger.info(f"📊 Tokens GPT: {tokens_used} total ({prompt_tokens} prompt + {completion_tokens} completion)")
+            logger.info(f"💰 Costo GPT-4o: ${gpt_cost:.4f}")
+            logger.info(f"💰 Costo embeddings RAG: ~${embedding_cost:.6f} (ver logs de RAG para valor exacto)")
+            logger.info(f"💰 Costo TOTAL estimado (GPT + RAG): ${total_cost:.4f}")
             
             if tokens_used > 3000:
-                logger.warning(f"⚠️ Plan usando muchos tokens: {tokens_used} (costo: ${estimated_cost:.4f})")
+                logger.warning(f"⚠️ Plan usando muchos tokens: {tokens_used} (costo GPT: ${gpt_cost:.4f}, total: ${total_cost:.4f})")
         
-        contenido = response.choices[0].message.content
-        logger.info(f"✅ Plan generado exitosamente con GPT-4o")
-        print("Respuesta cruda de GPT:", contenido[:200] + "...")  # Solo mostrar primeros 200 chars
-        
-    except asyncio.CancelledError:
-        # 🔧 FIX: Manejar cancelación limpia (shutdown del servidor)
-        logger.warning("⚠️ Generación de plan cancelada (posible shutdown)")
-        raise  # Propagar CancelledError para manejo correcto
-        
-    except asyncio.TimeoutError:
-        logger.error("❌ GPT timeout después de 120s")
-        raise HTTPException(
-            status_code=504,
-            detail="La generación del plan tardó demasiado. Intenta de nuevo."
-        )
-        
-    except Exception as e:
-        logger.error(f"❌ Error generando plan: {e}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error al generar plan: {str(e)}"
-        )
+    contenido = response.choices[0].message.content
+    logger.info(f"✅ Plan generado exitosamente con GPT-4o")
+    print("Respuesta cruda de GPT:", contenido[:200] + "...")  # Solo mostrar primeros 200 chars
 
     # 🧹 LIMPIAR MARKDOWN SI EXISTE
     response_text = contenido.strip()

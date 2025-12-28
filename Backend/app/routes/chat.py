@@ -8,9 +8,11 @@ import os
 import logging
 import json
 from openai import OpenAI
+import asyncio
 
 from app.database import get_db
 from app.models import Usuario
+from app.utils.gpt import get_rag_context_for_chat
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -58,17 +60,29 @@ Cuando respondas:
 
 Responde en español y limita tus respuestas a 200 palabras máximo para mantener la conversación dinámica."""
 
-def call_openai_chat(message: str, user_email: str) -> str:
-    """Llama a OpenAI con el contexto de fitness"""
+async def call_openai_chat(message: str, user_email: str) -> str:
+    """Llama a OpenAI con el contexto de fitness y RAG"""
     if not client:
         return "⚠️ Chat con IA temporalmente no disponible. Contacta con soporte."
     
     try:
+        # 🔥 NUEVO: Obtener contexto RAG basado en el mensaje del usuario
+        logger.info("🔍 Obteniendo contexto RAG para el chat...")
+        rag_context = await get_rag_context_for_chat(message)
+        
+        # Construir prompt del sistema con contexto RAG
+        system_prompt = get_fitness_prompt()
+        if rag_context:
+            system_prompt += "\n\n" + rag_context
+            logger.info("✅ Contexto RAG añadido al prompt")
+        else:
+            logger.info("⚠️ No se obtuvo contexto RAG, continuando sin él")
+        
         # Prompt del sistema + mensaje del usuario
         messages = [
             {
                 "role": "system", 
-                "content": get_fitness_prompt()
+                "content": system_prompt
             },
             {
                 "role": "user", 
@@ -90,6 +104,7 @@ def call_openai_chat(message: str, user_email: str) -> str:
         # Log para debugging
         logger.info(f"Chat request from {user_email}: {message[:50]}...")
         logger.info(f"Chat response: {answer[:50]}...")
+        logger.info(f"RAG usado: {'✅ Sí' if rag_context else '❌ No'}")
         
         return answer
         
@@ -119,16 +134,17 @@ def _demo_stream_generator(msg: str):
     yield "data: {}\n\n"
 
 @router.post("/chat", response_model=ChatResponse)
-def chat_endpoint(
+async def chat_endpoint(
     body: ChatRequestBody,
     db: Session = Depends(get_db),
     x_user_email: Optional[str] = Header(None, alias="X-User-Email"),
 ):
     """
-    Chat con IA especializada en fitness.
+    Chat con IA especializada en fitness con sistema RAG.
     
     - FREE: 2 preguntas gratis
     - PREMIUM: Chat ilimitado
+    - RAG: Consulta base de conocimiento científica (46 documentos)
     """
     if not x_user_email:
         raise HTTPException(status_code=400, detail="Falta cabecera X-User-Email")
@@ -159,10 +175,10 @@ def chat_endpoint(
     if len(body.message) > 500:
         raise HTTPException(status_code=400, detail="El mensaje es demasiado largo (máximo 500 caracteres)")
 
-    # Procesar con IA
+    # Procesar con IA (ahora con RAG)
     try:
         if api_key and client:
-            answer = call_openai_chat(body.message, x_user_email)
+            answer = await call_openai_chat(body.message, x_user_email)
         else:
             answer = _demo_answer(body.message)
         
@@ -248,9 +264,39 @@ def chat_stream(
                 yield f"event: meta\ndata: {json.dumps(meta, ensure_ascii=False)}\n\n"
                 return
 
+            # 🔥 NUEVO: Obtener contexto RAG (ejecutar en thread para no bloquear)
+            # Nota: Para streaming, obtenemos el RAG de forma síncrona usando asyncio.run
+            # en un thread separado para no bloquear el generador
+            import threading
+            
+            rag_context_result = [""]  # Usar lista para modificar desde thread
+            
+            def get_rag_sync():
+                try:
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+                    rag_context_result[0] = loop.run_until_complete(get_rag_context_for_chat(body.message))
+                    loop.close()
+                except Exception as e:
+                    logger.error(f"Error obteniendo RAG en streaming: {e}")
+                    rag_context_result[0] = ""
+            
+            # Ejecutar en thread para no bloquear
+            rag_thread = threading.Thread(target=get_rag_sync)
+            rag_thread.start()
+            rag_thread.join(timeout=2)  # Timeout de 2 segundos para no bloquear mucho
+            
+            rag_context = rag_context_result[0]
+            
+            # Construir prompt del sistema con contexto RAG
+            system_prompt = get_fitness_prompt()
+            if rag_context:
+                system_prompt += "\n\n" + rag_context
+                logger.info("✅ Contexto RAG añadido al prompt (streaming)")
+            
             # Construcción de mensajes para OpenAI
             messages = [
-                {"role": "system", "content": get_fitness_prompt()},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": f"Usuario: {x_user_email}\nPregunta: {body.message}"},
             ]
 

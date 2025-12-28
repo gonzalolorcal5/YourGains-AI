@@ -1305,32 +1305,26 @@
                 sendBtn.textContent = 'Enviando...';
 
                 try {
-                    // Preparar payload para logging
-                    const userId = getCurrentUserId();
-                    const conversationHistory = getConversationHistory();
-                    const token = localStorage.getItem('accessToken');
-                    
+                    // Preparar payload para el chat básico
                     const payload = {
-                        message: message,
-                        user_id: userId,
-                        conversation_history: conversationHistory
+                        message: message
                     };
 
                     console.log('=== PAYLOAD ENVIADO ===');
                     console.log('Payload:', JSON.stringify(payload, null, 2));
-                    console.log('User ID:', userId);
                     console.log('Message:', message);
-                    console.log('Conversation History:', conversationHistory);
-                    console.log('Token exists:', !!token);
                     console.log('======================');
 
-                    // Usar nuevo endpoint de function calling
-                    const response = await fetch(`${API_BASE}/api/chat/modify`, {
+                    // Usar endpoint de chat básico
+                    const headers = getAuthHeaders();
+                    if (!headers) {
+                        addMessage('Error de autenticación. Por favor, inicia sesión nuevamente.');
+                        return;
+                    }
+
+                    const response = await fetch(`${API_BASE}/api/chat`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
+                        headers: headers,
                         body: JSON.stringify(payload)
                     });
 
@@ -1359,38 +1353,22 @@
 
                     const data = await response.json();
 
-                    // Añadir respuesta del chat
-                    addMessage(data.response);
-                    
-                    // Si se realizaron modificaciones, mostrar notificación
-                    if (data.modified) {
-                        showModificationNotification({
-                            modified: true,
-                            changes: data.changes || [],
-                            function_used: data.function_used || 'unknown'
-                        });
-                        
-                        // Añadir badge visual al mensaje
-                        addModificationBadge();
-                        
-                        // ✨ NUEVO: Recargar plan después de modificación
-                        console.log('🔄 Plan modificado, recargando dashboard...');
-                        setTimeout(async () => {
-                            await reloadPlanFromServer();
-                        }, 1000); // Esperar 1 segundo para que la IA termine de guardar
+                    // Añadir respuesta del chat (el endpoint devuelve 'answer')
+                    if (data.answer) {
+                        addMessage(data.answer);
+                    } else {
+                        addMessage('No se recibió respuesta del servidor.');
                     }
                     
-                    if (!isPremiumUser()) {
-                        incrementChatUsage();
-                        if (!canUseChat()) {
+                    // Actualizar contador de usos restantes si es usuario FREE
+                    if (data.chat_uses_free_restantes !== undefined && data.chat_uses_free_restantes !== null) {
+                        console.log(`💬 Usos restantes (FREE): ${data.chat_uses_free_restantes}`);
+                        // Actualizar UI si es necesario
+                        if (data.chat_uses_free_restantes <= 0) {
+                            disableChatInput();
                             addMessage('Has llegado al máximo de mensajes gratis. Sube a Pro para seguir chateando.');
                         }
                     }
-                    
-                    // Si se actualizó el plan, forzar recarga
-                    if (data.success && data.plan_updated) {
-                        console.log('✅ Plan actualizado, recargando página...');
-                        if (data.response) {
                             addMessage(data.response, 'assistant');
                         }
                         setTimeout(() => {
@@ -2964,18 +2942,10 @@
                     return;
                 }
                 
-                const response = await fetch('http://127.0.0.1:8000/api/chat/modify', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ 
-                        message: "deshaz el último cambio",
-                        user_id: getCurrentUserId(),
-                        conversation_history: []
-                    })
-                });
+                // Función eliminada: revertLastModification
+                // Ya no existe la funcionalidad de modificaciones automáticas
+                console.log('⚠️ La funcionalidad de revertir modificaciones ya no está disponible.');
+                return;
                 
                 const result = await response.json();
                 

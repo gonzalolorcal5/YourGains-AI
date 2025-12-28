@@ -124,7 +124,7 @@ form.addEventListener('submit', async (e) => {
             edad: parseInt(getFieldValueById('edad')),
             sexo: getFieldValueById('sexo'),
             experiencia: getFieldValueById('experiencia'),
-            materiales: getSelectedMaterials(),
+            materiales: document.getElementById('materiales')?.value?.trim() || '',
             tipo_cuerpo: getFieldValueById('tipo_cuerpo'),
             nivel_actividad: getFieldValueById('nivel_actividad'),  // NUEVO CAMPO - Para cálculo TMB
             alergias: (document.getElementById('alergias') ? document.getElementById('alergias').value : null) || null,
@@ -196,9 +196,32 @@ form.addEventListener('submit', async (e) => {
     }
 });
 
-function getSelectedMaterials() {
-    // Obtener solo checkboxes de materiales (excluir training_days)
-    const materialCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked:not([name="training_days"])');
-    return Array.from(materialCheckboxes).map(cb => cb.value);
-}
+// Función eliminada: getSelectedMaterials() ya no es necesaria
+// Ahora se usa directamente el valor del textarea
+
+// ═══════════════════════════════════════════════════════
+// PLACEHOLDER DINÁMICO PARA MATERIALES
+// ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+    const materialesTextarea = document.getElementById('materiales');
+    
+    if (materialesTextarea) {
+        // Guardar el placeholder original
+        const originalPlaceholder = materialesTextarea.placeholder;
+        
+        // Cuando el usuario hace click/focus, limpiar placeholder
+        materialesTextarea.addEventListener('focus', function() {
+            if (this.placeholder === originalPlaceholder) {
+                this.placeholder = '';
+            }
+        });
+        
+        // Si el usuario sale sin escribir nada, restaurar placeholder
+        materialesTextarea.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                this.placeholder = originalPlaceholder;
+            }
+        });
+    }
+});
 

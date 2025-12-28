@@ -2107,15 +2107,34 @@
                 </div>
             </header>
             
-            <main style="flex: 1; overflow-y: auto; padding: 48px 40px 80px 40px; position: relative;">
-                <div style="max-width: 1800px; margin: 0 auto; display: flex; flex-direction: column; gap: 64px;">
-                    <div id="rutinaContent" style="width: 100%;">
-                        <p style="color: #999; text-align: center; padding: 40px;">Cargando rutina...</p>
-                    </div>
+            <main style="flex: 1; overflow-y: auto; padding: 0; position: relative; background: #0a0a0a;">
+                <div style="max-width: 1400px; margin: 0 auto; padding: 40px 60px 80px 60px;">
+                    <!-- Sección Rutina -->
+                    <section id="rutinaSection" style="margin-bottom: 60px;">
+                        <div style="margin-bottom: 32px;">
+                            <h2 style="font-size: 24px; font-weight: 600; color: #ffffff; margin: 0 0 4px 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+                                Rutina de Entrenamiento
+                            </h2>
+                        </div>
+                        <div id="rutinaContent" style="width: 100%;">
+                            <p style="color: #999; text-align: center; padding: 40px;">Cargando rutina...</p>
+                        </div>
+                    </section>
                     
-                    <div id="dietaContent" style="width: 100%;">
-                        <p style="color: #999; text-align: center; padding: 40px;">Cargando dieta...</p>
-                    </div>
+                    <!-- Separador -->
+                    <div style="height: 1px; background: #262626; margin: 0 0 60px 0;"></div>
+                    
+                    <!-- Sección Dieta -->
+                    <section id="dietaSection">
+                        <div style="margin-bottom: 32px;">
+                            <h2 style="font-size: 24px; font-weight: 600; color: #ffffff; margin: 0 0 4px 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+                                Plan Nutricional
+                            </h2>
+                        </div>
+                        <div id="dietaContent" style="width: 100%;">
+                            <p style="color: #999; text-align: center; padding: 40px;">Cargando dieta...</p>
+                        </div>
+                    </section>
                 </div>
             </main>
         </div>
@@ -2792,8 +2811,6 @@
                                     style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #404040; background: #1a1a1a; color: white;">
                                     <option value="ganar_musculo">Ganar Músculo</option>
                                     <option value="ganar_fuerza">Ganar Fuerza</option>
-                                    <option value="perder_grasa">Perder Grasa</option>
-                                    <option value="mantener_forma">Mantener Forma</option>
                                 </select>
                             </div>
                             
@@ -2804,7 +2821,6 @@
                                     <option value="volumen">Volumen</option>
                                     <option value="definicion">Definición</option>
                                     <option value="mantenimiento">Mantenimiento</option>
-                                    <option value="recomposicion">Recomposición</option>
                                 </select>
                             </div>
                             
@@ -2812,12 +2828,15 @@
                                 <label style="display: block; margin-bottom: 8px; color: #84cc16; font-weight: 600;">Nivel de Actividad</label>
                                 <select id="nivel_actividad" name="nivel_actividad" required
                                     style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #404040; background: #1a1a1a; color: white;">
-                                    <option value="sedentario">Sedentario</option>
-                                    <option value="ligero">Ligero</option>
-                                    <option value="moderado">Moderado</option>
-                                    <option value="activo">Activo</option>
-                                    <option value="muy_activo">Muy Activo</option>
+                                    <option value="sedentario" title="Poco o ningún ejercicio, trabajo de escritorio">Sedentario - Poco o ningún ejercicio</option>
+                                    <option value="ligero" title="Ejercicio ligero 1-3 días/semana">Ligero - Ejercicio ligero 1-3 días/semana</option>
+                                    <option value="moderado" title="Ejercicio moderado 3-5 días/semana">Moderado - Ejercicio moderado 3-5 días/semana</option>
+                                    <option value="activo" title="Ejercicio intenso 6-7 días/semana">Activo - Ejercicio intenso 6-7 días/semana</option>
+                                    <option value="muy_activo" title="Ejercicio muy intenso, trabajo físico o entrenamiento 2x/día">Muy Activo - Ejercicio muy intenso o trabajo físico</option>
                                 </select>
+                                <p style="color: #a3a3a3; font-size: 12px; margin-top: 6px; line-height: 1.4;">
+                                    Selecciona según tu actividad física semanal. Esto afecta el cálculo de tus calorías diarias.
+                                </p>
                             </div>
                             
                             <div style="grid-column: 1 / -1;">
@@ -3002,13 +3021,37 @@
                 
                 // Pre-llenar días específicos si existen
                 if (userData.training_days && Array.isArray(userData.training_days)) {
+                    // Mapeo de días para normalizar valores (con/sin tildes)
+                    const dayMapping = {
+                        'lunes': 'lunes',
+                        'martes': 'martes',
+                        'miercoles': 'miercoles',
+                        'miércoles': 'miercoles',
+                        'jueves': 'jueves',
+                        'viernes': 'viernes',
+                        'sabado': 'sabado',
+                        'sábado': 'sabado',
+                        'domingo': 'domingo'
+                    };
+                    
                     userData.training_days.forEach(day => {
-                        const checkbox = document.getElementById(`day_${day}`);
+                        // Normalizar el día (a minúsculas y sin tildes para el ID)
+                        const normalizedDay = day.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                        const checkbox = document.getElementById(`day_${normalizedDay}`);
                         if (checkbox) {
                             checkbox.checked = true;
                             const label = checkbox.parentElement;
                             label.style.borderColor = '#84cc16';
                             label.style.background = 'rgba(132, 204, 22, 0.15)';
+                        } else {
+                            // Fallback: buscar por valor en lugar de ID
+                            const checkboxes = document.querySelectorAll(`input[name="training_days"][value="${day}"]`);
+                            checkboxes.forEach(cb => {
+                                cb.checked = true;
+                                const label = cb.parentElement;
+                                label.style.borderColor = '#84cc16';
+                                label.style.background = 'rgba(132, 204, 22, 0.15)';
+                            });
                         }
                     });
                 }
@@ -3081,9 +3124,7 @@
                     // Mapear objetivo_gym a objetivo (el schema espera 'objetivo', no 'objetivo_gym')
                     const objetivoMapping = {
                         'ganar_musculo': 'ganar_musculo',
-                        'ganar_fuerza': 'ganar_fuerza',
-                        'perder_grasa': 'perder_grasa',
-                        'mantener_forma': 'mantener_forma'
+                        'ganar_fuerza': 'ganar_fuerza'
                     };
                     const objetivo = objetivoMapping[objetivoGym] || objetivoGym;
                     
@@ -3310,32 +3351,26 @@
                     sendBtn.classList.remove('active');
 
                     try {
-                        // Preparar payload para logging
-                        const userId = getCurrentUserId();
-                        const conversationHistory = getConversationHistory();
-                        const token = localStorage.getItem('accessToken');
-                        
+                        // Preparar payload para el chat básico
                         const payload = {
-                            message: message,
-                            user_id: userId,
-                            conversation_history: conversationHistory
+                            message: message
                         };
 
                         console.log('=== PAYLOAD ENVIADO ===');
                         console.log('Payload:', JSON.stringify(payload, null, 2));
-                        console.log('User ID:', userId);
                         console.log('Message:', message);
-                        console.log('Conversation History:', conversationHistory);
-                        console.log('Token exists:', !!token);
                         console.log('======================');
 
-                        // Usar nuevo endpoint de function calling
-                        const response = await fetch(`${API_BASE}/api/chat/modify`, {
+                        // Usar endpoint de chat básico
+                        const headers = getAuthHeaders();
+                        if (!headers) {
+                            addMessage('Error de autenticación. Por favor, inicia sesión nuevamente.');
+                            return;
+                        }
+
+                        const response = await fetch(`${API_BASE}/api/chat`, {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                            },
+                            headers: headers,
                             body: JSON.stringify(payload)
                         });
 
@@ -3366,61 +3401,24 @@
                         
                         // DEBUG: Log de la respuesta completa
                         console.log('🔍 Respuesta completa del chat:', data);
-                        console.log('🔍 Campo modified:', data.modified);
-                        console.log('🔍 Campo changes:', data.changes);
-                        console.log('🔍 Campo function_used:', data.function_used);
 
                         // Ocultar indicador de escritura
                         hideTypingIndicator();
 
-                        // Añadir respuesta del chat
-                        addMessage(data.response);
-                        
-                        // Si se actualizó el plan, forzar recarga completa
-                        if (data.success && data.plan_updated) {
-                            console.log('✅ Plan actualizado, recargando página...');
-                            
-                            // Mostrar el mensaje de respuesta
-                            if (data.response) {
-                                addMessage(data.response, 'assistant');
-                            }
-                            
-                            // FORZAR RECARGA INMEDIATA
-                            setTimeout(() => {
-                                console.log('🔄 Ejecutando location.reload()...');
-                                location.reload(true);
-                            }, 1500);
-                            
-                            return; // No continuar con el flujo normal
-                        }
-                        
-                        // Si se realizaron modificaciones, mostrar notificación
-                        console.log('🔍 Verificando si hay modificaciones...');
-                        console.log('🔍 data.modified es:', data.modified, 'tipo:', typeof data.modified);
-                        
-                        if (data.modified) {
-                            console.log('✅ Modificaciones detectadas, mostrando notificación...');
-                            showModificationNotification({
-                                modified: true,
-                                changes: data.changes || [],
-                                function_used: data.function_used || 'unknown'
-                            });
-                            
-                            // Añadir badge visual al mensaje
-                            addModificationBadge();
-                            
-                            // ✨ NUEVO: Recargar plan después de modificación
-                            console.log('🔄 Plan modificado, recargando dashboard...');
-                            setTimeout(async () => {
-                                console.log('⏰ Ejecutando reloadPlanFromServer después de 1 segundo...');
-                                await reloadPlanFromServer();
-                            }, 1000); // Esperar 1 segundo para que la IA termine de guardar
+                        // Añadir respuesta del chat (el endpoint devuelve 'answer')
+                        if (data.answer) {
+                            addMessage(data.answer);
                         } else {
-                            console.log('❌ No se detectaron modificaciones');
+                            addMessage('No se recibió respuesta del servidor.');
                         }
                         
-                        if (!isPremiumUser()) {
-                            incrementChatUsage();
+                        // Actualizar contador de usos restantes si es usuario FREE
+                        if (data.chat_uses_free_restantes !== undefined && data.chat_uses_free_restantes !== null) {
+                            console.log(`💬 Usos restantes (FREE): ${data.chat_uses_free_restantes}`);
+                            // Actualizar UI si es necesario
+                            if (data.chat_uses_free_restantes <= 0) {
+                                disableChatInput();
+                            }
                         }
                     } catch (error) {
                         console.error('Error en chat:', error);
@@ -3566,7 +3564,8 @@
                         const plan = {
                             rutina: data.current_routine,
                             dieta: data.current_diet,
-                            motivacion: "Rutina actualizada dinámicamente"
+                            motivacion: "Rutina actualizada dinámicamente",
+                            metadata: data.metadata || {}
                         };
 
                         console.log('📋 Plan creado:', plan);
@@ -3675,7 +3674,8 @@
                             const plan = {
                                 rutina: data.current_routine,
                                 dieta: data.current_diet || {},
-                                motivacion: "Rutina actualizada dinámicamente"
+                                motivacion: "Rutina actualizada dinámicamente",
+                                metadata: data.metadata || {}
                             };
                             
                             // Guardar en localStorage para futuras consultas
@@ -3797,154 +3797,62 @@
                     let rutinaHtml = `
                         <style>
                             #rutinaContent {
-                                background: #0f0f0f;
+                                background: transparent;
                                 border: none;
-                                border-radius: 0;
                                 padding: 0;
                                 color: #ffffff;
-                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-                                line-height: 1.6;
-                                width: 100%;
-                                min-height: auto;
-                                height: auto;
-                                overflow: visible;
-                            }
-                            .routine-header {
-                                margin-bottom: 48px;
-                                padding-bottom: 32px;
-                                border-bottom: 2px solid rgba(132, 204, 22, 0.15);
-                            }
-                            .section-title {
-                                font-size: 44px;
-                                font-weight: 800;
-                                margin-bottom: 10px;
-                                color: #ffffff;
-                                letter-spacing: -1.8px;
-                                background: linear-gradient(135deg, #ffffff 0%, #84cc16 100%);
-                                -webkit-background-clip: text;
-                                -webkit-text-fill-color: transparent;
-                                background-clip: text;
                                 font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                                width: 100%;
                             }
-                            .section-subtitle {
-                                font-size: 18px;
-                                color: #a8b3c1;
-                                margin-top: 10px;
-                                font-weight: 400;
-                                line-height: 1.7;
-                                letter-spacing: 0.2px;
-                            }
-                            .day-card {
-                                background: #1e1e1e;
-                                border: 1px solid rgba(132, 204, 22, 0.12);
-                                border-radius: 16px;
-                                padding: 36px 44px;
-                                margin-bottom: 36px;
-                                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
-                                transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-                            }
-                            .day-card:hover {
-                                border-color: rgba(132, 204, 22, 0.25);
-                                transform: translateY(-3px);
-                                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(132, 204, 22, 0.1);
+                            .day-section {
+                                margin-bottom: 48px;
                             }
                             .day-title {
-                                font-size: 15px;
-                                font-weight: 700;
-                                margin-bottom: 26px;
-                                color: #84cc16;
-                                padding: 0;
-                                background: none;
-                                border: none;
-                                letter-spacing: 1.2px;
-                                text-transform: uppercase;
-                                display: flex;
-                                align-items: center;
-                                gap: 14px;
-                                position: relative;
-                                padding-bottom: 16px;
+                                font-size: 18px;
+                                font-weight: 600;
+                                color: #ffffff;
+                                margin-bottom: 20px;
+                                padding-bottom: 12px;
+                                border-bottom: 1px solid #262626;
                                 font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
                             }
-                            .day-title::before {
-                                content: "";
-                                width: 5px;
-                                height: 28px;
-                                background: linear-gradient(180deg, #84cc16 0%, #65a30d 100%);
-                                border-radius: 3px;
-                                box-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
-                            }
-                            .day-title::after {
-                                content: "";
-                                position: absolute;
-                                bottom: 0;
-                                left: 19px;
-                                right: 0;
-                                height: 1px;
-                                background: linear-gradient(90deg, rgba(132, 204, 22, 0.3) 0%, transparent 100%);
-                            }
-                            .exercise-item {
-                                font-size: 17px;
-                                color: #e8edf3;
-                                margin-bottom: 12px;
-                                line-height: 1.75;
-                                padding: 20px 32px;
-                                padding-left: 68px;
-                                position: relative;
-                                background: #252525;
-                                border-radius: 14px;
-                                border: 1px solid rgba(255, 255, 255, 0.06);
-                                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                            .exercise-row {
                                 display: flex;
                                 align-items: center;
                                 justify-content: space-between;
-                                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                                padding: 14px 0;
+                                border-bottom: 1px solid #1a1a1a;
+                                font-size: 15px;
+                                color: #d4d4d4;
                             }
-                            .exercise-item:hover {
-                                background: #2a2a2a;
-                                border-color: rgba(132, 204, 22, 0.2);
-                                transform: translateX(6px);
-                                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(132, 204, 22, 0.1);
-                            }
-                            .exercise-item::before {
-                                content: "→";
-                                position: absolute;
-                                left: 32px;
-                                color: #84cc16;
-                                font-weight: 600;
-                                font-size: 18px;
-                                opacity: 0.7;
-                                transition: all 0.3s ease;
-                            }
-                            .exercise-item:hover::before {
-                                opacity: 1;
-                                transform: translateX(2px);
+                            .exercise-row:last-child {
+                                border-bottom: none;
                             }
                             .exercise-name {
-                                font-weight: 600;
-                                color: #f5f7fa;
-                                font-size: 17px;
-                                letter-spacing: 0.1px;
+                                font-weight: 400;
+                                color: #e5e5e5;
                                 flex: 1;
                             }
-                            .exercise-sets {
-                                color: #84cc16;
-                                font-weight: 700;
-                                font-size: 16px;
-                                background: rgba(132, 204, 22, 0.12);
-                                padding: 6px 16px;
-                                border-radius: 8px;
-                                letter-spacing: 0.3px;
-                                border: 1px solid rgba(132, 204, 22, 0.2);
+                            .exercise-details {
+                                color: #a3a3a3;
+                                font-size: 14px;
+                                margin-left: 24px;
                                 white-space: nowrap;
-                                margin-left: 20px;
                             }
                         </style>
-                        <div class="routine-header">
-                            <h1 class="section-title">Rutina de Entrenamiento</h1>
-                            <p class="section-subtitle">${plan.rutina.titulo || 'Plan personalizado diseñado para maximizar tus resultados'}</p>
-                        </div>
                     `;
+                    
+                    // Obtener metadata para filtrar días correctos
+                    const metadata = plan.metadata || plan.rutina?.metadata || {};
+                    const trainingDays = metadata.training_days || [];
+                    const trainingFrequency = metadata.training_frequency;
+                    
+                    // Normalizar días de la metadata para comparación
+                    const normalizeDay = (day) => {
+                        if (!day) return '';
+                        return day.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    };
+                    const normalizedTrainingDays = trainingDays.map(normalizeDay);
                     
                     // Formato 1: exercises (formato nuevo del backend)
                     if (plan.rutina.exercises && Array.isArray(plan.rutina.exercises) && plan.rutina.exercises.length > 0) {
@@ -3958,18 +3866,31 @@
                             exercisesByDay[day].push(exercise);
                         });
                         
-                        const days = Object.keys(exercisesByDay);
+                        let days = Object.keys(exercisesByDay);
+                        
+                        // Filtrar días según metadata si está disponible
+                        if (normalizedTrainingDays.length > 0) {
+                            days = days.filter(day => {
+                                const normalizedDay = normalizeDay(day);
+                                // Buscar coincidencia parcial (ej: "Lunes" vs "lunes")
+                                return normalizedTrainingDays.some(td => 
+                                    normalizedDay.includes(td) || td.includes(normalizedDay)
+                                );
+                            });
+                            console.log('📅 Días filtrados según metadata:', days, 'de', normalizedTrainingDays);
+                        }
+                        
                         console.log('📅 Días encontrados:', days);
                         days.forEach((day) => {
-                            rutinaHtml += `<div class="day-card">`;
+                            rutinaHtml += `<div class="day-section">`;
                             rutinaHtml += `<div class="day-title">${day}</div>`;
                             exercisesByDay[day].forEach(ej => {
                                 const name = ej.name || 'Ejercicio';
                                 const sets = ej.sets || 3;
                                 const reps = ej.reps || '10-12';
-                                rutinaHtml += `<div class="exercise-item">`;
+                                rutinaHtml += `<div class="exercise-row">`;
                                 rutinaHtml += `<span class="exercise-name">${name}</span>`;
-                                rutinaHtml += `<span class="exercise-sets">${sets}x${reps}</span>`;
+                                rutinaHtml += `<span class="exercise-details">${sets} series × ${reps} reps</span>`;
                                 rutinaHtml += `</div>`;
                             });
                             rutinaHtml += `</div>`;
@@ -3978,16 +3899,31 @@
                     // Formato 2: dias (formato antiguo)
                     else if (plan.rutina.dias && Array.isArray(plan.rutina.dias) && plan.rutina.dias.length > 0) {
                         console.log('✅ Usando formato dias, total:', plan.rutina.dias.length);
-                        plan.rutina.dias.forEach(dia => {
-                            rutinaHtml += `<div class="day-card">`;
+                        
+                        // Filtrar días según metadata si está disponible
+                        let diasToShow = plan.rutina.dias;
+                        if (normalizedTrainingDays.length > 0) {
+                            diasToShow = plan.rutina.dias.filter(dia => {
+                                const diaName = dia.dia || dia.nombre || '';
+                                const normalizedDia = normalizeDay(diaName);
+                                // Buscar coincidencia parcial
+                                return normalizedTrainingDays.some(td => 
+                                    normalizedDia.includes(td) || td.includes(normalizedDia)
+                                );
+                            });
+                            console.log('📅 Días filtrados según metadata:', diasToShow.length, 'de', plan.rutina.dias.length);
+                        }
+                        
+                        diasToShow.forEach(dia => {
+                            rutinaHtml += `<div class="day-section">`;
                             rutinaHtml += `<div class="day-title">${dia.dia || dia.nombre || 'Día'}</div>`;
                             (dia.ejercicios || []).forEach(ejercicio => {
                                 const nombre = ejercicio.nombre || ejercicio.name || '';
                                 const series = ejercicio.series || ejercicio.sets || 3;
                                 const reps = ejercicio.repeticiones || ejercicio.reps || '10-12';
-                                rutinaHtml += `<div class="exercise-item">`;
+                                rutinaHtml += `<div class="exercise-row">`;
                                 rutinaHtml += `<span class="exercise-name">${nombre}</span>`;
-                                rutinaHtml += `<span class="exercise-sets">${series}x${reps}</span>`;
+                                rutinaHtml += `<span class="exercise-details">${series} series × ${reps} reps</span>`;
                                 rutinaHtml += `</div>`;
                             });
                             rutinaHtml += `</div>`;
@@ -4038,163 +3974,58 @@
                     let dietaHtml = `
                         <style>
                             #dietaContent {
-                                background: #0f0f0f;
+                                background: transparent;
                                 border: none;
-                                border-radius: 0;
                                 padding: 0;
                                 color: #ffffff;
-                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-                                line-height: 1.6;
-                                width: 100%;
-                                min-height: auto;
-                                height: auto;
-                                overflow: visible;
-                            }
-                            .diet-header {
-                                margin-bottom: 48px;
-                                padding-bottom: 32px;
-                                border-bottom: 2px solid rgba(59, 130, 246, 0.15);
-                            }
-                            .section-title {
-                                font-size: 44px;
-                                font-weight: 800;
-                                margin-bottom: 10px;
-                                color: #ffffff;
-                                letter-spacing: -1.8px;
-                                background: linear-gradient(135deg, #ffffff 0%, #3b82f6 100%);
-                                -webkit-background-clip: text;
-                                -webkit-text-fill-color: transparent;
-                                background-clip: text;
                                 font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                                width: 100%;
                             }
-                            .section-subtitle {
-                                font-size: 18px;
-                                color: #a8b3c1;
-                                margin-top: 10px;
-                                font-weight: 400;
-                                line-height: 1.7;
-                                letter-spacing: 0.2px;
+                            .macros-container {
+                                margin-bottom: 40px;
+                                padding-bottom: 24px;
+                                border-bottom: 1px solid #262626;
                             }
-                            .macros-grid {
-                                display: grid;
-                                grid-template-columns: repeat(4, 1fr);
+                            .calories-row {
+                                font-size: 24px;
+                                color: #ffffff;
+                                font-weight: 600;
+                                margin-bottom: 16px;
+                            }
+                            .macros-row {
+                                display: flex;
                                 gap: 24px;
-                                margin-bottom: 48px;
+                                font-size: 13px;
+                                color: #a3a3a3;
                             }
-                            .macro-card {
-                                background: #1e1e1e;
-                                border: 1px solid rgba(59, 130, 246, 0.12);
-                                border-radius: 16px;
-                                padding: 32px 28px;
-                                text-align: center;
-                                transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-                                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
-                            }
-                            .macro-card:hover {
-                                border-color: rgba(59, 130, 246, 0.25);
-                                transform: translateY(-4px);
-                                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(59, 130, 246, 0.15);
+                            .macro-item {
+                                color: #a3a3a3;
                             }
                             .macro-value {
-                                font-size: 40px;
-                                font-weight: 800;
-                                color: #3b82f6;
-                                display: block;
-                                margin-bottom: 10px;
-                                line-height: 1;
-                                letter-spacing: -1px;
-                            }
-                            .macro-label {
-                                font-size: 12px;
-                                color: #a8b3c1;
-                                text-transform: uppercase;
-                                letter-spacing: 1.8px;
+                                color: #ffffff;
                                 font-weight: 600;
+                                margin-right: 4px;
+                                font-size: 11px;
                             }
-                            .meal-card {
-                                background: #1e1e1e;
-                                border: 1px solid rgba(59, 130, 246, 0.12);
-                                border-radius: 16px;
-                                padding: 36px 44px;
-                                margin-bottom: 36px;
-                                transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-                                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+                            .meal-section {
+                                margin-bottom: 40px;
                             }
-                            .meal-card:hover {
-                                border-color: rgba(59, 130, 246, 0.25);
-                                transform: translateY(-3px);
-                                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(59, 130, 246, 0.1);
-                            }
-                            .meal-header {
-                                display: flex;
-                                align-items: center;
-                                justify-content: space-between;
-                                margin-bottom: 26px;
-                                padding-bottom: 18px;
-                                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-                            }
-                            .meal-name {
-                                font-size: 22px;
-                                font-weight: 700;
-                                color: #3b82f6;
-                                letter-spacing: 0.2px;
-                                display: flex;
-                                align-items: center;
-                                gap: 14px;
-                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-                            }
-                            .meal-name::before {
-                                content: "";
-                                width: 5px;
-                                height: 28px;
-                                background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
-                                border-radius: 3px;
-                                box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
-                            }
-                            .meal-kcal {
-                                font-size: 17px;
-                                font-weight: 700;
-                                color: #a8b3c1;
-                                background: rgba(59, 130, 246, 0.12);
-                                padding: 8px 18px;
-                                border-radius: 10px;
-                                border: 1px solid rgba(59, 130, 246, 0.2);
-                                letter-spacing: 0.3px;
+                            .meal-title {
+                                font-size: 18px;
+                                font-weight: 600;
+                                color: #ffffff;
+                                margin-bottom: 16px;
+                                padding-bottom: 12px;
+                                border-bottom: 1px solid #262626;
                             }
                             .food-item {
-                                font-size: 17px;
-                                color: #e8edf3;
-                                margin-bottom: 12px;
-                                line-height: 1.75;
-                                padding: 20px 32px;
-                                padding-left: 68px;
-                                position: relative;
-                                background: #252525;
-                                border-radius: 14px;
-                                border: 1px solid rgba(255, 255, 255, 0.06);
-                                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                                font-size: 15px;
+                                color: #d4d4d4;
+                                padding: 10px 0;
+                                border-bottom: 1px solid #1a1a1a;
                             }
-                            .food-item:hover {
-                                background: #2a2a2a;
-                                border-color: rgba(59, 130, 246, 0.2);
-                                transform: translateX(6px);
-                                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(59, 130, 246, 0.1);
-                            }
-                            .food-item::before {
-                                content: "→";
-                                position: absolute;
-                                left: 32px;
-                                color: #3b82f6;
-                                font-weight: 600;
-                                font-size: 18px;
-                                opacity: 0.7;
-                                transition: all 0.3s ease;
-                            }
-                            .food-item:hover::before {
-                                opacity: 1;
-                                transform: translateX(2px);
+                            .food-item:last-child {
+                                border-bottom: none;
                             }
                             .censored-content {
                                 filter: blur(8px);
@@ -4246,26 +4077,12 @@
                                 box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
                             }
                         </style>
-                        <div class="diet-header">
-                            <h1 class="section-title">Plan Nutricional</h1>
-                            <p class="section-subtitle">Alimentación optimizada para tus objetivos</p>
-                        </div>
-                        <div class="macros-grid">
-                            <div class="macro-card">
-                                <span class="macro-value">${totalKcal}</span>
-                                <span class="macro-label">Calorías</span>
-                            </div>
-                            <div class="macro-card">
-                                <span class="macro-value">${proteinas}</span>
-                                <span class="macro-label">Proteínas</span>
-                            </div>
-                            <div class="macro-card">
-                                <span class="macro-value">${carbos}</span>
-                                <span class="macro-label">Carbohidratos</span>
-                            </div>
-                            <div class="macro-card">
-                                <span class="macro-value">${grasas}</span>
-                                <span class="macro-label">Grasas</span>
+                        <div class="macros-container">
+                            <div class="calories-row">${totalKcal} kcal</div>
+                            <div class="macros-row">
+                                <div class="macro-item"><span class="macro-value">${proteinas}g</span> proteínas</div>
+                                <div class="macro-item"><span class="macro-value">${carbos}g</span> carbohidratos</div>
+                                <div class="macro-item"><span class="macro-value">${grasas}g</span> grasas</div>
                             </div>
                         </div>
                     `;
@@ -4274,21 +4091,9 @@
                     meals.forEach((comida) => {
                         console.log(`🍽️ Comida:`, comida);
                         const nombreComida = comida.nombre || comida.nombre_comida || 'Comida';
-                        const kcalComida = comida.kcal || '';
-                        dietaHtml += `<div class="meal-card">`;
-                        dietaHtml += `<div class="meal-header">`;
-                        dietaHtml += `<div class="meal-name">${nombreComida}</div>`;
-                        if (kcalComida) {
-                            dietaHtml += `<span class="meal-kcal">${kcalComida} kcal</span>`;
-                        }
-                        dietaHtml += `</div>`;
+                        dietaHtml += `<div class="meal-section">`;
+                        dietaHtml += `<div class="meal-title">${nombreComida}</div>`;
                         if (comida.alimentos) {
-                            // Debug: log del primer alimento para ver estructura
-                            if (comida.alimentos.length > 0) {
-                                console.log('🍎 Estructura del primer alimento:', comida.alimentos[0]);
-                                console.log('🔍 Tipo:', typeof comida.alimentos[0]);
-                            }
-                            
                             comida.alimentos.forEach(alimento => {
                                 const alimentoText = renderAlimento(alimento);
                                 dietaHtml += `<div class="food-item">${alimentoText}</div>`;
@@ -5125,16 +4930,13 @@
                 
                 const objetivoGymOptions = [
                     { value: 'ganar_musculo', label: 'Ganar Músculo' },
-                    { value: 'ganar_fuerza', label: 'Ganar Fuerza' },
-                    { value: 'perder_grasa', label: 'Perder Grasa' },
-                    { value: 'mantener_forma', label: 'Mantener Forma' }
+                    { value: 'ganar_fuerza', label: 'Ganar Fuerza' }
                 ];
                 
                 const objetivoNutricionalOptions = [
                     { value: 'volumen', label: 'Volumen' },
                     { value: 'definicion', label: 'Definición' },
-                    { value: 'mantenimiento', label: 'Mantenimiento' },
-                    { value: 'recomposicion', label: 'Recomposición' }
+                    { value: 'mantenimiento', label: 'Mantenimiento' }
                 ];
                 
                 const experienciaOptions = [
@@ -5173,11 +4975,13 @@
                 const iconAge = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`;
                 const iconGender = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="14" r="8"></circle><path d="M22 2l-8 8M16 2h6v6"></path></svg>`;
                 const iconTarget = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>`;
+                const iconDumbbell = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="4" height="10" rx="1"></rect><rect x="17" y="7" width="4" height="10" rx="1"></rect><line x1="7" y1="12" x2="17" y2="12" stroke-width="3"></line></svg>`;
+                const iconMeat = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="2"></rect><line x1="7" y1="9" x2="17" y2="9"></line><line x1="7" y1="12" x2="17" y2="12"></line><line x1="7" y1="15" x2="15" y2="15"></line></svg>`;
                 const iconActivity = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>`;
                 const iconDays = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`;
                 const iconEquipment = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 14h12v8H6z"></path></svg>`;
                 const iconInjury = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
-                const iconAllergy = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>`;
+                const iconAllergy = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="14" rx="8" ry="3"></ellipse><path d="M4 14c0-2 2-3 4-3s4 1 4 3"></path><path d="M20 14c0 2-2 3-4 3s-4-1-4-3"></path><circle cx="12" cy="12" r="6"></circle><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>`;
                 const iconDiet = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4z"></path></svg>`;
                 
                 return `
@@ -5257,14 +5061,14 @@
                                 </div>
                                 <div class="profile-card" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%); border: 1px solid rgba(132, 204, 22, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(132, 204, 22, 0.2) inset'; this.style.borderColor='rgba(132, 204, 22, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset'; this.style.borderColor='rgba(132, 204, 22, 0.15)'">
                                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                                        <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconTarget}</div>
+                                        <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconDumbbell}</div>
                                         <div style="color: #a3a3a3; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Objetivo Gym</div>
                                     </div>
                                     <div style="font-size: 22px; font-weight: 600; color: #e5e5e5;">${formatOption(userData.objetivo_gym, objetivoGymOptions)}</div>
                                 </div>
                                 <div class="profile-card" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%); border: 1px solid rgba(132, 204, 22, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(132, 204, 22, 0.2) inset'; this.style.borderColor='rgba(132, 204, 22, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset'; this.style.borderColor='rgba(132, 204, 22, 0.15)'">
                                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                                        <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconTarget}</div>
+                                        <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconMeat}</div>
                                         <div style="color: #a3a3a3; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Objetivo Nutricional</div>
                                     </div>
                                     <div style="font-size: 22px; font-weight: 600; color: #e5e5e5;">${formatOption(userData.objetivo_nutricional, objetivoNutricionalOptions)}</div>
@@ -6187,49 +5991,8 @@
             /**
              * Revierte la última modificación
              */
-            async function revertLastModification() {
-                try {
-                    console.log('🔄 Revirtiendo última modificación...');
-                    
-                    // Obtener token JWT
-                    const token = localStorage.getItem('accessToken');
-                    if (!token) {
-                        console.error('No hay token para revertir cambios');
-                        return;
-                    }
-                    
-                    const response = await fetch('http://127.0.0.1:8000/api/chat/modify', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({ 
-                            message: "deshaz el último cambio",
-                            user_id: getCurrentUserId(),
-                            conversation_history: []
-                        })
-                    });
-                    
-                    const result = await response.json();
-                    
-                    if (response.ok && result.success !== false) {
-                        console.log('✅ Cambios deshechos correctamente');
-                        
-                        // Recargar secciones afectadas
-                        reloadRoutineSection();
-                        reloadDietSection();
-                        
-                        // Mostrar notificación de éxito
-                        alert('Cambios deshechos correctamente');
-                    } else {
-                        throw new Error(result.message || 'Error deshaciendo cambios');
-                    }
-                } catch (error) {
-                    console.error('Error reverting modification:', error);
-                    alert('Error deshaciendo cambios: ' + error.message);
-                }
-            }
+            // Función eliminada: revertLastModification
+            // Ya no existe la funcionalidad de modificaciones automáticas
 
             /**
              * Recarga las secciones afectadas por modificaciones

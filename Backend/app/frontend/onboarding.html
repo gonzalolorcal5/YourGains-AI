@@ -293,32 +293,14 @@
             <!-- Materiales disponibles -->
             <div>
                 <label class="block text-sm mb-2">Materiales disponibles</label>
-                <div class="grid grid-cols-2 gap-2">
-                    <label class="flex items-center space-x-2">
-                        <input type="checkbox" id="gym" value="gym" class="rounded">
-                        <span class="text-sm">Gym completo</span>
-                    </label>
-                    <label class="flex items-center space-x-2">
-                        <input type="checkbox" id="pesas" value="pesas" class="rounded">
-                        <span class="text-sm">Pesas libres</span>
-                    </label>
-                    <label class="flex items-center space-x-2">
-                        <input type="checkbox" id="mancuernas" value="mancuernas" class="rounded">
-                        <span class="text-sm">Mancuernas</span>
-                    </label>
-                    <label class="flex items-center space-x-2">
-                        <input type="checkbox" id="barra" value="barra" class="rounded">
-                        <span class="text-sm">Barra olímpica</span>
-                    </label>
-                    <label class="flex items-center space-x-2">
-                        <input type="checkbox" id="casa" value="casa" class="rounded">
-                        <span class="text-sm">Solo en casa</span>
-                    </label>
-                    <label class="flex items-center space-x-2">
-                        <input type="checkbox" id="cardio" value="cardio" class="rounded">
-                        <span class="text-sm">Máquinas cardio</span>
-                    </label>
-                </div>
+                <textarea 
+                    id="materiales" 
+                    name="materiales" 
+                    rows="3" 
+                    placeholder='Ejemplo: "Mancuernas y un press banca"'
+                    class="w-full rounded-xl bg-neutral-800 px-4 py-3 outline-none focus:ring-2 ring-lime-400 text-white placeholder-neutral-500 resize-y"
+                    style="min-height: 80px;"
+                ></textarea>
             </div>
 
             <!-- Tipo de cuerpo -->

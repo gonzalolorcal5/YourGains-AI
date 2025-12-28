@@ -15,7 +15,6 @@ from app.routes import (
     user_status,
     chat,
     onboarding,
-    chat_modify_optimized,
     # Importamos Stripe directamente aqui para que si falla, explote y veamos el error
     stripe_routes,
     stripe_webhook,
@@ -48,9 +47,8 @@ app.include_router(oauth.router)
 app.include_router(plan.router)
 app.include_router(analisis_cuerpo.router)
 app.include_router(user_status.router)
-app.include_router(chat.router)
+app.include_router(chat.router, prefix="/api", tags=["chat"])
 app.include_router(onboarding.router)
-app.include_router(chat_modify_optimized.router)
 
 # --------- STRIPE ROUTERS (Sin try-except gigante) ---------
 # Estos son CRITICOS para que tarifas.html funcione.
@@ -135,6 +133,12 @@ def _tarifas(): return _html("tarifas.html")
 
 @app.get("/pago.html")
 def _pago(): return _html("pago.html")
+
+@app.get("/terms.html")
+def _terms(): return _html("terms.html")
+
+@app.get("/privacy.html")
+def _privacy(): return _html("privacy.html")
 
 # Servir archivos JS específicos (Añadimos anti-cache aquí también por si acaso)
 def _serve_js_no_cache(filename):

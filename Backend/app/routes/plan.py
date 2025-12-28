@@ -236,9 +236,26 @@ def obtener_datos_actuales(
 ):
     """
     Obtiene los datos del último Plan del usuario para pre-llenar formulario de nueva rutina.
+    Incluye training_frequency y training_days desde current_routine o metadata del Plan.
     Solo lectura, no modifica nada.
     """
     try:
+        import json
+        
+        # Intentar obtener training_days y training_frequency desde current_routine (más actualizado)
+        training_frequency = None
+        training_days = None
+        
+        if usuario.current_routine:
+            try:
+                current_routine_data = json.loads(usuario.current_routine)
+                if isinstance(current_routine_data, dict) and 'metadata' in current_routine_data:
+                    metadata = current_routine_data['metadata']
+                    training_frequency = metadata.get('training_frequency')
+                    training_days = metadata.get('training_days')
+            except (json.JSONDecodeError, AttributeError, KeyError):
+                pass
+        
         # Obtener último Plan del usuario
         plan = db.query(Plan).filter(Plan.user_id == usuario.id).order_by(Plan.fecha_creacion.desc()).first()
         
@@ -260,8 +277,24 @@ def obtener_datos_actuales(
                 "entrenar_fuerte": None,
                 "lesiones": None,
                 "alergias": None,
-                "restricciones_dieta": None
+                "restricciones_dieta": None,
+                "dias_entrenamiento": training_frequency or 4,
+                "training_frequency": training_frequency or 4,
+                "training_days": training_days or ["lunes", "martes", "jueves", "viernes"]
             }
+        
+        # Si no se encontraron en current_routine, intentar desde metadata del Plan
+        if training_frequency is None or training_days is None:
+            try:
+                rutina_json = json.loads(plan.rutina) if plan.rutina else {}
+                if isinstance(rutina_json, dict) and 'metadata' in rutina_json:
+                    metadata = rutina_json['metadata']
+                    if training_frequency is None:
+                        training_frequency = metadata.get('training_frequency')
+                    if training_days is None:
+                        training_days = metadata.get('training_days')
+            except (json.JSONDecodeError, AttributeError, KeyError):
+                pass
         
         # Retornar datos del plan
         peso_float = float(plan.peso) if plan.peso else 75.0
@@ -282,10 +315,28 @@ def obtener_datos_actuales(
             "entrenar_fuerte": plan.entrenar_fuerte,
             "lesiones": plan.lesiones or None,
             "alergias": plan.alergias or None,
-            "restricciones_dieta": plan.restricciones_dieta or None
+            "restricciones_dieta": plan.restricciones_dieta or None,
+            "dias_entrenamiento": training_frequency or 4,
+            "training_frequency": training_frequency or 4,
+            "training_days": training_days or ["lunes", "martes", "jueves", "viernes"]
         }
     except Exception as e:
         # Si hay error, retornar valores por defecto (no fallar)
+        import json
+        training_frequency = None
+        training_days = None
+        
+        # Intentar obtener desde current_routine incluso en caso de error
+        try:
+            if usuario.current_routine:
+                current_routine_data = json.loads(usuario.current_routine)
+                if isinstance(current_routine_data, dict) and 'metadata' in current_routine_data:
+                    metadata = current_routine_data['metadata']
+                    training_frequency = metadata.get('training_frequency')
+                    training_days = metadata.get('training_days')
+        except:
+            pass
+        
         return {
             "altura": 175,
             "peso": 75.0,
@@ -302,7 +353,10 @@ def obtener_datos_actuales(
             "entrenar_fuerte": None,
             "lesiones": None,
             "alergias": None,
-            "restricciones_dieta": None
+            "restricciones_dieta": None,
+            "dias_entrenamiento": training_frequency or 4,
+            "training_frequency": training_frequency or 4,
+            "training_days": training_days or ["lunes", "martes", "jueves", "viernes"]
         }
 
 
@@ -353,6 +407,37 @@ def obtener_rutina_actual(
             print(f"🔍 Primeros 100 chars: {usuario.current_routine[:100]}")
         else:
             print(f"❌ current_routine es NULL o vacío")
+        
+        # Obtener metadata de training_frequency y training_days para validación
+        training_frequency = None
+        training_days = None
+        
+        if usuario.current_routine:
+            try:
+                import json
+                current_routine_data = json.loads(usuario.current_routine)
+                if isinstance(current_routine_data, dict) and 'metadata' in current_routine_data:
+                    metadata = current_routine_data['metadata']
+                    training_frequency = metadata.get('training_frequency')
+                    training_days = metadata.get('training_days')
+            except (json.JSONDecodeError, AttributeError, KeyError):
+                pass
+        
+        # Si no se encontraron en current_routine, intentar desde el último Plan
+        if training_frequency is None or training_days is None:
+            try:
+                import json
+                plan = db.query(Plan).filter(Plan.user_id == usuario.id).order_by(Plan.fecha_creacion.desc()).first()
+                if plan and plan.rutina:
+                    rutina_json = json.loads(plan.rutina)
+                    if isinstance(rutina_json, dict) and 'metadata' in rutina_json:
+                        metadata = rutina_json['metadata']
+                        if training_frequency is None:
+                            training_frequency = metadata.get('training_frequency')
+                        if training_days is None:
+                            training_days = metadata.get('training_days')
+            except (json.JSONDecodeError, AttributeError, KeyError):
+                pass
         
         # Verificar si es premium
         is_premium = usuario.is_premium or usuario.plan_type == "PREMIUM"
@@ -714,6 +799,10 @@ def obtener_rutina_actual(
             "success": True,
             "current_routine": current_routine,
             "current_diet": current_diet,
+            "metadata": {
+                "training_frequency": training_frequency,
+                "training_days": training_days
+            },
             "user_id": usuario.id,
             "is_premium": is_premium
         }

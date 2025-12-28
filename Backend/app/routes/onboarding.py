@@ -20,7 +20,7 @@ class OnboardingRequest(BaseModel):
     edad: int
     sexo: str
     experiencia: str
-    materiales: List[str]
+    materiales: str
     tipo_cuerpo: str
     nivel_actividad: str  # NUEVO - Para cálculo TMB: sedentario, ligero, moderado, activo, muy_activo
     alergias: Optional[str] = None
@@ -150,7 +150,7 @@ async def process_onboarding(
             sexo=data.sexo,
             experiencia=data.experiencia,
             objetivo=f"{data.gym_goal} + {data.nutrition_goal}",  # Combinar objetivos para compatibilidad
-            materiales=",".join(data.materiales),
+            materiales=data.materiales,
             tipo_cuerpo=data.tipo_cuerpo,
             nivel_actividad=data.nivel_actividad,  # NUEVO - Para cálculo TMB
             idioma=data.idioma,
@@ -279,7 +279,7 @@ async def process_onboarding(
             objetivo_gym=data.gym_goal,  # Objetivo de gimnasio separado
             objetivo_dieta=data.nutrition_goal,  # Objetivo nutricional separado (legacy)
             objetivo_nutricional=data.nutrition_goal,  # Objetivo nutricional separado (nuevo)
-            materiales=", ".join(data.materiales),
+            materiales=data.materiales,
             tipo_cuerpo=data.tipo_cuerpo if hasattr(data, 'tipo_cuerpo') else None,
             nivel_actividad=data.nivel_actividad,  # ✅ Campo obligatorio del onboarding
             idioma="es",
