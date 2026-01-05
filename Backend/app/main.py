@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from dotenv import load_dotenv
 import os
 from fastapi.middleware.cors import CORSMiddleware
@@ -41,6 +41,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Middleware para NO-CACHE en archivos /public/
+from starlette.middleware.base import BaseHTTPMiddleware
+
+class NoCacheMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        if request.url.path.startswith("/public/"):
+            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
+        return response
+
+app.add_middleware(NoCacheMiddleware)
+
 # --------- incluir routers ---------
 app.include_router(auth.router)
 app.include_router(oauth.router)
@@ -64,6 +78,8 @@ print("[INFO] Stripe routes enabled")
 # --------- paths de frontend ---------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))   # .../app
 FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")       # .../app/frontend
+STATIC_DIR = os.path.join(os.path.dirname(BASE_DIR), "static")  # .../Backend/static
+PUBLIC_DIR = os.path.join(STATIC_DIR, "public")  # .../Backend/static/public
 
 # --------- health & debug ---------
 @app.get("/ping")
@@ -111,11 +127,23 @@ def _html(name: str):
     return response
 
 @app.get("/")
-def root_redirect():
+def root():
+    """Servir landing page (index.html)"""
+    index_path = os.path.join(STATIC_DIR, "index.html")
+    if os.path.exists(index_path):
+        response = FileResponse(index_path)
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
+    # Fallback: redirigir a login si no existe index.html
     return RedirectResponse(url="/login.html")
 
 @app.get("/login.html")
 def _login(): return _html("login.html")
+
+@app.get("/login")
+def _login_route(): return _html("login.html")
 
 @app.get("/dashboard.html")
 def _dashboard(): 
@@ -140,6 +168,18 @@ def _terms(): return _html("terms.html")
 @app.get("/privacy.html")
 def _privacy(): return _html("privacy.html")
 
+@app.get("/cookies.html")
+def _cookies():
+    """Servir página de cookies desde static"""
+    cookies_path = os.path.join(STATIC_DIR, "cookies.html")
+    if os.path.exists(cookies_path):
+        response = FileResponse(cookies_path)
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
+    raise HTTPException(status_code=404, detail="Cookies page not found")
+
 # Servir archivos JS específicos (Añadimos anti-cache aquí también por si acaso)
 def _serve_js_no_cache(filename):
     path = os.path.join(FRONTEND_DIR, filename)
@@ -156,14 +196,63 @@ def _config_js(): return _serve_js_no_cache("config.js")
 @app.get("/onboarding.js")
 def _onboarding_js(): return _serve_js_no_cache("onboarding.js")
 
+@app.get("/cookie-consent.js")
+def _cookie_consent_js():
+    """Servir cookie-consent.js desde static"""
+    cookie_js_path = os.path.join(STATIC_DIR, "cookie-consent.js")
+    if os.path.exists(cookie_js_path):
+        response = FileResponse(cookie_js_path, media_type="application/javascript")
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
+    raise HTTPException(status_code=404, detail="Cookie consent script not found")
+
+# Servir imágenes de public con anti-caché
+def _serve_public_image(filename: str):
+    """Servir imágenes de /public con headers anti-caché"""
+    image_path = os.path.join(PUBLIC_DIR, filename)
+    if os.path.exists(image_path):
+        response = FileResponse(image_path)
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
+    raise HTTPException(status_code=404, detail="Image not found")
+
+# Endpoints específicos para imágenes de la landing page
+@app.get("/public/logo.png")
+def _logo(): return _serve_public_image("logo.png")
+
+@app.get("/public/hero-bg.jpg")
+def _hero_bg(): return _serve_public_image("hero-bg.jpg")
+
+@app.get("/public/mobile-hero.png")
+def _mobile_hero(): return _serve_public_image("mobile-hero.png")
+
+@app.get("/public/mobile-rutina.png")
+def _mobile_rutina(): return _serve_public_image("mobile-rutina.png")
+
+@app.get("/public/mobile-dieta.png")
+def _mobile_dieta(): return _serve_public_image("mobile-dieta.png")
+
+# --------- Configuración de archivos estáticos ---------
+
 # estáticos (css/js/img)
-# NOTA: StaticFiles maneja su propio caché, pero para desarrollo suele estar bien.
 app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
 # Montar carpeta de imágenes específicamente
 IMAGES_DIR = os.path.join(FRONTEND_DIR, "images")
 if os.path.exists(IMAGES_DIR):
     app.mount("/images", StaticFiles(directory=IMAGES_DIR), name="images")
+
+# Montar carpeta static para landing page (public assets) con NO-CACHE
+if os.path.exists(PUBLIC_DIR):
+    print(f"[INFO] Montando /public con NO-CACHE desde: {PUBLIC_DIR}")
+    print(f"[INFO] Archivos en /public: {os.listdir(PUBLIC_DIR) if os.path.exists(PUBLIC_DIR) else 'No existe'}")
+    app.mount("/public", StaticFiles(directory=PUBLIC_DIR), name="public")
+else:
+    print(f"[WARN] PUBLIC_DIR no existe: {PUBLIC_DIR}")
 
 # --------- openapi custom ---------
 def custom_openapi():

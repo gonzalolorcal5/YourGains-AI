@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tu Entrenador Personal y Nutricionista Inteligente con IA. Rutinas de gimnasio y planes de dieta hiper-personalizados adaptados a tu situación y objetivos en segundos.">
+    <title>YourGains AI - Entrenador Personal y Nutricionista con IA</title>
+    
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Cookie Consent Script -->
+    <script src="/cookie-consent.js"></script>
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: #000000;
+            color: #ffffff;
+        }
+        
+        .neon-green {
+            color: #a6ff00;
+        }
+        
+        .bg-neon-green {
+            background-color: #a6ff00;
+        }
+        
+        .border-neon-green {
+            border-color: #a6ff00;
+        }
+        
+        .hero-overlay {
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85));
+        }
+        
+        .blur-header {
+            backdrop-filter: blur(10px);
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        img {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            image-rendering: auto;
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+    
+    <!-- HEADER DE NAVEGACIÓN -->
+    <header class="z-50 blur-header border-b border-gray-900">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <img src="/public/logo.png?v=1735948800" alt="YourGains AI Logo" class="h-32 sm:h-40 lg:h-48" loading="lazy">
+                </div>
+                
+                <!-- Enlaces y botón -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-gray-300 hover:text-white transition-colors">Home</a>
+                    <a href="#caracteristicas" class="text-gray-300 hover:text-white transition-colors">Características</a>
+                    <a href="#ciencia" class="text-gray-300 hover:text-white transition-colors">Ciencia</a>
+                    <a href="/login" class="bg-neon-green text-black px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity">
+                        Probar Gratis
+                    </a>
+                </div>
+                
+                <!-- Menú móvil -->
+                <div class="md:hidden">
+                    <a href="/login" class="bg-neon-green text-black px-4 py-2 rounded-lg font-semibold text-sm">
+                        Probar Gratis
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- SECCIÓN HERO (Principal - Pantalla Completa) -->
+    <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
+        <!-- Fondo con imagen -->
+        <div class="absolute inset-0 z-0">
+            <img src="/public/hero-bg.jpg?v=1735948800" alt="Hero Background" class="w-full h-full object-cover object-center" loading="eager">
+            <div class="absolute inset-0 hero-overlay"></div>
+        </div>
+        
+        <!-- Contenido -->
+        <div class="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                <!-- Texto -->
+                <div class="text-center lg:text-left space-y-6">
+                    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+                        Tu Entrenador Personal y Nutricionista Inteligente con <span class="neon-green">IA</span>.
+                    </h1>
+                    <p class="text-lg sm:text-xl md:text-2xl text-gray-300 leading-relaxed">
+                        Rutinas de gimnasio y planes de dieta hiper-personalizados adaptados a tu situación y objetivos en segundos.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+                        <a href="/login" class="bg-neon-green text-black px-8 py-4 rounded-lg font-bold text-lg hover:opacity-90 transition-opacity text-center">
+                            Comenzar Ahora
+                        </a>
+                        <button onclick="openOverlay()" class="border-2 border-neon-green text-neon-green px-8 py-4 rounded-lg font-bold text-lg hover:bg-neon-green hover:text-black transition-all text-center">
+                            Saber Más
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Imagen Principal -->
+                <div class="flex justify-center lg:justify-end">
+                    <img src="/public/mobile-hero.png?v=1735948800" alt="YourGains AI App" class="w-full max-w-md lg:max-w-sm xl:max-w-md object-contain transform hover:scale-105 transition-transform duration-300" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECCIÓN RUTINAS (Layout: Imagen Izquierda | Texto Derecha) -->
+    <section id="caracteristicas" class="py-20 lg:py-32 bg-black">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <!-- Columna Izquierda (Imagen) -->
+                <div class="order-2 lg:order-1 flex justify-center lg:justify-start">
+                    <img src="/public/mobile-rutina.png?v=1735948800" alt="Rutinas Personalizadas" class="w-full max-w-md lg:max-w-sm xl:max-w-md object-contain transform hover:scale-105 transition-transform duration-300" loading="lazy">
+                </div>
+                
+                <!-- Columna Derecha (Texto SEO & Autoridad) -->
+                <div class="order-1 lg:order-2 space-y-6">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">
+                        Olvídate de los Entrenadores Personales <span class="neon-green">genéricos</span>.
+                    </h2>
+                    <p class="text-lg sm:text-xl text-gray-300 leading-relaxed">
+                        Nuestra IA analiza tu perfil único, objetivos específicos y nivel actual para crear rutinas de entrenamiento que evolucionan contigo. Cada ejercicio, serie y repetición está calculado para maximizar tus resultados.
+                    </p>
+                    
+                    <!-- Lista de beneficios -->
+                    <ul class="space-y-4 pt-4">
+                        <li class="flex items-start space-x-3">
+                            <svg class="w-6 h-6 neon-green flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-200 text-base sm:text-lg">
+                                <strong class="neon-green">Tecnología RAG avanzada:</strong> No alucina, se basa en datos reales.
+                            </span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <svg class="w-6 h-6 neon-green flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-200 text-base sm:text-lg">
+                                <strong class="neon-green">Respaldado por 370 estudios científicos</strong> validados sobre hipertrofia y nutrición.
+                            </span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <svg class="w-6 h-6 neon-green flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-200 text-base sm:text-lg">
+                                <strong class="neon-green">Adaptación en tiempo real</strong> según tu progreso y feedback.
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECCIÓN DIETAS (Layout Inverso: Texto Izquierda | Imagen Derecha) -->
+    <section id="ciencia" class="py-20 lg:py-32 bg-black">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <!-- Columna Izquierda (Texto SEO & Nutrición) -->
+                <div class="space-y-6">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">
+                        Nutrición de <span class="neon-green">precisión</span>, sin dietas imposibles.
+                    </h2>
+                    <p class="text-lg sm:text-xl text-gray-300 leading-relaxed">
+                        Olvídate de contar calorías manualmente o seguir dietas genéricas. Nuestra IA calcula tus macros y calorías exactas basándose en tu metabolismo, actividad física y objetivos. Todo adaptado a tus gustos, alergias y estilo de vida.
+                    </p>
+                    
+                    <!-- Puntos clave -->
+                    <ul class="space-y-4 pt-4">
+                        <li class="flex items-start space-x-3">
+                            <svg class="w-6 h-6 neon-green flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-200 text-base sm:text-lg">
+                                <strong class="neon-green">Planes flexibles</strong> basados en tus gustos y alergias.
+                            </span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <svg class="w-6 h-6 neon-green flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-200 text-base sm:text-lg">
+                                <strong class="neon-green">Cálculo exacto de macros y micronutrientes</strong> con IA.
+                            </span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <svg class="w-6 h-6 neon-green flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-200 text-base sm:text-lg">
+                                <strong class="neon-green">Recetas fáciles</strong> optimizadas para tus objetivos.
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Columna Derecha (Imagen) -->
+                <div class="flex justify-center lg:justify-end">
+                    <img src="/public/mobile-dieta.png?v=1735948800" alt="Planes de Dieta Personalizados" class="w-full max-w-md lg:max-w-sm xl:max-w-md object-contain transform hover:scale-105 transition-transform duration-300" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA FINAL -->
+    <section id="probar" class="py-20 lg:py-32 bg-black border-t border-gray-900">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto text-center space-y-8">
+                <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                    ¿Listo para transformar tu <span class="neon-green">cuerpo</span>?
+                </h2>
+                <p class="text-lg sm:text-xl md:text-2xl text-gray-300 leading-relaxed">
+                    Únete a miles de personas que ya están alcanzando sus objetivos con la ayuda de la IA más avanzada en fitness y nutrición.
+                </p>
+                <div class="pt-6">
+                    <a href="/login" class="inline-block bg-neon-green text-black px-10 py-5 rounded-lg font-bold text-xl hover:opacity-90 transition-opacity">
+                        Probar Gratis Ahora
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- FOOTER -->
+    <footer class="bg-black border-t border-gray-900 py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <!-- Columna 1: Logo y descripción -->
+                <div class="space-y-4">
+                    <div class="flex items-center">
+                        <img src="/public/logo.png?v=1735948800" alt="YourGains AI Logo" class="h-32 sm:h-40" loading="lazy">
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        Tu entrenador personal y nutricionista inteligente con IA. Resultados reales, ciencia validada.
+                    </p>
+                </div>
+                
+                <!-- Columna 2: Enlaces -->
+                <div class="space-y-4">
+                    <h3 class="font-semibold text-white">Enlaces</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-neon-green transition-colors text-sm">Home</a></li>
+                        <li><a href="#caracteristicas" class="text-gray-400 hover:text-neon-green transition-colors text-sm">Características</a></li>
+                        <li><a href="#ciencia" class="text-gray-400 hover:text-neon-green transition-colors text-sm">Ciencia</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Columna 3: Legal -->
+                <div class="space-y-4">
+                    <h3 class="font-semibold text-white">Legal</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/privacy.html" class="text-gray-400 hover:text-neon-green transition-colors text-sm">Política de Privacidad</a></li>
+                        <li><a href="/terms.html" class="text-gray-400 hover:text-neon-green transition-colors text-sm">Términos de Servicio</a></li>
+                        <li><a href="/cookies.html" class="text-gray-400 hover:text-neon-green transition-colors text-sm">Cookies</a></li>
+                        <li><a href="javascript:void(0);" onclick="showCookiePreferences()" class="text-gray-400 hover:text-neon-green transition-colors text-sm">Gestionar Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Copyright -->
+            <div class="border-t border-gray-900 pt-8 text-center">
+                <p class="text-gray-500 text-sm">
+                    © 2024 YourGains AI. Todos los derechos reservados.
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- OVERLAY "SABER MÁS" -->
+    <div id="saberMasOverlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-95 backdrop-blur-md">
+        <div class="relative w-full max-w-5xl mx-4 max-h-[90vh] overflow-y-auto bg-gradient-to-b from-gray-900 to-black border border-gray-800 rounded-xl shadow-2xl">
+            <!-- Botón cerrar -->
+            <button onclick="closeOverlay()" class="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors z-10 bg-gray-900 rounded-full p-2 hover:bg-gray-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            
+            <!-- Contenido -->
+            <div class="p-10 md:p-16">
+                <div class="mb-12 text-center">
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white">
+                        Cómo Funciona <span class="neon-green">YourGains AI</span>
+                    </h2>
+                    <div class="w-24 h-1 bg-neon-green mx-auto"></div>
+                </div>
+                
+                <div class="space-y-10 text-gray-300">
+                    <!-- Sección 1: Cómo Funciona YourGains AI (PRIMERA) -->
+                    <div class="space-y-5 bg-gray-900 bg-opacity-50 p-8 rounded-lg border border-gray-800">
+                        <div class="mb-6">
+                            <h3 class="text-2xl md:text-3xl font-bold text-white mb-2">
+                                Cómo Funciona YourGains AI
+                            </h3>
+                            <h4 class="text-xl md:text-2xl font-semibold text-gray-300">
+                                El Trabajo Detrás de Cada Recomendación
+                            </h4>
+                        </div>
+                        <p class="text-lg leading-relaxed text-gray-300">
+                            Nuestra plataforma se basa en una <span class="neon-green font-semibold">biblioteca científica con más de 370 estudios</span> sobre hipertrofia y nutrición, analizados, procesados y estructurados manualmente por nuestro equipo.
+                        </p>
+                        <p class="text-lg leading-relaxed text-gray-300">
+                            Cada rutina personalizada está respaldada por <span class="text-white font-semibold">investigación real</span>: estudios publicados en revistas científicas reconocidas que hemos revisado, analizado y resumido individualmente.
+                        </p>
+                        <p class="text-lg leading-relaxed text-gray-300">
+                            Detrás de cada plan hay <span class="neon-green font-semibold">horas de investigación y análisis</span>. Hemos procesado cada estudio manualmente, extraído los datos clave, y estructurado la información para que nuestra IA pueda aplicarla de forma inteligente a tu perfil específico.
+                        </p>
+                        <p class="text-lg leading-relaxed text-gray-300">
+                            Nuestra tecnología <span class="neon-green font-semibold">RAG (Retrieval-Augmented Generation)</span> conecta la IA con esta base de conocimiento verificado, permitiendo que cada recomendación esté fundamentada en <span class="text-white font-semibold">evidencia científica real</span>, no en conjeturas o tendencias sin fundamento.
+                        </p>
+                    </div>
+                    
+                    <!-- Sección 2: La Ciencia Detrás -->
+                    <div class="space-y-5 border-l-4 border-neon-green pl-6">
+                        <h3 class="text-2xl md:text-3xl font-bold text-white">
+                            La Ciencia Detrás de Cada Entrenamiento
+                        </h3>
+                        <p class="text-lg leading-relaxed text-gray-300">
+                            En <span class="neon-green font-semibold">YourGains AI</span>, no creemos en métodos genéricos ni en rutinas copiadas. Nuestro objetivo es simple pero ambicioso: <span class="text-white font-semibold">llevar tu cuerpo al máximo potencial gracias a la ciencia real</span>.
+                        </p>
+                        <p class="text-lg leading-relaxed text-gray-300">
+                            Cada ejercicio, cada serie, cada repetición, cada macro calculado... todo tiene un fundamento científico detrás. Hemos hecho el trabajo pesado por ti para que solo tengas que seguir tu plan y ver los resultados.
+                        </p>
+                    </div>
+                    
+                    <!-- Sección 3: Mejora Continua -->
+                    <div class="space-y-5 border-l-4 border-neon-green pl-6">
+                        <h3 class="text-2xl md:text-3xl font-bold text-white">
+                            En Constante Evolución
+                        </h3>
+                        <p class="text-lg leading-relaxed text-gray-300">
+                            La ciencia del fitness avanza cada día. Nuevos estudios salen constantemente, y nosotros <span class="neon-green font-semibold">estamos al tanto de cada uno</span>. Nuestra biblioteca científica se actualiza regularmente con las últimas investigaciones, asegurando que siempre tengas acceso a la información más actualizada y efectiva.
+                        </p>
+                        <p class="text-lg leading-relaxed text-gray-300">
+                            Nuestro sistema aprende directamente de la ciencia más rigurosa disponible, asegurando que cada recomendación esté basada en evidencia verificable y no en información no verificada.
+                        </p>
+                    </div>
+                    
+                    <!-- Sección 4: Comodidad y Flexibilidad -->
+                    <div class="space-y-5 border-l-4 border-neon-green pl-6">
+                        <h3 class="text-2xl md:text-3xl font-bold text-white">
+                            Comodidad Total, Control Total
+                        </h3>
+                        <p class="text-lg leading-relaxed text-gray-300">
+                            Pero la ciencia no significa complejidad. Queremos que sea <span class="neon-green font-semibold">lo más fácil y efectivo posible</span> para ti.
+                        </p>
+                        <p class="text-lg leading-relaxed text-gray-300">
+                            Puedes <span class="text-white font-semibold">cambiar tu rutina desde donde sea y cuando quieras</span>. ¿Te lesionaste? ¿Cambiaste de objetivo? ¿Quieres probar algo nuevo? En segundos, nuestra IA genera un plan completamente nuevo, adaptado a tu nueva situación, respaldado por la misma ciencia rigurosa.
+                        </p>
+                        <p class="text-lg leading-relaxed text-gray-300">
+                            No necesitas contratar un entrenador personal caro. No necesitas leer cientos de estudios. Nosotros lo hemos hecho por ti. <span class="neon-green font-bold">Solo necesitas seguir tu plan y ver los resultados</span>.
+                        </p>
+                    </div>
+                    
+                    <!-- CTA Final -->
+                    <div class="text-center pt-10 border-t border-gray-800 mt-12">
+                        <p class="text-2xl md:text-3xl font-bold text-white mb-8">
+                            ¿Listo para entrenar con la ciencia de tu lado?
+                        </p>
+                        <a href="/login" class="inline-block bg-neon-green text-black px-12 py-5 rounded-lg font-bold text-xl hover:opacity-90 transition-opacity shadow-lg shadow-neon-green shadow-opacity-50">
+                            Comenzar Ahora
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Smooth Scroll -->
+    <script>
+        // Smooth scroll para los enlaces
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Funciones para abrir/cerrar overlay
+        function openOverlay() {
+            document.getElementById('saberMasOverlay').classList.remove('hidden');
+            document.getElementById('saberMasOverlay').classList.add('flex');
+            document.body.style.overflow = 'hidden'; // Prevenir scroll del body
+        }
+        
+        function closeOverlay() {
+            document.getElementById('saberMasOverlay').classList.add('hidden');
+            document.getElementById('saberMasOverlay').classList.remove('flex');
+            document.body.style.overflow = 'auto'; // Restaurar scroll del body
+        }
+        
+        // Cerrar overlay al hacer clic fuera del contenido
+        document.getElementById('saberMasOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeOverlay();
+            }
+        });
+        
+        // Cerrar overlay con ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeOverlay();
+            }
+        });
+    </script>
+    
+    <!-- BANNER DE CONSENTIMIENTO DE COOKIES -->
+    <div id="cookie-consent-banner" class="hidden fixed bottom-0 left-0 right-0 z-[100] bg-black bg-opacity-95 border-t-2 border-neon-green backdrop-blur-sm" style="opacity: 0; transform: translateY(100%); transition: opacity 0.3s ease, transform 0.3s ease;">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div class="flex-1">
+                    <p class="text-white text-sm md:text-base leading-relaxed">
+                        Usamos cookies para mejorar tu experiencia y analizar el tráfico. 
+                        <a href="/cookies.html" class="neon-green hover:underline font-semibold">Más información</a>
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <button id="cookie-reject" class="px-4 py-2 border-2 border-gray-600 text-gray-300 rounded-lg font-semibold text-sm hover:border-gray-500 hover:text-white transition-colors">
+                        Solo Necesarias
+                    </button>
+                    <button id="cookie-customize" class="px-4 py-2 border-2 border-gray-600 text-gray-300 rounded-lg font-semibold text-sm hover:border-gray-500 hover:text-white transition-colors">
+                        Personalizar
+                    </button>
+                    <button id="cookie-accept-all" class="px-6 py-2 bg-neon-green text-black rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity">
+                        Aceptar Todo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL DE PERSONALIZACIÓN DE COOKIES -->
+    <div id="cookie-customize-modal" class="hidden fixed inset-0 z-[110] items-center justify-center bg-black bg-opacity-90 backdrop-blur-sm">
+        <div class="relative w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto bg-gradient-to-b from-gray-900 to-black border border-gray-800 rounded-xl shadow-2xl">
+            <!-- Botón cerrar -->
+            <button id="cookie-close-modal" class="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors z-10 bg-gray-900 rounded-full p-2 hover:bg-gray-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            
+            <!-- Contenido -->
+            <div class="p-8 md:p-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6 text-white">
+                    Personalizar <span class="neon-green">Cookies</span>
+                </h2>
+                
+                <div class="space-y-6 text-gray-300">
+                    <!-- Cookies Necesarias -->
+                    <div class="bg-gray-900 bg-opacity-50 p-6 rounded-lg border border-gray-800">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold text-white mb-2">Cookies Necesarias</h3>
+                                <p class="text-sm text-gray-400">Estas cookies son esenciales para el funcionamiento del sitio. No se pueden desactivar.</p>
+                            </div>
+                            <input type="checkbox" id="cookie-necessary" checked disabled class="w-5 h-5 rounded border-gray-600 bg-gray-700 text-neon-green focus:ring-neon-green cursor-not-allowed">
+                        </div>
+                    </div>
+                    
+                    <!-- Cookies Analíticas -->
+                    <div class="bg-gray-900 bg-opacity-50 p-6 rounded-lg border border-gray-800">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold text-white mb-2">Cookies Analíticas</h3>
+                                <p class="text-sm text-gray-400 mb-2">Google Analytics nos ayuda a entender cómo los usuarios interactúan con el sitio de forma anónima.</p>
+                                <a href="/cookies.html" class="text-sm neon-green hover:underline">Más información sobre cookies analíticas</a>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="cookie-analytics" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-neon-green rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neon-green"></div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Botones -->
+                    <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-800">
+                        <button id="cookie-cancel-custom" class="flex-1 px-6 py-3 border-2 border-gray-600 text-gray-300 rounded-lg font-semibold hover:border-gray-500 hover:text-white transition-colors">
+                            Cancelar
+                        </button>
+                        <button id="cookie-save-custom" class="flex-1 px-6 py-3 bg-neon-green text-black rounded-lg font-semibold hover:opacity-90 transition-opacity">
+                            Guardar Preferencias
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
