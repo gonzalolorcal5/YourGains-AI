@@ -24,12 +24,13 @@ PRICE_ID_ANUAL = os.getenv("STRIPE_PRICE_ANUAL")
 async def generate_and_save_ai_plan(db: Session, user_id: int):
     """
     Genera plan personalizado con IA para usuario premium.
+    SIEMPRE genera un plan nuevo cuando se llama (sobrescribe el anterior si existe).
     """
     try:
         user = db.query(Usuario).filter(Usuario.id == user_id).first()
         if not user:
             print(f"❌ Usuario {user_id} no encontrado")
-            return
+            return False
         
         # Obtener datos del onboarding
         from app.models import Plan
@@ -37,9 +38,31 @@ async def generate_and_save_ai_plan(db: Session, user_id: int):
         
         if not plan_data:
             print(f"❌ No hay datos de onboarding para usuario {user_id}")
-            return
+            return False
         
-        # Preparar datos del usuario
+        # Preparar datos del usuario desde el onboarding
+        # Intentar obtener training_days y training_frequency desde el plan si existen
+        training_days = ['lunes', 'martes', 'jueves', 'viernes']  # Default
+        training_frequency = 4  # Default
+        
+        # Intentar leer desde rutina del plan si existe
+        if plan_data.rutina:
+            try:
+                import json
+                rutina_json = json.loads(plan_data.rutina)
+                if isinstance(rutina_json, dict):
+                    if 'metadata' in rutina_json:
+                        metadata = rutina_json['metadata']
+                        if 'training_days' in metadata:
+                            training_days = metadata['training_days']
+                        if 'training_frequency' in metadata:
+                            training_frequency = metadata['training_frequency']
+                    # También intentar desde la estructura de días
+                    elif 'dias' in rutina_json:
+                        training_days = [dia.get('dia', '').lower() for dia in rutina_json['dias'] if dia.get('dia')]
+            except Exception as e:
+                print(f"⚠️ No se pudieron leer training_days desde plan: {e}")
+        
         user_info = {
             'altura': plan_data.altura or 175,
             'peso': float(plan_data.peso) if plan_data.peso else 75.0,
@@ -55,8 +78,8 @@ async def generate_and_save_ai_plan(db: Session, user_id: int):
             'restricciones': plan_data.restricciones_dieta or 'Ninguna',
             'lesiones': plan_data.lesiones or 'Ninguna',
             'nivel_actividad': plan_data.nivel_actividad or 'moderado',
-            'training_frequency': 4,
-            'training_days': ['lunes', 'martes', 'jueves', 'viernes']
+            'training_frequency': training_frequency,
+            'training_days': training_days
         }
         
         print(f"🤖 Generando plan con IA para usuario {user_id}...")
@@ -114,22 +137,26 @@ async def generate_and_save_ai_plan(db: Session, user_id: int):
             "version": "1.0.0"
         }
         
-        # Guardar en BD
+        # Guardar en BD - SIEMPRE sobrescribir cuando se hace premium
         user.current_routine = json.dumps(current_routine, ensure_ascii=False)
         user.current_diet = json.dumps(current_diet, ensure_ascii=False)
         
-        # También actualizar Plan.dieta y Plan.rutina
+        # También actualizar Plan.dieta y Plan.rutina con el nuevo plan generado
         if plan_data:
             plan_data.rutina = json.dumps(plan["rutina"], ensure_ascii=False)
             plan_data.dieta = json.dumps(plan["dieta"], ensure_ascii=False)
         
         db.commit()
         print(f"✅ Plan de IA generado y guardado para usuario {user_id}")
+        print(f"   - Ejercicios: {len(exercises)}")
+        print(f"   - Comidas: {len(current_diet.get('meals', []))}")
+        return True
         
     except Exception as e:
         print(f"❌ Error generando plan para usuario {user_id}: {e}")
         import traceback
         traceback.print_exc()
+        return False
 
 # ==========================================
 # HELPERS DE ACTUALIZACIÓN
@@ -225,8 +252,13 @@ async def set_premium_by_customer(
         user.chat_uses_free = 2
     else:
         # Generar plan con IA para usuarios premium
+        # IMPORTANTE: Esperar a que se complete la generación
         print(f"💎 Usuario {user.id} → {user.plan_type}, generando plan IA...")
-        await generate_and_save_ai_plan(db, user.id)
+        plan_generated = await generate_and_save_ai_plan(db, user.id)
+        if plan_generated:
+            print(f"✅ Plan generado exitosamente para usuario {user.id}")
+        else:
+            print(f"⚠️ No se pudo generar plan para usuario {user.id}, pero el usuario es premium")
     
     db.commit()
     print(f"✅ Usuario {user.id} actualizado a {user.plan_type}")

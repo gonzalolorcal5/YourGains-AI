@@ -10,6 +10,7 @@ from pydantic import BaseModel
 import os
 import stripe
 from dotenv import load_dotenv
+from app.routes.stripe_webhook import generate_and_save_ai_plan
 
 router = APIRouter(tags=["stripe"])
 logger = logging.getLogger(__name__)
@@ -83,7 +84,7 @@ async def create_checkout_session(
             mode="subscription",
             payment_method_types=["card"],
             line_items=[{"price": data.price_id, "quantity": 1}],
-            success_url=f"{FRONTEND_URL}/tarifas.html?success=1&session_id={{CHECKOUT_SESSION_ID}}",
+            success_url=f"{FRONTEND_URL}/dashboard.html?success=1&session_id={{CHECKOUT_SESSION_ID}}",
             cancel_url=f"{FRONTEND_URL}/tarifas.html?cancel=1",
             allow_promotion_codes=True,
             metadata={"user_id": str(user_id)},
@@ -496,10 +497,26 @@ async def activate_premium_fallback(
                     db.commit()
                     logger.info(f"✅ Usuario {user_id} actualizado a {plan_type}")
                     
+                    # Generar plan personalizado con IA para usuario premium
+                    # IMPORTANTE: Esperar a que se complete la generación antes de responder
+                    logger.info(f"💎 Generando plan personalizado con IA para usuario {user_id}...")
+                    plan_generated = False
+                    try:
+                        plan_generated = await generate_and_save_ai_plan(db, user_id)
+                        if plan_generated:
+                            logger.info(f"🎉 Plan generado exitosamente para usuario {user_id}")
+                        else:
+                            logger.warning(f"⚠️ No se pudo generar plan para usuario {user_id}")
+                    except Exception as e:
+                        logger.error(f"❌ Error generando plan para usuario {user_id}: {e}")
+                        import traceback
+                        logger.error(traceback.format_exc())
+                    
                     return {
                         "success": True,
                         "is_premium": True,
                         "plan_type": plan_type,
+                        "plan_generated": plan_generated,
                         "activated_by": "fallback_verified"
                     }
                 else:
@@ -511,9 +528,25 @@ async def activate_premium_fallback(
                 user.is_premium = True
                 user.plan_type = "PREMIUM_MONTHLY"
                 db.commit()
+                
+                # Generar plan personalizado con IA para usuario premium
+                logger.info(f"💎 Generando plan personalizado con IA para usuario {user_id}...")
+                plan_generated = False
+                try:
+                    plan_generated = await generate_and_save_ai_plan(db, user_id)
+                    if plan_generated:
+                        logger.info(f"🎉 Plan generado exitosamente para usuario {user_id}")
+                    else:
+                        logger.warning(f"⚠️ No se pudo generar plan para usuario {user_id}")
+                except Exception as e:
+                    logger.error(f"❌ Error generando plan para usuario {user_id}: {e}")
+                    import traceback
+                    logger.error(traceback.format_exc())
+                
                 return {
                     "success": True,
                     "is_premium": True,
+                    "plan_generated": plan_generated,
                     "activated_by": "fallback_dev_error"
                 }
 
@@ -523,13 +556,28 @@ async def activate_premium_fallback(
         db.commit()
         
         logger.info(f"✅ Usuario {user_id} activado en modo dev")
+        
+        # Generar plan personalizado con IA para usuario premium
+        logger.info(f"💎 Generando plan personalizado con IA para usuario {user_id}...")
+        plan_generated = False
+        try:
+            plan_generated = await generate_and_save_ai_plan(db, user_id)
+            if plan_generated:
+                logger.info(f"🎉 Plan generado exitosamente para usuario {user_id}")
+            else:
+                logger.warning(f"⚠️ No se pudo generar plan para usuario {user_id}")
+        except Exception as e:
+            logger.error(f"❌ Error generando plan para usuario {user_id}: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+        
         return {
             "success": True,
             "is_premium": True,
+            "plan_generated": plan_generated,
             "activated_by": "fallback_direct"
         }
 
     except Exception as e:
         logger.error(f"❌ Error en fallback: {e}")
         logger.error(traceback.format_exc())
-        return {"success": False, "error": str(e)}

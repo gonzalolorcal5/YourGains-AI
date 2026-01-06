@@ -200,12 +200,17 @@ form.addEventListener('submit', async (e) => {
 // Ahora se usa directamente el valor del textarea
 
 // ═══════════════════════════════════════════════════════
-// PLACEHOLDER DINÁMICO PARA MATERIALES
+// PLACEHOLDER DINÁMICO PARA MATERIALES Y VALOR POR DEFECTO
 // ═══════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
     const materialesTextarea = document.getElementById('materiales');
     
     if (materialesTextarea) {
+        // Establecer "Gym completo" como valor por defecto si está vacío
+        if (!materialesTextarea.value.trim()) {
+            materialesTextarea.value = 'Gym completo';
+        }
+        
         // Guardar el placeholder original
         const originalPlaceholder = materialesTextarea.placeholder;
         
@@ -216,10 +221,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Si el usuario sale sin escribir nada, restaurar placeholder
+        // Si el usuario sale sin escribir nada, restaurar placeholder y valor por defecto
         materialesTextarea.addEventListener('blur', function() {
             if (!this.value.trim()) {
                 this.placeholder = originalPlaceholder;
+                this.value = 'Gym completo';
             }
         });
     }

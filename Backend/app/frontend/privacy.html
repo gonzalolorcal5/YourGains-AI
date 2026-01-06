@@ -15,6 +15,13 @@
   </style>
 </head>
 <body class="min-h-screen bg-neutral-950 text-white">
+  <!-- Botón X de cerrar - Esquina superior derecha -->
+  <button onclick="window.location.href = '/';" class="fixed top-4 right-4 text-neutral-400 hover:text-white transition-colors duration-200 cursor-pointer z-50" title="Cerrar">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+    </svg>
+  </button>
+  
   <div class="max-w-4xl mx-auto p-8">
     <div class="mb-8">
       <h1 class="text-3xl font-bold mb-2">Política de Privacidad</h1>
@@ -395,7 +402,7 @@
     </div>
 
     <div class="mt-8 pt-6 border-t border-neutral-800">
-      <button onclick="window.close()" class="bg-lime-400 text-black font-semibold rounded-xl px-6 py-2 hover:bg-lime-300 transition">
+      <button onclick="window.location.href = '/';" class="bg-lime-400 text-black font-semibold rounded-xl px-6 py-2 hover:bg-lime-300 transition">
         Cerrar
       </button>
     </div>
@@ -407,6 +414,21 @@
       month: 'long', 
       day: 'numeric' 
     });
+    
+    // Detectar si estamos en un iframe y ocultar botones de cerrar
+    if (window.self !== window.top) {
+      // Estamos en un iframe, ocultar el botón X superior derecho
+      const closeButtonTop = document.querySelector('button[onclick*="window.location"]');
+      if (closeButtonTop) {
+        closeButtonTop.style.display = 'none';
+      }
+      
+      // También ocultar el botón "Cerrar" del footer
+      const closeButtonBottom = document.querySelector('.border-t button');
+      if (closeButtonBottom) {
+        closeButtonBottom.style.display = 'none';
+      }
+    }
   </script>
 </body>
 </html>

@@ -82,8 +82,14 @@
     </header>
     
     <!-- CONTENIDO PRINCIPAL -->
-    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-        <div class="max-w-4xl mx-auto">
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 relative">
+        <div class="max-w-4xl mx-auto relative">
+            <!-- Botón cerrar (X) - Pegado al overlay -->
+            <button onclick="window.history.back()" class="absolute top-0 right-0 z-50 text-gray-400 hover:text-white transition-colors bg-gray-900 rounded-full p-2 hover:bg-gray-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
             <!-- Título -->
             <div class="mb-12 text-center">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white">
@@ -91,7 +97,7 @@
                 </h1>
                 <div class="w-24 h-1 bg-neon-green mx-auto"></div>
                 <p class="text-gray-400 mt-6 text-lg">
-                    Última actualización: Enero 2025
+                    Última actualización: <span id="currentDate"></span>
                 </p>
             </div>
             
@@ -344,6 +350,16 @@
             </div>
         </div>
     </footer>
+    
+    <script>
+        // Fecha de última actualización
+        if (document.getElementById("currentDate")) {
+            document.getElementById("currentDate").textContent = new Date().toLocaleDateString('es-ES', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+    </script>
 </body>
 </html>
-

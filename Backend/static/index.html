@@ -40,7 +40,12 @@
         }
         
         .hero-overlay {
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85));
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.65));
+        }
+        
+        /* Iluminar un poco más el background hero-bg */
+        #home img[alt="Hero Background"] {
+            filter: brightness(1.1);
         }
         
         .blur-header {
@@ -52,6 +57,42 @@
             image-rendering: -webkit-optimize-contrast;
             image-rendering: crisp-edges;
             image-rendering: auto;
+        }
+        
+        /* Ajuste para móvil: bajar el texto del hero para que no quede tapado por el logo */
+        @media (max-width: 768px) {
+            /* Cambiar h-screen a min-h-screen para que la sección pueda crecer verticalmente */
+            #home {
+                min-height: 100vh !important;
+                height: auto !important;
+                overflow: visible !important;
+            }
+            
+            #home .container {
+                padding-top: 60px !important; /* Reducido aún más para eliminar espacio vacío excesivo */
+                padding-bottom: 160px !important; /* Más espacio para que se vea completa la foto mobile-hero */
+            }
+            
+            /* Logo un poco más grande en móvil */
+            header img[alt="YourGains AI Logo"] {
+                height: 180px !important; /* Aumentado de 160px a 180px */
+                width: auto !important;
+            }
+            
+            /* Reducir espacio entre hero y sección "Olvídate de los entrenadores personales" */
+            #caracteristicas {
+                padding-top: 20px !important; /* Reducido aún más para acercar las secciones */
+            }
+            
+            /* Bajar la foto mobile-rutina y dar más espacio con el texto */
+            #caracteristicas img[alt="Rutinas Personalizadas"] {
+                margin-top: 30px !important; /* Bajar la foto */
+            }
+            
+            /* Aumentar el gap entre la imagen y el texto en móvil */
+            #caracteristicas .grid {
+                gap: 40px !important; /* Aumentado el espacio entre imagen y texto */
+            }
         }
     </style>
 </head>
@@ -69,8 +110,8 @@
                 <!-- Enlaces y botón -->
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="#home" class="text-gray-300 hover:text-white transition-colors">Home</a>
-                    <a href="#caracteristicas" class="text-gray-300 hover:text-white transition-colors">Características</a>
-                    <a href="#ciencia" class="text-gray-300 hover:text-white transition-colors">Ciencia</a>
+                    <a href="javascript:void(0);" onclick="openOverlay()" class="text-gray-300 hover:text-white transition-colors cursor-pointer">Características</a>
+                    <a href="#caracteristicas" class="text-gray-300 hover:text-white transition-colors">Ciencia</a>
                     <a href="/login" class="bg-neon-green text-black px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity">
                         Probar Gratis
                     </a>
@@ -116,8 +157,8 @@
                 </div>
                 
                 <!-- Imagen Principal -->
-                <div class="flex justify-center lg:justify-end">
-                    <img src="/public/mobile-hero.png?v=1735948800" alt="YourGains AI App" class="w-full max-w-md lg:max-w-sm xl:max-w-md object-contain transform hover:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="flex justify-center lg:justify-center lg:ml-4 xl:ml-6">
+                    <img src="/public/mobile-hero.png?v=1735948800" alt="YourGains AI App" class="w-full max-w-[300px] lg:max-w-[280px] xl:max-w-[320px] object-contain transform hover:scale-105 transition-transform duration-300" loading="lazy">
                 </div>
             </div>
         </div>
@@ -126,10 +167,10 @@
     <!-- SECCIÓN RUTINAS (Layout: Imagen Izquierda | Texto Derecha) -->
     <section id="caracteristicas" class="py-20 lg:py-32 bg-black">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-28 xl:gap-32 items-center">
                 <!-- Columna Izquierda (Imagen) -->
-                <div class="order-2 lg:order-1 flex justify-center lg:justify-start">
-                    <img src="/public/mobile-rutina.png?v=1735948800" alt="Rutinas Personalizadas" class="w-full max-w-md lg:max-w-sm xl:max-w-md object-contain transform hover:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="order-2 lg:order-1 flex justify-center lg:justify-center lg:ml-1 xl:ml-2">
+                    <img src="/public/mobile-rutina.png?v=1735948800" alt="Rutinas Personalizadas" class="w-full max-w-[270px] lg:max-w-[250px] xl:max-w-[290px] object-contain transform hover:scale-105 transition-transform duration-300" loading="lazy">
                 </div>
                 
                 <!-- Columna Derecha (Texto SEO & Autoridad) -->
@@ -216,8 +257,8 @@
                 </div>
                 
                 <!-- Columna Derecha (Imagen) -->
-                <div class="flex justify-center lg:justify-end">
-                    <img src="/public/mobile-dieta.png?v=1735948800" alt="Planes de Dieta Personalizados" class="w-full max-w-md lg:max-w-sm xl:max-w-md object-contain transform hover:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="flex justify-center lg:justify-center lg:ml-4 xl:ml-6">
+                    <img src="/public/mobile-dieta.png?v=1735948800" alt="Planes de Dieta Personalizados" class="w-full max-w-[300px] lg:max-w-[280px] xl:max-w-[320px] object-contain transform hover:scale-105 transition-transform duration-300" loading="lazy">
                 </div>
             </div>
         </div>
@@ -245,9 +286,9 @@
     <!-- FOOTER -->
     <footer class="bg-black border-t border-gray-900 py-12">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-8 mb-8">
                 <!-- Columna 1: Logo y descripción -->
-                <div class="space-y-4">
+                <div class="space-y-4 col-span-2 md:col-span-1">
                     <div class="flex items-center">
                         <img src="/public/logo.png?v=1735948800" alt="YourGains AI Logo" class="h-32 sm:h-40" loading="lazy">
                     </div>
@@ -257,17 +298,17 @@
                 </div>
                 
                 <!-- Columna 2: Enlaces -->
-                <div class="space-y-4">
+                <div class="space-y-4 col-span-1 md:col-span-1">
                     <h3 class="font-semibold text-white">Enlaces</h3>
                     <ul class="space-y-2">
                         <li><a href="#home" class="text-gray-400 hover:text-neon-green transition-colors text-sm">Home</a></li>
-                        <li><a href="#caracteristicas" class="text-gray-400 hover:text-neon-green transition-colors text-sm">Características</a></li>
-                        <li><a href="#ciencia" class="text-gray-400 hover:text-neon-green transition-colors text-sm">Ciencia</a></li>
+                        <li><a href="javascript:void(0);" onclick="openOverlay()" class="text-gray-400 hover:text-neon-green transition-colors text-sm cursor-pointer">Características</a></li>
+                        <li><a href="#caracteristicas" class="text-gray-400 hover:text-neon-green transition-colors text-sm">Ciencia</a></li>
                     </ul>
                 </div>
                 
                 <!-- Columna 3: Legal -->
-                <div class="space-y-4">
+                <div class="space-y-4 col-span-1 md:col-span-1">
                     <h3 class="font-semibold text-white">Legal</h3>
                     <ul class="space-y-2">
                         <li><a href="/privacy.html" class="text-gray-400 hover:text-neon-green transition-colors text-sm">Política de Privacidad</a></li>
@@ -387,48 +428,449 @@
         </div>
     </div>
     
+    <!-- OVERLAY POLÍTICA DE PRIVACIDAD -->
+    <div id="privacyOverlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-95 backdrop-blur-md" style="z-index: 9999 !important;">
+        <!-- Botón cerrar (X) - Fuera del contenedor scroll, siempre visible -->
+        <button onclick="window.closePrivacyOverlay(); return false;" class="fixed top-4 right-4 md:top-6 md:right-6 text-white hover:text-neon-green transition-colors bg-gray-900 rounded-full p-3 md:p-2 hover:bg-gray-800 shadow-lg border-2 border-gray-700 hover:border-neon-green cursor-pointer" title="Cerrar" style="position: fixed !important; z-index: 10000 !important; display: block !important; visibility: visible !important;">
+            <svg class="w-6 h-6 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        
+        <div class="relative w-full max-w-5xl mx-4 max-h-[90vh] overflow-y-auto bg-gradient-to-b from-gray-900 to-black border border-gray-800 rounded-xl shadow-2xl" style="z-index: 1;">
+            <!-- Contenido -->
+            <div id="privacyContent" class="p-10 md:p-16 text-gray-300">
+                <div class="text-center">
+                    <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-neon-green"></div>
+                    <p class="mt-4 text-gray-400">Cargando política de privacidad...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- OVERLAY TÉRMINOS DE SERVICIO -->
+    <div id="termsOverlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-95 backdrop-blur-md">
+        <div class="relative w-full max-w-5xl mx-4 max-h-[90vh] overflow-y-auto bg-gradient-to-b from-gray-900 to-black border border-gray-800 rounded-xl shadow-2xl">
+            <!-- Botón cerrar (X) - Siempre visible -->
+            <button onclick="closeTermsOverlay()" class="fixed top-4 right-4 md:top-6 md:right-6 text-white hover:text-neon-green transition-colors z-[60] bg-gray-900 rounded-full p-3 md:p-2 hover:bg-gray-800 shadow-lg border-2 border-gray-700 hover:border-neon-green">
+                <svg class="w-6 h-6 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            
+            <!-- Contenido -->
+            <div id="termsContent" class="p-10 md:p-16 text-gray-300">
+                <div class="text-center">
+                    <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-neon-green"></div>
+                    <p class="mt-4 text-gray-400">Cargando términos de servicio...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Smooth Scroll -->
     <script>
-        // Smooth scroll para los enlaces
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
+        // Esperar a que el DOM esté listo antes de añadir event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scroll para los enlaces
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
             });
+            
+            // Cerrar overlay al hacer clic fuera del contenido (solo si existe)
+            const saberMasOverlay = document.getElementById('saberMasOverlay');
+            if (saberMasOverlay) {
+                saberMasOverlay.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeOverlay();
+                    }
+                });
+            }
+            
+            // Cerrar overlay de privacidad al hacer clic fuera del contenido
+            const privacyOverlayEl = document.getElementById('privacyOverlay');
+            if (privacyOverlayEl) {
+                privacyOverlayEl.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closePrivacyOverlay();
+                    }
+                });
+            }
+            
+            // Cerrar overlay de términos al hacer clic fuera del contenido
+            const termsOverlayEl = document.getElementById('termsOverlay');
+            if (termsOverlayEl) {
+                termsOverlayEl.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeTermsOverlay();
+                    }
+                });
+            }
         });
         
-        // Funciones para abrir/cerrar overlay
+        // Funciones para abrir/cerrar overlay (definidas globalmente para que puedan ser llamadas desde onclick)
         function openOverlay() {
-            document.getElementById('saberMasOverlay').classList.remove('hidden');
-            document.getElementById('saberMasOverlay').classList.add('flex');
-            document.body.style.overflow = 'hidden'; // Prevenir scroll del body
+            const overlay = document.getElementById('saberMasOverlay');
+            if (overlay) {
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            }
         }
         
         function closeOverlay() {
-            document.getElementById('saberMasOverlay').classList.add('hidden');
-            document.getElementById('saberMasOverlay').classList.remove('flex');
-            document.body.style.overflow = 'auto'; // Restaurar scroll del body
-        }
-        
-        // Cerrar overlay al hacer clic fuera del contenido
-        document.getElementById('saberMasOverlay').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeOverlay();
+            const overlay = document.getElementById('saberMasOverlay');
+            if (overlay) {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+                document.body.style.overflow = 'auto';
             }
-        });
+        }
         
         // Cerrar overlay con ESC
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeOverlay();
+                closePrivacyOverlay();
+                closeTermsOverlay();
             }
         });
+        
+        // Funciones para abrir/cerrar overlay de política de privacidad
+        async function openPrivacyOverlay() {
+            const overlay = document.getElementById('privacyOverlay');
+            const content = document.getElementById('privacyContent');
+            
+            if (!overlay || !content) {
+                console.error('Overlay de privacidad no encontrado');
+                return;
+            }
+            
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+            
+            // Cargar contenido de privacy.html
+            try {
+                const response = await fetch('/privacy.html');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Extraer solo el PRIMER contenido principal (sin head, scripts, botones duplicados, etc.)
+                // Si hay múltiples .max-w-4xl, tomar SOLO el primero y eliminar todos los demás del documento
+                const allMaxWidth = doc.querySelectorAll('.max-w-4xl');
+                
+                // Si hay múltiples bloques, eliminar todos excepto el primero del documento original
+                if (allMaxWidth.length > 1) {
+                    for (let i = 1; i < allMaxWidth.length; i++) {
+                        allMaxWidth[i].remove();
+                    }
+                }
+                
+                const mainContent = doc.querySelector('.max-w-4xl');
+                
+                if (mainContent) {
+                    // Clonar SOLO el primer bloque de contenido
+                    const cleanContent = mainContent.cloneNode(true);
+                    
+                    // Reemplazar funcionalidad de botones de cerrar en lugar de eliminarlos
+                    const closeButtons = cleanContent.querySelectorAll('button');
+                    closeButtons.forEach(btn => {
+                        const onclick = btn.getAttribute('onclick') || '';
+                        const text = (btn.textContent || '').trim();
+                        if (onclick.includes('close') || onclick.includes('window.close') || text.includes('Cerrar') || text.toLowerCase().includes('cerrar')) {
+                            // Reemplazar onclick para que cierre el overlay
+                            btn.setAttribute('onclick', 'closePrivacyOverlay(); return false;');
+                            btn.style.cursor = 'pointer';
+                            // Asegurar que el botón sea visible y funcional
+                            btn.style.display = 'inline-block';
+                            btn.style.zIndex = '100';
+                        }
+                    });
+                    
+                    // También buscar y actualizar botones dentro de divs
+                    const allDivs = cleanContent.querySelectorAll('div');
+                    allDivs.forEach(div => {
+                        const buttons = div.querySelectorAll('button');
+                        buttons.forEach(btn => {
+                            const onclick = btn.getAttribute('onclick') || '';
+                            const text = (btn.textContent || '').trim();
+                            if (onclick.includes('close') || onclick.includes('window.close') || text.includes('Cerrar') || text.toLowerCase().includes('cerrar')) {
+                                btn.setAttribute('onclick', 'closePrivacyOverlay(); return false;');
+                                btn.style.cursor = 'pointer';
+                                btn.style.display = 'inline-block';
+                                btn.style.zIndex = '100';
+                            }
+                        });
+                    });
+                    
+                    // Limpiar scripts y otros elementos no deseados
+                    const scripts = cleanContent.querySelectorAll('script');
+                    scripts.forEach(s => s.remove());
+                    
+                    // Limpiar head si existe
+                    const heads = cleanContent.querySelectorAll('head');
+                    heads.forEach(h => h.remove());
+                    
+                    // Limpiar cualquier elemento duplicado por ID
+                    const seenIds = new Set();
+                    const allElements = cleanContent.querySelectorAll('*');
+                    allElements.forEach(el => {
+                        if (el.id && seenIds.has(el.id)) {
+                            el.remove();
+                        } else if (el.id) {
+                            seenIds.add(el.id);
+                        }
+                    });
+                    
+                    // Detectar y eliminar secciones duplicadas por título h1
+                    const h1Elements = cleanContent.querySelectorAll('h1');
+                    if (h1Elements.length > 1) {
+                        // Mantener solo el primer h1, eliminar el resto y todo su contenido hasta el siguiente h1 o el final
+                        for (let i = 1; i < h1Elements.length; i++) {
+                            const duplicateH1 = h1Elements[i];
+                            let nextElement = duplicateH1.nextElementSibling;
+                            // Eliminar el h1 duplicado y todo su contenido hasta encontrar otro h1 o llegar al final
+                            while (nextElement && nextElement.tagName !== 'H1') {
+                                const toRemove = nextElement;
+                                nextElement = nextElement.nextElementSibling;
+                                toRemove.remove();
+                            }
+                            duplicateH1.remove();
+                        }
+                    }
+                    
+                    // Detectar y eliminar secciones duplicadas por título h2
+                    const seenH2Titles = new Set();
+                    const h2Elements = cleanContent.querySelectorAll('h2');
+                    h2Elements.forEach((h2, index) => {
+                        const h2Text = h2.textContent.trim();
+                        if (seenH2Titles.has(h2Text)) {
+                            // Esta sección ya existe, eliminar desde este h2 hasta el siguiente h2 o el final
+                            let current = h2.nextElementSibling;
+                            while (current && current.tagName !== 'H2' && current.tagName !== 'H1') {
+                                const toRemove = current;
+                                current = current.nextElementSibling;
+                                toRemove.remove();
+                            }
+                            h2.remove();
+                        } else {
+                            seenH2Titles.add(h2Text);
+                        }
+                    });
+                    
+                    // Insertar solo el contenido limpio
+                    content.innerHTML = cleanContent.innerHTML;
+                } else {
+                    // Fallback: usar body pero limpiar completamente
+                    const body = doc.querySelector('body');
+                    if (body) {
+                        const bodyClone = body.cloneNode(true);
+                        // Eliminar scripts, head, botones de cerrar
+                        bodyClone.querySelectorAll('script, head, button[onclick*="close"], button[onclick*="window.close"]').forEach(el => el.remove());
+                        // Eliminar divs con botones de cerrar
+                        bodyClone.querySelectorAll('div').forEach(div => {
+                            const hasCloseButton = div.querySelector('button[onclick*="close"], button[onclick*="window.close"]');
+                            if (hasCloseButton) {
+                                div.remove();
+                            }
+                        });
+                        // Tomar solo el primer .max-w-4xl si hay múltiples
+                        const maxWidthDivs = bodyClone.querySelectorAll('.max-w-4xl');
+                        if (maxWidthDivs.length > 1) {
+                            for (let i = 1; i < maxWidthDivs.length; i++) {
+                                maxWidthDivs[i].remove();
+                            }
+                        }
+                        content.innerHTML = bodyClone.innerHTML;
+                    } else {
+                        throw new Error('No se encontró contenido en privacy.html');
+                    }
+                }
+            } catch (error) {
+                console.error('Error cargando política de privacidad:', error);
+                content.innerHTML = '<div class="text-center text-red-400"><p>Error al cargar la política de privacidad. Por favor, intente más tarde.</p></div>';
+            }
+        }
+        
+        // Función global para cerrar overlay de privacidad
+        function closePrivacyOverlay() {
+            const overlay = document.getElementById('privacyOverlay');
+            if (overlay) {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+                document.body.style.overflow = 'auto';
+            }
+        }
+        
+        // Asegurar que la función esté disponible globalmente
+        window.closePrivacyOverlay = closePrivacyOverlay;
+        
+        // Funciones para abrir/cerrar overlay de términos de servicio
+        async function openTermsOverlay() {
+            const overlay = document.getElementById('termsOverlay');
+            const content = document.getElementById('termsContent');
+            
+            if (!overlay || !content) {
+                console.error('Overlay de términos no encontrado');
+                return;
+            }
+            
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+            
+            // Cargar contenido de terms.html
+            try {
+                const response = await fetch('/terms.html');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Extraer solo el PRIMER contenido principal (sin head, scripts, botones duplicados, etc.)
+                // Si hay múltiples .max-w-4xl, tomar SOLO el primero y eliminar todos los demás del documento
+                const allMaxWidth = doc.querySelectorAll('.max-w-4xl');
+                
+                // Si hay múltiples bloques, eliminar todos excepto el primero del documento original
+                if (allMaxWidth.length > 1) {
+                    for (let i = 1; i < allMaxWidth.length; i++) {
+                        allMaxWidth[i].remove();
+                    }
+                }
+                
+                const mainContent = doc.querySelector('.max-w-4xl');
+                
+                if (mainContent) {
+                    // Clonar SOLO el primer bloque de contenido
+                    const cleanContent = mainContent.cloneNode(true);
+                    
+                    // Reemplazar funcionalidad de botones de cerrar en lugar de eliminarlos
+                    const closeButtons = cleanContent.querySelectorAll('button');
+                    closeButtons.forEach(btn => {
+                        const onclick = btn.getAttribute('onclick') || '';
+                        const text = btn.textContent || '';
+                        if (onclick.includes('close') || onclick.includes('window.close') || text.includes('Cerrar')) {
+                            // Reemplazar onclick para que cierre el overlay
+                            btn.setAttribute('onclick', 'closeTermsOverlay()');
+                            btn.style.cursor = 'pointer';
+                        }
+                    });
+                    
+                    // Limpiar scripts y otros elementos no deseados
+                    const scripts = cleanContent.querySelectorAll('script');
+                    scripts.forEach(s => s.remove());
+                    
+                    // Limpiar head si existe
+                    const heads = cleanContent.querySelectorAll('head');
+                    heads.forEach(h => h.remove());
+                    
+                    // Limpiar cualquier elemento duplicado por ID
+                    const seenIds = new Set();
+                    const allElements = cleanContent.querySelectorAll('*');
+                    allElements.forEach(el => {
+                        if (el.id && seenIds.has(el.id)) {
+                            el.remove();
+                        } else if (el.id) {
+                            seenIds.add(el.id);
+                        }
+                    });
+                    
+                    // Detectar y eliminar secciones duplicadas por título h1
+                    const h1Elements = cleanContent.querySelectorAll('h1');
+                    if (h1Elements.length > 1) {
+                        // Mantener solo el primer h1, eliminar el resto y todo su contenido hasta el siguiente h1 o el final
+                        for (let i = 1; i < h1Elements.length; i++) {
+                            const duplicateH1 = h1Elements[i];
+                            let nextElement = duplicateH1.nextElementSibling;
+                            // Eliminar el h1 duplicado y todo su contenido hasta encontrar otro h1 o llegar al final
+                            while (nextElement && nextElement.tagName !== 'H1') {
+                                const toRemove = nextElement;
+                                nextElement = nextElement.nextElementSibling;
+                                toRemove.remove();
+                            }
+                            duplicateH1.remove();
+                        }
+                    }
+                    
+                    // Detectar y eliminar secciones duplicadas por título h2
+                    const seenH2Titles = new Set();
+                    const h2Elements = cleanContent.querySelectorAll('h2');
+                    h2Elements.forEach((h2, index) => {
+                        const h2Text = h2.textContent.trim();
+                        if (seenH2Titles.has(h2Text)) {
+                            // Esta sección ya existe, eliminar desde este h2 hasta el siguiente h2 o el final
+                            let current = h2.nextElementSibling;
+                            while (current && current.tagName !== 'H2' && current.tagName !== 'H1') {
+                                const toRemove = current;
+                                current = current.nextElementSibling;
+                                toRemove.remove();
+                            }
+                            h2.remove();
+                        } else {
+                            seenH2Titles.add(h2Text);
+                        }
+                    });
+                    
+                    // Insertar solo el contenido limpio
+                    content.innerHTML = cleanContent.innerHTML;
+                } else {
+                    // Fallback: usar body pero limpiar completamente
+                    const body = doc.querySelector('body');
+                    if (body) {
+                        const bodyClone = body.cloneNode(true);
+                        // Eliminar scripts, head
+                        bodyClone.querySelectorAll('script, head').forEach(el => el.remove());
+                        // Reemplazar funcionalidad de botones de cerrar
+                        bodyClone.querySelectorAll('button').forEach(btn => {
+                            const onclick = btn.getAttribute('onclick') || '';
+                            const text = btn.textContent || '';
+                            if (onclick.includes('close') || onclick.includes('window.close') || text.includes('Cerrar')) {
+                                btn.setAttribute('onclick', 'closeTermsOverlay()');
+                                btn.style.cursor = 'pointer';
+                            }
+                        });
+                        // Tomar solo el primer .max-w-4xl si hay múltiples
+                        const maxWidthDivs = bodyClone.querySelectorAll('.max-w-4xl');
+                        if (maxWidthDivs.length > 1) {
+                            for (let i = 1; i < maxWidthDivs.length; i++) {
+                                maxWidthDivs[i].remove();
+                            }
+                        }
+                        content.innerHTML = bodyClone.innerHTML;
+                    } else {
+                        throw new Error('No se encontró contenido en terms.html');
+                    }
+                }
+            } catch (error) {
+                console.error('Error cargando términos de servicio:', error);
+                content.innerHTML = '<div class="text-center text-red-400"><p>Error al cargar los términos de servicio. Por favor, intente más tarde.</p></div>';
+            }
+        }
+        
+        function closeTermsOverlay() {
+            const overlay = document.getElementById('termsOverlay');
+            if (overlay) {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+                document.body.style.overflow = 'auto';
+            }
+        }
     </script>
     
     <!-- BANNER DE CONSENTIMIENTO DE COOKIES -->

@@ -14,9 +14,14 @@
                 box-sizing: border-box;
             }
             
+                html {
+                    height: 100%;
+                    overflow: hidden;
+                }
+            
             body {
                 background-color: black;
-                height: 100vh;
+                    height: 100%;
                 height: 100dvh;
                 color: white;
                 font-family: Arial, sans-serif;
@@ -24,6 +29,7 @@
                 margin: 0;
                 padding: 0;
                 overflow: hidden;
+                    overscroll-behavior: none;
             }
             
             .main-layout {
@@ -39,14 +45,161 @@
                 flex-shrink: 0;
                 position: relative;
                 width: 100%;
-                z-index: 100;
+                    z-index: 99;
                 display: flex;
                 flex-direction: column;
                 padding-top: 75px;
                 padding-bottom: 20px;
-                background: #000000;
-                background-color: black;
+                    background: #000000 !important;
+                    background-color: #000000 !important;
                 min-height: auto;
+                }
+                
+            .motivational-text {
+                position: absolute;
+                top: 280px;
+                left: 100px;
+                max-width: 35%;
+                width: 35%;
+                z-index: 11;
+                background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(5, 10, 0, 0.92) 100%);
+                backdrop-filter: blur(12px);
+                border: 1px solid rgba(132, 204, 22, 0.15);
+                border-left: 3px solid #84cc16;
+                border-radius: 12px;
+                padding: 36px 32px;
+                box-shadow: 
+                    0 8px 32px rgba(0, 0, 0, 0.7),
+                    0 0 0 1px rgba(132, 204, 22, 0.1),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                animation: fadeInUp 0.8s ease-out;
+            }
+            
+            .motivational-text::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(135deg, transparent 0%, rgba(132, 204, 22, 0.03) 50%, transparent 100%);
+                border-radius: 12px;
+                opacity: 0;
+                transition: opacity 0.4s ease;
+                pointer-events: none;
+            }
+            
+            .motivational-text:hover {
+                transform: translateY(-3px);
+                border-color: rgba(132, 204, 22, 0.3);
+                border-left-color: #84cc16;
+                box-shadow: 
+                    0 12px 48px rgba(0, 0, 0, 0.8),
+                    0 0 0 1px rgba(132, 204, 22, 0.2),
+                    0 0 30px rgba(132, 204, 22, 0.15),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            }
+            
+            .motivational-text:hover::before {
+                opacity: 1;
+            }
+            
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            .motivational-text p {
+                margin: 0;
+                color: rgba(255, 255, 255, 0.92);
+                font-size: 16px;
+                line-height: 1.85;
+                font-weight: 400;
+                letter-spacing: 0.4px;
+                position: relative;
+                padding-left: 28px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            }
+            
+            .motivational-text p:not(:last-child) {
+                margin-bottom: 24px;
+            }
+            
+            .motivational-text p::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 10px;
+                width: 6px;
+                height: 6px;
+                background: #84cc16;
+                border-radius: 50%;
+                box-shadow: 0 0 8px rgba(132, 204, 22, 0.6);
+                animation: pulseDot 2s ease-in-out infinite;
+            }
+            
+            .motivational-text p:nth-child(2)::before {
+                animation-delay: 0.4s;
+            }
+            
+            .motivational-text p:nth-child(3)::before {
+                animation-delay: 0.8s;
+            }
+            
+            @keyframes pulseDot {
+                0%, 100% {
+                    transform: scale(1);
+                    opacity: 0.8;
+                    box-shadow: 0 0 8px rgba(132, 204, 22, 0.6);
+                }
+                50% {
+                    transform: scale(1.3);
+                    opacity: 1;
+                    box-shadow: 0 0 12px rgba(132, 204, 22, 0.9);
+                }
+            }
+            
+            .motivational-text .highlight {
+                color: #84cc16;
+                font-weight: 600;
+                text-shadow: 0 0 10px rgba(132, 204, 22, 0.4);
+                position: relative;
+                display: inline-block;
+                transition: all 0.3s ease;
+            }
+            
+            .motivational-text .highlight::after {
+                content: '';
+                position: absolute;
+                bottom: 2px;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: linear-gradient(90deg, #84cc16, transparent);
+                transition: width 0.3s ease;
+            }
+            
+            .motivational-text .highlight:hover {
+                text-shadow: 0 0 15px rgba(132, 204, 22, 0.6);
+                transform: translateY(-1px);
+            }
+            
+            .motivational-text .highlight:hover::after {
+                width: 100%;
+            }
+            
+            /* Ocultar texto motivacional en móvil */
+            @media (max-width: 768px) {
+                .motivational-text {
+                    display: none;
+                }
             }
             
             .hamburger-btn {
@@ -70,10 +223,11 @@
             .logo {
                 position: absolute;
                 top: 80px;
-                left: 100px;
+                    left: 50%;
+                    transform: translateX(calc(-50% + 200px));
                 display: flex;
                 align-items: center;
-                gap: 3px;
+                    gap: 8px;
                 z-index: 11;
             }
             
@@ -209,8 +363,8 @@
             }
             
             .dna-icon {
-                width: 28px;
-                height: 28px;
+                    width: 56px;
+                    height: 56px;
                 border-radius: 8px;
                 display: flex;
                 align-items: center;
@@ -225,7 +379,7 @@
             }
             
             .logo-text {
-                font-size: 20px;
+                    font-size: 40px;
                 font-weight: bold;
             }
             
@@ -244,7 +398,10 @@
                 overflow: hidden;
                 background: #000000;
                 min-height: 0;
-                width: 100%;
+                width: 35%;
+                max-width: 35%;
+                margin-left: auto;
+                margin-right: 4%;
                 z-index: 1;
                 position: relative;
                 margin-top: 20px;
@@ -259,6 +416,7 @@
             .chat-messages {
                 flex: 1;
                 padding: 20px;
+                    padding-top: 280px;
                 overflow-y: auto;
                 color: white;
                 background: #000000;
@@ -266,6 +424,8 @@
                 scrollbar-width: thin;
                 scrollbar-color: #333 #000;
                 -ms-overflow-style: none;
+                    z-index: 1;
+                    position: relative;
             }
             
             .chat-messages::-webkit-scrollbar {
@@ -344,6 +504,13 @@
             
             .chat-input::placeholder {
                 color: #777;
+            }
+                
+                /* Ocultar placeholder en escritorio */
+                @media (min-width: 769px) {
+                    .chat-input::placeholder {
+                        color: transparent;
+                    }
             }
             
             .chat-input:focus {
@@ -530,24 +697,45 @@
             }
             
             .navigation {
+                position: absolute;
+                top: 145px;
+                left: 65%;
+                transform: translateX(-50%);
+                width: auto;
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 gap: 0px;
                 color: white;
                 white-space: nowrap;
-                z-index: 11;
-                margin-top: 10px;
+                z-index: 100;
+                margin-top: 0px;
+                margin-left: 0;
+                background: #000000 !important;
+                background-color: #000000 !important;
+                padding: 15px 30px;
+                border-radius: 8px;
+            }
+                
+            .navigation::before {
+                content: '';
+                position: absolute;
+                top: -50px;
+                left: -100px;
+                right: -100px;
+                bottom: -50px;
                 background: #000000;
-                background-color: black;
+                z-index: -1;
+                border-radius: 12px;
             }
             
             .nav-item {
-                padding: 6px 2px;
+                    padding: 12px 16px;
                 border-radius: 8px;
                 transition: all 0.3s ease;
                 cursor: pointer;
-                font-size: 12px;
+                    font-size: 24px;
+                    font-weight: 600;
             }
             
             .nav-item:hover {
@@ -797,8 +985,9 @@
             
             .nav-separator {
                 color: #666;
-                font-size: 12px;
+                    font-size: 24px;
                 opacity: 0.5;
+                    margin: 0 12px;
             }
             
             .logout-btn {
@@ -1067,290 +1256,305 @@
                 font-size: 0.9rem;
             }
 
-            /* ═══════════════════════════════════════════════════════════════
-               CONSEJOS Y ESTUDIOS - SCIENTIFIC DARK REDESIGN
-               ═══════════════════════════════════════════════════════════════ */
+                /* ═══════════════════════════════════════════════════════════════
+                CONSEJOS Y ESTUDIOS - SCIENTIFIC DARK REDESIGN
+                ═══════════════════════════════════════════════════════════════ */
 
-            /* Contenedor Principal de Consejos */
-            .consejos-estudios-section {
-                background: #0a0a0a;
-                min-height: 100vh;
-                padding: 24px;
-            }
-
-            /* Header de la Sección */
-            .consejos-header {
-                background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-                border-bottom: 1px solid #2a2a2a;
-                padding: 48px 24px 32px;
-                text-align: center;
-                margin-bottom: 32px;
-                border-radius: 16px;
-            }
-
-            .consejos-title {
-                color: #ffffff;
-                font-size: 40px;
-                font-weight: 800;
-                margin-bottom: 12px;
-                letter-spacing: -1px;
-            }
-
-            .consejos-title-highlight {
-                color: #39ff14;
-                position: relative;
-            }
-
-            .consejos-subtitle {
-                color: #a3a3a3;
-                font-size: 18px;
-                font-weight: 400;
-                letter-spacing: 0.5px;
-            }
-
-            /* Grid de Artículos */
-            .consejos-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-                gap: 24px;
-                max-width: 1400px;
-                margin: 0 auto;
-            }
-
-            /* Card Individual de Artículo */
-            .article-card {
-                background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
-                border: 1px solid #2a2a2a;
-                border-radius: 16px;
-                padding: 32px;
-                transition: all 0.3s ease;
-                position: relative;
-                overflow: hidden;
-                display: flex;
-                flex-direction: column;
-            }
-
-            .article-card::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 4px;
-                height: 100%;
-                background: linear-gradient(180deg, #39ff14 0%, transparent 100%);
-                opacity: 0;
-                transition: opacity 0.3s ease;
-            }
-
-            .article-card:hover {
-                border-color: rgba(57, 255, 20, 0.3);
-                transform: translateY(-4px);
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 
-                            0 0 0 1px rgba(57, 255, 20, 0.1);
-            }
-
-            .article-card:hover::before {
-                opacity: 1;
-            }
-
-            /* Badge de Categoría */
-            .article-badge {
-                display: inline-block;
-                background: rgba(57, 255, 20, 0.15);
-                border: 1px solid rgba(57, 255, 20, 0.3);
-                color: #39ff14;
-                font-size: 12px;
-                font-weight: 600;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                padding: 6px 12px;
-                border-radius: 6px;
-                margin-bottom: 16px;
-                width: fit-content;
-            }
-
-            /* Título del Artículo */
-            .article-title {
-                color: #ffffff;
-                font-size: 24px;
-                font-weight: 700;
-                line-height: 1.3;
-                margin-bottom: 16px;
-                letter-spacing: -0.3px;
-            }
-
-            /* Contenido del Artículo */
-            .article-content {
-                color: #e5e5e5;
-                font-size: 15px;
-                line-height: 1.8;
-                margin-bottom: 20px;
-                flex: 1;
-            }
-
-            .article-content p {
-                margin-bottom: 14px;
-            }
-
-            .article-content p:last-child {
-                margin-bottom: 0;
-            }
-
-            /* Sección de Referencias */
-            .article-references {
-                border-top: 1px solid #2a2a2a;
-                padding-top: 20px;
-                margin-top: auto;
-            }
-
-            .references-title {
-                color: #a3a3a3;
-                font-size: 13px;
-                font-weight: 600;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                margin-bottom: 12px;
-            }
-
-            .reference-item {
-                display: flex;
-                align-items: flex-start;
-                gap: 10px;
-                padding: 10px;
-                border-radius: 8px;
-                margin-bottom: 8px;
-                transition: background 0.2s ease;
-            }
-
-            .reference-item:hover {
-                background: rgba(255, 255, 255, 0.03);
-            }
-
-            .reference-item:last-child {
-                margin-bottom: 0;
-            }
-
-            .reference-icon {
-                font-size: 18px;
-                flex-shrink: 0;
-                opacity: 0.8;
-                margin-top: 2px;
-                color: #a3a3a3;
-                font-weight: bold;
-            }
-
-            .reference-content {
-                flex: 1;
-            }
-
-            .reference-text {
-                color: #cccccc;
-                font-size: 13px;
-                line-height: 1.5;
-                margin-bottom: 4px;
-            }
-
-            .reference-link {
-                color: #39ff14;
-                font-size: 12px;
-                font-weight: 600;
-                text-decoration: none;
-                display: inline-flex;
-                align-items: center;
-                gap: 4px;
-                transition: all 0.2s ease;
-            }
-
-            .reference-link:hover {
-                color: #2ee00f;
-                gap: 8px;
-            }
-
-            /* Responsive Design */
-            @media (max-width: 768px) {
-                .consejos-header {
-                    padding: 32px 20px 24px;
-                }
-                
-                .consejos-title {
-                    font-size: 32px;
-                }
-                
-                .consejos-subtitle {
-                    font-size: 16px;
-                }
-                
-                .consejos-grid {
-                    grid-template-columns: 1fr;
-                    gap: 20px;
-                }
-                
-                .article-card {
-                    padding: 24px 20px;
-                }
-                
-                .article-title {
-                    font-size: 22px;
-                }
-                
-                .article-content {
-                    font-size: 14px;
-                }
-            }
-
-            @media (max-width: 480px) {
+                /* Contenedor Principal de Consejos */
                 .consejos-estudios-section {
-                    padding: 16px;
+                    background: #0a0a0a;
+                    min-height: 100vh;
+                    padding: 24px;
                 }
-                
+
+                /* Header de la Sección */
+                .consejos-header {
+                    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+                    border-bottom: 1px solid #2a2a2a;
+                    padding: 48px 24px 32px;
+                    text-align: center;
+                    margin-bottom: 32px;
+                    border-radius: 16px;
+                }
+
                 .consejos-title {
-                    font-size: 28px;
+                    color: #ffffff;
+                    font-size: 40px;
+                    font-weight: 800;
+                    margin-bottom: 12px;
+                    letter-spacing: -1px;
+                }
+
+                .consejos-title-highlight {
+                    color: #39ff14;
+                    position: relative;
+                }
+
+                .consejos-subtitle {
+                    color: #a3a3a3;
+                    font-size: 18px;
+                    font-weight: 400;
+                    letter-spacing: 0.5px;
+                }
+
+                /* Grid de Artículos - 3 columnas fijas en desktop */
+                .consejos-grid {
+                    display: grid !important;
+                    grid-template-columns: repeat(3, 1fr) !important;
+                    gap: 24px;
+                    max-width: 1400px;
+                    margin: 0 auto;
+                    width: 100%;
                 }
                 
+                /* Solo cambiar en pantallas medianas */
+                @media (max-width: 1200px) and (min-width: 769px) {
+                    .consejos-grid {
+                        grid-template-columns: repeat(2, 1fr) !important;
+                    }
+                }
+                
+                /* Solo cambiar en móvil */
+                @media (max-width: 768px) {
+                    .consejos-grid {
+                        grid-template-columns: 1fr !important;
+                    }
+                }
+
+                /* Card Individual de Artículo */
                 .article-card {
-                    padding: 20px 16px;
+                    background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+                    border: 1px solid #2a2a2a;
+                    border-radius: 16px;
+                    padding: 32px;
+                    transition: all 0.3s ease;
+                    position: relative;
+                    overflow: hidden;
+                    display: flex;
+                    flex-direction: column;
                 }
-            }
 
-            /* ═══════════════════════════════════════════════════════════════
-               RUTINA Y DIETA - RESPONSIVE
-               ═══════════════════════════════════════════════════════════════ */
-            @media (max-width: 1200px) {
-                #rutinaDietaOverlay main {
-                    max-width: 100%;
-                    padding: 0 16px 40px 16px;
+                .article-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 4px;
+                    height: 100%;
+                    background: linear-gradient(180deg, #39ff14 0%, transparent 100%);
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
                 }
-            }
 
-            @media (max-width: 768px) {
-                #rutinaDietaOverlay header > div {
-                    padding: 16px;
+                .article-card:hover {
+                    border-color: rgba(57, 255, 20, 0.3);
+                    transform: translateY(-4px);
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 
+                                0 0 0 1px rgba(57, 255, 20, 0.1);
                 }
-                
-                #rutinaDietaOverlay header h1 {
-                    font-size: 28px;
-                }
-                
-                #rutinaContent, #dietaContent {
-                    padding: 24px 20px !important;
-                }
-                
-                .section-title {
-                    font-size: 26px !important;
-                }
-                
-                .macros-summary {
-                    grid-template-columns: repeat(2, 1fr) !important;
-                    gap: 12px !important;
-                    padding: 20px !important;
-                }
-                
-                .macro-value {
-                    font-size: 24px !important;
-                }
-            }
 
-            /* ❌ ESTILOS ANTIGUOS - DEPRECADOS (mantenidos por compatibilidad) */
+                .article-card:hover::before {
+                    opacity: 1;
+                }
+
+                /* Badge de Categoría */
+                .article-badge {
+                    display: inline-block;
+                    background: rgba(57, 255, 20, 0.15);
+                    border: 1px solid rgba(57, 255, 20, 0.3);
+                    color: #39ff14;
+                    font-size: 12px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    margin-bottom: 16px;
+                    width: fit-content;
+                }
+
+                /* Título del Artículo */
+                .article-title {
+                    color: #ffffff;
+                    font-size: 24px;
+                    font-weight: 700;
+                    line-height: 1.3;
+                    margin-bottom: 16px;
+                    letter-spacing: -0.3px;
+                }
+
+                /* Contenido del Artículo */
+                .article-content {
+                    color: #e5e5e5;
+                    font-size: 15px;
+                    line-height: 1.8;
+                    margin-bottom: 20px;
+                    flex: 1;
+                }
+
+                .article-content p {
+                    margin-bottom: 14px;
+                }
+
+                .article-content p:last-child {
+                    margin-bottom: 0;
+                }
+
+                /* Sección de Referencias */
+                .article-references {
+                    border-top: 1px solid #2a2a2a;
+                    padding-top: 20px;
+                    margin-top: auto;
+                }
+
+                .references-title {
+                    color: #a3a3a3;
+                    font-size: 13px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    margin-bottom: 12px;
+                }
+
+                .reference-item {
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 10px;
+                    padding: 10px;
+                    border-radius: 8px;
+                    margin-bottom: 8px;
+                    transition: background 0.2s ease;
+                }
+
+                .reference-item:hover {
+                    background: rgba(255, 255, 255, 0.03);
+                }
+
+                .reference-item:last-child {
+                    margin-bottom: 0;
+                }
+
+                .reference-icon {
+                    font-size: 18px;
+                    flex-shrink: 0;
+                    opacity: 0.8;
+                    margin-top: 2px;
+                    color: #a3a3a3;
+                    font-weight: bold;
+                }
+
+                .reference-content {
+                    flex: 1;
+                }
+
+                .reference-text {
+                    color: #cccccc;
+                    font-size: 13px;
+                    line-height: 1.5;
+                    margin-bottom: 4px;
+                }
+
+                .reference-link {
+                    color: #39ff14;
+                    font-size: 12px;
+                    font-weight: 600;
+                    text-decoration: none;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 4px;
+                    transition: all 0.2s ease;
+                }
+
+                .reference-link:hover {
+                    color: #2ee00f;
+                    gap: 8px;
+                }
+
+                /* Responsive Design */
+                @media (max-width: 768px) {
+                    .consejos-header {
+                        padding: 32px 20px 24px;
+                    }
+                    
+                    .consejos-title {
+                        font-size: 32px;
+                    }
+                    
+                    .consejos-subtitle {
+                        font-size: 16px;
+                    }
+                    
+                    .consejos-grid {
+                        grid-template-columns: 1fr;
+                        gap: 20px;
+                    }
+                    
+                    .article-card {
+                        padding: 24px 20px;
+                    }
+                    
+                    .article-title {
+                        font-size: 22px;
+                    }
+                    
+                    .article-content {
+                        font-size: 14px;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .consejos-estudios-section {
+                        padding: 16px;
+                    }
+                    
+                    .consejos-title {
+                        font-size: 28px;
+                    }
+                    
+                    .article-card {
+                        padding: 20px 16px;
+                    }
+                }
+
+                /* ═══════════════════════════════════════════════════════════════
+                RUTINA Y DIETA - RESPONSIVE
+                ═══════════════════════════════════════════════════════════════ */
+                @media (max-width: 1200px) {
+                    #rutinaDietaOverlay main {
+                        max-width: 100%;
+                        padding: 0 16px 40px 16px;
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    #rutinaDietaOverlay header > div {
+                        padding: 16px;
+                    }
+                    
+                    #rutinaDietaOverlay header h1 {
+                        font-size: 28px;
+                    }
+                    
+                    #rutinaContent, #dietaContent {
+                        padding: 24px 20px !important;
+                    }
+                    
+                    .section-title {
+                        font-size: 26px !important;
+                    }
+                    
+                    .macros-summary {
+                        grid-template-columns: repeat(2, 1fr) !important;
+                        gap: 12px !important;
+                        padding: 20px !important;
+                    }
+                    
+                    .macro-value {
+                        font-size: 24px !important;
+                    }
+                }
+
+                /* ❌ ESTILOS ANTIGUOS - DEPRECADOS (mantenidos por compatibilidad) */
             .advice-card {
                 background: rgba(132, 204, 22, 0.05);
                 border: 1px solid rgba(132, 204, 22, 0.2);
@@ -1497,28 +1701,80 @@
             /* ========== RESPONSIVE DESIGN - SOLO MÓVIL ========== */
             @media (max-width: 768px) {
                 /* Layout general - cambiar a una columna */
+                    /* Bloquear scroll en html y body - CRÍTICO */
+                    html {
+                        height: 100% !important;
+                        height: 100dvh !important;
+                        overflow: hidden !important;
+                        position: fixed;
+                        width: 100%;
+                        overscroll-behavior: none;
+                        -webkit-overflow-scrolling: touch;
+                    }
+                    
                 body {
-                    overflow-x: hidden;
-                }
+                        height: 100% !important;
+                        height: 100dvh !important;
+                        overflow: hidden !important;
+                        position: fixed;
+                        width: 100%;
+                        overscroll-behavior: none;
+                        -webkit-overflow-scrolling: touch;
+                        background-color: #000000 !important;
+                        background-image: none !important;
+                    }
+                    
+                    .main-layout {
+                        height: 100% !important;
+                        height: 100dvh !important;
+                        overflow: hidden !important;
+                        display: flex;
+                        flex-direction: column;
+                        position: relative;
+                        overscroll-behavior: none;
+                    }
 
-                /* PASO 1: Estructura superior móvil */
-                /* Logo - centrado en la parte superior */
+                    /* PASO 1: Estructura superior móvil - Layout Flexbox Vertical Rígido */
+                    /* Header como bloque sólido que ocupa espacio real */
+                    .header-section {
+                        flex: 0 0 auto;
+                        position: relative;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: flex-start;
+                        padding-top: 70px;
+                        padding-bottom: 10px;
+                        background-color: #000000 !important;
+                        z-index: 10;
+                        width: 100%;
+                        min-height: auto;
+                    }
+                    
+                    /* Hamburger button - absolute para menú lateral, alineado verticalmente con el logo */
                 .hamburger-btn {
-                    top: 75px;
+                        position: absolute;
+                        top: 77px;
+                        transform: none;
                     left: 20px;
                     font-size: 28px;
+                        z-index: 101;
                 }
                 
+                    /* Logo - en flujo normal del header */
                 .logo {
-                    position: absolute;
-                    top: 80px;
-                    left: 70px !important;
+                        position: static;
+                        top: auto;
+                        left: auto;
                     transform: none !important;
                     gap: 3px;
                     z-index: 3;
                     display: flex;
                     align-items: center;
-                    justify-content: flex-start;
+                        justify-content: center;
+                        margin: 0 auto;
+                        margin-top: 10px;
+                        margin-bottom: 0;
                 }
                 
                 .sidebar {
@@ -1549,19 +1805,16 @@
                 }
 
                 /* Navegación - debajo del logo, centrada y compacta */
-                .header-section {
-                    flex-shrink: 0;
-                    position: relative;
-                    padding-top: 75px;
-                    padding-bottom: 20px;
-                    background: #000000;
-                    background-color: black;
-                    z-index: 100;
-                    min-height: auto;
-                }
-                
                 .navigation {
-                    margin-top: 20px;
+                        position: static;
+                        margin-top: 15px;
+                        margin-left: 0;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        background: #000000 !important;
+                        background-color: #000000 !important;
+                        width: 100%;
                 }
 
                 .nav-item {
@@ -1659,11 +1912,7 @@
                     transform: translateY(-1px);
                 }
 
-                /* Fondo negro absoluto */
-                body {
-                    background-color: #000000 !important;
-                    background-image: none !important;
-                }
+                    /* Fondo negro absoluto - ya definido arriba en body */
 
                 /* Ocultar el contenedor de imagen original */
                 .gym-image-container {
@@ -1672,21 +1921,22 @@
 
                 /* Chat Container - diseño profesional oscuro */
                 .chat-container {
-                    position: fixed;
-                    top: 220px;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    width: 100%;
-                    height: calc(100vh - 220px);
-                    z-index: 2;
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        overflow: hidden;
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        margin-left: 0 !important;
+                        margin-top: 200px;
+                        padding-top: 0;
+                        min-height: 0;
+                        z-index: 1;
                     background: #000000;
                     border-radius: 0;
                     box-shadow: none;
-                    overflow: hidden;
-                    display: flex;
-                    flex-direction: column;
                     border: none;
+                        position: relative;
                 }
 
                 .chat-header {
@@ -1695,14 +1945,20 @@
 
                 .chat-messages {
                     padding: 20px 20px 50px 20px;
+                        padding-top: 20px !important;
                     font-size: 14px;
                     background: #000000;
-                    flex: 1;
+                        flex: 1 1 auto;
+                        flex-grow: 1;
                     overflow-y: auto;
+                        overflow-x: hidden;
                     min-height: 0;
                     line-height: 1.4;
                     scrollbar-width: thin;
                     scrollbar-color: #333 #000;
+                        overscroll-behavior-y: contain;
+                        -webkit-overflow-scrolling: touch;
+                        position: relative;
                 }
                 
                 .chat-messages::-webkit-scrollbar {
@@ -1719,18 +1975,19 @@
                 }
                 
                 .chat-input-area {
-                    position: sticky;
-                    bottom: 20px;
+                        flex: 0 0 auto;
+                        flex-shrink: 0;
                     padding: 16px;
                     background: #000000;
-                    flex-shrink: 0;
-                    border-top: none;
+                        border-top: 1px solid #1a1a1a;
                     width: 100%;
                     box-sizing: border-box;
                     box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.6);
                     min-height: 70px;
                     display: flex;
                     align-items: center;
+                        position: relative;
+                        z-index: 10;
                 }
 
                 .input-placeholder {
@@ -2005,10 +2262,18 @@
                 }
             }
 
-            /* Responsive para cards de consejos y estudios */
+            /* Responsive para cards de consejos y estudios - Solo móvil */
             @media (max-width: 768px) {
                 #consejosEstudiosContent {
                     grid-template-columns: 1fr !important;
+                }
+            }
+            
+            /* Desktop: 3 columnas fijas */
+            @media (min-width: 769px) {
+                #consejosEstudiosContent {
+                    display: grid !important;
+                    grid-template-columns: repeat(3, 1fr) !important;
                 }
             }
 
@@ -2045,9 +2310,9 @@
         </aside>
         
         <div class="header-section">
-            <div class="logo" style="left: 100px !important; transform: none !important;">
+                <div class="logo">
                 <div class="dna-icon">
-                    <svg viewBox="0 0 800 800" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+                        <svg viewBox="0 0 800 800" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
                         <path transform="translate(237)" d="m0 0h19l10 5 8 6 4 4 4 8v5h1v10h234v-10l1-1 1-6 5-9 5-3 3-5 5-1 7-3h19l12 6 7 7h2l2 5 3 13v38l-2 20-3 15v8l-2 3-1 5h-2l-6 15-2 6-1 2-1 4-9 15-5 7-2 1-1 3-2 1-2 4-2 1-2 4-4 2-2 3-2 4-7 7-4 1-8 8-10 8-1 3-4 1-5 1-20-12-24-12-26-10-4-1v-2l10-4 14-8 10-7 1-1-91-1-16-10-13-11-10-9-6-4-1-4-4-2v-5l1-2 186-1 1-6 6-14 3-10 2-1h-232l2 1 2 6v7l4 5 9 17 5 7 1 3 3 2 1 4 4 2 2 5 10 10 17 13 14 9 23 12 21 8 26 8 22 9 22 11 8 5 5 1v2l12 8 12 9 4 1 3 5 4 1 3 5 15 15 4 2 1 4 5 3 1 3 5 5 7 10 7 11 8 16 1 8 6 18h2l1 7-1 1 3 17 1 14v12l-2 21-2 11 1 4-2 3-2 4-6 17v5l-10 19-12 18-5 5-2 4-4 2-2 5-5 3-15 15-2 4-4 1-15 12-5-2-23-13-23-11-24-9 1-3 19-10 15-10-94-1-14-9-14-11-15-15-4-2-1-4h-2l2-5h184l2-5h2l2-9h2l5-15h-229l1 7 2 1 1 7h2l2 4v5h2l6 10 1 3 5 5 1 3 3 2 1 4 5 3 7 7 2 4 8 6 3 1 2 4 17 11 23 12 21 8 36 12 20 9 21 11 21 14 14 11 11 10 4 1 3 5 4 2 3 3 1 4 4 3 3 2 1 4 3 1 1 3 2 1 1 3 4 4 10 16 1 6 3 1 3 9 2 7h2l1 8 2 4 2 2v8l3 14 2 21v38l-2 9-2 7-2 2-7 6-8 5-5 2h-18l-10-4-8-7-3-1-5-9-1-7h-1v-10h-234v10l-1 1-1 6-5 9-5 3-8 6-8 3h-18l-12-6-7-7h-2l-2-5-3-13v-38l2-21 3-14v-8l3-3 2-8 1-3 2-2 5-15h2l2-8 12-18 2-1 1-3 2-1 1-3 3-1 1-4 5-3 2-3 2-4 10-10 4-1 11-10 11-8 5 1 16 10 26 13 24 9 5 3-3 2-17 9-12 8-2 2 91 1 16 10 13 11 10 9 6 4 1 4 4 2v5l-1 2-184 1-7 15-5 15-2 1h232l-2-1-5-15-8-17-7-10-1-3-3-2-1-4-4-2-2-5-10-10-17-13-14-9-23-12-21-8-29-9-23-10-25-13-6-2v-2l-12-8-13-10-7-5-4-2-2-4-16-16-4-2-2-5-3-1-1-4-3-1-1-3-5-5-12-20-6-12v-5h-2l-1-8-6-20-3-18-1-13v-14l2-20 4-19 5-15v-5h2l1-7 9-17 9-14 6-8 3-1 1-4 3-1 1-4 6-4 16-16 2-4 4-1 3-5 4-1 8-6 5 2 23 13 23 11 24 9-1 3-19 10-15 10 98 1 1 3 13 9 11 9 14 14 4 2 1 4h2l-2 5h-184l-2 5h-2l-2 9h-2l-5 15h230l-5-15h-2l-2-9h-2l-6-10-1-3-5-5-1-3-3-2-1-4-5-3-7-7-2-4-3-2-3-1-1-3-4-1-2-4-17-11-23-12-21-8-36-12-20-9-21-11-21-14-14-11-12-11-5-2-8-8-1-4-4-3-3-2-1-4-3-1-1-3-2-1-1-3-4-4-10-16-1-6-3-1-2-9-3-7h-2l-1-8-2-4-2-2v-8l-3-14-2-21v-38l2-9 2-7 2-2 7-6 8-5zm296 5m-259 8m251 0m-250 1m249 0m-308 1m367 0m-307 1m247 0m-308 1m62 0m245 0m62 0m-306 2 1 2zm243 0 1 2zm-242 2 1 2zm241 0 1 2zm-240 3 1 3zm239 0 1 3zm-238 15v1h238v-1zm3 48m231 0m-230 1 1 3zm229 0 1 3zm-228 4 1 3zm227 0 1 2zm-1 3 1 2zm-1 3 1 2zm-1 2 1 2zm-1 3 1 2zm-219 1m1 1 1 2zm217 1m-291 2 1 3zm75 0m215 0m75 0 1 3zm-289 2m213 0m-212 2m211 0m-210 2m1 1m284 0 1 2zm-283 2m1 2m1 1m19 1m-18 1m19 0m-18 1m1 2m1 1m20 1m-19 1m20 0m-17 4m1 1m-80 5m84 0m-83 1 1 2zm84 0m1 1m253 5m-334 2m333 0m-332 2m331 0m-330 2m329 0m-328 1m327 0m-326 2m325 0m-324 2m323 0m-322 1m321 0m-320 2m319 0m-318 1m317 0m-316 2m315 0m-314 1m216 0m97 0m-312 2m311 0m-310 1m309 0m-306 4m303 0m-300 4m297 0m-293 5m289 0m-288 1m287 0m-280 8m273 0m-272 1m271 0m-270 1m269 0m-268 2m266 0m-264 2m263 0m-261 2m259 0m-25 21m-22 12m-193 20m221 0m-222 1m223 0m-229 5m235 0m-236 1m237 0m-259 22m281 0m-282 1m-1 1m-4 5m293 0m3 4m-300 1m301 0m-302 1m303 0m1 2m-306 1m307 0m-308 1m309 0m-310 2m311 0m-312 1m313 0m-314 1 1 2zm315 1m-316 1m195 0m122 0m-94 1m-224 1m319 0m-320 1m321 0m-322 2m231 0m92 0m-324 1m325 0m-326 2m327 0m-328 2m329 0m-330 1 1 2zm331 1m-332 1m244 0m89 0m-87 1m-247 1m248 0m87 0m-86 1m-250 1m251 0m86 0m-338 2m253 0m86 0m-340 2m341 0m-342 2m343 0m-344 2m262 0m83 0m-346 1 1 2zm264 0m83 1m-348 2 1 2zm349 0 1 2zm-81 1m1 1m1 2m1 1m-18 2m1 1m20 2m1 1m1 2m1 1m-206 2m207 0m-208 2m209 0m-213 8m217 0m-224 21v1h232v-1zm0 45v1h232v-1zm0 2m3 10m4 9m217 0m-216 2 1 2zm3 6m209 0m-208 2m207 0m-206 2m1 1m1 2m1 1m20 2m1 1m-18 2m1 1m1 2m-80 1 1 2zm81 0m268 0 1 2zm-348 3 1 2zm347 0m-264 1m-82 1m83 0m262 0m-344 2m343 0m-342 2m341 0m-340 2m86 0m253 0m-338 2m86 0m251 0m-250 1m-86 1m87 0m248 0m-247 1m-87 1m88 0m245 0m-332 1 1 2zm331 0m-330 2m329 0m-328 2m327 0m-326 2m325 0m-324 1m323 0m-322 2m321 0m-320 1m319 0m-224 1m-94 1m317 0m-316 1m315 0m-314 2m313 0m-312 1m311 0m-310 2m309 0m-308 1m307 0m-1 1m-1 2m-302 1m301 0m-1 1m-296 4m293 0m-289 5m1 1m282 1m-259 22m237 0m-236 1m235 0m-200 26m-42 29m-3 2m255 0m-257 2m-2 2m-2 2m267 0m-268 2m269 0m-270 1m271 0m-272 1m273 0m-280 8m287 0m-288 1m289 0m-293 5m297 0m-300 4m303 0m-306 4m309 0m-310 1m311 0m-312 2m97 0m216 0m-314 1m315 0m-316 2m317 0m-318 1m319 0m-320 2m321 0m-322 1m323 0m-324 2m325 0m-326 2m327 0m-328 1m329 0m-330 2m331 0m-332 2m333 0m-337 7m256 0m85 0m-84 1m-258 1m259 0m84 0m1 2 1 2zm-81 3m82 0m-81 1m-17 4m20 0m-19 1m20 1m1 1m1 2m-18 1m19 0m-18 1m19 1m1 1m1 2m-206 2m207 0m-208 1m209 0m-210 2m211 0m-288 2 1 3zm76 0m213 0m76 0 1 3zm-290 2m215 0m-216 2 1 2zm217 0 1 2zm-218 2m219 0m-220 3 1 2zm221 0 1 2zm-222 2 1 2zm223 0 1 2zm-224 3 1 2zm225 0 1 2zm-226 2 1 3zm227 0 1 3zm-228 4 1 3zm229 0 1 3zm-230 3m231 0m-234 48v1h238v-1zm-1 13 1 3zm239 0 1 3zm-240 4 1 2zm241 0 1 2zm-242 2 1 2zm243 0 1 2z" fill="#84CC16"/>
                     </svg>
                 </div>
@@ -2060,6 +2325,12 @@
                 <div class="nav-item" id="rutinaDieta">Rutina y Dieta</div>
                 <div class="nav-separator">|</div>
                 <div class="nav-item" id="consejosEstudios">Consejos y Estudios</div>
+            </div>
+                
+                <div class="motivational-text">
+                    <p>El único entrenamiento que falla es el que <span class="highlight">nunca empiezas</span>.</p>
+                    <p>Cada repetición cuenta. Cada comida importa. Cada día es una <span class="highlight">oportunidad de ser mejor</span>.</p>
+                    <p>Tu versión más fuerte te está esperando. <span class="highlight">¿Estás listo para encontrarla?</span></p>
             </div>
         </div>
 
@@ -2083,60 +2354,60 @@
         </div>
 
         <!-- Overlay para Rutina y Dieta -->
-        <div class="overlay" id="rutinaDietaOverlay" style="background: #0a0a0a; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100dvh; z-index: 1000; display: none; flex-direction: column; overflow: hidden;">
-            
-            <header style="flex-shrink: 0; background: rgba(10, 10, 10, 0.98); border-bottom: 1px solid #262626; z-index: 10;">
-                <div style="max-width: 1800px; margin: 0 auto; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div class="dna-icon" style="display: flex; align-items: center;">
-                            <svg viewBox="0 0 800 800" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
-                                <path transform="translate(237)" d="m0 0h19l10 5 8 6 4 4 4 8v5h1v10h234v-10l1-1 1-6 5-9 5-3 3-5 5-1 7-3h19l12 6 7 7h2l2 5 3 13v38l-2 20-3 15v8l-2 3-1 5h-2l-6 15-2 6-1 2-1 4-9 15-5 7-2 1-1 3-2 1-2 4-2 1-2 4-4 2-2 3-2 4-7 7-4 1-8 8-10 8-1 3-4 1-5 1-20-12-24-12-26-10-4-1v-2l10-4 14-8 10-7 1-1-91-1-16-10-13-11-10-9-6-4-1-4-4-2v-5l1-2 186-1 1-6 6-14 3-10 2-1h-232l2 1 2 6v7l4 5 9 17 5 7 1 3 3 2 1 4 4 2 2 5 10 10 17 13 14 9 23 12 21 8 26 8 22 9 22 11 8 5 5 1v2l12 8 12 9 4 1 3 5 4 1 3 5 15 15 4 2 1 4 5 3 1 3 5 5 7 10 7 11 8 16 1 8 6 18h2l1 7-1 1 3 17 1 14v12l-2 21-2 11 1 4-2 3-2 4-6 17v5l-10 19-12 18-5 5-2 4-4 2-2 5-5 3-15 15-2 4-4 1-15 12-5-2-23-13-23-11-24-9 1-3 19-10 15-10-94-1-14-9-14-11-15-15-4-2-1-4h-2l2-5h184l2-5h2l2-9h2l5-15h-229l1 7 2 1 1 7h2l2 4v5h2l6 10 1 3 5 5 1 3 3 2 1 4 5 3 7 7 2 4 8 6 3 1 2 4 17 11 23 12 21 8 36 12 20 9 21 11 21 14 14 11 11 10 4 1 3 5 4 2 3 3 1 4 4 3 3 2 1 4 3 1 1 3 2 1 1 3 4 4 10 16 1 6 3 1 3 9 2 7h2l1 8 2 4 2 2v8l3 14 2 21v38l-2 9-2 7-2 2-7 6-8 5-5 2h-18l-10-4-8-7-3-1-5-9-1-7h-1v-10h-234v10l-1 1-1 6-5 9-5 3-8 6-8 3h-18l-12-6-7-7h-2l-2-5-3-13v-38l2-21 3-14v-8l3-3 2-8 1-3 2-2 5-15h2l2-8 12-18 2-1 1-3 2-1 1-3 3-1 1-4 5-3 2-3 2-4 10-10 4-1 11-10 11-8 5 1 16 10 26 13 24 9 5 3-3 2-17 9-12 8-2 2 91 1 16 10 13 11 10 9 6 4 1 4 4 2v5l-1 2-184 1-7 15-5 15-2 1h232l-2-1-5-15-8-17-7-10-1-3-3-2-1-4-4-2-2-5-10-10-17-13-14-9-23-12-21-8-29-9-23-10-25-13-6-2v-2l-12-8-13-10-7-5-4-2-2-4-16-16-4-2-2-5-3-1-1-4-3-1-1-3-5-5-12-20-6-12v-5h-2l-1-8-6-20-3-18-1-13v-14l2-20 4-19 5-15v-5h2l1-7 9-17 9-14 6-8 3-1 1-4 3-1 1-4 6-4 16-16 2-4 4-1 3-5 4-1 8-6 5 2 23 13 23 11 24 9-1 3-19 10-15 10 98 1 1 3 13 9 11 9 14 14 4 2 1 4h2l-2 5h-184l-2 5h-2l-2 9h-2l-5 15h230l-5-15h-2l-2-9h-2l-6-10-1-3-5-5-1-3-3-2-1-4-5-3-7-7-2-4-3-2-3-1-1-3-4-1-2-4-17-11-23-12-21-8-36-12-20-9-21-11-21-14-14-11-12-11-5-2-8-8-1-4-4-3-3-2-1-4-3-1-1-3-2-1-1-3-4-4-10-16-1-6-3-1-2-9-3-7h-2l-1-8-2-4-2-2v-8l-3-14-2-21v-38l2-9 2-7 2-2 7-6 8-5zm296 5m-259 8m251 0m-250 1m249 0m-308 1m367 0m-307 1m247 0m-308 1m62 0m245 0m62 0m-306 2 1 2zm243 0 1 2zm-242 2 1 2zm241 0 1 2zm-240 3 1 3zm239 0 1 3zm-238 15v1h238v-1zm3 48m231 0m-230 1 1 3zm229 0 1 3zm-228 4 1 3zm227 0 1 2zm-1 3 1 2zm-1 3 1 2zm-1 2 1 2zm-1 3 1 2zm-219 1m1 1 1 2zm217 1m-291 2 1 3zm75 0m215 0m75 0 1 3zm-289 2m213 0m-212 2m211 0m-210 2m1 1m284 0 1 2zm-283 2m1 2m1 1m19 1m-18 1m19 0m-18 1m1 2m1 1m20 1m-19 1m20 0m-17 4m1 1m-80 5m84 0m-83 1 1 2zm84 0m1 1m253 5m-334 2m333 0m-332 2m331 0m-330 2m329 0m-328 1m327 0m-326 2m325 0m-324 2m323 0m-322 1m321 0m-320 2m319 0m-318 1m317 0m-316 2m315 0m-314 1m216 0m97 0m-312 2m311 0m-310 1m309 0m-306 4m303 0m-300 4m297 0m-293 5m289 0m-288 1m287 0m-280 8m273 0m-272 1m271 0m-270 1m269 0m-268 2m266 0m-264 2m263 0m-261 2m259 0m-25 21m-22 12m-193 20m221 0m-222 1m223 0m-229 5m235 0m-236 1m237 0m-259 22m281 0m-282 1m-1 1m-4 5m293 0m3 4m-300 1m301 0m-302 1m303 0m1 2m-306 1m307 0m-308 1m309 0m-310 2m311 0m-312 1m313 0m-314 1 1 2zm315 1m-316 1m195 0m122 0m-94 1m-224 1m319 0m-320 1m321 0m-322 2m231 0m92 0m-324 1m325 0m-326 2m327 0m-328 2m329 0m-330 1 1 2zm331 1m-332 1m244 0m89 0m-87 1m-247 1m248 0m87 0m-86 1m-250 1m251 0m86 0m-338 2m253 0m86 0m-340 2m341 0m-342 2m343 0m-344 2m262 0m83 0m-346 1 1 2zm264 0m83 1m-348 2 1 2zm349 0 1 2zm-81 1m1 1m1 2m1 1m-18 2m1 1m20 2m1 1m1 2m1 1m-206 2m207 0m-208 2m209 0m-213 8m217 0m-224 21v1h232v-1zm0 45v1h232v-1zm0 2m3 10m4 9m217 0m-216 2 1 2zm3 6m209 0m-208 2m207 0m-206 2m1 1m1 2m1 1m20 2m1 1m-18 2m1 1m1 2m-80 1 1 2zm81 0m268 0 1 2zm-348 3 1 2zm347 0m-264 1m-82 1m83 0m262 0m-344 2m343 0m-342 2m341 0m-340 2m86 0m253 0m-338 2m86 0m251 0m-250 1m-86 1m87 0m248 0m-247 1m-87 1m88 0m245 0m-332 1 1 2zm331 0m-330 2m329 0m-328 2m327 0m-326 2m325 0m-324 1m323 0m-322 2m321 0m-320 1m319 0m-224 1m-94 1m317 0m-316 1m315 0m-314 2m313 0m-312 1m311 0m-310 2m309 0m-308 1m307 0m-1 1m-1 2m-302 1m301 0m-1 1m-296 4m293 0m-289 5m1 1m282 1m-259 22m237 0m-236 1m235 0m-200 26m-42 29m-3 2m255 0m-257 2m-2 2m-2 2m267 0m-268 2m269 0m-270 1m271 0m-272 1m273 0m-280 8m287 0m-288 1m289 0m-293 5m297 0m-300 4m303 0m-306 4m309 0m-310 1m311 0m-312 2m97 0m216 0m-314 1m315 0m-316 2m317 0m-318 1m319 0m-320 2m321 0m-322 1m323 0m-324 2m325 0m-326 2m327 0m-328 1m329 0m-330 2m331 0m-332 2m333 0m-337 7m256 0m85 0m-84 1m-258 1m259 0m84 0m1 2 1 2zm-81 3m82 0m-81 1m-17 4m20 0m-19 1m20 1m1 1m1 2m-18 1m19 0m-18 1m19 1m1 1m1 2m-206 2m207 0m-208 1m209 0m-210 2m211 0m-288 2 1 3zm76 0m213 0m76 0 1 3zm-290 2m215 0m-216 2 1 2zm217 0 1 2zm-218 2m219 0m-220 3 1 2zm221 0 1 2zm-222 2 1 2zm223 0 1 2zm-224 3 1 2zm225 0 1 2zm-226 2 1 3zm227 0 1 3zm-228 4 1 3zm229 0 1 3zm-230 3m231 0m-234 48v1h238v-1zm-1 13 1 3zm239 0 1 3zm-240 4 1 2zm241 0 1 2zm-242 2 1 2zm243 0 1 2z" fill="#84CC16"/>
-                            </svg>
-                        </div>
-                        <span style="color: white; font-size: 18px; font-weight: bold;">
-                            YourGains <span style="color: #84cc16;">AI</span>
-                        </span>
-                    </div>
-                    
-                    <button onclick="closeOverlay('rutinaDietaOverlay')" style="background: rgba(255, 255, 255, 0.1); border: 1px solid #404040; color: #a3a3a3; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.borderColor='#525252'; this.style.color='white'" onmouseout="this.style.borderColor='#404040'; this.style.color='#a3a3a3'">&times;</button>
-                </div>
+            <div class="overlay" id="rutinaDietaOverlay" style="background: #0a0a0a; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100dvh; z-index: 1000; display: none; flex-direction: column; overflow: hidden;">
                 
-                <div style="text-align: center; padding: 20px 20px 24px 20px;">
-                    <h1 style="font-size: 40px; font-weight: 800; color: white; margin-bottom: 10px; letter-spacing: -1px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">Rutina y Dieta</h1>
-                    <p style="font-size: 16px; color: #a8b3c1; margin: 0; letter-spacing: 0.2px;">Tu plan personalizado de entrenamiento y nutrición</p>
-                </div>
-            </header>
-            
-            <main style="flex: 1; overflow-y: auto; padding: 0; position: relative; background: #0a0a0a;">
-                <div style="max-width: 1400px; margin: 0 auto; padding: 40px 60px 80px 60px;">
-                    <!-- Sección Rutina -->
-                    <section id="rutinaSection" style="margin-bottom: 60px;">
-                        <div style="margin-bottom: 32px;">
-                            <h2 style="font-size: 24px; font-weight: 600; color: #ffffff; margin: 0 0 4px 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
-                                Rutina de Entrenamiento
-                            </h2>
+                <header style="flex-shrink: 0; background: rgba(10, 10, 10, 0.98); border-bottom: 1px solid #262626; z-index: 10;">
+                    <div style="max-width: 1800px; margin: 0 auto; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div class="dna-icon" style="display: flex; align-items: center;">
+                                <svg viewBox="0 0 800 800" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+                                    <path transform="translate(237)" d="m0 0h19l10 5 8 6 4 4 4 8v5h1v10h234v-10l1-1 1-6 5-9 5-3 3-5 5-1 7-3h19l12 6 7 7h2l2 5 3 13v38l-2 20-3 15v8l-2 3-1 5h-2l-6 15-2 6-1 2-1 4-9 15-5 7-2 1-1 3-2 1-2 4-2 1-2 4-4 2-2 3-2 4-7 7-4 1-8 8-10 8-1 3-4 1-5 1-20-12-24-12-26-10-4-1v-2l10-4 14-8 10-7 1-1-91-1-16-10-13-11-10-9-6-4-1-4-4-2v-5l1-2 186-1 1-6 6-14 3-10 2-1h-232l2 1 2 6v7l4 5 9 17 5 7 1 3 3 2 1 4 4 2 2 5 10 10 17 13 14 9 23 12 21 8 26 8 22 9 22 11 8 5 5 1v2l12 8 12 9 4 1 3 5 4 1 3 5 15 15 4 2 1 4 5 3 1 3 5 5 7 10 7 11 8 16 1 8 6 18h2l1 7-1 1 3 17 1 14v12l-2 21-2 11 1 4-2 3-2 4-6 17v5l-10 19-12 18-5 5-2 4-4 2-2 5-5 3-15 15-2 4-4 1-15 12-5-2-23-13-23-11-24-9 1-3 19-10 15-10-94-1-14-9-14-11-15-15-4-2-1-4h-2l2-5h184l2-5h2l2-9h2l5-15h-229l1 7 2 1 1 7h2l2 4v5h2l6 10 1 3 5 5 1 3 3 2 1 4 5 3 7 7 2 4 8 6 3 1 2 4 17 11 23 12 21 8 36 12 20 9 21 11 21 14 14 11 11 10 4 1 3 5 4 2 3 3 1 4 4 3 3 2 1 4 3 1 1 3 2 1 1 3 4 4 10 16 1 6 3 1 3 9 2 7h2l1 8 2 4 2 2v8l3 14 2 21v38l-2 9-2 7-2 2-7 6-8 5-5 2h-18l-10-4-8-7-3-1-5-9-1-7h-1v-10h-234v10l-1 1-1 6-5 9-5 3-8 6-8 3h-18l-12-6-7-7h-2l-2-5-3-13v-38l2-21 3-14v-8l3-3 2-8 1-3 2-2 5-15h2l2-8 12-18 2-1 1-3 2-1 1-3 3-1 1-4 5-3 2-3 2-4 10-10 4-1 11-10 11-8 5 1 16 10 26 13 24 9 5 3-3 2-17 9-12 8-2 2 91 1 16 10 13 11 10 9 6 4 1 4 4 2v5l-1 2-184 1-7 15-5 15-2 1h232l-2-1-5-15-8-17-7-10-1-3-3-2-1-4-4-2-2-5-10-10-17-13-14-9-23-12-21-8-29-9-23-10-25-13-6-2v-2l-12-8-13-10-7-5-4-2-2-4-16-16-4-2-2-5-3-1-1-4-3-1-1-3-5-5-12-20-6-12v-5h-2l-1-8-6-20-3-18-1-13v-14l2-20 4-19 5-15v-5h2l1-7 9-17 9-14 6-8 3-1 1-4 3-1 1-4 6-4 16-16 2-4 4-1 3-5 4-1 8-6 5 2 23 13 23 11 24 9-1 3-19 10-15 10 98 1 1 3 13 9 11 9 14 14 4 2 1 4h2l-2 5h-184l-2 5h-2l-2 9h-2l-5 15h230l-5-15h-2l-2-9h-2l-6-10-1-3-5-5-1-3-3-2-1-4-5-3-7-7-2-4-3-2-3-1-1-3-4-1-2-4-17-11-23-12-21-8-36-12-20-9-21-11-21-14-14-11-12-11-5-2-8-8-1-4-4-3-3-2-1-4-3-1-1-3-2-1-1-3-4-4-10-16-1-6-3-1-2-9-3-7h-2l-1-8-2-4-2-2v-8l-3-14-2-21v-38l2-9 2-7 2-2 7-6 8-5zm296 5m-259 8m251 0m-250 1m249 0m-308 1m367 0m-307 1m247 0m-308 1m62 0m245 0m62 0m-306 2 1 2zm243 0 1 2zm-242 2 1 2zm241 0 1 2zm-240 3 1 3zm239 0 1 3zm-238 15v1h238v-1zm3 48m231 0m-230 1 1 3zm229 0 1 3zm-228 4 1 3zm227 0 1 2zm-1 3 1 2zm-1 3 1 2zm-1 2 1 2zm-1 3 1 2zm-219 1m1 1 1 2zm217 1m-291 2 1 3zm75 0m215 0m75 0 1 3zm-289 2m213 0m-212 2m211 0m-210 2m1 1m284 0 1 2zm-283 2m1 2m1 1m19 1m-18 1m19 0m-18 1m1 2m1 1m20 1m-19 1m20 0m-17 4m1 1m-80 5m84 0m-83 1 1 2zm84 0m1 1m253 5m-334 2m333 0m-332 2m331 0m-330 2m329 0m-328 1m327 0m-326 2m325 0m-324 2m323 0m-322 1m321 0m-320 2m319 0m-318 1m317 0m-316 2m315 0m-314 1m216 0m97 0m-312 2m311 0m-310 1m309 0m-306 4m303 0m-300 4m297 0m-293 5m289 0m-288 1m287 0m-280 8m273 0m-272 1m271 0m-270 1m269 0m-268 2m266 0m-264 2m263 0m-261 2m259 0m-25 21m-22 12m-193 20m221 0m-222 1m223 0m-229 5m235 0m-236 1m237 0m-259 22m281 0m-282 1m-1 1m-4 5m293 0m3 4m-300 1m301 0m-302 1m303 0m1 2m-306 1m307 0m-308 1m309 0m-310 2m311 0m-312 1m313 0m-314 1 1 2zm315 1m-316 1m195 0m122 0m-94 1m-224 1m319 0m-320 1m321 0m-322 2m231 0m92 0m-324 1m325 0m-326 2m327 0m-328 2m329 0m-330 1 1 2zm331 1m-332 1m244 0m89 0m-87 1m-247 1m248 0m87 0m-86 1m-250 1m251 0m86 0m-338 2m253 0m86 0m-340 2m341 0m-342 2m343 0m-344 2m262 0m83 0m-346 1 1 2zm264 0m83 1m-348 2 1 2zm349 0 1 2zm-81 1m1 1m1 2m1 1m-18 2m1 1m20 2m1 1m1 2m1 1m-206 2m207 0m-208 2m209 0m-213 8m217 0m-224 21v1h232v-1zm0 45v1h232v-1zm0 2m3 10m4 9m217 0m-216 2 1 2zm3 6m209 0m-208 2m207 0m-206 2m1 1m1 2m1 1m20 2m1 1m-18 2m1 1m1 2m-80 1 1 2zm81 0m268 0 1 2zm-348 3 1 2zm347 0m-264 1m-82 1m83 0m262 0m-344 2m343 0m-342 2m341 0m-340 2m86 0m253 0m-338 2m86 0m251 0m-250 1m-86 1m87 0m248 0m-247 1m-87 1m88 0m245 0m-332 1 1 2zm331 0m-330 2m329 0m-328 2m327 0m-326 2m325 0m-324 1m323 0m-322 2m321 0m-320 1m319 0m-224 1m-94 1m317 0m-316 1m315 0m-314 2m313 0m-312 1m311 0m-310 2m309 0m-308 1m307 0m-1 1m-1 2m-302 1m301 0m-1 1m-296 4m293 0m-289 5m1 1m282 1m-259 22m237 0m-236 1m235 0m-200 26m-42 29m-3 2m255 0m-257 2m-2 2m-2 2m267 0m-268 2m269 0m-270 1m271 0m-272 1m273 0m-280 8m287 0m-288 1m289 0m-293 5m297 0m-300 4m303 0m-306 4m309 0m-310 1m311 0m-312 2m97 0m216 0m-314 1m315 0m-316 2m317 0m-318 1m319 0m-320 2m321 0m-322 1m323 0m-324 2m325 0m-326 2m327 0m-328 1m329 0m-330 2m331 0m-332 2m333 0m-337 7m256 0m85 0m-84 1m-258 1m259 0m84 0m1 2 1 2zm-81 3m82 0m-81 1m-17 4m20 0m-19 1m20 1m1 1m1 2m-18 1m19 0m-18 1m19 1m1 1m1 2m-206 2m207 0m-208 1m209 0m-210 2m211 0m-288 2 1 3zm76 0m213 0m76 0 1 3zm-290 2m215 0m-216 2 1 2zm217 0 1 2zm-218 2m219 0m-220 3 1 2zm221 0 1 2zm-222 2 1 2zm223 0 1 2zm-224 3 1 2zm225 0 1 2zm-226 2 1 3zm227 0 1 3zm-228 4 1 3zm229 0 1 3zm-230 3m231 0m-234 48v1h238v-1zm-1 13 1 3zm239 0 1 3zm-240 4 1 2zm241 0 1 2zm-242 2 1 2zm243 0 1 2z" fill="#84CC16"/>
+                                </svg>
                         </div>
-                        <div id="rutinaContent" style="width: 100%;">
-                            <p style="color: #999; text-align: center; padding: 40px;">Cargando rutina...</p>
+                            <span style="color: white; font-size: 18px; font-weight: bold;">
+                                YourGains <span style="color: #84cc16;">AI</span>
+                            </span>
+                    </div>
+                        
+                        <button onclick="closeOverlay('rutinaDietaOverlay')" style="background: rgba(255, 255, 255, 0.1); border: 1px solid #404040; color: #a3a3a3; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.borderColor='#525252'; this.style.color='white'" onmouseout="this.style.borderColor='#404040'; this.style.color='#a3a3a3'">&times;</button>
                         </div>
-                    </section>
                     
-                    <!-- Separador -->
-                    <div style="height: 1px; background: #262626; margin: 0 0 60px 0;"></div>
-                    
-                    <!-- Sección Dieta -->
-                    <section id="dietaSection">
-                        <div style="margin-bottom: 32px;">
-                            <h2 style="font-size: 24px; font-weight: 600; color: #ffffff; margin: 0 0 4px 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
-                                Plan Nutricional
-                            </h2>
-                        </div>
-                        <div id="dietaContent" style="width: 100%;">
-                            <p style="color: #999; text-align: center; padding: 40px;">Cargando dieta...</p>
-                        </div>
-                    </section>
+                    <div style="text-align: center; padding: 20px 20px 24px 20px;">
+                        <h1 style="font-size: 40px; font-weight: 800; color: white; margin-bottom: 10px; letter-spacing: -1px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">Rutina y Dieta</h1>
+                        <p style="font-size: 16px; color: #a8b3c1; margin: 0; letter-spacing: 0.2px;">Tu plan personalizado de entrenamiento y nutrición</p>
+                    </div>
+                </header>
+                
+                <main style="flex: 1; overflow-y: auto; padding: 0; position: relative; background: #0a0a0a;">
+                    <div style="max-width: 1400px; margin: 0 auto; padding: 40px 60px 80px 60px;">
+                        <!-- Sección Rutina -->
+                        <section id="rutinaSection" style="margin-bottom: 60px;">
+                            <div style="margin-bottom: 32px;">
+                                <h2 style="font-size: 24px; font-weight: 600; color: #ffffff; margin: 0 0 4px 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+                                    Rutina de Entrenamiento
+                                </h2>
                 </div>
-            </main>
+                            <div id="rutinaContent" style="width: 100%;">
+                                <p style="color: #999; text-align: center; padding: 40px;">Cargando rutina...</p>
+            </div>
+                        </section>
+                        
+                        <!-- Separador -->
+                        <div style="height: 1px; background: #262626; margin: 0 0 60px 0;"></div>
+                        
+                        <!-- Sección Dieta -->
+                        <section id="dietaSection">
+                            <div style="margin-bottom: 32px;">
+                                <h2 style="font-size: 24px; font-weight: 600; color: #ffffff; margin: 0 0 4px 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+                                    Plan Nutricional
+                                </h2>
+                            </div>
+                            <div id="dietaContent" style="width: 100%;">
+                                <p style="color: #999; text-align: center; padding: 40px;">Cargando dieta...</p>
+                            </div>
+                        </section>
+                    </div>
+                </main>
         </div>
 
         <!-- Overlay para Consejos y Estudios -->
@@ -2172,8 +2443,8 @@
             <div style="height: 180px;"></div>
             
             <!-- CONTENEDOR DE CARDS -->
-            <main style="max-width: 1400px; margin: 0 auto; padding: 0 20px 40px 20px; position: relative; z-index: 1;">
-                <div id="consejosEstudiosContent" class="consejos-grid">
+                <main style="max-width: 1400px; margin: 0 auto; padding: 0 20px 40px 20px; position: relative; z-index: 1;">
+                    <div id="consejosEstudiosContent" class="consejos-grid">
                     <!-- El contenido se carga dinámicamente aquí -->
                 </div>
             </main>
@@ -2454,20 +2725,37 @@
             }
             
             // Forzar posición del logo y navegación al cargar
-            document.addEventListener('DOMContentLoaded', function() {
-                // Forzar posición del logo (sobrescribe media queries)
+                function updatePositions() {
                 const logo = document.querySelector('.logo');
-                if (logo) {
+                    const nav = document.querySelector('.navigation');
+                    
+                    // LOGO: solo forzar posición en DESKTOP
+                    if (logo && window.innerWidth > 768) {
                     logo.style.cssText = 'position: absolute !important; top: 80px !important; left: 100px !important; transform: none !important; display: flex !important; align-items: center !important; gap: 3px !important;';
+                    } else if (logo && window.innerWidth <= 768) {
+                        // En móvil, limpiar estilos inline para que el CSS maneje todo
+                        logo.style.cssText = '';
                 }
                 
-                // Forzar centrado de navegación al cargar
-                const nav = document.querySelector('.navigation');
+                    // NAVIGATION: posiciones diferentes para móvil y desktop
                 if (nav) {
-                    // Mantener el top con más espacio del logo y centrado compacto
-                    const currentTop = window.innerWidth <= 768 ? '170px' : '90px';
-                    nav.style.cssText = `position: absolute !important; top: ${currentTop} !important; left: 50% !important; transform: translateX(-50%) !important; width: auto !important; display: flex !important; justify-content: center !important; align-items: center !important; gap: 0px !important; z-index: 10 !important;`;
+                        if (window.innerWidth <= 768) {
+                            // MÓVIL: centrado
+                            nav.style.cssText = `position: absolute !important; top: 170px !important; left: 50% !important; transform: translateX(-50%) !important; width: auto !important; display: flex !important; justify-content: center !important; align-items: center !important; gap: 0px !important; z-index: 10 !important;`;
+                        } else {
+                            // DESKTOP: más a la derecha para tapar el chat
+                            nav.style.cssText = `position: absolute !important; top: 90px !important; left: 78% !important; transform: translateX(-50%) !important; width: auto !important; display: flex !important; justify-content: center !important; align-items: center !important; gap: 0px !important; z-index: 100 !important;`;
+                        }
+                    }
                 }
+                
+                document.addEventListener('DOMContentLoaded', function() {
+                    updatePositions();
+                });
+                
+                // Añadir listener para resize
+                window.addEventListener('resize', function() {
+                    updatePositions();
             });
         </script>
         
@@ -2547,12 +2835,107 @@
 
                         if (result.success && result.is_premium) {
                             console.log('🎉 ¡Pago confirmado! Eres premium.');
-
-                            // Limpiar URL (quitar parámetros) y redirigir directamente al dashboard
-                            window.history.replaceState({}, document.title, '/dashboard.html');
                             
-                            // Recargar página inmediatamente para mostrar el dashboard premium
-                            location.reload();
+                            // Limpiar URL (quitar parámetros)
+                            window.history.replaceState({}, document.title, './dashboard.html');
+                            
+                            // Verificar si el plan se generó inmediatamente
+                            if (result.plan_generated === true) {
+                                console.log('✅ Plan generado correctamente, redirigiendo...');
+                                // Si ya está generado, redirigir inmediatamente
+                                window.location.href = './dashboard.html';
+                                return true;
+                            }
+                            
+                            // Si no está generado aún, hacer polling para verificar cuando esté listo
+                            console.log('⏳ Plan en generación, iniciando polling...');
+                            
+                            // Mostrar mensaje de carga
+                            container.innerHTML = `
+                                <div class="flex items-center justify-center min-h-screen bg-black">
+                                    <div class="text-center">
+                                        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-lime-400 mb-4"></div>
+                                        <h2 class="text-xl font-bold text-white mb-2">¡Bienvenido a Premium!</h2>
+                                        <p class="text-neutral-400 mb-2">Generando tu rutina personalizada con IA...</p>
+                                        <p class="text-sm text-neutral-500">Esto solo tomará unos segundos</p>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            // Polling: verificar cada 1 segundo si el plan está listo
+                            let attempts = 0;
+                            const maxAttempts = 30; // Máximo 30 segundos de espera
+                            
+                            const checkPlanReady = async () => {
+                                attempts++;
+                                
+                                try {
+                                    // Obtener user_id del token
+                                    const token = localStorage.getItem('accessToken');
+                                    if (!token) {
+                                        console.error('❌ No hay token de autenticación');
+                                        window.location.href = './dashboard.html';
+                                        return;
+                                    }
+                                    
+                                    const payload = decodeJwt(token);
+                                    const userId = payload?.user_id || payload?.sub;
+                                    
+                                    if (!userId) {
+                                        console.error('❌ No se pudo obtener user_id');
+                                        window.location.href = './dashboard.html';
+                                        return;
+                                    }
+                                    
+                                    // Verificar si el plan está listo
+                                    const checkResponse = await fetch(`${API_BASE}/user/current-routine?user_id=${userId}`, {
+                                        method: 'GET'
+                                    });
+                                    
+                                    if (checkResponse.ok) {
+                                        const checkData = await checkResponse.json();
+                                        
+                                        // Si tiene current_routine, el plan está listo
+                                        if (checkData.success && checkData.current_routine && checkData.current_routine.exercises && checkData.current_routine.exercises.length > 0) {
+                                            console.log('✅ Plan generado y listo! Redirigiendo...');
+                                            window.location.href = './dashboard.html';
+                                            return;
+                                        }
+                                    }
+                                    
+                                    // Si aún no está listo y no hemos excedido el máximo, seguir intentando
+                                    if (attempts < maxAttempts) {
+                                        setTimeout(checkPlanReady, 1000); // Verificar cada 1 segundo
+                                    } else {
+                                        // Timeout: redirigir de todas formas (el plan puede generarse después)
+                                        console.warn('⚠️ Timeout esperando plan, redirigiendo de todas formas...');
+                                        container.innerHTML = `
+                                            <div class="flex items-center justify-center min-h-screen bg-black">
+                                                <div class="text-center">
+                                                    <div class="text-4xl mb-4">✅</div>
+                                                    <h2 class="text-xl font-bold text-white mb-2">¡Bienvenido a Premium!</h2>
+                                                    <p class="text-neutral-400 mb-6">Tu rutina se está generando en segundo plano.</p>
+                                                    <p class="text-sm text-neutral-500 mb-4">Redirigiendo al dashboard...</p>
+                                                </div>
+                                            </div>
+                                        `;
+                                        setTimeout(() => {
+                                            window.location.href = './dashboard.html';
+                                        }, 2000);
+                                    }
+                                } catch (error) {
+                                    console.error('❌ Error verificando plan:', error);
+                                    // En caso de error, redirigir de todas formas
+                                    if (attempts >= 3) { // Después de 3 intentos fallidos
+                                        window.location.href = './dashboard.html';
+                                    } else {
+                                        setTimeout(checkPlanReady, 1000);
+                                    }
+                                }
+                            };
+                            
+                            // Iniciar polling después de 2 segundos (dar tiempo a que empiece la generación)
+                            setTimeout(checkPlanReady, 2000);
 
                             return true; // Indica que se procesó el pago
                         } else {
@@ -2579,8 +2962,7 @@
                         
                         // Recargar después de 3 segundos
                         setTimeout(() => {
-                            window.history.replaceState({}, document.title, '/dashboard.html');
-                            location.reload();
+                            window.location.href = './dashboard.html';
                         }, 3000);
                     }
                 }
@@ -2828,15 +3210,15 @@
                                 <label style="display: block; margin-bottom: 8px; color: #84cc16; font-weight: 600;">Nivel de Actividad</label>
                                 <select id="nivel_actividad" name="nivel_actividad" required
                                     style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #404040; background: #1a1a1a; color: white;">
-                                    <option value="sedentario" title="Poco o ningún ejercicio, trabajo de escritorio">Sedentario - Poco o ningún ejercicio</option>
-                                    <option value="ligero" title="Ejercicio ligero 1-3 días/semana">Ligero - Ejercicio ligero 1-3 días/semana</option>
-                                    <option value="moderado" title="Ejercicio moderado 3-5 días/semana">Moderado - Ejercicio moderado 3-5 días/semana</option>
-                                    <option value="activo" title="Ejercicio intenso 6-7 días/semana">Activo - Ejercicio intenso 6-7 días/semana</option>
-                                    <option value="muy_activo" title="Ejercicio muy intenso, trabajo físico o entrenamiento 2x/día">Muy Activo - Ejercicio muy intenso o trabajo físico</option>
+                                        <option value="sedentario" title="Poco o ningún ejercicio, trabajo de escritorio">Sedentario - Poco o ningún ejercicio</option>
+                                        <option value="ligero" title="Ejercicio ligero 1-3 días/semana">Ligero - Ejercicio ligero 1-3 días/semana</option>
+                                        <option value="moderado" title="Ejercicio moderado 3-5 días/semana">Moderado - Ejercicio moderado 3-5 días/semana</option>
+                                        <option value="activo" title="Ejercicio intenso 6-7 días/semana">Activo - Ejercicio intenso 6-7 días/semana</option>
+                                        <option value="muy_activo" title="Ejercicio muy intenso, trabajo físico o entrenamiento 2x/día">Muy Activo - Ejercicio muy intenso o trabajo físico</option>
                                 </select>
-                                <p style="color: #a3a3a3; font-size: 12px; margin-top: 6px; line-height: 1.4;">
-                                    Selecciona según tu actividad física semanal. Esto afecta el cálculo de tus calorías diarias.
-                                </p>
+                                    <p style="color: #a3a3a3; font-size: 12px; margin-top: 6px; line-height: 1.4;">
+                                        Selecciona según tu actividad física semanal. Esto afecta el cálculo de tus calorías diarias.
+                                    </p>
                             </div>
                             
                             <div style="grid-column: 1 / -1;">
@@ -3021,37 +3403,37 @@
                 
                 // Pre-llenar días específicos si existen
                 if (userData.training_days && Array.isArray(userData.training_days)) {
-                    // Mapeo de días para normalizar valores (con/sin tildes)
-                    const dayMapping = {
-                        'lunes': 'lunes',
-                        'martes': 'martes',
-                        'miercoles': 'miercoles',
-                        'miércoles': 'miercoles',
-                        'jueves': 'jueves',
-                        'viernes': 'viernes',
-                        'sabado': 'sabado',
-                        'sábado': 'sabado',
-                        'domingo': 'domingo'
-                    };
-                    
+                        // Mapeo de días para normalizar valores (con/sin tildes)
+                        const dayMapping = {
+                            'lunes': 'lunes',
+                            'martes': 'martes',
+                            'miercoles': 'miercoles',
+                            'miércoles': 'miercoles',
+                            'jueves': 'jueves',
+                            'viernes': 'viernes',
+                            'sabado': 'sabado',
+                            'sábado': 'sabado',
+                            'domingo': 'domingo'
+                        };
+                        
                     userData.training_days.forEach(day => {
-                        // Normalizar el día (a minúsculas y sin tildes para el ID)
-                        const normalizedDay = day.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                        const checkbox = document.getElementById(`day_${normalizedDay}`);
+                            // Normalizar el día (a minúsculas y sin tildes para el ID)
+                            const normalizedDay = day.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                            const checkbox = document.getElementById(`day_${normalizedDay}`);
                         if (checkbox) {
                             checkbox.checked = true;
                             const label = checkbox.parentElement;
                             label.style.borderColor = '#84cc16';
                             label.style.background = 'rgba(132, 204, 22, 0.15)';
-                        } else {
-                            // Fallback: buscar por valor en lugar de ID
-                            const checkboxes = document.querySelectorAll(`input[name="training_days"][value="${day}"]`);
-                            checkboxes.forEach(cb => {
-                                cb.checked = true;
-                                const label = cb.parentElement;
-                                label.style.borderColor = '#84cc16';
-                                label.style.background = 'rgba(132, 204, 22, 0.15)';
-                            });
+                            } else {
+                                // Fallback: buscar por valor en lugar de ID
+                                const checkboxes = document.querySelectorAll(`input[name="training_days"][value="${day}"]`);
+                                checkboxes.forEach(cb => {
+                                    cb.checked = true;
+                                    const label = cb.parentElement;
+                                    label.style.borderColor = '#84cc16';
+                                    label.style.background = 'rgba(132, 204, 22, 0.15)';
+                                });
                         }
                     });
                 }
@@ -3124,7 +3506,7 @@
                     // Mapear objetivo_gym a objetivo (el schema espera 'objetivo', no 'objetivo_gym')
                     const objetivoMapping = {
                         'ganar_musculo': 'ganar_musculo',
-                        'ganar_fuerza': 'ganar_fuerza'
+                            'ganar_fuerza': 'ganar_fuerza'
                     };
                     const objetivo = objetivoMapping[objetivoGym] || objetivoGym;
                     
@@ -3351,9 +3733,9 @@
                     sendBtn.classList.remove('active');
 
                     try {
-                        // Preparar payload para el chat básico
+                            // Preparar payload para el chat básico
                         const payload = {
-                            message: message
+                                message: message
                         };
 
                         console.log('=== PAYLOAD ENVIADO ===');
@@ -3361,16 +3743,16 @@
                         console.log('Message:', message);
                         console.log('======================');
 
-                        // Usar endpoint de chat básico
-                        const headers = getAuthHeaders();
-                        if (!headers) {
-                            addMessage('Error de autenticación. Por favor, inicia sesión nuevamente.');
-                            return;
-                        }
+                            // Usar endpoint de chat básico
+                            const headers = getAuthHeaders();
+                            if (!headers) {
+                                addMessage('Error de autenticación. Por favor, inicia sesión nuevamente.');
+                                return;
+                            }
 
-                        const response = await fetch(`${API_BASE}/api/chat`, {
+                            const response = await fetch(`${API_BASE}/api/chat`, {
                             method: 'POST',
-                            headers: headers,
+                                headers: headers,
                             body: JSON.stringify(payload)
                         });
 
@@ -3405,20 +3787,20 @@
                         // Ocultar indicador de escritura
                         hideTypingIndicator();
 
-                        // Añadir respuesta del chat (el endpoint devuelve 'answer')
-                        if (data.answer) {
-                            addMessage(data.answer);
+                            // Añadir respuesta del chat (el endpoint devuelve 'answer')
+                            if (data.answer) {
+                                addMessage(data.answer);
                         } else {
-                            addMessage('No se recibió respuesta del servidor.');
-                        }
-                        
-                        // Actualizar contador de usos restantes si es usuario FREE
-                        if (data.chat_uses_free_restantes !== undefined && data.chat_uses_free_restantes !== null) {
-                            console.log(`💬 Usos restantes (FREE): ${data.chat_uses_free_restantes}`);
-                            // Actualizar UI si es necesario
-                            if (data.chat_uses_free_restantes <= 0) {
-                                disableChatInput();
+                                addMessage('No se recibió respuesta del servidor.');
                             }
+                            
+                            // Actualizar contador de usos restantes si es usuario FREE
+                            if (data.chat_uses_free_restantes !== undefined && data.chat_uses_free_restantes !== null) {
+                                console.log(`💬 Usos restantes (FREE): ${data.chat_uses_free_restantes}`);
+                                // Actualizar UI si es necesario
+                                if (data.chat_uses_free_restantes <= 0) {
+                                    disableChatInput();
+                                }
                         }
                     } catch (error) {
                         console.error('Error en chat:', error);
@@ -3564,8 +3946,8 @@
                         const plan = {
                             rutina: data.current_routine,
                             dieta: data.current_diet,
-                            motivacion: "Rutina actualizada dinámicamente",
-                            metadata: data.metadata || {}
+                                motivacion: "Rutina actualizada dinámicamente",
+                                metadata: data.metadata || {}
                         };
 
                         console.log('📋 Plan creado:', plan);
@@ -3674,8 +4056,8 @@
                             const plan = {
                                 rutina: data.current_routine,
                                 dieta: data.current_diet || {},
-                                motivacion: "Rutina actualizada dinámicamente",
-                                metadata: data.metadata || {}
+                                    motivacion: "Rutina actualizada dinámicamente",
+                                    metadata: data.metadata || {}
                             };
                             
                             // Guardar en localStorage para futuras consultas
@@ -3713,15 +4095,15 @@
 
                     let rutinaHTML = '';
 
-                    // Mostrar todos los ejercicios sin restricciones
-                    exercises.forEach((exercise) => {
+                        // Mostrar todos los ejercicios sin restricciones
+                        exercises.forEach((exercise) => {
                         const exerciseName = typeof exercise === 'object' ? exercise.name : exercise;
                         const sets = typeof exercise === 'object' ? (exercise.sets || 'N/A') : 'N/A';
                         const reps = typeof exercise === 'object' ? (exercise.reps || 'N/A') : 'N/A';
                         const weight = typeof exercise === 'object' ? (exercise.weight || 'N/A') : 'N/A';
                         const notes = typeof exercise === 'object' ? (exercise.notes || '') : '';
                         
-                        // Ejercicio visible
+                            // Ejercicio visible
                         rutinaHTML += `<div style="margin-bottom: 15px; padding: 12px; background: #f5f5f5; border-radius: 8px; border-left: 4px solid #84cc16;">`;
                         rutinaHTML += `<strong style="color: #2d5016;">${exerciseName}</strong><br>`;
                         rutinaHTML += `<span style="color: #365314;">Series: ${sets} | Reps: ${reps} | Peso: ${weight}</span>`;
@@ -3786,321 +4168,503 @@
                     return;
                 }
                 
-                // RUTINA - Manejar ambos formatos (exercises y dias)
-                console.log('🔍 Verificando rutina:', plan.rutina);
-                console.log('🔍 Tiene exercises?', plan.rutina?.exercises);
-                console.log('🔍 Tiene dias?', plan.rutina?.dias);
-                console.log('🔍 Exercises count:', plan.rutina?.exercises?.length);
-                console.log('🔍 Dias count:', plan.rutina?.dias?.length);
-                
-                if (plan.rutina) {
+                    // RUTINA - Manejar ambos formatos (exercises y dias)
+                    console.log('🔍 Verificando rutina:', plan.rutina);
+                    console.log('🔍 Tiene exercises?', plan.rutina?.exercises);
+                    console.log('🔍 Tiene dias?', plan.rutina?.dias);
+                    console.log('🔍 Exercises count:', plan.rutina?.exercises?.length);
+                    console.log('🔍 Dias count:', plan.rutina?.dias?.length);
+                    
+                    if (plan.rutina) {
                     let rutinaHtml = `
                         <style>
-                            #rutinaContent {
-                                background: transparent;
-                                border: none;
-                                padding: 0;
+                                #rutinaContent {
+                                    background: transparent;
+                                    border: none;
+                                    padding: 0;
                                 color: #ffffff;
                                 font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-                                width: 100%;
-                            }
-                            .day-section {
-                                margin-bottom: 48px;
+                                    width: 100%;
+                                }
+                                .day-section {
+                                    margin-bottom: 48px;
                             }
                             .day-title {
                                 font-size: 18px;
                                 font-weight: 600;
                                 color: #ffffff;
-                                margin-bottom: 20px;
-                                padding-bottom: 12px;
-                                border-bottom: 1px solid #262626;
-                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-                            }
-                            .exercise-row {
-                                display: flex;
-                                align-items: center;
-                                justify-content: space-between;
-                                padding: 14px 0;
-                                border-bottom: 1px solid #1a1a1a;
+                                    margin-bottom: 20px;
+                                    padding-bottom: 12px;
+                                    border-bottom: 1px solid #262626;
+                                    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                                }
+                                .exercise-row {
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: space-between;
+                                    padding: 14px 0;
+                                    border-bottom: 1px solid #1a1a1a;
                                 font-size: 15px;
-                                color: #d4d4d4;
+                                    color: #d4d4d4;
+                                }
+                                .exercise-row:last-child {
+                                    border-bottom: none;
+                                }
+                                .exercise-name {
+                                    font-weight: 400;
+                                    color: #e5e5e5;
+                                    flex: 1;
+                                }
+                                .exercise-details {
+                                    color: #a3a3a3;
+                                    font-size: 14px;
+                                    margin-left: 24px;
+                                    white-space: nowrap;
                             }
-                            .exercise-row:last-child {
-                                border-bottom: none;
+                                .censored-exercise {
+                                filter: blur(8px);
+                                    background: rgba(0, 0, 0, 0.3);
+                                pointer-events: none;
+                                    position: relative;
+                                user-select: none;
                             }
-                            .exercise-name {
-                                font-weight: 400;
-                                color: #e5e5e5;
-                                flex: 1;
-                            }
-                            .exercise-details {
-                                color: #a3a3a3;
-                                font-size: 14px;
-                                margin-left: 24px;
-                                white-space: nowrap;
+                                .censored-overlay {
+                                    position: absolute;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%);
+                                    background: rgba(132, 204, 22, 0.95);
+                                color: white;
+                                    padding: 12px 24px;
+                                border-radius: 8px;
+                                font-weight: 600;
+                                    font-size: 14px;
+                                    z-index: 10;
+                                cursor: pointer;
+                                    pointer-events: auto;
+                                    text-align: center;
+                                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                                }
+                                .censored-overlay:hover {
+                                    background: rgba(132, 204, 22, 1);
+                                }
+                                .exercise-row-wrapper {
+                                    position: relative;
                             }
                         </style>
-                    `;
+                        `;
+                        
+                        // Obtener metadata para filtrar días correctos
+                        const metadata = plan.metadata || plan.rutina?.metadata || {};
+                        const trainingDays = metadata.training_days || [];
+                        const trainingFrequency = metadata.training_frequency;
+                        
+                        // Normalizar días de la metadata para comparación
+                        const normalizeDay = (day) => {
+                            if (!day) return '';
+                            return day.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                        };
+                        const normalizedTrainingDays = trainingDays.map(normalizeDay);
+                        
+                        // Formato 1: exercises (formato nuevo del backend)
+                        if (plan.rutina.exercises && Array.isArray(plan.rutina.exercises) && plan.rutina.exercises.length > 0) {
+                            console.log('✅ Usando formato exercises, total:', plan.rutina.exercises.length);
+                    const exercisesByDay = {};
+                    plan.rutina.exercises.forEach(exercise => {
+                        const day = exercise.day || 'Sin día';
+                        if (!exercisesByDay[day]) {
+                            exercisesByDay[day] = [];
+                        }
+                        exercisesByDay[day].push(exercise);
+                    });
                     
-                    // Obtener metadata para filtrar días correctos
-                    const metadata = plan.metadata || plan.rutina?.metadata || {};
-                    const trainingDays = metadata.training_days || [];
-                    const trainingFrequency = metadata.training_frequency;
-                    
-                    // Normalizar días de la metadata para comparación
-                    const normalizeDay = (day) => {
-                        if (!day) return '';
-                        return day.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                    };
-                    const normalizedTrainingDays = trainingDays.map(normalizeDay);
-                    
-                    // Formato 1: exercises (formato nuevo del backend)
-                    if (plan.rutina.exercises && Array.isArray(plan.rutina.exercises) && plan.rutina.exercises.length > 0) {
-                        console.log('✅ Usando formato exercises, total:', plan.rutina.exercises.length);
-                        const exercisesByDay = {};
-                        plan.rutina.exercises.forEach(exercise => {
-                            const day = exercise.day || 'Sin día';
-                            if (!exercisesByDay[day]) {
-                                exercisesByDay[day] = [];
+                            let days = Object.keys(exercisesByDay);
+                            
+                            // Filtrar días según metadata si está disponible
+                            if (normalizedTrainingDays.length > 0) {
+                                days = days.filter(day => {
+                                    const normalizedDay = normalizeDay(day);
+                                    // Buscar coincidencia parcial (ej: "Lunes" vs "lunes")
+                                    return normalizedTrainingDays.some(td => 
+                                        normalizedDay.includes(td) || td.includes(normalizedDay)
+                                    );
+                                });
+                                console.log('📅 Días filtrados según metadata:', days, 'de', normalizedTrainingDays);
                             }
-                            exercisesByDay[day].push(exercise);
-                        });
-                        
-                        let days = Object.keys(exercisesByDay);
-                        
-                        // Filtrar días según metadata si está disponible
-                        if (normalizedTrainingDays.length > 0) {
-                            days = days.filter(day => {
-                                const normalizedDay = normalizeDay(day);
-                                // Buscar coincidencia parcial (ej: "Lunes" vs "lunes")
-                                return normalizedTrainingDays.some(td => 
-                                    normalizedDay.includes(td) || td.includes(normalizedDay)
-                                );
-                            });
-                            console.log('📅 Días filtrados según metadata:', days, 'de', normalizedTrainingDays);
-                        }
-                        
-                        console.log('📅 Días encontrados:', days);
-                        days.forEach((day) => {
-                            rutinaHtml += `<div class="day-section">`;
+                            
+                            console.log('📅 Días encontrados:', days);
+                            
+                            // Renderizar ejercicios con lógica condicional según isPremium
+                            if (isPremium) {
+                                // PREMIUM: Mostrar todo sin restricciones
+                                days.forEach((day) => {
+                                    rutinaHtml += `<div class="day-section">`;
                             rutinaHtml += `<div class="day-title">${day}</div>`;
+                                    
                             exercisesByDay[day].forEach(ej => {
-                                const name = ej.name || 'Ejercicio';
-                                const sets = ej.sets || 3;
-                                const reps = ej.reps || '10-12';
-                                rutinaHtml += `<div class="exercise-row">`;
-                                rutinaHtml += `<span class="exercise-name">${name}</span>`;
-                                rutinaHtml += `<span class="exercise-details">${sets} series × ${reps} reps</span>`;
+                                        const name = ej.name || 'Ejercicio';
+                                        const sets = ej.sets || 3;
+                                        const reps = ej.reps || '10-12';
+                                        rutinaHtml += `<div class="exercise-row">`;
+                                        rutinaHtml += `<span class="exercise-name">${name}</span>`;
+                                        rutinaHtml += `<span class="exercise-details">${sets} series × ${reps} reps</span>`;
+                                        rutinaHtml += `</div>`;
+                                    });
+                                    
+                                    rutinaHtml += `</div>`;
+                                });
+                            } else {
+                                // FREE: Censurar TODA la rutina con blur + overlay
+                                // CONTENEDOR RELATIVE (para posicionar overlay absoluto)
+                                rutinaHtml += `<div style="position: relative; margin-top: 24px;">`;
+                                
+                                // EJERCICIOS CON BLUR (fondo)
+                                rutinaHtml += `<div style="filter: blur(8px); opacity: 0.4; pointer-events: none; user-select: none;">`;
+                                
+                                days.forEach((day) => {
+                                    rutinaHtml += `<div class="day-section">`;
+                                    rutinaHtml += `<div class="day-title">${day}</div>`;
+                                    
+                                    exercisesByDay[day].forEach(ej => {
+                                        const name = ej.name || 'Ejercicio';
+                                        const sets = ej.sets || 3;
+                                        const reps = ej.reps || '10-12';
+                                        
+                                        rutinaHtml += `<div class="exercise-row">`;
+                                        rutinaHtml += `<span class="exercise-name">${name}</span>`;
+                                        rutinaHtml += `<span class="exercise-details">${sets} series × ${reps} reps</span>`;
+                                        rutinaHtml += `</div>`;
+                                    });
+                                    
+                                    rutinaHtml += `</div>`; // Cierre day-section
+                                });
+                                
+                                rutinaHtml += `</div>`; // Cierre del div con blur
+                                
+                                // OVERLAY ABSOLUTO (encima del blur) - Diseño Profesional Minimalista
+                                rutinaHtml += `<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(15, 15, 15, 0.95) 100%); backdrop-filter: blur(24px); padding: 48px 40px; border-radius: 24px; text-align: center; border: 1px solid rgba(132, 204, 22, 0.2); box-shadow: 0 24px 64px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.05) inset; z-index: 10; max-width: 460px; width: 90%; display: flex; flex-direction: column; align-items: center; justify-content: center;">`;
+                                rutinaHtml += `<div style="width: 48px; height: 3px; background: linear-gradient(90deg, transparent, #84cc16, transparent); margin-bottom: 32px; border-radius: 2px;"></div>`;
+                                rutinaHtml += `<h3 style="color: #ffffff; font-size: 26px; font-weight: 600; margin-bottom: 12px; letter-spacing: 0.3px; line-height: 1.3; text-align: center; width: 100%; margin-left: 0; margin-right: 0; padding: 0;">Rutina Completa Bloqueada</h3>`;
+                                rutinaHtml += `<p style="color: #999999; font-size: 15px; line-height: 1.6; margin-bottom: 36px; max-width: 360px; text-align: center; margin-left: auto; margin-right: auto; font-weight: 400;">Desbloquea tu rutina completa con ejercicios detallados, progresión personalizada y seguimiento avanzado</p>`;
+                                rutinaHtml += `<div style="display: flex; justify-content: center; align-items: center; width: 100%;">`;
+                                rutinaHtml += `<button onclick="window.location.href='./tarifas.html'" style="background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%); color: white; border: none; padding: 14px 36px; border-radius: 10px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; letter-spacing: 0.6px; box-shadow: 0 4px 14px rgba(132, 204, 22, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15); display: inline-block; min-width: 170px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(132, 204, 22, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.2)'; this.style.background='linear-gradient(135deg, #93d91f 0%, #75b312 100%)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(132, 204, 22, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15)'; this.style.background='linear-gradient(135deg, #84cc16 0%, #65a30d 100%)'">Mejorar a Pro</button>`;
                                 rutinaHtml += `</div>`;
-                            });
-                            rutinaHtml += `</div>`;
-                        });
-                    }
-                    // Formato 2: dias (formato antiguo)
-                    else if (plan.rutina.dias && Array.isArray(plan.rutina.dias) && plan.rutina.dias.length > 0) {
-                        console.log('✅ Usando formato dias, total:', plan.rutina.dias.length);
-                        
-                        // Filtrar días según metadata si está disponible
-                        let diasToShow = plan.rutina.dias;
-                        if (normalizedTrainingDays.length > 0) {
-                            diasToShow = plan.rutina.dias.filter(dia => {
-                                const diaName = dia.dia || dia.nombre || '';
-                                const normalizedDia = normalizeDay(diaName);
-                                // Buscar coincidencia parcial
-                                return normalizedTrainingDays.some(td => 
-                                    normalizedDia.includes(td) || td.includes(normalizedDia)
-                                );
-                            });
-                            console.log('📅 Días filtrados según metadata:', diasToShow.length, 'de', plan.rutina.dias.length);
+                                rutinaHtml += `</div>`; // Cierre del overlay
+                                
+                                rutinaHtml += `</div>`; // Cierre del contenedor relative
+                            }
                         }
-                        
-                        diasToShow.forEach(dia => {
-                            rutinaHtml += `<div class="day-section">`;
-                            rutinaHtml += `<div class="day-title">${dia.dia || dia.nombre || 'Día'}</div>`;
-                            (dia.ejercicios || []).forEach(ejercicio => {
-                                const nombre = ejercicio.nombre || ejercicio.name || '';
-                                const series = ejercicio.series || ejercicio.sets || 3;
-                                const reps = ejercicio.repeticiones || ejercicio.reps || '10-12';
-                                rutinaHtml += `<div class="exercise-row">`;
-                                rutinaHtml += `<span class="exercise-name">${nombre}</span>`;
-                                rutinaHtml += `<span class="exercise-details">${series} series × ${reps} reps</span>`;
+                        // Formato 2: dias (formato antiguo)
+                        else if (plan.rutina.dias && Array.isArray(plan.rutina.dias) && plan.rutina.dias.length > 0) {
+                            console.log('✅ Usando formato dias, total:', plan.rutina.dias.length);
+                            
+                            // Filtrar días según metadata si está disponible
+                            let diasToShow = plan.rutina.dias;
+                            if (normalizedTrainingDays.length > 0) {
+                                diasToShow = plan.rutina.dias.filter(dia => {
+                                    const diaName = dia.dia || dia.nombre || '';
+                                    const normalizedDia = normalizeDay(diaName);
+                                    // Buscar coincidencia parcial
+                                    return normalizedTrainingDays.some(td => 
+                                        normalizedDia.includes(td) || td.includes(normalizedDia)
+                                    );
+                                });
+                                console.log('📅 Días filtrados según metadata:', diasToShow.length, 'de', plan.rutina.dias.length);
+                            }
+                            
+                            // Renderizar ejercicios con lógica condicional según isPremium (formato dias)
+                            if (isPremium) {
+                                // PREMIUM: renderizar todo
+                                diasToShow.forEach(dia => {
+                                    rutinaHtml += `<div class="day-section">`;
+                                    rutinaHtml += `<div class="day-title">${dia.dia || dia.nombre || 'Día'}</div>`;
+                                    
+                                    (dia.ejercicios || []).forEach(ejercicio => {
+                                        const nombre = ejercicio.nombre || ejercicio.name || '';
+                                        const series = ejercicio.series || ejercicio.sets || 3;
+                                        const reps = ejercicio.repeticiones || ejercicio.reps || '10-12';
+                                        rutinaHtml += `<div class="exercise-row">`;
+                                        rutinaHtml += `<span class="exercise-name">${nombre}</span>`;
+                                        rutinaHtml += `<span class="exercise-details">${series} series × ${reps} reps</span>`;
+                                        rutinaHtml += `</div>`;
+                                    });
+                                    
+                                    rutinaHtml += `</div>`;
+                                });
+                            } else {
+                                // FREE: Censurar TODA la rutina con blur + overlay
+                                // CONTENEDOR RELATIVE (para posicionar overlay absoluto)
+                                rutinaHtml += `<div style="position: relative; margin-top: 24px;">`;
+                                
+                                // EJERCICIOS CON BLUR (fondo)
+                                rutinaHtml += `<div style="filter: blur(8px); opacity: 0.4; pointer-events: none; user-select: none;">`;
+                                
+                                diasToShow.forEach(dia => {
+                                    rutinaHtml += `<div class="day-section">`;
+                                    rutinaHtml += `<div class="day-title">${dia.dia || dia.nombre || 'Día'}</div>`;
+                                    
+                                    (dia.ejercicios || []).forEach(ejercicio => {
+                                        const nombre = ejercicio.nombre || ejercicio.name || '';
+                                        const series = ejercicio.series || ejercicio.sets || 3;
+                                        const reps = ejercicio.repeticiones || ejercicio.reps || '10-12';
+                                        
+                                        rutinaHtml += `<div class="exercise-row">`;
+                                        rutinaHtml += `<span class="exercise-name">${nombre}</span>`;
+                                        rutinaHtml += `<span class="exercise-details">${series} series × ${reps} reps</span>`;
+                                        rutinaHtml += `</div>`;
+                                    });
+                                    
+                                    rutinaHtml += `</div>`; // Cierre day-section
+                                });
+                                
+                                rutinaHtml += `</div>`; // Cierre del div con blur
+                                
+                                // OVERLAY ABSOLUTO (encima del blur) - Diseño Profesional Minimalista
+                                rutinaHtml += `<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(15, 15, 15, 0.95) 100%); backdrop-filter: blur(24px); padding: 48px 40px; border-radius: 24px; text-align: center; border: 1px solid rgba(132, 204, 22, 0.2); box-shadow: 0 24px 64px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.05) inset; z-index: 10; max-width: 460px; width: 90%; display: flex; flex-direction: column; align-items: center; justify-content: center;">`;
+                                rutinaHtml += `<div style="width: 48px; height: 3px; background: linear-gradient(90deg, transparent, #84cc16, transparent); margin-bottom: 32px; border-radius: 2px;"></div>`;
+                                rutinaHtml += `<h3 style="color: #ffffff; font-size: 26px; font-weight: 600; margin-bottom: 12px; letter-spacing: 0.3px; line-height: 1.3; text-align: center; width: 100%; margin-left: 0; margin-right: 0; padding: 0;">Rutina Completa Bloqueada</h3>`;
+                                rutinaHtml += `<p style="color: #999999; font-size: 15px; line-height: 1.6; margin-bottom: 36px; max-width: 360px; text-align: center; margin-left: auto; margin-right: auto; font-weight: 400;">Desbloquea tu rutina completa con ejercicios detallados, progresión personalizada y seguimiento avanzado</p>`;
+                                rutinaHtml += `<div style="display: flex; justify-content: center; align-items: center; width: 100%;">`;
+                                rutinaHtml += `<button onclick="window.location.href='./tarifas.html'" style="background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%); color: white; border: none; padding: 14px 36px; border-radius: 10px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; letter-spacing: 0.6px; box-shadow: 0 4px 14px rgba(132, 204, 22, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15); display: inline-block; min-width: 170px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(132, 204, 22, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.2)'; this.style.background='linear-gradient(135deg, #93d91f 0%, #75b312 100%)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(132, 204, 22, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15)'; this.style.background='linear-gradient(135deg, #84cc16 0%, #65a30d 100%)'">Mejorar a Pro</button>`;
                                 rutinaHtml += `</div>`;
-                            });
-                            rutinaHtml += `</div>`;
-                        });
-                    } else {
-                        console.warn('⚠️ No se encontraron ejercicios en ningún formato');
-                        rutinaHtml += `<p style="color: #999; text-align: center; padding: 40px;">No hay ejercicios disponibles en la rutina</p>`;
-                    }
+                                rutinaHtml += `</div>`; // Cierre del overlay
+                                
+                                rutinaHtml += `</div>`; // Cierre del contenedor relative
+                            }
+                        } else {
+                            console.warn('⚠️ No se encontraron ejercicios en ningún formato');
+                            rutinaHtml += `<p style="color: #999; text-align: center; padding: 40px;">No hay ejercicios disponibles en la rutina</p>`;
+                        }
                     
                     // Insertar rutina
                     if (rutinaContent) {
                         rutinaContent.style.display = 'block';
                         rutinaContent.style.visibility = 'visible';
                         rutinaContent.style.opacity = '1';
-                        rutinaContent.style.height = 'auto';
-                        rutinaContent.style.minHeight = 'auto';
-                        rutinaContent.style.overflow = 'visible';
+                            rutinaContent.style.height = 'auto';
+                            rutinaContent.style.minHeight = 'auto';
+                            rutinaContent.style.overflow = 'visible';
                         rutinaContent.innerHTML = rutinaHtml;
-                        console.log('✅ Rutina insertada con diseño profesional, HTML length:', rutinaHtml.length);
+                            console.log('✅ Rutina insertada con diseño profesional, HTML length:', rutinaHtml.length);
+                        } else {
+                            console.error('❌ rutinaContent no encontrado');
+                        }
                     } else {
-                        console.error('❌ rutinaContent no encontrado');
+                        console.warn('⚠️ plan.rutina no existe');
+                        if (rutinaContent) {
+                            rutinaContent.innerHTML = '<p style="color: #999; text-align: center; padding: 40px;">No hay rutina disponible</p>';
+                        }
                     }
-                } else {
-                    console.warn('⚠️ plan.rutina no existe');
-                    if (rutinaContent) {
-                        rutinaContent.innerHTML = '<p style="color: #999; text-align: center; padding: 40px;">No hay rutina disponible</p>';
-                    }
-                }
-                
-                // DIETA - DISEÑO MINIMALISTA - Manejar ambos formatos (meals y comidas)
+                    
+                    // DIETA - DISEÑO MINIMALISTA - Manejar ambos formatos (meals y comidas)
                 console.log('🍽️ Verificando dieta:', plan.dieta);
                 console.log('🍽️ Tiene meals?', plan.dieta?.meals);
-                console.log('🍽️ Tiene comidas?', plan.dieta?.comidas);
+                    console.log('🍽️ Tiene comidas?', plan.dieta?.comidas);
                 
-                // Normalizar formato: usar meals si existe, sino comidas
-                const meals = plan.dieta?.meals || plan.dieta?.comidas || [];
-                
-                if (dietaContent && plan.dieta && meals.length > 0) {
+                    // Normalizar formato: usar meals si existe, sino comidas
+                    const meals = plan.dieta?.meals || plan.dieta?.comidas || [];
+                    
+                    if (dietaContent && plan.dieta && meals.length > 0) {
                     const totalKcal = (typeof plan.dieta.total_kcal === 'number')
                         ? plan.dieta.total_kcal
-                        : (Array.isArray(meals)
-                            ? meals.reduce((acc, m) => acc + (Number(m.kcal) || 0), 0)
-                            : 0);
-                    const proteinas = (plan.dieta?.macros?.proteinas ?? plan.dieta?.macros?.proteina) || 0;
-                    const carbos = plan.dieta?.macros?.carbohidratos || 0;
-                    const grasas = plan.dieta?.macros?.grasas || 0;
-                    
-                    let dietaHtml = `
-                        <style>
-                            #dietaContent {
-                                background: transparent;
-                                border: none;
-                                padding: 0;
-                                color: #ffffff;
-                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-                                width: 100%;
-                            }
-                            .macros-container {
-                                margin-bottom: 40px;
-                                padding-bottom: 24px;
-                                border-bottom: 1px solid #262626;
-                            }
-                            .calories-row {
-                                font-size: 24px;
-                                color: #ffffff;
-                                font-weight: 600;
-                                margin-bottom: 16px;
-                            }
-                            .macros-row {
-                                display: flex;
-                                gap: 24px;
-                                font-size: 13px;
-                                color: #a3a3a3;
-                            }
-                            .macro-item {
-                                color: #a3a3a3;
-                            }
-                            .macro-value {
-                                color: #ffffff;
-                                font-weight: 600;
-                                margin-right: 4px;
-                                font-size: 11px;
-                            }
-                            .meal-section {
-                                margin-bottom: 40px;
-                            }
-                            .meal-title {
-                                font-size: 18px;
-                                font-weight: 600;
-                                color: #ffffff;
-                                margin-bottom: 16px;
-                                padding-bottom: 12px;
-                                border-bottom: 1px solid #262626;
-                            }
-                            .food-item {
-                                font-size: 15px;
-                                color: #d4d4d4;
-                                padding: 10px 0;
-                                border-bottom: 1px solid #1a1a1a;
-                            }
-                            .food-item:last-child {
-                                border-bottom: none;
-                            }
-                            .censored-content {
-                                filter: blur(8px);
-                                background: #1a1a1a;
-                                padding: 20px;
-                                margin: 20px 0;
-                                border-radius: 12px;
-                                pointer-events: none;
-                                user-select: none;
-                                border: 1px solid #2a2a2a;
-                            }
-                            .upgrade-overlay {
-                                background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-                                padding: 40px;
-                                border-radius: 16px;
-                                text-align: center;
-                                margin: 40px 0;
-                                border: 2px solid #3b82f6;
-                                box-shadow: 0 0 30px rgba(59, 130, 246, 0.15);
-                            }
-                            .upgrade-overlay h3 {
-                                color: #3b82f6;
-                                font-size: 26px;
-                                font-weight: 700;
-                                margin-bottom: 16px;
-                            }
-                            .upgrade-overlay p {
-                                color: #cccccc;
-                                font-size: 16px;
-                                margin-bottom: 30px;
-                                line-height: 1.6;
-                            }
-                            .upgrade-button {
-                                background: #3b82f6;
-                                color: #ffffff;
-                                padding: 16px 48px;
-                                border: none;
-                                border-radius: 10px;
-                                font-weight: 700;
-                                cursor: pointer;
-                                font-size: 16px;
-                                text-transform: uppercase;
-                                letter-spacing: 0.5px;
-                                transition: all 0.3s ease;
-                            }
-                            .upgrade-button:hover {
-                                background: #2563eb;
-                                transform: translateY(-2px);
-                                box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
-                            }
-                        </style>
-                        <div class="macros-container">
-                            <div class="calories-row">${totalKcal} kcal</div>
-                            <div class="macros-row">
-                                <div class="macro-item"><span class="macro-value">${proteinas}g</span> proteínas</div>
-                                <div class="macro-item"><span class="macro-value">${carbos}g</span> carbohidratos</div>
-                                <div class="macro-item"><span class="macro-value">${grasas}g</span> grasas</div>
+                            : (Array.isArray(meals)
+                                ? meals.reduce((acc, m) => acc + (Number(m.kcal) || 0), 0)
+                                : 0);
+                        const proteinas = (plan.dieta?.macros?.proteinas ?? plan.dieta?.macros?.proteina) || 0;
+                        const carbos = plan.dieta?.macros?.carbohidratos || 0;
+                        const grasas = plan.dieta?.macros?.grasas || 0;
+                        
+                        let dietaHtml = `
+                            <style>
+                                #dietaContent {
+                                    background: transparent;
+                                    border: none;
+                                    padding: 0;
+                                    color: #ffffff;
+                                    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                                    width: 100%;
+                                }
+                                .macros-container {
+                                    margin-bottom: 40px;
+                                    padding-bottom: 24px;
+                                    border-bottom: 1px solid #262626;
+                                }
+                                .calories-row {
+                                    font-size: 24px;
+                                    color: #ffffff;
+                                    font-weight: 600;
+                                    margin-bottom: 16px;
+                                }
+                                .macros-row {
+                                    display: flex;
+                                    gap: 24px;
+                                    font-size: 13px;
+                                    color: #a3a3a3;
+                                }
+                                .macro-item {
+                                    color: #a3a3a3;
+                                }
+                                .macro-value {
+                                    color: #ffffff;
+                                    font-weight: 600;
+                                    margin-right: 4px;
+                                    font-size: 11px;
+                                }
+                                .meal-section {
+                                    margin-bottom: 40px;
+                                }
+                                .meal-title {
+                                    font-size: 18px;
+                                    font-weight: 600;
+                                    color: #ffffff;
+                                    margin-bottom: 16px;
+                                    padding-bottom: 12px;
+                                    border-bottom: 1px solid #262626;
+                                }
+                                .food-item {
+                                    font-size: 15px;
+                                    color: #d4d4d4;
+                                    padding: 10px 0;
+                                    border-bottom: 1px solid #1a1a1a;
+                                }
+                                .food-item:last-child {
+                                    border-bottom: none;
+                                }
+                                .censored-content {
+                                    filter: blur(8px);
+                                    background: #1a1a1a;
+                                    padding: 20px;
+                                    margin: 20px 0;
+                                    border-radius: 12px;
+                                    pointer-events: none;
+                                    user-select: none;
+                                    border: 1px solid #2a2a2a;
+                                }
+                                .upgrade-overlay {
+                                        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+                                    padding: 40px;
+                                        border-radius: 16px;
+                                        text-align: center;
+                                    margin: 40px 0;
+                                    border: 2px solid #3b82f6;
+                                    box-shadow: 0 0 30px rgba(59, 130, 246, 0.15);
+                                }
+                                .upgrade-overlay h3 {
+                                    color: #3b82f6;
+                                    font-size: 26px;
+                                    font-weight: 700;
+                                    margin-bottom: 16px;
+                                }
+                                .upgrade-overlay p {
+                                    color: #cccccc;
+                                    font-size: 16px;
+                                    margin-bottom: 30px;
+                                    line-height: 1.6;
+                                }
+                                .upgrade-button {
+                                    background: #3b82f6;
+                                    color: #ffffff;
+                                    padding: 16px 48px;
+                                            border: none;
+                                            border-radius: 10px;
+                                            font-weight: 700;
+                                            cursor: pointer;
+                                            font-size: 16px;
+                                            text-transform: uppercase;
+                                            letter-spacing: 0.5px;
+                                            transition: all 0.3s ease;
+                                }
+                                .upgrade-button:hover {
+                                    background: #2563eb;
+                                    transform: translateY(-2px);
+                                    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+                                }
+                            </style>
+                            <div class="macros-container">
+                                <div class="calories-row">${totalKcal} kcal</div>
+                                <div class="macros-row">
+                                    <div class="macro-item"><span class="macro-value">${proteinas}g</span> proteínas</div>
+                                    <div class="macro-item"><span class="macro-value">${carbos}g</span> carbohidratos</div>
+                                    <div class="macro-item"><span class="macro-value">${grasas}g</span> grasas</div>
+                                </div>
                             </div>
-                        </div>
-                    `;
-                    
-                    // Mostrar todas las comidas sin restricciones
-                    meals.forEach((comida) => {
-                        console.log(`🍽️ Comida:`, comida);
-                        const nombreComida = comida.nombre || comida.nombre_comida || 'Comida';
-                        dietaHtml += `<div class="meal-section">`;
-                        dietaHtml += `<div class="meal-title">${nombreComida}</div>`;
-                        if (comida.alimentos) {
-                            comida.alimentos.forEach(alimento => {
-                                const alimentoText = renderAlimento(alimento);
-                                dietaHtml += `<div class="food-item">${alimentoText}</div>`;
-                            });
+                        `;
+                        
+                        // Función helper para normalizar nombre de comida
+                        function normalizeMealName(name) {
+                            if (!name) return '';
+                            return name.toLowerCase().trim()
+                                .replace(/á/g, 'a').replace(/é/g, 'e').replace(/í/g, 'i')
+                                .replace(/ó/g, 'o').replace(/ú/g, 'u');
                         }
-                        dietaHtml += `</div>`;
-                    });
+                        
+                        // Separar desayuno del resto de comidas
+                        const desayuno = meals.find(comida => {
+                            const nombreComida = comida.nombre || comida.nombre_comida || '';
+                            const normalized = normalizeMealName(nombreComida);
+                            return normalized === 'desayuno' || normalized.includes('desayuno');
+                        });
+                        const otrasComidas = meals.filter(comida => {
+                            const nombreComida = comida.nombre || comida.nombre_comida || '';
+                            const normalized = normalizeMealName(nombreComida);
+                            return normalized !== 'desayuno' && !normalized.includes('desayuno');
+                        });
+                        
+                        // Renderizar desayuno sin blur (si existe)
+                        if (desayuno) {
+                            const nombreComida = desayuno.nombre || desayuno.nombre_comida || 'Desayuno';
+                            dietaHtml += `<div class="meal-section">`;
+                            dietaHtml += `<div class="meal-title">${nombreComida}</div>`;
+                            if (desayuno.alimentos) {
+                                desayuno.alimentos.forEach(alimento => {
+                                    const alimentoText = renderAlimento(alimento);
+                                    dietaHtml += `<div class="food-item">${alimentoText}</div>`;
+                                });
+                            }
+                            dietaHtml += `</div>`;
+                        }
+                        
+                        // Renderizar resto de comidas con blur si es free
+                        if (otrasComidas.length > 0) {
+                            if (!isPremium) {
+                                // FREE: Censurar resto de comidas con blur + overlay
+                                // CONTENEDOR RELATIVE (para posicionar overlay absoluto)
+                                dietaHtml += `<div style="position: relative; margin-top: 24px;">`;
+                                
+                                // EJERCICIOS CON BLUR (fondo)
+                                dietaHtml += `<div style="filter: blur(8px); opacity: 0.4; pointer-events: none; user-select: none;">`;
+                            }
+                            
+                            otrasComidas.forEach((comida) => {
+                                console.log(`🍽️ Comida:`, comida);
+                                const nombreComida = comida.nombre || comida.nombre_comida || 'Comida';
+                                dietaHtml += `<div class="meal-section">`;
+                                dietaHtml += `<div class="meal-title">${nombreComida}</div>`;
+                                if (comida.alimentos) {
+                                    comida.alimentos.forEach(alimento => {
+                                        const alimentoText = renderAlimento(alimento);
+                                        dietaHtml += `<div class="food-item">${alimentoText}</div>`;
+                                    });
+                                }
+                                dietaHtml += `</div>`;
+                            });
+                            
+                            if (!isPremium) {
+                                dietaHtml += `</div>`; // Cierre del div con blur
+                                
+                                // OVERLAY ABSOLUTO (encima del blur) - Diseño Profesional Minimalista
+                                dietaHtml += `<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(15, 15, 15, 0.95) 100%); backdrop-filter: blur(24px); padding: 48px 40px; border-radius: 24px; text-align: center; border: 1px solid rgba(132, 204, 22, 0.2); box-shadow: 0 24px 64px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.05) inset; z-index: 10; max-width: 460px; width: 90%; display: flex; flex-direction: column; align-items: center; justify-content: center;">`;
+                                dietaHtml += `<div style="width: 48px; height: 3px; background: linear-gradient(90deg, transparent, #84cc16, transparent); margin-bottom: 32px; border-radius: 2px;"></div>`;
+                                dietaHtml += `<h3 style="color: #ffffff; font-size: 26px; font-weight: 600; margin-bottom: 12px; letter-spacing: 0.3px; line-height: 1.3; text-align: center; width: 100%; margin-left: 0; margin-right: 0; padding: 0;">Dieta Completa Bloqueada</h3>`;
+                                dietaHtml += `<p style="color: #999999; font-size: 15px; line-height: 1.6; margin-bottom: 36px; max-width: 360px; text-align: center; margin-left: auto; margin-right: auto; font-weight: 400;">Desbloquea tu dieta completa con planes nutricionales detallados, seguimiento de macros y recomendaciones personalizadas</p>`;
+                                dietaHtml += `<div style="display: flex; justify-content: center; align-items: center; width: 100%;">`;
+                                dietaHtml += `<button onclick="window.location.href='./tarifas.html'" style="background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%); color: white; border: none; padding: 14px 36px; border-radius: 10px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; letter-spacing: 0.6px; box-shadow: 0 4px 14px rgba(132, 204, 22, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15); display: inline-block; min-width: 170px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(132, 204, 22, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.2)'; this.style.background='linear-gradient(135deg, #93d91f 0%, #75b312 100%)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(132, 204, 22, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15)'; this.style.background='linear-gradient(135deg, #84cc16 0%, #65a30d 100%)'">Mejorar a Pro</button>`;
+                                dietaHtml += `</div>`;
+                                dietaHtml += `</div>`; // Cierre del overlay
+                                
+                                dietaHtml += `</div>`; // Cierre del contenedor relative
+                            }
+                        }
                     
                     // Insertar dieta
                     if (dietaContent) {
@@ -4237,8 +4801,8 @@
                 if (storedPlan) {
                     try {
                         const plan = JSON.parse(storedPlan);
-                        // Usar displayPlan que maneja correctamente ambos formatos
-                        displayPlan(plan, isPremium);
+                            // Usar displayPlan que maneja correctamente ambos formatos
+                            displayPlan(plan, isPremium);
                     } catch (e) {
                         console.error('Error parsing stored plan:', e);
                         // Intentar cargar desde la base de datos
@@ -4259,8 +4823,8 @@
 
                     let routineHTML = '';
                     
-                    // Mostrar todos los días sin restricciones
-                    dias.forEach(dia => {
+                        // Mostrar todos los días sin restricciones
+                        dias.forEach(dia => {
                         routineHTML += `<div class="routine-item">`;
                         routineHTML += `<div class="routine-day">${dia.dia || dia.nombre}</div>`;
                         (dia.ejercicios || []).forEach(ejercicio => {
@@ -4362,7 +4926,7 @@
             }
 
             // Función para cargar contenido de consejos y estudios
-            function loadAdviceAndStudiesContent() {
+            async function loadAdviceAndStudiesContent() {
                 const contentArea = document.getElementById('consejosEstudiosContent');
                 if (!contentArea) {
                     console.error('No se encontró el contenedor consejosEstudiosContent');
@@ -4400,7 +4964,7 @@
                         titulo: '¿Por qué no crecen tus músculos?',
                         contenido: [
                             'La hipertrofia responde a tres mecanismos: tensión mecánica, daño muscular y estrés metabólico. Las series pesadas de 6-8 repeticiones maximizan la tensión, mientras que las de 12-15 reps generan mayor estrés metabólico. La clave está en integrarlos estratégicamente.',
-                            'El volumen es crucial: 10-20 series semanales por grupo muscular. La proximidad al fallo también importa: las últimas 5 repeticiones (RIR 1-3) generan el estímulo real. Acumula 10-20 series/músculo/semana, entrena cada grupo 2-3 veces por semana y termina series a RIR 1-3.'
+                                'El volumen es crucial: 10-20 series semanales por grupo muscular. La proximidad al fallo también importa: las últimas 5 repeticiones (RIR 1-3) generan el estímulo real. Acumula 10-20 series/músculo/semana, entrena cada grupo 2-3 veces por semana y termina series a RIR 1-3.'
                         ],
                         referencias: [
                             { titulo: 'The mechanisms of muscle hypertrophy and their application to resistance training', pmid: '20847704' },
@@ -4493,7 +5057,7 @@
                         titulo: 'RIR y Fallo Muscular: La Verdad Que Necesitas Saber',
                         contenido: [
                             'Los meta-análisis de Grgic (2022), Vieira (2021) y Refalo (2023) son contundentes: cuando el volumen total se iguala, NO hay diferencias en hipertrofia entre entrenar al fallo (RIR 0) o cerca del fallo (RIR 1-3). El fallo no es superior pero genera fatiga sistémica desproporcionada: tu rendimiento en series siguientes cae, tu volumen total disminuye, y tu recuperación se alarga.',
-                            'En ejercicios compuestos pesados (sentadilla, press banca, peso muerto), EVITA el fallo. Trabaja a RIR 2-3. En ejercicios de aislamiento (curls, extensiones, elevaciones laterales), es seguro ir al fallo o muy cerca (RIR 0-1). Estrategia óptima: última serie al fallo. Haz las series 1-3 a RIR 1-2, y solo la serie final llévala al fallo técnico. Principiantes: NUNCA entrenen al fallo, trabajen a RIR 3 a 5.'
+                                'En ejercicios compuestos pesados (sentadilla, press banca, peso muerto), EVITA el fallo. Trabaja a RIR 2-3. En ejercicios de aislamiento (curls, extensiones, elevaciones laterales), es seguro ir al fallo o muy cerca (RIR 0-1). Estrategia óptima: última serie al fallo. Haz las series 1-3 a RIR 1-2, y solo la serie final llévala al fallo técnico. Principiantes: NUNCA entrenen al fallo, trabajen a RIR 3 a 5.'
                         ],
                         referencias: [
                             { titulo: 'Effects of resistance training performed to repetition failure or non-failure on muscular strength and hypertrophy', pmid: 'No disponible - Sci-Space 2022' },
@@ -4510,9 +5074,9 @@
                             'Para hipertrofia pura, pesos libres y máquinas son igual de efectivos. Pero en máquinas toda tu energía se dirige 100% al músculo objetivo porque la estabilización está resuelta. Por eso máquinas son superiores para: aislar sin que auxiliares fallen, entrenar al fallo seguro, acumular volumen cuando fatigado. Usa rango de movimiento completo siempre que sea posible. Schoenfeld (2020) confirmó que ROM completo es superior para hipertrofia.'
                         ],
                         referencias: [
-                            { titulo: 'Does the addition of single joint exercises to a resistance training program improve changes in performance and anthropometric measures in untrained men?', pmid: '30584485' },
-                            { titulo: 'Effect of free-weight vs. machine-based strength training on maximal strength, hypertrophy and jump performance – a systematic review and meta-analysis', pmid: '37592269' },
-                            { titulo: 'Effects of range of motion on muscle development during resistance training interventions: A systematic review', pmid: '32030125' }
+                                { titulo: 'Does the addition of single joint exercises to a resistance training program improve changes in performance and anthropometric measures in untrained men?', pmid: '30584485' },
+                                { titulo: 'Effect of free-weight vs. machine-based strength training on maximal strength, hypertrophy and jump performance – a systematic review and meta-analysis', pmid: '37592269' },
+                                { titulo: 'Effects of range of motion on muscle development during resistance training interventions: A systematic review', pmid: '32030125' }
                         ]
                     },
                     {
@@ -4582,9 +5146,9 @@
                             'TIPO I—Estrés Metabólico Extremo: cargas 40-50% 1RM, tempo ultra-lento 6-10s/rep, sin relajación (tensión continua 60-90s). Alternativa: BFR (Blood Flow Restriction) con 20-30% 1RM. TIPO IIa—Tensión Mecánica Máxima: cargas 70-85% 1RM, 6-12 reps, 3-5 series. TIPO IIx—Minimizar Fatiga más VBT: detener serie cuando velocidad cae >10-20% vs primera rep (RIR 3-5). Cargas 85-95%, 1-5 reps, descansos 3-5min. Para hipertrofia máxima: combina cargas 70-85% para maximizar IIa (80% volumen) más 1-2 ejercicios BFR para crecer Tipo I.'
                         ],
                         referencias: [
-                            { titulo: 'ACTN3 Genotype is Associated with Human Elite Athletic Performance', pmid: '12879365' },
-                            { titulo: 'Skeletal muscle fiber type switching, myosin isoforms and collagen content in bodybuilders', pmid: '16423842' },
-                            { titulo: 'Are the Hypertrophic Adaptations to High and Low-Load Resistance Training Muscle Fiber Type Specific?', pmid: '29773994' }
+                                { titulo: 'ACTN3 Genotype is Associated with Human Elite Athletic Performance', pmid: '12879365' },
+                                { titulo: 'Skeletal muscle fiber type switching, myosin isoforms and collagen content in bodybuilders', pmid: '16423842' },
+                                { titulo: 'Are the Hypertrophic Adaptations to High and Low-Load Resistance Training Muscle Fiber Type Specific?', pmid: '29773994' }
                         ]
                     },
                     {
@@ -4595,75 +5159,139 @@
                             'Señales de alarma: dolor agudo DURANTE entrenamiento = DETENTE INMEDIATAMENTE. Tendinitis hombro: dolor hombro/brazo, pérdida movilidad, dolor nocturno. Condromalacia rodilla: dolor FRONTAL rodilla, dolor subir escaleras. Hernia discal (MUY GRAVE): dolor lumbar IRRADIA PIERNA (ciática), entumecimiento, hormigueo. Si tienes lesión: consulta médico/fisio. Entrena zonas no afectadas, usa ejercicios alternativos, sigue protocolo RICE (Reposo, Hielo, Compresión, Elevación) las primeras 48-72h.'
                         ],
                         referencias: [
-                            { titulo: 'The Epidemiology of Injuries Across the Weight-Training Sports: A Systematic Review', pmid: '27329683' },
-                            { titulo: 'Does warming up prevent injury in sport? The evidence from randomised controlled trials', pmid: '16790386' },
-                            { titulo: 'Cryotherapy for acute ankle sprains: a randomised controlled study of two different icing protocols', pmid: '16864561' }
-                        ]
-                    }
-                ];
-                
-                // Función para generar HTML de una card (NUEVO DISEÑO OSCURO)
+                                { titulo: 'The Epidemiology of Injuries Across the Weight-Training Sports: A Systematic Review', pmid: '27329683' },
+                                { titulo: 'Does warming up prevent injury in sport? The evidence from randomised controlled trials', pmid: '16790386' },
+                                { titulo: 'Cryotherapy for acute ankle sprains: a randomised controlled study of two different icing protocols', pmid: '16864561' }
+                            ]
+                        }
+                    ];
+                    
+                    // Función para generar HTML de una card (NUEVO DISEÑO OSCURO)
                 function generarCard(articulo) {
-                    // Mapear categoría a color de badge
-                    const badgeColors = {
-                        'Entrenamiento': { bg: 'rgba(57, 255, 20, 0.15)', border: 'rgba(57, 255, 20, 0.3)', text: '#39ff14' },
-                        'Nutrición': { bg: 'rgba(59, 130, 246, 0.15)', border: 'rgba(59, 130, 246, 0.3)', text: '#3b82f6' },
-                        'Recuperación': { bg: 'rgba(167, 139, 250, 0.15)', border: 'rgba(167, 139, 250, 0.3)', text: '#a78bfa' },
-                        'Suplementación': { bg: 'rgba(251, 146, 60, 0.15)', border: 'rgba(251, 146, 60, 0.3)', text: '#fb923c' }
-                    };
-                    
-                    const badgeStyle = badgeColors[articulo.categoria] || badgeColors['Entrenamiento'];
-                    
-                    // Filtrar referencias que no están disponibles (eliminar las que tienen "No disponible" en pmid)
-                    const referenciasValidas = articulo.referencias.filter(ref => 
-                        !ref.pmid.includes('No disponible') && 
-                        !ref.pmid.startsWith('PMC') && 
-                        /^\d+$/.test(ref.pmid.trim())
-                    );
-                    
-                    return `
-                        <div class="article-card">
-                            <!-- Badge de Categoría -->
-                            <span class="article-badge" style="background: ${badgeStyle.bg}; border-color: ${badgeStyle.border}; color: ${badgeStyle.text};">
+                        // Mapear categoría a color de badge
+                        const badgeColors = {
+                            'Entrenamiento': { bg: 'rgba(57, 255, 20, 0.15)', border: 'rgba(57, 255, 20, 0.3)', text: '#39ff14' },
+                            'Nutrición': { bg: 'rgba(59, 130, 246, 0.15)', border: 'rgba(59, 130, 246, 0.3)', text: '#3b82f6' },
+                            'Recuperación': { bg: 'rgba(167, 139, 250, 0.15)', border: 'rgba(167, 139, 250, 0.3)', text: '#a78bfa' },
+                            'Suplementación': { bg: 'rgba(251, 146, 60, 0.15)', border: 'rgba(251, 146, 60, 0.3)', text: '#fb923c' }
+                        };
+                        
+                        const badgeStyle = badgeColors[articulo.categoria] || badgeColors['Entrenamiento'];
+                        
+                        // Filtrar referencias que no están disponibles (eliminar las que tienen "No disponible" en pmid)
+                        const referenciasValidas = articulo.referencias.filter(ref => 
+                            !ref.pmid.includes('No disponible') && 
+                            !ref.pmid.startsWith('PMC') && 
+                            /^\d+$/.test(ref.pmid.trim())
+                        );
+                        
+                        return `
+                            <div class="article-card">
+                                <!-- Badge de Categoría -->
+                                <span class="article-badge" style="background: ${badgeStyle.bg}; border-color: ${badgeStyle.border}; color: ${badgeStyle.text};">
                                 ${articulo.categoria}
                             </span>
                             
-                            <!-- Título del Artículo -->
-                            <h3 class="article-title">${articulo.titulo}</h3>
-                            
-                            <!-- Contenido del Artículo -->
-                            <div class="article-content">
-                                ${articulo.contenido.map(parrafo => `<p>${parrafo}</p>`).join('')}
+                                <!-- Título del Artículo -->
+                                <h3 class="article-title">${articulo.titulo}</h3>
+                                
+                                <!-- Contenido del Artículo -->
+                                <div class="article-content">
+                                    ${articulo.contenido.map(parrafo => `<p>${parrafo}</p>`).join('')}
+                                </div>
+                                
+                                <!-- Referencias -->
+                                ${referenciasValidas.length > 0 ? `
+                                <div class="article-references">
+                                    <h3 class="references-title">Referencias</h3>
+                                    ${referenciasValidas.map(ref => `
+                                        <div class="reference-item">
+                                            <span class="reference-icon">•</span>
+                                            <div class="reference-content">
+                                                <p class="reference-text">${ref.titulo}</p>
+                                                <a href="https://pubmed.ncbi.nlm.nih.gov/${ref.pmid}" 
+                                        target="_blank"
+                                                rel="noopener noreferrer" 
+                                                class="reference-link">
+                                                    PMID: ${ref.pmid}
+                                                </a>
+                                </div>
                             </div>
-                            
-                            <!-- Referencias -->
-                            ${referenciasValidas.length > 0 ? `
-                            <div class="article-references">
-                                <h3 class="references-title">Referencias</h3>
-                                ${referenciasValidas.map(ref => `
-                                    <div class="reference-item">
-                                        <span class="reference-icon">•</span>
-                                        <div class="reference-content">
-                                            <p class="reference-text">${ref.titulo}</p>
-                                            <a href="https://pubmed.ncbi.nlm.nih.gov/${ref.pmid}" 
-                                               target="_blank" 
-                                               rel="noopener noreferrer" 
-                                               class="reference-link">
-                                                PMID: ${ref.pmid}
-                                            </a>
-                                        </div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                            ` : ''}
+                                    `).join('')}
+                                </div>
+                                ` : ''}
                         </div>
                     `;
                 }
                 
-                // Generar HTML de todas las cards
-                const cardsHTML = articulos.map(articulo => generarCard(articulo)).join('');
+                // Verificar si el usuario es premium
+                let isPremium = isPremiumUser();
+                if (!isPremium && typeof checkPremiumStatus === 'function') {
+                    try {
+                        isPremium = await checkPremiumStatus();
+                    } catch (error) {
+                        console.error('Error verificando estado premium:', error);
+                        isPremium = false;
+                    }
+                }
+                
+                let cardsHTML = '';
+                
+                if (isPremium) {
+                    // Usuario premium: mostrar todos los artículos sin censura
+                    cardsHTML = articulos.map(articulo => generarCard(articulo)).join('');
+                } else {
+                    // Usuario FREE: Primeros 3 sin blur (primera fila), resto con blur
+                    cardsHTML = articulos.map((articulo, index) => {
+                        const cardHTML = generarCard(articulo);
+                        // Primeros 3 artículos sin blur (primera fila en desktop)
+                        if (index < 3) {
+                            return `<div style="grid-column: span 1;">${cardHTML}</div>`;
+                        } else {
+                            // Resto con blur
+                            return `<div style="filter: blur(8px); opacity: 0.4; pointer-events: none; user-select: none; grid-column: span 1;">${cardHTML}</div>`;
+                        }
+                    }).join('');
+                }
                 
                 contentArea.innerHTML = cardsHTML;
+                
+                // Si es usuario FREE y hay más de 3 artículos, añadir overlay
+                if (!isPremium && articulos.length > 3) {
+                    // Asegurar que el contenedor tenga position relative para el overlay
+                    contentArea.style.position = 'relative';
+                    
+                    // Crear overlay solo para los artículos con blur
+                    // Posicionar sobre la primera fila censurada (móvil: primer consejo censurado más arriba, desktop: primera fila censurada)
+                    const overlay = document.createElement('div');
+                    overlay.className = 'consejos-overlay-blocked';
+                    overlay.style.cssText = 'position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(15, 15, 15, 0.95) 100%); backdrop-filter: blur(24px); padding: 48px 40px; border-radius: 24px; text-align: center; border: 1px solid rgba(132, 204, 22, 0.2); box-shadow: 0 24px 64px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.05) inset; z-index: 10; max-width: 460px; width: 90%; display: flex; flex-direction: column; align-items: center; justify-content: center;';
+                    
+                    // Añadir estilos CSS para móvil
+                    if (!document.getElementById('consejosOverlayMobileStyle')) {
+                        const style = document.createElement('style');
+                        style.id = 'consejosOverlayMobileStyle';
+                        style.textContent = `
+                            @media (max-width: 768px) {
+                                .consejos-overlay-blocked {
+                                    top: 25% !important;
+                                }
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    
+                    overlay.innerHTML = `
+                        <div style="width: 48px; height: 3px; background: linear-gradient(90deg, transparent, #84cc16, transparent); margin-bottom: 32px; border-radius: 2px;"></div>
+                        <h3 style="color: #ffffff; font-size: 26px; font-weight: 600; margin-bottom: 12px; letter-spacing: 0.3px; line-height: 1.3; text-align: center; width: 100%; margin-left: 0; margin-right: 0; padding: 0;">Conocimiento Completo Bloqueado</h3>
+                        <p style="color: #999999; font-size: 15px; line-height: 1.6; margin-bottom: 36px; max-width: 360px; text-align: center; margin-left: auto; margin-right: auto; font-weight: 400;">Desbloquea todos los consejos y estudios científicos con planes nutricionales detallados y recomendaciones personalizadas</p>
+                        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                            <button onclick="window.location.href='./tarifas.html'" style="background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%); color: white; border: none; padding: 14px 36px; border-radius: 10px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; letter-spacing: 0.6px; box-shadow: 0 4px 14px rgba(132, 204, 22, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15); display: inline-block; min-width: 170px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(132, 204, 22, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.2)'; this.style.background='linear-gradient(135deg, #93d91f 0%, #75b312 100%)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(132, 204, 22, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15)'; this.style.background='linear-gradient(135deg, #84cc16 0%, #65a30d 100%)'">Mejorar a Pro</button>
+                        </div>
+                    `;
+                    
+                    contentArea.appendChild(overlay);
+                }
             }
 
             // Función para mostrar consejos - Cards Verdes con texto blanco
@@ -4930,13 +5558,13 @@
                 
                 const objetivoGymOptions = [
                     { value: 'ganar_musculo', label: 'Ganar Músculo' },
-                    { value: 'ganar_fuerza', label: 'Ganar Fuerza' }
+                        { value: 'ganar_fuerza', label: 'Ganar Fuerza' }
                 ];
                 
                 const objetivoNutricionalOptions = [
                     { value: 'volumen', label: 'Volumen' },
                     { value: 'definicion', label: 'Definición' },
-                    { value: 'mantenimiento', label: 'Mantenimiento' }
+                        { value: 'mantenimiento', label: 'Mantenimiento' }
                 ];
                 
                 const experienciaOptions = [
@@ -4975,13 +5603,13 @@
                 const iconAge = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`;
                 const iconGender = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="14" r="8"></circle><path d="M22 2l-8 8M16 2h6v6"></path></svg>`;
                 const iconTarget = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>`;
-                const iconDumbbell = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="4" height="10" rx="1"></rect><rect x="17" y="7" width="4" height="10" rx="1"></rect><line x1="7" y1="12" x2="17" y2="12" stroke-width="3"></line></svg>`;
-                const iconMeat = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="2"></rect><line x1="7" y1="9" x2="17" y2="9"></line><line x1="7" y1="12" x2="17" y2="12"></line><line x1="7" y1="15" x2="15" y2="15"></line></svg>`;
+                    const iconDumbbell = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="4" height="10" rx="1"></rect><rect x="17" y="7" width="4" height="10" rx="1"></rect><line x1="7" y1="12" x2="17" y2="12" stroke-width="3"></line></svg>`;
+                    const iconMeat = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="2"></rect><line x1="7" y1="9" x2="17" y2="9"></line><line x1="7" y1="12" x2="17" y2="12"></line><line x1="7" y1="15" x2="15" y2="15"></line></svg>`;
                 const iconActivity = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>`;
                 const iconDays = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`;
                 const iconEquipment = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 14h12v8H6z"></path></svg>`;
                 const iconInjury = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
-                const iconAllergy = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="14" rx="8" ry="3"></ellipse><path d="M4 14c0-2 2-3 4-3s4 1 4 3"></path><path d="M20 14c0 2-2 3-4 3s-4-1-4-3"></path><circle cx="12" cy="12" r="6"></circle><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>`;
+                    const iconAllergy = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="14" rx="8" ry="3"></ellipse><path d="M4 14c0-2 2-3 4-3s4 1 4 3"></path><path d="M20 14c0 2-2 3-4 3s-4-1-4-3"></path><circle cx="12" cy="12" r="6"></circle><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>`;
                 const iconDiet = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4z"></path></svg>`;
                 
                 return `
@@ -5061,14 +5689,14 @@
                                 </div>
                                 <div class="profile-card" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%); border: 1px solid rgba(132, 204, 22, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(132, 204, 22, 0.2) inset'; this.style.borderColor='rgba(132, 204, 22, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset'; this.style.borderColor='rgba(132, 204, 22, 0.15)'">
                                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                                        <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconDumbbell}</div>
+                                            <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconDumbbell}</div>
                                         <div style="color: #a3a3a3; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Objetivo Gym</div>
                                     </div>
                                     <div style="font-size: 22px; font-weight: 600; color: #e5e5e5;">${formatOption(userData.objetivo_gym, objetivoGymOptions)}</div>
                                 </div>
                                 <div class="profile-card" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%); border: 1px solid rgba(132, 204, 22, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(132, 204, 22, 0.2) inset'; this.style.borderColor='rgba(132, 204, 22, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(132, 204, 22, 0.1) inset'; this.style.borderColor='rgba(132, 204, 22, 0.15)'">
                                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                                        <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconMeat}</div>
+                                            <div style="width: 40px; height: 40px; background: rgba(132, 204, 22, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconMeat}</div>
                                         <div style="color: #a3a3a3; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Objetivo Nutricional</div>
                                     </div>
                                     <div style="font-size: 22px; font-weight: 600; color: #e5e5e5;">${formatOption(userData.objetivo_nutricional, objetivoNutricionalOptions)}</div>
@@ -5991,8 +6619,8 @@
             /**
              * Revierte la última modificación
              */
-            // Función eliminada: revertLastModification
-            // Ya no existe la funcionalidad de modificaciones automáticas
+                // Función eliminada: revertLastModification
+                // Ya no existe la funcionalidad de modificaciones automáticas
 
             /**
              * Recarga las secciones afectadas por modificaciones
