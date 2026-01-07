@@ -20,7 +20,7 @@ load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file_
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
 
-def generate_and_save_ai_plan(db: Session, user_id: int):
+async def generate_and_save_ai_plan(db: Session, user_id: int):
     """
     Genera un plan personalizado con IA para un usuario premium
     """
@@ -55,8 +55,8 @@ def generate_and_save_ai_plan(db: Session, user_id: int):
         print(f"🤖 Generando plan con IA para usuario {user_id}...")
         print(f"📋 Datos: {user_info['sexo']}, {user_info['edad']} años, {user_info['altura']}cm, {user_info['peso']}kg")
         
-        # Generar plan con GPT-3.5 usando la función existente
-        plan = generar_plan_personalizado(user_info)
+        # Generar plan con GPT usando la función existente - AÑADIR await
+        plan = await generar_plan_personalizado(user_info)
         
         # Convertir al formato esperado por current_routine y current_diet
         from datetime import datetime
@@ -124,7 +124,7 @@ def set_customer_id_by_email(db: Session, email: str, customer_id: str):
         db.commit()
         print(f"🔗 Customer ID {customer_id} asociado al email {email}")
 
-def set_premium_by_customer(db: Session, customer_id: str, is_premium: bool):
+async def set_premium_by_customer(db: Session, customer_id: str, is_premium: bool):
     user = db.query(Usuario).filter(Usuario.stripe_customer_id == customer_id).first()
     if user:
         user.is_premium = is_premium
@@ -133,7 +133,7 @@ def set_premium_by_customer(db: Session, customer_id: str, is_premium: bool):
             user.chat_uses_free = 2
         else:
             print(f"💎 Usuario {user.id} se hizo PREMIUM, generando plan con IA...")
-            generate_and_save_ai_plan(db, user.id)
+            await generate_and_save_ai_plan(db, user.id)
         
         db.commit()
         print(f"✅ Usuario {user.id} actualizado a {'PREMIUM' if is_premium else 'FREE'}")
@@ -195,7 +195,7 @@ async def stripe_webhook_cli(request: Request):
                 # Si el pago es exitoso, activar premium inmediatamente
                 if payment_status == "paid":
                     print(f"💰 Pago confirmado para {email}, activando premium...")
-                    set_premium_by_customer(db, customer_id, True)
+                    await set_premium_by_customer(db, customer_id, True)
 
         # Suscripción creada/actualizada → premium si status activo o trial
         elif etype in ("customer.subscription.created", "customer.subscription.updated"):
@@ -207,7 +207,7 @@ async def stripe_webhook_cli(request: Request):
             print(f"   Customer ID: {customer_id}")
             
             if customer_id and status:
-                set_premium_by_customer(db, customer_id, status in ("active", "trialing"))
+                await set_premium_by_customer(db, customer_id, status in ("active", "trialing"))
 
         # Suscripción cancelada → premium = False
         elif etype == "customer.subscription.deleted":
@@ -217,7 +217,7 @@ async def stripe_webhook_cli(request: Request):
             print(f"   Customer ID: {customer_id}")
             
             if customer_id:
-                set_premium_by_customer(db, customer_id, False)
+                await set_premium_by_customer(db, customer_id, False)
 
         # NUEVO: Manejar payment_intent.succeeded (pagos directos)
         elif etype == "payment_intent.succeeded":
@@ -253,7 +253,7 @@ async def stripe_webhook_cli(request: Request):
                         
                         # Generar plan con IA
                         print(f"🤖 Iniciando generación de plan con IA...")
-                        generate_and_save_ai_plan(db, user.id)
+                        await generate_and_save_ai_plan(db, user.id)
                         print(f"🎉 Plan generado exitosamente para usuario {user.id}")
                     else:
                         print(f"❌ No se encontró usuario con ID: {user_id}")

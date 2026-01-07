@@ -5,7 +5,8 @@ import traceback
 import logging
 from app.database import get_db
 from app.models import Usuario
-from app.auth_utils import get_user_id_from_token
+from app.auth_utils import get_user_id_from_token, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
+from datetime import timedelta
 from pydantic import BaseModel
 import os
 import stripe
@@ -376,6 +377,43 @@ async def get_subscription_status(
         logger.debug(f"Traceback (no crítico): {traceback.format_exc()}")
         # Continuar y devolver respuesta básica (datos de caché)
     
+    # DETERMINAR TIPO DE PLAN EXACTO PARA LA UI
+    # Por defecto, usamos lo que diga la BD
+    final_plan_type = response.get("plan_type", user.plan_type)
+    
+    # Si es premium, intentamos ser más específicos usando los datos de Stripe si los tenemos
+    if user.is_premium or response.get("has_active_subscription", False):
+        # Intentar obtener price_id de la respuesta si ya lo detectamos
+        current_price_id = response.get("current_price_id")
+        
+        # Si no lo tenemos en response, intentar obtenerlo de Stripe
+        if not current_price_id:
+            subscription_id = user.stripe_subscription_id or response.get("stripe_subscription_id")
+            if subscription_id:
+                try:
+                    sub = stripe.Subscription.retrieve(subscription_id)
+                    # Acceso compatible con formato diccionario (v12+)
+                    items_data = sub.get('items', {}).get('data', [])
+                    if items_data and len(items_data) > 0:
+                        current_price_id = items_data[0].get('price', {}).get('id')
+                except Exception as e:
+                    logger.warning(f"⚠️ No se pudo obtener price_id de Stripe para determinar plan: {e}")
+        
+        # Comparar price_id con los valores conocidos
+        if current_price_id:
+            if current_price_id == PRICE_ID_ANUAL:
+                final_plan_type = "PREMIUM_YEARLY"
+            elif current_price_id == PRICE_ID_MENSUAL:
+                final_plan_type = "PREMIUM_MONTHLY"
+        
+        # Si la BD dice solo "PREMIUM" (caso legacy o simplificado), forzamos un default visual
+        # para que la UI no se rompa (asumimos mensual si no podemos determinarlo)
+        if final_plan_type == "PREMIUM":
+            final_plan_type = "PREMIUM_MONTHLY"
+    
+    # Actualizar el response con el plan_type final
+    response["plan_type"] = final_plan_type
+    
     # Siempre devolver respuesta (básica o enriquecida)
     return response
 
@@ -436,40 +474,103 @@ async def get_user_status(
 @router.post("/stripe/activate-premium")
 async def activate_premium_fallback(
     request: Request,
-    user_id: int = Depends(get_user_id_from_token),
+    authorization: str = Header(None),
     db: Session = Depends(get_db)
 ):
     """
     Fallback para activar premium cuando el webhook no llega (desarrollo).
     En producción, el webhook debe encargarse de esto.
     
-    ⚠️ IMPORTANTE: El user_id se obtiene SIEMPRE del JWT mediante get_user_id_from_token.
-    Nadie puede activar premium para otro usuario mediante un user_id arbitrario en el body.
+    Puede funcionar con o sin autenticación:
+    - Con autenticación: usa el token JWT para obtener user_id
+    - Sin autenticación: usa session_id de Stripe para obtener email y buscar usuario
     """
     try:
         body = await request.json()
         session_id = body.get("session_id")
+        
+        # Intentar obtener user_id del token si existe
+        user_id = None
+        user = None
+        
+        if authorization and authorization.startswith("Bearer "):
+            try:
+                from app.auth_utils import decode_access_token
+                token = authorization.replace("Bearer ", "")
+                payload = decode_access_token(token)
+                if payload:
+                    user_id = int(payload.get("sub"))
+                    logger.info(f"🔐 Usuario autenticado: {user_id}")
+            except Exception as e:
+                logger.warning(f"⚠️ No se pudo obtener user_id del token: {e}")
+        
+        # Si no hay user_id del token pero hay session_id, obtener email de Stripe
+        if not user_id and session_id:
+            try:
+                session = stripe.checkout.Session.retrieve(session_id)
+                if session.payment_status == "paid":
+                    customer_email = session.customer_details.email if hasattr(session, 'customer_details') else None
+                    if not customer_email and session.customer:
+                        customer = stripe.Customer.retrieve(session.customer)
+                        customer_email = customer.email
+                    
+                    if customer_email:
+                        logger.info(f"📧 Email obtenido de Stripe: {customer_email}")
+                        user = db.query(Usuario).filter(Usuario.email == customer_email).first()
+                        if user:
+                            user_id = user.id
+                            logger.info(f"✅ Usuario encontrado por email: {user_id}")
+                        else:
+                            logger.error(f"❌ Usuario no encontrado con email: {customer_email}")
+                            return {"success": False, "error": "Usuario no encontrado con el email de la sesión de pago"}
+            except stripe.error.StripeError as e:
+                logger.error(f"❌ Error obteniendo datos de Stripe: {e}")
+                return {"success": False, "error": f"Error verificando sesión de pago: {str(e)}"}
+        
+        if not user_id:
+            logger.error(f"❌ No se pudo obtener user_id ni del token ni del session_id")
+            return {"success": False, "error": "Se requiere autenticación o un session_id válido"}
 
-        logger.info(f"🔐 Usuario autenticado: {user_id}")
-        logger.info(f"🔄 Fallback premium: user_id={user_id}, session_id={session_id}")
-
-        user = db.query(Usuario).filter(Usuario.id == user_id).first()
         if not user:
-            logger.error(f"❌ Usuario {user_id} no encontrado")
-            return {"success": False, "error": "Usuario no encontrado"}
+            user = db.query(Usuario).filter(Usuario.id == user_id).first()
+            if not user:
+                logger.error(f"❌ Usuario {user_id} no encontrado")
+                return {"success": False, "error": "Usuario no encontrado"}
+
+        # Determinar si necesitamos generar un nuevo token (no había autenticación previa)
+        needs_new_token = not authorization or not authorization.startswith("Bearer ")
+        
+        # Función auxiliar para generar respuesta con token si es necesario
+        def build_response(data: dict) -> dict:
+            if needs_new_token:
+                # Generar nuevo token JWT
+                access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+                new_token = create_access_token(
+                    data={
+                        "sub": str(user.id),
+                        "user_id": user.id,
+                        "email": user.email,
+                        "plan_type": user.plan_type or "FREE",
+                    },
+                    expires_delta=access_token_expires
+                )
+                data["access_token"] = new_token
+                data["email"] = user.email
+                logger.info(f"🔑 Token JWT generado para usuario {user_id}")
+            return data
 
         # Si ya es premium, no forzamos una nueva generación de plan para que el endpoint sea idempotente
         if user.is_premium:
             logger.info(f"✅ Usuario {user_id} ya es premium")
             # Comprobar si ya tiene plan generado
             has_plan = bool(getattr(user, "current_routine", None) and getattr(user, "current_diet", None))
-            return {
+            return build_response({
                 "success": True,
                 "is_premium": True,
                 "plan_type": user.plan_type,
                 "plan_generated": has_plan,
                 "activated_by": "already_premium"
-            }
+            })
 
         # Intentar verificar con Stripe si tenemos session_id
         if session_id:
@@ -526,13 +627,13 @@ async def activate_premium_fallback(
                         import traceback
                         logger.error(traceback.format_exc())
                     
-                    return {
+                    return build_response({
                         "success": True,
                         "is_premium": True,
                         "plan_type": plan_type,
                         "plan_generated": plan_generated,
                         "activated_by": "fallback_verified"
-                    }
+                    })
                 else:
                     return {"success": False, "error": f"Pago no completado: {session.payment_status}"}
                     
@@ -558,12 +659,12 @@ async def activate_premium_fallback(
                     import traceback
                     logger.error(traceback.format_exc())
                 
-                return {
+                return build_response({
                     "success": True,
                     "is_premium": True,
                     "plan_generated": plan_generated,
                     "activated_by": "fallback_dev_error"
-                }
+                })
 
         # Sin session_id: activar directamente (modo dev)
         user.is_premium = True
@@ -587,12 +688,12 @@ async def activate_premium_fallback(
             import traceback
             logger.error(traceback.format_exc())
         
-        return {
+        return build_response({
             "success": True,
             "is_premium": True,
             "plan_generated": plan_generated,
             "activated_by": "fallback_direct"
-        }
+        })
 
     except Exception as e:
         logger.error(f"❌ Error en fallback: {e}")

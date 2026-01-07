@@ -1072,6 +1072,82 @@ def obtener_rutina_actual(
                 print(f"   current_diet keys: {list(current_diet.keys())}")
             print(f"   total_kcal: {current_diet.get('total_kcal', 'NO ENCONTRADO')}")
         
+        # 🔍 Verificar si la rutina premium está lista (no es template free)
+        is_premium_routine_ready = False
+        if is_premium and current_routine:
+            try:
+                # Verificar que no sea template genérico
+                is_generic = current_routine.get('is_generic', False)
+                version = current_routine.get('version', '')
+                
+                # Verificar que no sea template free
+                # Los templates free tienen: is_generic=True o version="generic-1.0.0"
+                is_template_free = (
+                    is_generic is True or
+                    (isinstance(version, str) and 'generic' in version.lower())
+                )
+                
+                # Verificar si tiene marcadores de rutina GPT generada
+                # Las rutinas GPT tienen: is_premium_generated=True o versión >= 2.0 o estructura "dias"
+                has_premium_markers = False
+                
+                # Verificar si está en formato JSON string (desde BD)
+                routine_to_check = current_routine
+                if isinstance(current_routine, str):
+                    try:
+                        routine_to_check = json.loads(current_routine)
+                    except:
+                        pass
+                
+                # Si es dict, verificar marcadores
+                if isinstance(routine_to_check, dict):
+                    # Marcador 1: is_premium_generated
+                    if routine_to_check.get('is_premium_generated') is True:
+                        has_premium_markers = True
+                    
+                    # Marcador 2: versión >= 2.0 (y no es generic)
+                    version_str = str(routine_to_check.get('version', '0'))
+                    if version_str and 'generic' not in version_str.lower():
+                        try:
+                            # Extraer número de versión (ej: "2.0.0" -> 2.0)
+                            version_num = float(version_str.split('.')[0] + '.' + version_str.split('.')[1] if '.' in version_str else version_str)
+                            if version_num >= 2.0:
+                                has_premium_markers = True
+                        except:
+                            pass
+                    
+                    # Marcador 3: estructura "dias" (formato GPT)
+                    if 'dias' in routine_to_check and isinstance(routine_to_check['dias'], list):
+                        has_premium_markers = True
+                
+                # Verificar también en current_routine de la BD (formato JSON string)
+                if usuario.current_routine:
+                    routine_str = usuario.current_routine.lower()
+                    # Verificar que no contenga texto del template free
+                    template_markers = ['plan gratuito', 'template', 'generic', 'genérico']
+                    has_template_text = any(marker in routine_str for marker in template_markers)
+                    
+                    if has_template_text:
+                        is_template_free = True
+                
+                # Resultado final: es premium ready si es premium, tiene rutina, NO es template free, y tiene marcadores premium
+                is_premium_routine_ready = (
+                    is_premium and
+                    current_routine is not None and
+                    not is_template_free and
+                    has_premium_markers
+                )
+                
+                print(f"🔍 Verificación is_premium_routine_ready:")
+                print(f"   is_premium: {is_premium}")
+                print(f"   current_routine existe: {current_routine is not None}")
+                print(f"   is_template_free: {is_template_free}")
+                print(f"   has_premium_markers: {has_premium_markers}")
+                print(f"   ✅ is_premium_routine_ready: {is_premium_routine_ready}")
+            except Exception as e:
+                print(f"⚠️ Error verificando is_premium_routine_ready: {e}")
+                is_premium_routine_ready = False
+        
         return {
             "success": True,
             "current_routine": current_routine,
@@ -1081,7 +1157,8 @@ def obtener_rutina_actual(
                 "training_days": training_days
             },
             "user_id": usuario.id,
-            "is_premium": is_premium
+            "is_premium": is_premium,
+            "is_premium_routine_ready": is_premium_routine_ready
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error obteniendo rutina actual: {str(e)}")

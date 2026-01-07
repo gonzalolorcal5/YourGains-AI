@@ -22,6 +22,7 @@ PRICE_ID_ANUAL = os.getenv("STRIPE_PRICE_ANUAL")
 # ==========================================
 # GENERACIÓN DE PLAN CON IA
 # ==========================================
+# Exportada para uso en stripe_routes.py
 async def generate_and_save_ai_plan(db: Session, user_id: int, force: bool = False):
     """
     Genera plan personalizado con IA para usuario premium.
@@ -275,12 +276,16 @@ async def set_premium_by_customer(
     customer_id: str,
     is_premium: bool,
     subscription_id: str = None,
-    price_id: str = None
+    price_id: str = None,
+    generate_plan: bool = False
 ):
     """
     Actualiza estado premium del usuario.
     🆕 Detecta PREMIUM_MONTHLY vs PREMIUM_YEARLY según price_id.
     🆕 Guarda stripe_subscription_id SIEMPRE que esté disponible.
+    
+    Args:
+        generate_plan: Si es True, genera el plan con IA. Por defecto False para evitar duplicados.
     """
     user = db.query(Usuario).filter(Usuario.stripe_customer_id == customer_id).first()
     if not user:
@@ -351,10 +356,10 @@ async def set_premium_by_customer(
     # Resetear usos gratuitos si downgrade
     if not is_premium:
         user.chat_uses_free = 2
-    else:
-        # Generar plan con IA para usuarios premium
-        # IMPORTANTE: Esperar a que se complete la generación
-        # FORZAR regeneración cuando un usuario paga (puede tener template de FREE)
+    
+    # ⚠️ IMPORTANTE: Solo generar plan si se solicita explícitamente
+    # Esto evita generación duplicada cuando se llama desde múltiples eventos
+    if is_premium and generate_plan:
         print(f"💎 Usuario {user.id} → {user.plan_type}, generando plan IA (forzado)...")
         plan_generated = await generate_and_save_ai_plan(db, user.id, force=True)
         if plan_generated:
@@ -438,13 +443,25 @@ async def stripe_webhook(request: Request):
                         print(f"   price_id: {price_id}")
                         print(f"   status: {subscription.get('status', 'unknown')}")
                         
+                        # Actualizar estado premium SIN generar plan (evitar duplicados)
                         await set_premium_by_customer(
                             db, 
                             customer_id, 
                             True, 
                             subscription_id, 
-                            price_id
+                            price_id,
+                            generate_plan=False  # NO generar aquí, se generará después
                         )
+                        
+                        # 🔥 GENERAR PLAN UNA SOLA VEZ aquí en checkout.session.completed
+                        user = db.query(Usuario).filter(Usuario.stripe_customer_id == customer_id).first()
+                        if user:
+                            print(f"💎 Generando plan con IA para usuario {user.id} (checkout.session.completed)...")
+                            plan_generated = await generate_and_save_ai_plan(db, user.id, force=True)
+                            if plan_generated:
+                                print(f"✅ Plan generado exitosamente para usuario {user.id}")
+                            else:
+                                print(f"⚠️ No se pudo generar plan para usuario {user.id}, pero el usuario es premium")
                         
                         print(f"✅ Premium activado correctamente")
                         
@@ -474,7 +491,29 @@ async def stripe_webhook(request: Request):
             
             if customer_id and status:
                 is_active = status in ("active", "trialing")
-                await set_premium_by_customer(db, customer_id, is_active, subscription_id, price_id)
+                # ⚠️ IMPORTANTE: Si es "created", NO generar plan aquí porque checkout.session.completed lo hará
+                # Solo actualizar estado premium sin generar plan para evitar duplicados
+                if etype == "customer.subscription.created":
+                    # Solo actualizar estado, el plan se generará en checkout.session.completed
+                    await set_premium_by_customer(
+                        db, 
+                        customer_id, 
+                        is_active, 
+                        subscription_id, 
+                        price_id,
+                        generate_plan=False  # NO generar plan aquí
+                    )
+                    print(f"✅ Estado premium actualizado (plan se generará en checkout.session.completed)")
+                else:
+                    # Para "updated", usar función normal sin generar plan (solo actualizar estado)
+                    await set_premium_by_customer(
+                        db, 
+                        customer_id, 
+                        is_active, 
+                        subscription_id, 
+                        price_id,
+                        generate_plan=False  # NO generar plan en updates
+                    )
 
         # ==========================================
         # SUSCRIPCIÓN CANCELADA
@@ -486,7 +525,7 @@ async def stripe_webhook(request: Request):
             print(f"❌ Suscripción cancelada: {subscription_id}")
             
             if customer_id:
-                await set_premium_by_customer(db, customer_id, False, None, None)
+                await set_premium_by_customer(db, customer_id, False, None, None, generate_plan=False)
 
         # ==========================================
         # PAYMENT INTENT EXITOSO
