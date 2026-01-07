@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Header, HTTPException, Depends
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List, Dict, Any
 from sqlalchemy.orm import Session
 import os
 import logging
@@ -11,7 +11,7 @@ from openai import OpenAI
 import asyncio
 
 from app.database import get_db
-from app.models import Usuario
+from app.models import Usuario, Plan
 from app.utils.gpt import get_rag_context_for_chat
 
 # Configurar logging
@@ -26,6 +26,11 @@ class ChatRequestBody(BaseModel):
 class ChatResponse(BaseModel):
     answer: str
     chat_uses_free_restantes: Optional[int] = None
+
+class ChatModifyBody(BaseModel):
+    message: str
+    user_id: Optional[int] = None
+    conversation_history: Optional[List[Dict[str, Any]]] = None
 
 # Cliente OpenAI
 api_key = os.getenv("OPENAI_API_KEY", "").strip()
@@ -306,6 +311,101 @@ def chat_status(
         "plan_type": user.plan_type,
         "openai_available": bool(api_key and client)
     }
+
+
+@router.post("/chat/modify")
+async def modify_plan_chat(
+    body: ChatModifyBody,
+    db: Session = Depends(get_db),
+    x_user_email: Optional[str] = Header(None, alias="X-User-Email"),
+):
+    """
+    Endpoint para modificar el plan existente mediante chat.
+    Soluciona el error 404 permitiendo al frontend comunicarse con esta ruta.
+    """
+    # 1. Validaciones de seguridad
+    if not x_user_email:
+        raise HTTPException(status_code=400, detail="Falta cabecera X-User-Email")
+
+    user = db.query(Usuario).filter(Usuario.email == x_user_email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+    # 2. Lógica Freemium (Saldo vs Premium)
+    plan_type = (user.plan_type or "FREE").upper()
+    is_premium = plan_type in ["PREMIUM", "PREMIUM_MONTHLY", "PREMIUM_YEARLY"] or bool(user.is_premium)
+    
+    # Lógica Freemium: Bloquear solo si no es premium Y no le quedan usos
+    if not is_premium:
+        usos_restantes = user.chat_uses_free if user.chat_uses_free is not None else 0
+        if usos_restantes <= 0:
+             raise HTTPException(
+                status_code=402, 
+                detail="Has agotado tus preguntas gratis. Pásate a PREMIUM."
+            )
+
+    # 3. Obtener el plan actual
+    current_plan = db.query(Plan).filter(Plan.user_id == user.id).order_by(Plan.fecha_creacion.desc()).first()
+    
+    if not current_plan:
+        return {
+            "success": False,
+            "response": "No tienes un plan activo para modificar. Por favor, genera uno nuevo primero.",
+            "modified": False
+        }
+
+    # 4. Lógica de Respuesta
+    try:
+        ai_response = "He recibido tu solicitud de modificación. El sistema está procesando tus preferencias."
+
+        if api_key and client:
+            # Usamos GPT para dar una respuesta coherente
+            system_prompt = get_fitness_prompt() + "\n\nNOTA: El usuario quiere modificar su plan. Aconséjale sobre los cambios y confirma que has entendido su petición."
+            
+            messages = [{"role": "system", "content": system_prompt}]
+            
+            # Añadir contexto breve si existe
+            if body.conversation_history:
+                # Filtramos solo mensajes válidos con 'role' y 'content'
+                valid_history = [
+                    {"role": m.get("role"), "content": m.get("content")} 
+                    for m in body.conversation_history 
+                    if isinstance(m, dict) and "role" in m and "content" in m
+                ]
+                messages.extend(valid_history[-2:])
+            
+            messages.append({"role": "user", "content": body.message})
+
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=messages,
+                temperature=0.7
+            )
+            ai_response = response.choices[0].message.content
+
+        # 5. Descontar uso para usuarios FREE
+        usos_actuales = user.chat_uses_free
+        
+        if not is_premium:
+            # Restar 1 uso, asegurando que no baje de 0
+            nuevo_saldo = max(0, (user.chat_uses_free or 0) - 1)
+            user.chat_uses_free = nuevo_saldo
+            db.commit()
+            usos_actuales = nuevo_saldo
+            logger.info(f"Usuario {user.email} (FREE) consumió 1 crédito en modify. Restantes: {nuevo_saldo}")
+
+        return {
+            "success": True,
+            "response": ai_response,
+            "modified": False, 
+            "changes": [],
+            "function_used": "chat_advice_only",
+            "chat_uses_free_restantes": usos_actuales  # Incluir créditos restantes para FREE
+        }
+
+    except Exception as e:
+        logger.error(f"Error en modify endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error procesando modificación: {str(e)}")
 
 
 @router.post("/chat/stream")

@@ -110,14 +110,20 @@ async def generar_rutina(
     db: Session = Depends(get_db),
     usuario: Usuario = Depends(get_current_user)
 ):
+    """
+    Genera un plan de rutina y dieta personalizado.
+    Implementa programación defensiva para manejar estructuras inconsistentes de GPT
+    y problemas de sesión SQLAlchemy tras operaciones asíncronas largas.
+    """
     try:
+        print(f"🔄 Iniciando generación de plan para usuario {usuario.id}")
         es_premium = bool(usuario.is_premium) or (usuario.plan_type == "PREMIUM")
+        print(f"💎 Usuario premium: {es_premium}")
 
         # Convertir PlanRequest (Pydantic) a diccionario y mapear campos
         datos_dict = datos.model_dump() if hasattr(datos, 'model_dump') else datos.dict()
         
         # Mapear 'objetivo' a 'gym_goal' para generar_plan_personalizado
-        # El schema PlanRequest usa 'objetivo', pero generar_plan_personalizado espera 'gym_goal'
         if 'objetivo' in datos_dict and 'gym_goal' not in datos_dict:
             datos_dict['gym_goal'] = datos_dict['objetivo']
         
@@ -125,17 +131,15 @@ async def generar_rutina(
         if 'dias_entrenamiento' in datos_dict and 'training_frequency' not in datos_dict:
             datos_dict['training_frequency'] = datos_dict['dias_entrenamiento']
         
-        # Agregar 'training_days' si está disponible (días específicos de la semana)
+        # Agregar 'training_days' si está disponible
         if hasattr(datos, 'training_days') and datos.training_days:
             datos_dict['training_days'] = datos.training_days
         
-        # Agregar 'nutrition_goal' por defecto si no existe (usar 'objetivo_nutricional' si está disponible)
+        # Agregar 'nutrition_goal' por defecto si no existe
         if 'nutrition_goal' not in datos_dict:
-            # Intentar obtener de objetivo_nutricional si existe en el request
             if hasattr(datos, 'objetivo_nutricional') and datos.objetivo_nutricional:
                 datos_dict['nutrition_goal'] = datos.objetivo_nutricional
             else:
-                # Mapear desde 'objetivo' si es un objetivo nutricional
                 objetivo = datos_dict.get('objetivo', 'mantener_forma')
                 if objetivo in ['perder_grasa', 'mantener_forma']:
                     datos_dict['nutrition_goal'] = 'definicion' if objetivo == 'perder_grasa' else 'mantenimiento'
@@ -146,19 +150,255 @@ async def generar_rutina(
         if 'nivel_actividad' not in datos_dict:
             datos_dict['nivel_actividad'] = 'moderado'
 
+        # ==========================================
+        # LOGGING DE DÍAS SOLICITADOS
+        # ==========================================
+        print(f"🗓️ Días solicitados: {datos_dict.get('training_days')}")
+        print(f"📅 Frecuencia de entrenamiento: {datos_dict.get('training_frequency')} días/semana")
+
+        # ==========================================
+        # GENERAR PLAN (Operación asíncrona larga)
+        # ==========================================
+        print(f"🤖 Generando plan con {'GPT' if es_premium else 'template local'}...")
         if es_premium:
-            # Plan completo con GPT
             plan_generado = await generar_plan_personalizado(datos_dict)
         else:
-            # Plan parcial local (sin GPT)
             plan_generado = _generar_plan_basico_local(datos)
+        
+        print(f"✅ Plan generado. Estructura recibida: {list(plan_generado.keys()) if isinstance(plan_generado, dict) else type(plan_generado)}")
 
-        rutina_str = json.dumps(plan_generado["rutina"]) if isinstance(plan_generado["rutina"], (dict, list)) else plan_generado["rutina"]
-        dieta_str = json.dumps(plan_generado["dieta"]) if isinstance(plan_generado["dieta"], (dict, list)) else plan_generado["dieta"]
-        motivacion_str = json.dumps(plan_generado["motivacion"]) if isinstance(plan_generado["motivacion"], (dict, list)) else plan_generado["motivacion"]
+        # ==========================================
+        # PARSING INTELIGENTE CON FALLBACKS
+        # ==========================================
+        
+        # 1. Extraer RUTINA con fallbacks y NORMALIZACIÓN (CRÍTICO)
+        rutina_data = None
+        if isinstance(plan_generado, dict):
+            if "rutina" in plan_generado:
+                temp = plan_generado["rutina"]
+                print(f"📋 Rutina encontrada en clave 'rutina'")
+                
+                # NORMALIZACIÓN: Si es una lista, envolverla en {"dias": [...]}
+                if isinstance(temp, list):
+                    print(f"🔄 Normalizando: rutina es lista, envolviendo en estructura estándar")
+                    rutina_data = {"dias": temp}
+                elif isinstance(temp, dict):
+                    # Si ya es dict, verificar que tenga "dias"
+                    if "dias" in temp:
+                        rutina_data = temp
+                        print(f"✅ Rutina ya tiene estructura correcta con 'dias'")
+                    else:
+                        # Dict sin "dias", crear estructura estándar
+                        print(f"🔄 Normalizando: rutina es dict sin 'dias', creando estructura estándar")
+                        rutina_data = {"dias": [temp] if temp else []}
+                else:
+                    # Tipo inesperado, usar fallback
+                    print(f"⚠️ Tipo inesperado de rutina: {type(temp)}, usando fallback")
+                    rutina_data = {"dias": []}
+            elif "dias" in plan_generado:
+                # GPT devolvió directamente la lista de días en el nivel raíz
+                temp = plan_generado["dias"]
+                print(f"📋 Rutina encontrada en clave 'dias' (estructura plana)")
+                
+                # NORMALIZACIÓN: Asegurar que siempre sea {"dias": [...]}
+                if isinstance(temp, list):
+                    rutina_data = {"dias": temp}
+                else:
+                    print(f"⚠️ 'dias' no es lista, envolviendo en estructura estándar")
+                    rutina_data = {"dias": [temp] if temp else []}
+            else:
+                # Fallback: crear estructura mínima
+                print(f"⚠️ No se encontró rutina en estructura esperada, usando fallback")
+                rutina_data = {"dias": [], "titulo": "Rutina personalizada", "version": "1.0.0"}
+        else:
+            print(f"⚠️ plan_generado no es dict, es {type(plan_generado)}, usando fallback")
+            rutina_data = {"dias": [], "titulo": "Rutina personalizada", "version": "1.0.0"}
+        
+        # VERIFICACIÓN FINAL: Asegurar que rutina_data SIEMPRE tiene estructura {"dias": [...]}
+        if not isinstance(rutina_data, dict) or "dias" not in rutina_data:
+            print(f"🔄 Normalización final: asegurando que rutina tiene estructura estándar")
+            if isinstance(rutina_data, list):
+                rutina_data = {"dias": rutina_data}
+            else:
+                rutina_data = {"dias": []}
+        
+        # Logging de verificación de estructura normalizada
+        if isinstance(rutina_data, dict) and "dias" in rutina_data:
+            dias_count = len(rutina_data["dias"]) if isinstance(rutina_data["dias"], list) else 0
+            print(f"🔍 Verificación estructura rutina: tiene 'dias'=True, cantidad de días={dias_count}")
+            if dias_count > 0:
+                # Contar ejercicios totales
+                ejercicios_count = 0
+                for dia in rutina_data["dias"]:
+                    if isinstance(dia, dict) and "ejercicios" in dia:
+                        ejercicios_count += len(dia["ejercicios"]) if isinstance(dia["ejercicios"], list) else 0
+                print(f"   ✅ Estructura correcta: {dias_count} días, {ejercicios_count} ejercicios encontrados")
 
+        # 2. Extraer DIETA con fallbacks y NORMALIZACIÓN (comidas -> meals)
+        dieta_data = None
+        if isinstance(plan_generado, dict):
+            if "dieta" in plan_generado:
+                raw_dieta = plan_generado["dieta"]
+                print(f"🍽️ Dieta encontrada en clave 'dieta'")
+                
+                # NORMALIZACIÓN: Si tiene "comidas" pero no "meals", crear "meals"
+                if isinstance(raw_dieta, dict):
+                    if "comidas" in raw_dieta and "meals" not in raw_dieta:
+                        print(f"🔄 Normalizando: 'comidas' -> 'meals' para compatibilidad frontend")
+                        dieta_data = raw_dieta.copy()
+                        dieta_data["meals"] = dieta_data.pop("comidas")  # Renombrar comidas a meals
+                    elif "meals" in raw_dieta:
+                        dieta_data = raw_dieta
+                        print(f"✅ Dieta ya tiene 'meals' (formato correcto)")
+                    else:
+                        dieta_data = raw_dieta
+                else:
+                    dieta_data = raw_dieta
+                    
+            elif "comidas" in plan_generado:
+                # GPT devolvió directamente las comidas en el nivel raíz
+                print(f"🍽️ Dieta encontrada en clave 'comidas' (estructura plana)")
+                dieta_data = {"meals": plan_generado["comidas"], "macros": {}, "version": "1.0.0"}
+            else:
+                print(f"⚠️ No se encontró dieta en estructura esperada, usando fallback")
+                dieta_data = {"meals": [], "macros": {}, "version": "1.0.0"}
+        else:
+            print(f"⚠️ plan_generado no es dict para dieta, usando fallback")
+            dieta_data = {"meals": [], "macros": {}, "version": "1.0.0"}
+        
+        # Asegurar que dieta_data SIEMPRE tiene "meals" (no "comidas")
+        if isinstance(dieta_data, dict) and "comidas" in dieta_data and "meals" not in dieta_data:
+            print(f"🔄 Normalización final: asegurando que dieta tiene 'meals'")
+            dieta_data["meals"] = dieta_data.pop("comidas")
+        
+        # Logging de verificación de estructura normalizada
+        if isinstance(dieta_data, dict):
+            has_meals = "meals" in dieta_data
+            has_comidas = "comidas" in dieta_data
+            print(f"🔍 Verificación estructura dieta: tiene 'meals'={has_meals}, tiene 'comidas'={has_comidas}")
+            if has_meals:
+                print(f"   ✅ Estructura correcta: {len(dieta_data.get('meals', []))} meals encontrados")
+
+        # ==========================================
+        # NORMALIZACIÓN DE MACROS (Compatibilidad Frontend)
+        # ==========================================
+        if isinstance(dieta_data, dict) and "macros" in dieta_data:
+            macros = dieta_data["macros"]
+            if isinstance(macros, dict):
+                # 1. Proteínas: GPT usa "proteina", Frontend espera "proteinas"
+                if "proteina" in macros and "proteinas" not in macros:
+                    macros["proteinas"] = macros["proteina"]
+                    print(f"🔄 Normalizando macros: 'proteina' -> 'proteinas'")
+                elif "proteinas" in macros and "proteina" not in macros:
+                    # Compatibilidad bidireccional (por seguridad)
+                    macros["proteina"] = macros["proteinas"]
+                
+                # 2. Carbohidratos / Hidratos: GPT usa "carbohidratos", Frontend espera "hidratos"
+                if "carbohidratos" in macros and "hidratos" not in macros:
+                    macros["hidratos"] = macros["carbohidratos"]
+                    print(f"🔄 Normalizando macros: 'carbohidratos' -> 'hidratos'")
+                elif "hidratos" in macros and "carbohidratos" not in macros:
+                    # Compatibilidad bidireccional (por seguridad)
+                    macros["carbohidratos"] = macros["hidratos"]
+                
+                # 3. Grasas: GPT a veces usa "fats", Frontend espera "grasas"
+                if "fats" in macros and "grasas" not in macros:
+                    macros["grasas"] = macros["fats"]
+                    print(f"🔄 Normalizando macros: 'fats' -> 'grasas'")
+                elif "grasas" in macros and "fats" not in macros:
+                    # Compatibilidad bidireccional (por seguridad)
+                    macros["fats"] = macros["grasas"]
+                
+                # 4. Calorías: Normalizar variantes comunes
+                if "calorias" in macros and "total_kcal" not in macros:
+                    macros["total_kcal"] = macros["calorias"]
+                elif "total_kcal" in macros and "calorias" not in macros:
+                    macros["calorias"] = macros["total_kcal"]
+                
+                print(f"✅ Macros normalizados: {list(macros.keys())}")
+            else:
+                print(f"⚠️ 'macros' no es un diccionario, tipo: {type(macros)}")
+        else:
+            # Si no hay macros, crear estructura vacía para evitar errores en frontend
+            if isinstance(dieta_data, dict):
+                if "macros" not in dieta_data:
+                    dieta_data["macros"] = {}
+                    print(f"⚠️ No se encontraron macros, creando estructura vacía")
+
+        # ==========================================
+        # AÑADIR total_kcal EN NIVEL RAIZ (Compatibilidad Logs y Frontend)
+        # ==========================================
+        if isinstance(dieta_data, dict) and "macros" in dieta_data:
+            macros = dieta_data["macros"]
+            if isinstance(macros, dict):
+                # Extraer total_kcal desde macros si no existe en nivel raíz
+                if "total_kcal" not in dieta_data:
+                    total_kcal_value = macros.get("total_kcal") or macros.get("calorias") or 0
+                    if total_kcal_value:
+                        dieta_data["total_kcal"] = int(total_kcal_value)
+                        print(f"✅ total_kcal añadido en nivel raíz: {dieta_data['total_kcal']} kcal")
+                else:
+                    # Si ya existe, verificar que sea consistente con macros
+                    existing_total_kcal = dieta_data.get("total_kcal", 0)
+                    macros_total_kcal = macros.get("total_kcal") or macros.get("calorias") or 0
+                    if macros_total_kcal and existing_total_kcal != macros_total_kcal:
+                        # Actualizar para mantener consistencia
+                        dieta_data["total_kcal"] = int(macros_total_kcal)
+                        print(f"🔄 total_kcal actualizado en nivel raíz para consistencia: {dieta_data['total_kcal']} kcal")
+
+        # 3. Extraer MOTIVACIÓN con fallbacks
+        motivacion_data = None
+        if isinstance(plan_generado, dict):
+            if "motivacion" in plan_generado:
+                motivacion_data = plan_generado["motivacion"]
+            elif "mensaje" in plan_generado:
+                motivacion_data = plan_generado["mensaje"]
+            else:
+                motivacion_data = "¡Sigue adelante con tu plan personalizado!"
+        else:
+            motivacion_data = "¡Sigue adelante con tu plan personalizado!"
+
+        # ==========================================
+        # SERIALIZACIÓN EXPLÍCITA A JSON
+        # ==========================================
+        print(f"🔄 Serializando datos a JSON...")
+        try:
+            rutina_str = json.dumps(rutina_data, ensure_ascii=False) if isinstance(rutina_data, (dict, list)) else str(rutina_data)
+            print(f"✅ Rutina serializada: {len(rutina_str)} caracteres")
+        except Exception as e:
+            print(f"❌ Error serializando rutina: {e}")
+            rutina_str = json.dumps({"error": "Error serializando rutina", "dias": []}, ensure_ascii=False)
+
+        try:
+            dieta_str = json.dumps(dieta_data, ensure_ascii=False) if isinstance(dieta_data, (dict, list)) else str(dieta_data)
+            print(f"✅ Dieta serializada: {len(dieta_str)} caracteres")
+        except Exception as e:
+            print(f"❌ Error serializando dieta: {e}")
+            dieta_str = json.dumps({"error": "Error serializando dieta", "meals": []}, ensure_ascii=False)
+
+        try:
+            motivacion_str = json.dumps(motivacion_data, ensure_ascii=False) if isinstance(motivacion_data, (dict, list)) else str(motivacion_data)
+        except Exception as e:
+            print(f"❌ Error serializando motivación: {e}")
+            motivacion_str = "¡Sigue adelante con tu plan personalizado!"
+
+        # ==========================================
+        # GESTIÓN DE SESIÓN ROBUSTA (Instancia Fresca)
+        # ==========================================
+        # CRÍTICO: Después de await largo, el objeto usuario puede estar "detached"
+        # O puede estar asociado a otra sesión. Obtener instancia fresca para evitar conflictos
+        print(f"🔗 Obteniendo instancia fresca de usuario desde BD...")
+        user_fresh = db.query(Usuario).get(usuario.id)
+        if not user_fresh:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado después de generación")
+        print(f"✅ Instancia fresca obtenida: ID={user_fresh.id}")
+
+        # ==========================================
+        # CREAR REGISTRO EN TABLA PLAN
+        # ==========================================
+        print(f"💾 Creando registro en tabla Plan...")
         nuevo_plan = Plan(
-            user_id=usuario.id,
+            user_id=user_fresh.id,
             altura=datos.altura,
             peso=datos.peso,
             edad=datos.edad,
@@ -179,18 +419,55 @@ async def generar_rutina(
             motivacion=motivacion_str,
             fecha_creacion=datetime.utcnow()
         )
-
         db.add(nuevo_plan)
-        db.commit()
-        db.refresh(nuevo_plan)
+        print(f"✅ Plan añadido a sesión")
 
+        # ==========================================
+        # ACTUALIZAR ESTADO ACTUAL DEL USUARIO
+        # ==========================================
+        # Usar user_fresh (instancia fresca) en lugar de usuario (puede estar detached)
+        print(f"🔄 Actualizando current_routine y current_diet del usuario...")
+        user_fresh.current_routine = rutina_str
+        user_fresh.current_diet = dieta_str
+        print(f"✅ Campos actualizados en objeto usuario (instancia fresca)")
+
+        # ==========================================
+        # COMMIT TRANSACCIÓN
+        # ==========================================
+        print(f"💾 Haciendo commit de transacción...")
+        db.commit()
+        print(f"✅ Commit exitoso")
+        
+        db.refresh(nuevo_plan)
+        print(f"✅ Plan refrescado desde BD")
+
+        # ==========================================
+        # PREPARAR RESPUESTA
+        # ==========================================
+        # Usar los datos originales (no serializados) para la respuesta
+        # Normalizar motivación a string
+        if isinstance(motivacion_data, str):
+            motivacion_final = motivacion_data
+        elif isinstance(motivacion_data, (dict, list)):
+            motivacion_final = json.dumps(motivacion_data, ensure_ascii=False)
+        else:
+            motivacion_final = str(motivacion_data) if motivacion_data else "¡Sigue adelante con tu plan personalizado!"
+        
+        print(f"✅ Respuesta preparada exitosamente")
         return PlanResponse(
-            rutina=plan_generado["rutina"],
-            dieta=plan_generado["dieta"],
-            motivacion=plan_generado["motivacion"]
+            rutina=rutina_data,
+            dieta=dieta_data,
+            motivacion=motivacion_final
         )
 
+    except HTTPException:
+        # Re-raise HTTPExceptions sin modificar
+        raise
     except Exception as e:
+        print(f"❌ ERROR CRÍTICO en generar_rutina: {e}")
+        import traceback
+        print(f"📋 Traceback completo:")
+        traceback.print_exc()
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Error al generar plan: {str(e)}")
 

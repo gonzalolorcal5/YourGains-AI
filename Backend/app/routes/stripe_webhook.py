@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 import stripe
 import os
 import json
+import asyncio
 from dotenv import load_dotenv
 
 from app.database import SessionLocal
@@ -21,16 +22,99 @@ PRICE_ID_ANUAL = os.getenv("STRIPE_PRICE_ANUAL")
 # ==========================================
 # GENERACIÓN DE PLAN CON IA
 # ==========================================
-async def generate_and_save_ai_plan(db: Session, user_id: int):
+async def generate_and_save_ai_plan(db: Session, user_id: int, force: bool = False):
     """
     Genera plan personalizado con IA para usuario premium.
     SIEMPRE genera un plan nuevo cuando se llama (sobrescribe el anterior si existe).
+    
+    Implementa un lock mechanism para evitar generaciones duplicadas cuando
+    el webhook y /stripe/activate-premium llaman simultáneamente.
+    
+    Args:
+        force: Si es True, fuerza la regeneración incluso si ya existe una rutina.
+               Útil cuando un usuario FREE (con template) hace upgrade a PREMIUM.
     """
+    user = None
+    lock_acquired = False
+    
     try:
+        # Refrescar usuario desde BD para obtener estado actualizado
         user = db.query(Usuario).filter(Usuario.id == user_id).first()
         if not user:
             print(f"❌ Usuario {user_id} no encontrado")
             return False
+        
+        # ==========================================
+        # LOCK MECHANISM: Verificar si ya se está generando
+        # ==========================================
+        if user.is_generating_plan:
+            print(f"⏳ Plan ya generándose para usuario {user_id}, esperando...")
+            # Esperar 2 segundos para que la otra llamada progrese
+            await asyncio.sleep(2)
+            
+            # Refrescar usuario desde BD para ver estado actualizado
+            db.refresh(user)
+            
+            # Verificar si ya tiene plan generado (la otra llamada terminó)
+            # Solo retornar temprano si NO estamos forzando la regeneración
+            if not force and user.current_routine and user.current_routine != '{}' and \
+               user.current_diet and user.current_diet != '{}':
+                print(f"✅ Plan ya generado por otra llamada para usuario {user_id}")
+                return True
+            
+            # Si aún no tiene plan pero el lock sigue activo, esperar un poco más
+            # (máximo 2 intentos más = 6 segundos total)
+            max_wait_attempts = 2
+            for attempt in range(max_wait_attempts):
+                await asyncio.sleep(2)
+                db.refresh(user)
+                
+                if not user.is_generating_plan:
+                    # El lock se liberó, verificar si ya hay plan generado
+                    # Solo retornar temprano si NO estamos forzando la regeneración
+                    if not force and user.current_routine and user.current_routine != '{}' and \
+                       user.current_diet and user.current_diet != '{}':
+                        print(f"✅ Plan ya generado (lock liberado) para usuario {user_id}")
+                        return True
+                    # Si no hay plan o estamos forzando, podemos proceder a generar
+                    print(f"🔄 Lock liberado sin plan, procediendo a generar para usuario {user_id}")
+                    break
+                
+                # Solo retornar temprano si NO estamos forzando la regeneración
+                if not force and user.current_routine and user.current_routine != '{}' and \
+                   user.current_diet and user.current_diet != '{}':
+                    print(f"✅ Plan generado durante la espera para usuario {user_id}")
+                    return True
+            
+            # Si después de esperar el lock sigue activo, algo puede estar mal
+            # pero intentamos continuar de todas formas (el finally lo liberará)
+            if user.is_generating_plan:
+                print(f"⚠️ Lock aún activo después de esperar para usuario {user_id}, continuando...")
+                # Verificar una última vez si hay plan antes de forzar
+                # Solo retornar temprano si NO estamos forzando la regeneración
+                if not force and user.current_routine and user.current_routine != '{}' and \
+                   user.current_diet and user.current_diet != '{}':
+                    print(f"✅ Plan encontrado antes de forzar lock para usuario {user_id}")
+                    return True
+        
+        # ==========================================
+        # ADQUIRIR LOCK: Marcar que estamos generando
+        # ==========================================
+        # Verificar una última vez antes de adquirir el lock (por si otra llamada terminó)
+        # Solo retornar temprano si NO estamos forzando la regeneración
+        db.refresh(user)
+        if not force and user.current_routine and user.current_routine != '{}' and \
+           user.current_diet and user.current_diet != '{}':
+            print(f"✅ Plan ya existe antes de adquirir lock para usuario {user_id}")
+            return True
+        
+        user.is_generating_plan = True
+        db.commit()
+        lock_acquired = True
+        print(f"🔒 Lock activado para usuario {user_id}")
+        
+        # Refrescar para asegurar que tenemos el estado más reciente
+        db.refresh(user)
         
         # Obtener datos del onboarding
         from app.models import Plan
@@ -89,67 +173,59 @@ async def generate_and_save_ai_plan(db: Session, user_id: int):
         
         from datetime import datetime
         
-        # Convertir rutina al formato current_routine
-        exercises = []
-        if "rutina" in plan and "dias" in plan["rutina"]:
-            for dia in plan["rutina"]["dias"]:
-                for ejercicio in dia.get("ejercicios", []):
-                    exercises.append({
-                        "name": ejercicio.get("nombre", ""),
-                        "sets": ejercicio.get("series", 3),
-                        "reps": ejercicio.get("repeticiones", "10-12"),
-                        "weight": "moderado",
-                        "day": dia.get("dia", "")
-                    })
+        # Guardar directamente la estructura rica de GPT sin transformaciones destructivas
+        rutina_json = plan["rutina"]
+        dieta_json = plan["dieta"]
         
-        current_routine = {
-            "exercises": exercises,
-            "schedule": {},
-            "created_at": datetime.utcnow().isoformat(),
-            "version": "1.0.0"
-        }
+        # Asegurar metadatos de versión y timestamp
+        if isinstance(rutina_json, dict):
+            rutina_json["updated_at"] = datetime.utcnow().isoformat()
+            rutina_json["is_premium_generated"] = True
+            # Asegurar que versión sea string
+            if "version" not in rutina_json:
+                rutina_json["version"] = "2.0.0"
         
-        # Convertir dieta al formato current_diet
-        macros_plan = plan["dieta"].get("macros", {})
-        if not macros_plan:
-            metadata_macros = plan["dieta"].get("metadata", {}).get("macros_objetivo", {})
-            if metadata_macros:
-                macros_plan = {
-                    "proteina": metadata_macros.get("proteina", 0),
-                    "carbohidratos": metadata_macros.get("carbohidratos", 0),
-                    "grasas": metadata_macros.get("grasas", 0)
-                }
+        # ==========================================
+        # AÑADIR total_kcal EN NIVEL RAIZ (Compatibilidad Logs y Frontend)
+        # ==========================================
+        if isinstance(dieta_json, dict) and "macros" in dieta_json:
+            macros = dieta_json.get("macros", {})
+            if isinstance(macros, dict):
+                # Extraer total_kcal desde macros si no existe en nivel raíz
+                if "total_kcal" not in dieta_json:
+                    total_kcal_value = macros.get("total_kcal") or macros.get("calorias") or 0
+                    if total_kcal_value:
+                        dieta_json["total_kcal"] = int(total_kcal_value)
+                        print(f"✅ total_kcal añadido en nivel raíz: {dieta_json['total_kcal']} kcal")
+                else:
+                    # Si ya existe, verificar que sea consistente con macros
+                    existing_total_kcal = dieta_json.get("total_kcal", 0)
+                    macros_total_kcal = macros.get("total_kcal") or macros.get("calorias") or 0
+                    if macros_total_kcal and existing_total_kcal != macros_total_kcal:
+                        # Actualizar para mantener consistencia
+                        dieta_json["total_kcal"] = int(macros_total_kcal)
+                        print(f"🔄 total_kcal actualizado en nivel raíz para consistencia: {dieta_json['total_kcal']} kcal")
         
-        # Normalizar macros (proteinas en plural)
-        macros_normalizados = {
-            "proteinas": macros_plan.get("proteinas", macros_plan.get("proteina", 0)),
-            "carbohidratos": macros_plan.get("carbohidratos", macros_plan.get("carbos", 0)),
-            "grasas": macros_plan.get("grasas", macros_plan.get("grasa", 0))
-        }
+        # Serializar y guardar en el usuario
+        user.current_routine = json.dumps(rutina_json, ensure_ascii=False)
+        user.current_diet = json.dumps(dieta_json, ensure_ascii=False)
         
-        current_diet = {
-            "meals": plan["dieta"].get("comidas", []),
-            "total_kcal": plan["dieta"].get("total_calorias", plan["dieta"].get("total_kcal", 2200)),
-            "macros": macros_normalizados,
-            "objetivo": user_info['nutrition_goal'],
-            "created_at": datetime.utcnow().isoformat(),
-            "updated_at": datetime.utcnow().isoformat(),
-            "version": "1.0.0"
-        }
-        
-        # Guardar en BD - SIEMPRE sobrescribir cuando se hace premium
-        user.current_routine = json.dumps(current_routine, ensure_ascii=False)
-        user.current_diet = json.dumps(current_diet, ensure_ascii=False)
-        
-        # También actualizar Plan.dieta y Plan.rutina con el nuevo plan generado
+        # Actualizar historial (objeto Plan) también
         if plan_data:
-            plan_data.rutina = json.dumps(plan["rutina"], ensure_ascii=False)
-            plan_data.dieta = json.dumps(plan["dieta"], ensure_ascii=False)
+            plan_data.rutina = user.current_routine
+            plan_data.dieta = user.current_diet
+            # También guardar la motivación si existe
+            if "motivacion" in plan:
+                plan_data.motivacion = json.dumps(plan["motivacion"], ensure_ascii=False) if isinstance(plan["motivacion"], (dict, list)) else plan["motivacion"]
         
         db.commit()
         print(f"✅ Plan de IA generado y guardado para usuario {user_id}")
-        print(f"   - Ejercicios: {len(exercises)}")
-        print(f"   - Comidas: {len(current_diet.get('meals', []))}")
+        # Logs informativos
+        if isinstance(rutina_json, dict) and "dias" in rutina_json:
+            print(f"   - Días de rutina: {len(rutina_json['dias'])}")
+        if isinstance(dieta_json, dict) and "comidas" in dieta_json:
+            print(f"   - Comidas dieta: {len(dieta_json['comidas'])}")
+        
         return True
         
     except Exception as e:
@@ -157,6 +233,31 @@ async def generate_and_save_ai_plan(db: Session, user_id: int):
         import traceback
         traceback.print_exc()
         return False
+        
+    finally:
+        # ==========================================
+        # LIBERAR LOCK: Siempre resetear el flag
+        # ==========================================
+        if lock_acquired and user:
+            try:
+                # Refrescar usuario para asegurar que tenemos el objeto más reciente
+                db.refresh(user)
+                user.is_generating_plan = False
+                db.commit()
+                print(f"🔓 Lock liberado para usuario {user_id}")
+            except Exception as e:
+                print(f"⚠️ Error liberando lock para usuario {user_id}: {e}")
+                # Intentar rollback y commit de nuevo
+                try:
+                    db.rollback()
+                    db.refresh(user)
+                    user.is_generating_plan = False
+                    db.commit()
+                    print(f"🔓 Lock liberado (reintento) para usuario {user_id}")
+                except Exception as e2:
+                    print(f"❌ Error crítico liberando lock para usuario {user_id}: {e2}")
+                    # Último recurso: hacer rollback completo
+                    db.rollback()
 
 # ==========================================
 # HELPERS DE ACTUALIZACIÓN
@@ -253,8 +354,9 @@ async def set_premium_by_customer(
     else:
         # Generar plan con IA para usuarios premium
         # IMPORTANTE: Esperar a que se complete la generación
-        print(f"💎 Usuario {user.id} → {user.plan_type}, generando plan IA...")
-        plan_generated = await generate_and_save_ai_plan(db, user.id)
+        # FORZAR regeneración cuando un usuario paga (puede tener template de FREE)
+        print(f"💎 Usuario {user.id} → {user.plan_type}, generando plan IA (forzado)...")
+        plan_generated = await generate_and_save_ai_plan(db, user.id, force=True)
         if plan_generated:
             print(f"✅ Plan generado exitosamente para usuario {user.id}")
         else:
@@ -427,8 +529,8 @@ async def stripe_webhook(request: Request):
                         db.commit()
                         print(f"✅ Usuario {user.id} actualizado a {plan_type}")
                         
-                        # Generar plan con IA
-                        await generate_and_save_ai_plan(db, user.id)
+                        # Generar plan con IA (forzado porque es un pago)
+                        await generate_and_save_ai_plan(db, user.id, force=True)
                         print(f"🎉 Plan generado exitosamente para usuario {user.id}")
                     else:
                         print(f"❌ No se encontró usuario con ID: {user_id}")

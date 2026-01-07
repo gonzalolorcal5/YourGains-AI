@@ -34,6 +34,9 @@ class Usuario(Base):
     focus_areas = Column(Text, default='[]', nullable=False)
     disliked_foods = Column(Text, default='[]', nullable=False)
     modification_history = Column(Text, default='[]', nullable=False)
+    
+    # Lock mechanism para evitar generaciones duplicadas de plan
+    is_generating_plan = Column(Boolean, default=False, nullable=False)
 
     planes = relationship("Plan", back_populates="usuario")
 

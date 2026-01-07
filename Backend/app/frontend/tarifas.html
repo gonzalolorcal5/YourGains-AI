@@ -283,8 +283,21 @@
     // 3. ACTUALIZAR UI SEGÚN PLAN
     // ==========================================
     function updateUI() {
-        const plan = userStatus.plan_type; // FREE, PREMIUM_MONTHLY, PREMIUM_YEARLY
-        const hasCustomer = userStatus.stripe_customer_id;
+        // 1. Extracción segura de datos
+        const planType = userStatus.plan_type; 
+        const isPremium = userStatus.is_premium === true; // Validación estricta booleana
+        const hasCustomer = !!userStatus.stripe_customer_id;
+
+        // 2. Debugging (CRÍTICO: Añade esto para verificar en consola)
+        console.log('🛡️ UI Logic Check:', { planType, isPremium, hasCustomer });
+
+        // 3. Lógica de Estado Derivado (La fuente de la verdad para la UI)
+        // Un plan solo está "Activo" visualmente si coincide el tipo Y el usuario está pagando actualmente.
+        const showMonthlyAsActive = (planType === 'PREMIUM_MONTHLY' && isPremium);
+        const showYearlyAsActive = (planType === 'PREMIUM_YEARLY' && isPremium);
+        
+        // Si no está activo ninguno, el usuario es efectivamente FREE (aunque tenga historial)
+        const isEffectivelyFree = !showMonthlyAsActive && !showYearlyAsActive;
 
         const btnMonthly = document.getElementById('btn-monthly');
         const btnYearly = document.getElementById('btn-yearly');
@@ -301,12 +314,12 @@
         resetButton(btnYearly, 'bg-lime-400', 'text-black', 'hover:bg-lime-300');
 
         // ==========================================
-        // LÓGICA DE BOTONES Y BADGES
+        // LÓGICA DE BOTONES Y BADGES (USANDO ESTADO DERIVADO)
         // ==========================================
         
-        if (plan === 'FREE') {
-            // Usuario FREE
-            console.log('🆓 Usuario FREE');
+        if (isEffectivelyFree) {
+            // Usuario efectivamente FREE (aunque pueda tener historial de plan_type)
+            console.log('🆓 Usuario efectivamente FREE (is_premium=false)');
             
             // Plan Gratuito: Badge "TU PLAN ACTUAL" + texto "Plan básico"
             document.getElementById('badge-free').classList.remove('hidden');
@@ -322,9 +335,9 @@
             btnYearly.disabled = false;
             btnYearly.onclick = () => showPaymentModal('yearly');
 
-        } else if (plan === 'PREMIUM_MONTHLY') {
-            // Usuario tiene plan MENSUAL
-            console.log('💎 Usuario con plan MENSUAL');
+        } else if (showMonthlyAsActive) {
+            // Usuario tiene plan MENSUAL ACTIVO (plan_type coincide Y is_premium=true)
+            console.log('💎 Usuario con plan MENSUAL ACTIVO');
             
             // Plan Gratuito: Sin cambios (sin badge)
             
@@ -341,9 +354,9 @@
             btnYearly.disabled = false;
             btnYearly.onclick = () => showPaymentModal('yearly');
 
-        } else if (plan === 'PREMIUM_YEARLY') {
-            // Usuario tiene plan ANUAL
-            console.log('💎 Usuario con plan ANUAL');
+        } else if (showYearlyAsActive) {
+            // Usuario tiene plan ANUAL ACTIVO (plan_type coincide Y is_premium=true)
+            console.log('💎 Usuario con plan ANUAL ACTIVO');
             
             // Plan Gratuito: Sin cambios (sin badge)
             
@@ -373,10 +386,13 @@
         btn.classList.add(...classes);
     }
 
-    // Handlers para los botones
+    // Handlers para los botones (usando lógica estricta)
     window.handleMonthlyClick = function() {
-        const plan = userStatus.plan_type;
-        if (plan === 'PREMIUM_MONTHLY') {
+        const isPremium = userStatus.is_premium === true;
+        const planType = userStatus.plan_type;
+        const showMonthlyAsActive = (planType === 'PREMIUM_MONTHLY' && isPremium);
+        
+        if (showMonthlyAsActive) {
             openPortal();
         } else {
             showPaymentModal('monthly');
@@ -384,8 +400,11 @@
     };
 
     window.handleYearlyClick = function() {
-        const plan = userStatus.plan_type;
-        if (plan === 'PREMIUM_YEARLY') {
+        const isPremium = userStatus.is_premium === true;
+        const planType = userStatus.plan_type;
+        const showYearlyAsActive = (planType === 'PREMIUM_YEARLY' && isPremium);
+        
+        if (showYearlyAsActive) {
             openPortal();
         } else {
             showPaymentModal('yearly');
@@ -449,15 +468,19 @@
     // 7. GESTIONAR SUSCRIPCIÓN (PORTAL)
     // ==========================================
     window.openPortal = async function() {
-        // Determinar qué botón está llamando esta función
-        const plan = userStatus.plan_type;
+        // Determinar qué botón está llamando esta función (usando lógica estricta)
+        const isPremium = userStatus.is_premium === true;
+        const planType = userStatus.plan_type;
+        const showMonthlyAsActive = (planType === 'PREMIUM_MONTHLY' && isPremium);
+        const showYearlyAsActive = (planType === 'PREMIUM_YEARLY' && isPremium);
+        
         let btn;
-        if (plan === 'PREMIUM_MONTHLY') {
+        if (showMonthlyAsActive) {
             btn = document.getElementById('btn-monthly');
-        } else if (plan === 'PREMIUM_YEARLY') {
+        } else if (showYearlyAsActive) {
             btn = document.getElementById('btn-yearly');
         } else {
-            console.error('❌ No se puede abrir portal: usuario no es premium');
+            console.error('❌ No se puede abrir portal: usuario no es premium activo');
             return;
         }
 

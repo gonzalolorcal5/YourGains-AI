@@ -239,22 +239,27 @@ async def get_subscription_status(
 ):
     """
     Obtiene estado detallado de la suscripción del usuario.
-    Maneja race conditions y errores de atributos faltantes.
+    Implementa Graceful Degradation: si Stripe falla o BD está bloqueada,
+    devuelve datos locales en lugar de Error 500.
     """
+    # 1. Consulta inicial del usuario (siempre debe funcionar)
+    user = db.query(Usuario).filter(Usuario.id == user_id).first()
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    
+    # 2. Preparar respuesta por defecto basada SOLO en datos de BD
+    response = {
+        "plan_type": user.plan_type,
+        "is_premium": user.is_premium,
+        "stripe_customer_id": user.stripe_customer_id,
+        "stripe_subscription_id": user.stripe_subscription_id,
+        "has_active_subscription": bool(user.stripe_subscription_id),
+    }
+    
+    # 3. Intentar sincronizar con Stripe (opcional, no crítico)
+    # Si falla, devolvemos la respuesta básica
     try:
-        user = db.query(Usuario).filter(Usuario.id == user_id).first()
-        
-        if not user:
-            raise HTTPException(status_code=404, detail="Usuario no encontrado")
-        
-        response = {
-            "plan_type": user.plan_type,
-            "is_premium": user.is_premium,
-            "stripe_customer_id": user.stripe_customer_id,
-            "stripe_subscription_id": user.stripe_subscription_id,
-            "has_active_subscription": bool(user.stripe_subscription_id),
-        }
-        
         subscription_id = user.stripe_subscription_id
         
         # CASO 1: No hay subscription_id pero hay customer_id (race condition)
@@ -304,6 +309,7 @@ async def get_subscription_status(
                     
             except stripe.error.StripeError as e:
                 logger.error(f"❌ Error buscando subscription: {e}")
+                # No hacer raise, devolver respuesta básica
                 return response
         
         # CASO 2: Hay subscription_id - obtener detalles con acceso seguro
@@ -361,14 +367,17 @@ async def get_subscription_status(
                 logger.warning(f"⚠️ Error obteniendo subscription: {e}")
                 response["stripe_error"] = str(e)
         
-        return response
-        
-    except HTTPException:
-        raise
     except Exception as e:
-        logger.error(f"❌ Error crítico: {e}")
-        logger.error(traceback.format_exc())
-        raise HTTPException(status_code=500, detail=f"Error interno: {str(e)}")
+        # Graceful Degradation: Si falla cualquier cosa (BD bloqueada, Stripe down, etc.)
+        # NO hacer raise, simplemente devolver datos locales
+        logger.error(f"⚠️ Error no crítico sincronizando Stripe: {e}")
+        # Importar traceback solo si es necesario para debugging detallado
+        import traceback
+        logger.debug(f"Traceback (no crítico): {traceback.format_exc()}")
+        # Continuar y devolver respuesta básica (datos de caché)
+    
+    # Siempre devolver respuesta (básica o enriquecida)
+    return response
 
 # ==========================================
 # STRIPE CONFIG (público)
@@ -427,34 +436,38 @@ async def get_user_status(
 @router.post("/stripe/activate-premium")
 async def activate_premium_fallback(
     request: Request,
+    user_id: int = Depends(get_user_id_from_token),
     db: Session = Depends(get_db)
 ):
     """
     Fallback para activar premium cuando el webhook no llega (desarrollo).
     En producción, el webhook debe encargarse de esto.
+    
+    ⚠️ IMPORTANTE: El user_id se obtiene SIEMPRE del JWT mediante get_user_id_from_token.
+    Nadie puede activar premium para otro usuario mediante un user_id arbitrario en el body.
     """
     try:
         body = await request.json()
-        user_id = body.get("user_id")
         session_id = body.get("session_id")
 
-        if not user_id:
-            return {"success": False, "error": "user_id requerido"}
-
+        logger.info(f"🔐 Usuario autenticado: {user_id}")
         logger.info(f"🔄 Fallback premium: user_id={user_id}, session_id={session_id}")
 
-        user = db.query(Usuario).filter(Usuario.id == int(user_id)).first()
+        user = db.query(Usuario).filter(Usuario.id == user_id).first()
         if not user:
             logger.error(f"❌ Usuario {user_id} no encontrado")
             return {"success": False, "error": "Usuario no encontrado"}
 
-        # Si ya es premium
+        # Si ya es premium, no forzamos una nueva generación de plan para que el endpoint sea idempotente
         if user.is_premium:
             logger.info(f"✅ Usuario {user_id} ya es premium")
+            # Comprobar si ya tiene plan generado
+            has_plan = bool(getattr(user, "current_routine", None) and getattr(user, "current_diet", None))
             return {
                 "success": True,
                 "is_premium": True,
                 "plan_type": user.plan_type,
+                "plan_generated": has_plan,
                 "activated_by": "already_premium"
             }
 
@@ -499,10 +512,11 @@ async def activate_premium_fallback(
                     
                     # Generar plan personalizado con IA para usuario premium
                     # IMPORTANTE: Esperar a que se complete la generación antes de responder
-                    logger.info(f"💎 Generando plan personalizado con IA para usuario {user_id}...")
+                    # FORZAR regeneración cuando un usuario paga (puede tener template de FREE)
+                    logger.info(f"💎 Generando plan personalizado con IA para usuario {user_id} (forzado)...")
                     plan_generated = False
                     try:
-                        plan_generated = await generate_and_save_ai_plan(db, user_id)
+                        plan_generated = await generate_and_save_ai_plan(db, user_id, force=True)
                         if plan_generated:
                             logger.info(f"🎉 Plan generado exitosamente para usuario {user_id}")
                         else:
@@ -530,10 +544,11 @@ async def activate_premium_fallback(
                 db.commit()
                 
                 # Generar plan personalizado con IA para usuario premium
-                logger.info(f"💎 Generando plan personalizado con IA para usuario {user_id}...")
+                # FORZAR regeneración cuando un usuario paga (puede tener template de FREE)
+                logger.info(f"💎 Generando plan personalizado con IA para usuario {user_id} (forzado)...")
                 plan_generated = False
                 try:
-                    plan_generated = await generate_and_save_ai_plan(db, user_id)
+                    plan_generated = await generate_and_save_ai_plan(db, user_id, force=True)
                     if plan_generated:
                         logger.info(f"🎉 Plan generado exitosamente para usuario {user_id}")
                     else:
@@ -558,10 +573,11 @@ async def activate_premium_fallback(
         logger.info(f"✅ Usuario {user_id} activado en modo dev")
         
         # Generar plan personalizado con IA para usuario premium
-        logger.info(f"💎 Generando plan personalizado con IA para usuario {user_id}...")
+        # FORZAR regeneración cuando un usuario paga (puede tener template de FREE)
+        logger.info(f"💎 Generando plan personalizado con IA para usuario {user_id} (forzado)...")
         plan_generated = False
         try:
-            plan_generated = await generate_and_save_ai_plan(db, user_id)
+            plan_generated = await generate_and_save_ai_plan(db, user_id, force=True)
             if plan_generated:
                 logger.info(f"🎉 Plan generado exitosamente para usuario {user_id}")
             else:
