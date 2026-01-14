@@ -1,10 +1,13 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from dotenv import load_dotenv
 import os
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import RedirectResponse, FileResponse
+from fastapi.responses import RedirectResponse, FileResponse, JSONResponse
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 # Routers "seguros" (no fallan al importar)
 from app.routes import (
@@ -32,12 +35,57 @@ except ImportError:
 load_dotenv()
 app = FastAPI()
 
-# CORS abierto mientras probamos
+# ═══════════════════════════════════════════════════════
+# RATE LIMITING - Prevención de abusos
+# ═══════════════════════════════════════════════════════
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# Handler personalizado para rate limit exceeded
+@app.exception_handler(RateLimitExceeded)
+async def custom_rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    return JSONResponse(
+        status_code=429,
+        content={
+            "error": "Demasiadas solicitudes. Por favor, espera un momento e inténtalo de nuevo.",
+            "retry_after": exc.retry_after if hasattr(exc, 'retry_after') else 60
+        }
+    )
+
+# ═══════════════════════════════════════════════════════
+# CONFIGURACIÓN CORS - SEGURIDAD
+# ═══════════════════════════════════════════════════════
+# En producción: Solo yourgains.ai puede hacer requests
+# En desarrollo: Permite localhost para testing
+# Variables de entorno:
+# - FRONTEND_URL: URL principal del frontend
+# - ALLOWED_ORIGINS: Lista separada por comas (opcional)
+# ═══════════════════════════════════════════════════════
+
+# Configuración de CORS según entorno
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://127.0.0.1:8000")
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",") if os.getenv("ALLOWED_ORIGINS") else [FRONTEND_URL]
+
+# Si estamos en desarrollo local, permitir localhost
+if "localhost" in FRONTEND_URL or "127.0.0.1" in FRONTEND_URL:
+    ALLOWED_ORIGINS.extend([
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://localhost:5173",  # Vite dev server si se usa
+    ])
+
+# Filtrar strings vacíos de la lista
+ALLOWED_ORIGINS = [origin.strip() for origin in ALLOWED_ORIGINS if origin.strip()]
+
+# Log de orígenes permitidos (para debugging)
+print(f"[CORS] Orígenes permitidos: {ALLOWED_ORIGINS}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,  # ✅ Lista específica de dominios
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 

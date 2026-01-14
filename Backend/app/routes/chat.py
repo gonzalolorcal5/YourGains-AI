@@ -1,5 +1,5 @@
 # app/routes/chat.py
-from fastapi import APIRouter, Header, HTTPException, Depends
+from fastapi import APIRouter, Header, HTTPException, Depends, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import Optional, Tuple, List, Dict, Any
@@ -9,10 +9,14 @@ import logging
 import json
 from openai import OpenAI
 import asyncio
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.database import get_db
 from app.models import Usuario, Plan
 from app.utils.gpt import get_rag_context_for_chat
+
+limiter = Limiter(key_func=get_remote_address)
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -235,7 +239,9 @@ def _demo_stream_generator(msg: str):
     yield "data: {}\n\n"
 
 @router.post("/chat", response_model=ChatResponse)
+@limiter.limit("30/minute")  # 30 mensajes por minuto (generoso para premium)
 async def chat_endpoint(
+    request: Request,  # IMPORTANTE: añadir este parámetro para rate limiting
     body: ChatRequestBody,
     db: Session = Depends(get_db),
     x_user_email: Optional[str] = Header(None, alias="X-User-Email"),
@@ -330,7 +336,9 @@ def chat_status(
 
 
 @router.post("/chat/modify")
+@limiter.limit("20/minute")  # 20 modificaciones por minuto
 async def modify_plan_chat(
+    request: Request,  # IMPORTANTE: añadir este parámetro para rate limiting
     body: ChatModifyBody,
     db: Session = Depends(get_db),
     x_user_email: Optional[str] = Header(None, alias="X-User-Email"),

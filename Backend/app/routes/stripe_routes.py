@@ -12,6 +12,10 @@ import os
 import stripe
 from dotenv import load_dotenv
 from app.routes.stripe_webhook import generate_and_save_ai_plan
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)
 
 router = APIRouter(tags=["stripe"])
 logger = logging.getLogger(__name__)
@@ -43,7 +47,9 @@ class PaymentIntentRequest(BaseModel):
 # CHECKOUT SESSION
 # ==========================================
 @router.post("/create-checkout-session")
+@limiter.limit("10/minute")  # 10 intentos de checkout por minuto
 async def create_checkout_session(
+    request: Request,  # IMPORTANTE: añadir este parámetro para rate limiting
     data: CheckoutSessionRequest,
     user_id: int = Depends(get_user_id_from_token),
     db: Session = Depends(get_db)

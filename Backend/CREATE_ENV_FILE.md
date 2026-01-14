@@ -24,6 +24,9 @@ New-Item -Path .env -ItemType File
 ```
 ENVIRONMENT=development
 OPENAI_API_KEY=tu-api-key-aqui
+# Modelo de OpenAI para generación de planes y chat
+# Opciones: "gpt-4o" (mejor calidad, más caro) o "gpt-3.5-turbo" (más económico)
+OPENAI_MODEL=gpt-4o
 DATABASE_URL=sqlite:///./gymai.db
 SECRET_KEY=tu-secret-key-aqui
 ```
@@ -34,6 +37,16 @@ SECRET_KEY=tu-secret-key-aqui
 - Ve a: https://platform.openai.com/api-keys
 - Crea una nueva key (o usa la existente)
 - Copia y pega en el archivo
+
+**OPENAI_MODEL:**
+- Opciones: `gpt-4o` (mejor calidad, más caro) o `gpt-3.5-turbo` (más económico)
+- **Costos:**
+  - gpt-4o: $5.00 / 1M input tokens, $15.00 / 1M output tokens
+  - gpt-3.5-turbo: $0.50 / 1M input tokens, $1.50 / 1M output tokens
+  - Diferencia: ~10x más barato gpt-3.5-turbo
+- **Recomendación:**
+  - Para reducir costos al 10% sin perder mucha calidad: `OPENAI_MODEL=gpt-3.5-turbo`
+  - Para máxima calidad y estás dispuesto a pagar más: `OPENAI_MODEL=gpt-4o`
 
 **SECRET_KEY:**
 - Puede ser cualquier string largo y aleatorio
@@ -55,6 +68,9 @@ Tu archivo `.env` debería verse así:
 ```
 ENVIRONMENT=development
 OPENAI_API_KEY=sk-proj-abc123def456...
+# Modelo de OpenAI para generación de planes y chat
+# Opciones: "gpt-4o" (mejor calidad, más caro) o "gpt-3.5-turbo" (más económico)
+OPENAI_MODEL=gpt-4o
 DATABASE_URL=sqlite:///./gymai.db
 SECRET_KEY=mi-secret-key-super-segura-2024
 ```

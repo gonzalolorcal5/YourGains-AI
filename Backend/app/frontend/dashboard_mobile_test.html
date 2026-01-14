@@ -679,6 +679,93 @@
               transform: translateY(-1px);
           }
 
+          /* Estilos para blur de dieta */
+          .blur-content {
+              filter: blur(10px);
+              pointer-events: none;
+              user-select: none;
+              position: relative;
+              opacity: 0.6;
+              transition: all 0.3s ease;
+          }
+
+          .comidas-container {
+              position: relative;
+              min-height: 200px;
+          }
+
+          .premium-overlay-diet {
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(10, 10, 10, 0.98) 100%);
+              backdrop-filter: blur(4px);
+              z-index: 10;
+              padding: 40px 20px;
+              border-radius: 16px;
+              animation: fadeIn 0.4s ease-in-out;
+              box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.8);
+          }
+
+          @keyframes fadeIn {
+              from { opacity: 0; transform: scale(0.95); }
+              to { opacity: 1; transform: scale(1); }
+          }
+
+          .premium-overlay-diet-content {
+              text-align: center;
+              max-width: 400px;
+              width: 100%;
+          }
+
+          .premium-overlay-diet-title {
+              font-size: 24px;
+              font-weight: 700;
+              color: #ffffff;
+              margin-bottom: 12px;
+              line-height: 1.3;
+          }
+
+          .premium-overlay-diet-message {
+              font-size: 15px;
+              color: #d1d5db;
+              margin-bottom: 24px;
+              line-height: 1.5;
+          }
+
+          .premium-overlay-diet-button {
+              display: inline-block;
+              background: linear-gradient(135deg, #84CC16 0%, #65A30D 100%);
+              color: #000000;
+              font-weight: 700;
+              font-size: 16px;
+              padding: 14px 32px;
+              border-radius: 12px;
+              text-decoration: none;
+              transition: all 0.3s ease;
+              box-shadow: 0 4px 14px rgba(132, 204, 22, 0.4);
+              cursor: pointer;
+              border: none;
+              width: 100%;
+              max-width: 300px;
+          }
+
+          .premium-overlay-diet-button:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 6px 20px rgba(132, 204, 22, 0.6);
+              background: linear-gradient(135deg, #95DD1D 0%, #84CC16 100%);
+          }
+
+          .premium-overlay-diet-button:active {
+              transform: translateY(0);
+          }
+
           /* Responsive Mobile Design */
           @media (max-width: 768px) {
               /* Layout principal - Stack vertical */
@@ -1369,14 +1456,6 @@
                             addMessage('Has llegado al máximo de mensajes gratis. Sube a Pro para seguir chateando.');
                         }
                     }
-                            addMessage(data.response, 'assistant');
-                        }
-                        setTimeout(() => {
-                            console.log('🔄 Ejecutando location.reload()...');
-                            location.reload(true);
-                        }, 1500);
-                        return;
-                    }
                     
                 } catch (error) {
                     console.error('Error en chat:', error);
@@ -1736,17 +1815,56 @@
                     : (Array.isArray(plan.dieta.meals)
                         ? plan.dieta.meals.reduce((acc, m) => acc + (Number(m.kcal) || 0), 0)
                         : 0);
-                let dietaHtml = `
-                    <h1 class="section-title" style="margin-top: 50px;">Dieta</h1>
-                    <p class="section-subtitle">${plan.dieta.titulo || 'Plan personalizado'} - ${totalKcal} kcal diarias</p>
-                `;
                 
-                let upgradeShown = false;
+                // Normalización de macros
+                const macros = plan.dieta?.macros || {};
+                const proteinaVal = macros.proteinas || macros.proteina || macros.protein || 0;
+                const carbosVal = macros.hidratos || macros.carbohidratos || macros.carbs || 0;
+                const grasasVal = macros.grasas || macros.fats || 0;
+                const caloriasVal = macros.calorias || macros.total_kcal || totalKcal || 0;
                 
+                let dietaHtml = `<h1 class="section-title" style="margin-top: 50px;">Plan nutricional</h1>`;
+                
+                // Para usuarios FREE: mostrar solo proteínas y carbohidratos (sin blur)
+                if (!isPremium) {
+                    dietaHtml += `<div class="macros-summary" style="margin: 20px 0; padding: 15px; background: rgba(132, 204, 22, 0.1); border-radius: 8px; border-left: 3px solid #84CC16;">
+                        <p style="color: #ffffff; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Resumen de Macronutrientes</p>
+                        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                            <span style="color:#84CC16;font-size:15px;font-weight:600;">Proteínas: ${proteinaVal}g</span>
+                            <span style="color:#84CC16;font-size:15px;font-weight:600;">Carbohidratos: ${carbosVal}g</span>
+                        </div>
+                    </div>`;
+                    
+                    // Contenedor para contenido con blur
+                    dietaHtml += `<div class="comidas-container" style="position: relative; margin-top: 30px;">`;
+                    dietaHtml += `<div class="blur-content">`;
+                    
+                    // Mostrar grasas, calorías y TODAS las comidas dentro del blur
+                    dietaHtml += `<div class="macros-summary" style="margin: 20px 0; padding: 15px; background: rgba(132, 204, 22, 0.1); border-radius: 8px; border-left: 3px solid #84CC16;">
+                        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                            <span style="color:#84CC16;font-size:15px;font-weight:600;">Grasas: ${grasasVal}g</span>
+                            <span style="color:#84CC16;font-size:15px;font-weight:600;">Calorías: ${caloriasVal}</span>
+                        </div>
+                    </div>`;
+                } else {
+                    // Para usuarios PREMIUM: mostrar todo sin blur
+                    dietaHtml += `<p class="section-subtitle">${plan.dieta.titulo || 'Plan personalizado'} - ${totalKcal} kcal diarias</p>`;
+                    if (macros.proteina || macros.carbohidratos || macros.grasas) {
+                        dietaHtml += `<div class="macros-grid">`;
+                        dietaHtml += `<div class="macro-card"><span class="macro-value">${proteinaVal}g</span><span class="macro-label">Proteínas</span></div>`;
+                        dietaHtml += `<div class="macro-card"><span class="macro-value">${carbosVal}g</span><span class="macro-label">Carbohidratos</span></div>`;
+                        dietaHtml += `<div class="macro-card"><span class="macro-value">${grasasVal}g</span><span class="macro-label">Grasas</span></div>`;
+                        dietaHtml += `<div class="macro-card"><span class="macro-value">${caloriasVal || ''}</span><span class="macro-label">Calorías</span></div>`;
+                        dietaHtml += `</div>`;
+                    }
+                }
+                
+                // Mostrar TODAS las comidas
                 plan.dieta.meals.forEach((comida, index) => {
                     console.log(`🍽️ Comida ${index}:`, comida);
-                    // Primera comida siempre visible
-                    if (index === 0) {
+                    
+                    if (!isPremium) {
+                        // Para FREE: todas las comidas van dentro del blur
                         dietaHtml += `<div class="meal-title">${comida.nombre}</div>`;
                         if (comida.alimentos) {
                             comida.alimentos.forEach(alimento => {
@@ -1759,57 +1877,8 @@
                                 }
                             });
                         }
-                    }
-                    // Resto censurado para FREE
-                    else if (!isPremium) {
-                        dietaHtml += `
-                            <div class="censored-content">
-                                <div class="meal-title">${comida.nombre}</div>
-                                <div class="food-item">• ████████ ████</div>
-                                <div class="food-item">• ████████ ████</div>
-                            </div>
-                        `;
-                        
-                        // Mostrar overlay después de la primera comida censurada
-                        if (index === 1 && !upgradeShown) {
-                            dietaHtml += `
-                                <div style="
-                                    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-                                    border: 2px solid #39ff14;
-                                    padding: 40px 30px;
-                                    border-radius: 16px;
-                                    text-align: center;
-                                    margin: 30px 0;
-                                    box-shadow: 0 0 30px rgba(57, 255, 20, 0.15);
-                                ">
-                                    <h3 style="color: #39ff14; font-size: 24px; font-weight: 700; margin-bottom: 12px;">
-                                        Desbloquea la Dieta Completa
-                                    </h3>
-                                    <p style="color: #cccccc; font-size: 15px; margin-bottom: 25px;">
-                                        Accede a todas las comidas, ajustes personalizados según tu progreso y recetas exclusivas
-                                    </p>
-                                    <button onclick="window.location.href='./tarifas.html'" style="
-                                        background: #39ff14;
-                                        color: #000000;
-                                        padding: 14px 40px;
-                                        border: none;
-                                        border-radius: 10px;
-                                        font-weight: 700;
-                                        cursor: pointer;
-                                        font-size: 16px;
-                                        text-transform: uppercase;
-                                        letter-spacing: 0.5px;
-                                        transition: all 0.3s ease;
-                                    ">
-                                        Mejorar a Premium - €9.99/mes
-                                    </button>
-                                </div>
-                            `;
-                            upgradeShown = true;
-                        }
-                    }
-                    // Todo visible para PREMIUM
-                    else {
+                    } else {
+                        // Para PREMIUM: todas las comidas visibles
                         dietaHtml += `<div class="meal-title">${comida.nombre}</div>`;
                         if (comida.alimentos) {
                             comida.alimentos.forEach(alimento => {
@@ -1824,6 +1893,22 @@
                         }
                     }
                 });
+                
+                // Cerrar blur-content y añadir overlay para usuarios FREE
+                if (!isPremium) {
+                    dietaHtml += `</div>`; // Close blur-content
+                    // Overlay premium superpuesto
+                    dietaHtml += `<div class="premium-overlay-diet">
+                        <div class="premium-overlay-diet-content">
+                            <h3 class="premium-overlay-diet-title">Accede a tu Dieta Completa</h3>
+                            <p class="premium-overlay-diet-message">Para acceder a la dieta completa, aumenta tu plan a Premium y disfruta de macros detallados, todas las comidas y recetas exclusivas.</p>
+                            <button class="premium-overlay-diet-button" onclick="window.location.href='./tarifas.html'">
+                                VER TARIFAS
+                            </button>
+                        </div>
+                    </div>`;
+                    dietaHtml += `</div>`; // Close comidas-container
+                }
                 
                 // Insertar dieta
                 if (dietaContent) {
@@ -2009,69 +2094,116 @@
         // Función para mostrar contenido de dieta
         function displayDietContent(plan, premium) {
             const contentArea = document.getElementById('dietaContent');
+            if (!contentArea) return;
             
             if (plan.dieta && (plan.dieta.comidas || plan.dieta.meals)) {
                 const comidas = plan.dieta.comidas || plan.dieta.meals;
-                const total = comidas.length;
-                const visibles = premium ? total : Math.max(2, Math.ceil(total * 0.5)); // 50% para usuarios básicos
-
-                let dietHTML = '';
                 
-                // Mostrar macros si están disponibles
-                if (plan.dieta.macros) {
-                    const macros = plan.dieta.macros;
-                    dietHTML += `<div class="macros-grid">`;
-                    dietHTML += `<div class="macro-card"><span class="macro-value">${macros.proteina || macros.proteinas || 0}g</span><span class="macro-label">Proteínas</span></div>`;
-                    dietHTML += `<div class="macro-card"><span class="macro-value">${macros.carbohidratos || macros.hidratos || macros.carbs || 0}g</span><span class="macro-label">Carbohidratos</span></div>`;
-                    dietHTML += `<div class="macro-card"><span class="macro-value">${macros.grasas || macros.grass || 0}g</span><span class="macro-label">Grasas</span></div>`;
-                    dietHTML += `<div class="macro-card"><span class="macro-value">${macros.calorias || plan.dieta.kcal_objetivo || plan.dieta.total_kcal || ''}</span><span class="macro-label">Calorías</span></div>`;
-                    dietHTML += `</div>`;
+                // Normalización de macros
+                const macros = plan.dieta.macros || {};
+                const proteinaVal = macros.proteina || macros.proteinas || macros.protein || 0;
+                const carbosVal = macros.carbohidratos || macros.hidratos || macros.carbs || 0;
+                const grasasVal = macros.grasas || macros.grass || macros.fats || 0;
+                const caloriasVal = macros.calorias || plan.dieta.kcal_objetivo || plan.dieta.total_kcal || 0;
+
+                let dietHTML = '<h2 class="section-title" style="font-size: 24px; font-weight: 700; margin-bottom: 20px; color: #ffffff;">Plan nutricional</h2>';
+                
+                // Para usuarios FREE: mostrar solo proteínas y carbohidratos (sin blur)
+                if (!premium) {
+                    dietHTML += `<div class="macros-summary" style="margin: 20px 0; padding: 15px; background: rgba(132, 204, 22, 0.1); border-radius: 8px; border-left: 3px solid #84CC16;">
+                        <p style="color: #ffffff; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Resumen de Macronutrientes</p>
+                        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                            <span style="color:#84CC16;font-size:15px;font-weight:600;">Proteínas: ${proteinaVal}g</span>
+                            <span style="color:#84CC16;font-size:15px;font-weight:600;">Carbohidratos: ${carbosVal}g</span>
+                        </div>
+                    </div>`;
+                    
+                    // Contenedor para contenido con blur
+                    dietHTML += `<div class="comidas-container" style="position: relative; margin-top: 30px;">`;
+                    dietHTML += `<div class="blur-content">`;
+                    
+                    // Mostrar grasas, calorías y TODAS las comidas dentro del blur
+                    dietHTML += `<div class="macros-summary" style="margin: 20px 0; padding: 15px; background: rgba(132, 204, 22, 0.1); border-radius: 8px; border-left: 3px solid #84CC16;">
+                        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                            <span style="color:#84CC16;font-size:15px;font-weight:600;">Grasas: ${grasasVal}g</span>
+                            <span style="color:#84CC16;font-size:15px;font-weight:600;">Calorías: ${caloriasVal}</span>
+                        </div>
+                    </div>`;
+                } else {
+                    // Para usuarios PREMIUM: mostrar todo sin blur
+                    if (macros.proteina || macros.carbohidratos || macros.grasas) {
+                        dietHTML += `<div class="macros-grid">`;
+                        dietHTML += `<div class="macro-card"><span class="macro-value">${proteinaVal}g</span><span class="macro-label">Proteínas</span></div>`;
+                        dietHTML += `<div class="macro-card"><span class="macro-value">${carbosVal}g</span><span class="macro-label">Carbohidratos</span></div>`;
+                        dietHTML += `<div class="macro-card"><span class="macro-value">${grasasVal}g</span><span class="macro-label">Grasas</span></div>`;
+                        dietHTML += `<div class="macro-card"><span class="macro-value">${caloriasVal || ''}</span><span class="macro-label">Calorías</span></div>`;
+                        dietHTML += `</div>`;
+                    }
                 }
 
-                // Mostrar comidas visibles
-                comidas.slice(0, visibles).forEach(comida => {
-                    dietHTML += `<div class="meal-card">`;
-                    dietHTML += `<div class="meal-header">`;
-                    dietHTML += `<span class="meal-time">${comida.hora}</span>`;
-                    dietHTML += `<span class="meal-name">${comida.nombre}</span>`;
-                    dietHTML += `</div>`;
-                    if (comida.alimentos) {
-                        comida.alimentos.forEach(alimento => {
-                            dietHTML += `<div class="food-item">`;
-                            dietHTML += `<span>${alimento.nombre}</span>`;
-                            dietHTML += `<span>${alimento.cantidad}</span>`;
-                            dietHTML += `</div>`;
-                        });
-                    }
-                    dietHTML += `</div>`;
-                });
-
-                // Mostrar comidas censuradas para usuarios no premium
-                if (!premium && visibles < total) {
-                    const ocultos = total - visibles;
-                    
-                    // Agregar comidas censuradas
-                    comidas.slice(visibles, visibles + Math.min(ocultos, 2)).forEach(comida => {
-                        dietHTML += `<div class="meal-card premium-overlay">`;
+                // Mostrar TODAS las comidas
+                comidas.forEach(comida => {
+                    if (!premium) {
+                        // Para FREE: todas las comidas van dentro del blur
+                        dietHTML += `<div class="meal-card">`;
                         dietHTML += `<div class="meal-header">`;
-                        dietHTML += `<span class="meal-time">${comida.hora}</span>`;
+                        dietHTML += `<span class="meal-time">${comida.hora || ''}</span>`;
                         dietHTML += `<span class="meal-name">${comida.nombre}</span>`;
                         dietHTML += `</div>`;
                         if (comida.alimentos) {
                             comida.alimentos.forEach(alimento => {
                                 dietHTML += `<div class="food-item">`;
-                                dietHTML += `<span>${alimento.nombre}</span>`;
-                                dietHTML += `<span>${alimento.cantidad}</span>`;
+                                if (typeof alimento === 'string') {
+                                    dietHTML += `<span>${alimento}</span>`;
+                                } else if (alimento.nombre && alimento.cantidad) {
+                                    dietHTML += `<span>${alimento.nombre}</span>`;
+                                    dietHTML += `<span>${alimento.cantidad}</span>`;
+                                } else {
+                                    dietHTML += `<span>${JSON.stringify(alimento)}</span>`;
+                                }
                                 dietHTML += `</div>`;
                             });
                         }
-                        dietHTML += `<div class="premium-badge">`;
-                        dietHTML += `<h4>Desbloquea contenido completo con Pro</h4>`;
-                        dietHTML += `<p>${ocultos} comidas adicionales disponibles</p>`;
-                        dietHTML += `<button class="premium-btn" onclick="window.location.href='./tarifas.html'">Mejorar a Pro</button>`;
                         dietHTML += `</div>`;
+                    } else {
+                        // Para PREMIUM: todas las comidas visibles
+                        dietHTML += `<div class="meal-card">`;
+                        dietHTML += `<div class="meal-header">`;
+                        dietHTML += `<span class="meal-time">${comida.hora || ''}</span>`;
+                        dietHTML += `<span class="meal-name">${comida.nombre}</span>`;
                         dietHTML += `</div>`;
-                    });
+                        if (comida.alimentos) {
+                            comida.alimentos.forEach(alimento => {
+                                dietHTML += `<div class="food-item">`;
+                                if (typeof alimento === 'string') {
+                                    dietHTML += `<span>${alimento}</span>`;
+                                } else if (alimento.nombre && alimento.cantidad) {
+                                    dietHTML += `<span>${alimento.nombre}</span>`;
+                                    dietHTML += `<span>${alimento.cantidad}</span>`;
+                                } else {
+                                    dietHTML += `<span>${JSON.stringify(alimento)}</span>`;
+                                }
+                                dietHTML += `</div>`;
+                            });
+                        }
+                        dietHTML += `</div>`;
+                    }
+                });
+
+                // Cerrar blur-content y añadir overlay para usuarios FREE
+                if (!premium) {
+                    dietHTML += `</div>`; // Close blur-content
+                    // Overlay premium superpuesto
+                    dietHTML += `<div class="premium-overlay-diet">
+                        <div class="premium-overlay-diet-content">
+                            <h3 class="premium-overlay-diet-title">Accede a tu Dieta Completa</h3>
+                            <p class="premium-overlay-diet-message">Para acceder a la dieta completa, aumenta tu plan a Premium y disfruta de macros detallados, todas las comidas y recetas exclusivas.</p>
+                            <button class="premium-overlay-diet-button" onclick="window.location.href='./tarifas.html'">
+                                VER TARIFAS
+                            </button>
+                        </div>
+                    </div>`;
+                    dietHTML += `</div>`; // Close comidas-container
                 }
 
                 contentArea.innerHTML = dietHTML;
@@ -2202,7 +2334,7 @@
                 <p>Implementamos medidas de seguridad técnicas y organizativas para proteger tu información personal contra acceso no autorizado, alteración, divulgación o destrucción.</p>
                 
                 <h4>Contacto</h4>
-                <p>Si tienes preguntas sobre estos términos y políticas, puedes contactarnos en: legal@yourgainsai.com</p>
+                <p>Si tienes preguntas sobre estos términos y políticas, puedes contactarnos en: <a href="mailto:contacto@yourgains.ai" class="text-lime-400 hover:underline">contacto@yourgains.ai</a></p>
             `;
             
             contentArea.innerHTML = termsHTML;

@@ -966,10 +966,15 @@
             displayRoutineContent(plan, premium);
             displayDietContent(plan, premium);
         }
+
+        // Función para mostrar contenido de rutina
+        function displayRoutineContent(plan, premium) {
+            const rutinaContent = document.getElementById('rutinaContent');
+            if (!rutinaContent) return;
+
             if (plan.rutina && plan.rutina.dias) {
                 const dias = plan.rutina.dias;
                 const total = dias.length;
-                const premium = isPremiumUser();
                 const visibles = premium ? total : Math.max(1, Math.ceil(total * 0.25));
 
                 let rutinaHTML = '<h3>Rutina de Entrenamiento</h3>';
@@ -1024,13 +1029,18 @@
 
                 rutinaContent.innerHTML = rutinaHTML;
             }
+        }
+
+        // Función para mostrar contenido de dieta
+        function displayDietContent(plan, premium) {
+            const dietaContent = document.getElementById('dietaContent');
+            if (!dietaContent) return;
 
             // Mostrar consejos (aplicar recorte si es free)
             const consejosContent = document.getElementById('consejosContent');
             if (plan.rutina && plan.rutina.consejos) {
                 const consejos = plan.rutina.consejos;
                 const total = consejos.length;
-                const premium = isPremiumUser();
                 const visibles = premium ? total : Math.max(2, Math.ceil(total * 0.33)); // Mostrar 33% (mínimo 2)
 
                 let consejosHTML = '<h3>Consejos de Entrenamiento</h3>';
@@ -1361,7 +1371,7 @@
                 <p>Implementamos medidas de seguridad técnicas y organizativas para proteger tu información personal contra acceso no autorizado, alteración, divulgación o destrucción.</p>
                 
                 <h4>Contacto</h4>
-                <p>Si tienes preguntas sobre estos términos y políticas, puedes contactarnos en: legal@yourgainsai.com</p>
+                <p>Si tienes preguntas sobre estos términos y políticas, puedes contactarnos en: <a href="mailto:contacto@yourgains.ai" class="text-lime-400 hover:underline">contacto@yourgains.ai</a></p>
             `;
             
             contentArea.innerHTML = termsHTML;

@@ -82,7 +82,7 @@
         // Crear script de Google Analytics
         const script1 = document.createElement('script');
         script1.async = true;
-        script1.src = 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX'; // Reemplazar con tu ID real
+        script1.src = 'https://www.googletagmanager.com/gtag/js?id=G-XC85YN9Z36';
         document.head.appendChild(script1);
 
         // Inicializar gtag
@@ -90,7 +90,7 @@
         function gtag(){dataLayer.push(arguments);}
         window.gtag = gtag;
         gtag('js', new Date());
-        gtag('config', 'G-XXXXXXXXXX', {
+        gtag('config', 'G-XC85YN9Z36', {
             anonymize_ip: true,
             cookie_flags: 'SameSite=None;Secure'
         });

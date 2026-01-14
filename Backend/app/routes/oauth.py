@@ -125,15 +125,10 @@ async def google_callback(
             db.commit()
             db.refresh(user)
         
-        # 5. Generar JWT token (igual que login normal, incluyendo claims útiles)
+        # 5. Generar JWT token (solo incluye user_id, igual que auth.py)
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         jwt_token = create_access_token(
-            data={
-                "sub": str(user.id),
-                "user_id": user.id,
-                "email": user.email,
-                "plan_type": user.plan_type or "FREE",
-            },
+            data={"sub": str(user.id)},
             expires_delta=access_token_expires
         )
         
@@ -149,5 +144,3 @@ async def google_callback(
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Error en autenticación: {str(e)}")
-
-

@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from datetime import timedelta
 from dotenv import load_dotenv
 import os
 from pydantic import BaseModel
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.auth_utils import (
     create_access_token,
@@ -13,6 +15,8 @@ from app.auth_utils import (
 from app.database import get_db
 from app import models, schemas
 from app.auth_utils import ACCESS_TOKEN_EXPIRE_MINUTES
+
+limiter = Limiter(key_func=get_remote_address)
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -28,7 +32,9 @@ class UserCredentials(BaseModel):
 
 
 @router.post("/register")
-def register(
+@limiter.limit("5/minute")  # Máximo 5 registros por minuto
+async def register(
+    request: Request,  # IMPORTANTE: añadir este parámetro para rate limiting
     user: UserCredentials,
     db: Session = Depends(get_db)
 ):
@@ -46,7 +52,9 @@ def register(
 
 
 @router.post("/login")
-def login(
+@limiter.limit("10/minute")  # Máximo 10 intentos por minuto
+async def login(
+    request: Request,  # IMPORTANTE: añadir este parámetro para rate limiting
     user: UserCredentials,
     db: Session = Depends(get_db)
 ):
