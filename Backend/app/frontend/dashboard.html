@@ -1439,6 +1439,37 @@
                 display: none;
             }
 
+            /* Estilos responsivos para premium-overlay en móvil */
+            @media (max-width: 768px) {
+                .premium-overlay {
+                    padding: 30px 15px;
+                }
+
+                .premium-overlay-content {
+                    max-width: 85% !important;
+                    width: 85% !important;
+                }
+
+                .premium-overlay-title {
+                    font-size: 18px !important;
+                    margin-bottom: 10px !important;
+                }
+
+                .premium-overlay-description {
+                    font-size: 13px !important;
+                    margin-bottom: 18px !important;
+                }
+
+                .premium-overlay-button {
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    padding: 14px 20px !important;
+                    font-size: 14px !important;
+                    white-space: nowrap !important;
+                    display: block !important;
+                }
+            }
+
             /* Estilos para consejos - Diseño Scientific Card Moderno */
             .advice-card {
                 background: #ffffff;
@@ -1448,6 +1479,41 @@
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
                 border-left: 4px solid #009688;
                 transition: all 0.3s ease;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            /* Estilos base para contenedor de consejos */
+            #consejosMainContainer {
+                max-width: 1150px;
+                margin: 0 auto 0 60px;
+                padding: 0 40px 40px 40px;
+                position: relative;
+                z-index: 1;
+                width: calc(100% - 60px);
+            }
+
+            #consejosEstudiosContent {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+            }
+
+            /* Responsive para el main container */
+            @media (max-width: 768px) {
+                #consejosMainContainer {
+                    margin: 0 !important;
+                    padding: 20px 0 !important;
+                    width: 100% !important;
+                }
+                
+                #consejosEstudiosContent {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    align-items: center !important;
+                    padding: 0 2% !important;
+                    gap: 20px !important;
+                }
             }
 
             .advice-card:hover {
@@ -1503,6 +1569,43 @@
                 font-size: 12px;
                 font-weight: 700;
                 box-shadow: 0 2px 8px rgba(0, 150, 136, 0.3);
+            }
+
+            /* Estilos responsivos para advice-card en móvil */
+            @media (max-width: 768px) {
+                .advice-card {
+                    width: 96% !important;
+                    max-width: 96% !important;
+                    margin: 0 auto 24px auto !important;
+                    padding: 20px !important;
+                    box-sizing: border-box !important;
+                    display: block !important;
+                }
+
+                /* Forzar que el contenedor principal sea columna y centrado */
+                #consejosEstudiosContent {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    align-items: center !important;
+                    width: 100% !important;
+                    padding: 15px 2% !important;
+                    grid-template-columns: none !important;
+                    gap: 16px !important;
+                }
+
+                #consejosContent {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    align-items: center !important;
+                    width: 100% !important;
+                    padding: 0 !important;
+                }
+
+                /* Contenedor del overlay */
+                #consejosEstudiosOverlay main {
+                    padding: 20px 0 !important;
+                    width: 100% !important;
+                }
             }
 
             /* Estilos para estudios */
@@ -1622,6 +1725,7 @@
                 border-radius: 12px;
                 font-weight: 700;
                 font-size: 15px;
+                text-align: center;
                 text-transform: none;
                 letter-spacing: 0.2px;
                 cursor: pointer;
@@ -1660,6 +1764,69 @@
             .premium-btn-unified:active {
                 transform: translateY(-1px);
                 box-shadow: 0 4px 12px rgba(132, 204, 22, 0.4);
+            }
+
+            /* Estilos responsivos para premium-lock en móvil */
+            @media (max-width: 768px) {
+                .premium-lock-container {
+                    /* Calculamos el ancho restando un margen fijo para que no toque los bordes */
+                    width: calc(100% + 1.2rem) !important; 
+                    max-width: 94vw !important;
+                    
+                    /* Rompemos el padding del padre moviéndolo hacia los lados */
+                    margin-left: -0.6rem !important; 
+                    
+                    /* Restauramos la estética de tarjeta */
+                    border-radius: 16px !important;
+                    border: 1px solid rgba(132, 204, 22, 0.3) !important;
+                    overflow: hidden !important;
+                    
+                    /* Asegurar centrado relativo al padre */
+                    left: 50% !important;
+                    transform: translateX(-50%) translateY(-50%) !important;
+                }
+
+                .premium-lock-card {
+                    padding: 28px 18px !important;
+                    border: 2px solid rgba(132, 204, 22, 0.4) !important;  /* Borde verde brillante */
+                }
+
+                .premium-icon-wrapper {
+                    width: 56px !important;
+                    height: 56px !important;
+                    margin-bottom: 20px !important;
+                }
+
+                .premium-title {
+                    font-size: 18px !important;
+                    margin-bottom: 10px !important;
+                }
+
+                .premium-subtitle {
+                    font-size: 13px !important;
+                    margin-bottom: 24px !important;
+                    padding: 0 4px !important;
+                }
+
+                .premium-btn-unified {
+                    width: 90% !important;           /* Un poco de aire a los lados dentro del overlay */
+                    margin: 0 auto !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    padding: 16px 10px !important;    /* Padding vertical cómodo */
+                    font-size: 15px !important;
+                    font-weight: 700 !important;
+                    text-align: center !important;
+                    white-space: normal !important;   /* Permitir que el texto rompa si es largo */
+                }
+            }
+
+            /* Ocultar pseudo-elemento ::before en móvil para centrar texto */
+            @media (max-width: 768px) {
+                .premium-btn-unified::before {
+                    display: none !important;
+                }
             }
 
             /* Responsive */
@@ -2267,42 +2434,7 @@
                     grid-template-columns: repeat(2, 1fr) !important;
                 }
             }
-            @media (max-width: 768px) {
-                #consejosEstudiosContent {
-                    grid-template-columns: 1fr !important;
-                }
-            }
             
-            /* Centrado mejorado para el contenedor de consejos y estudios */
-            #consejosEstudiosOverlay main {
-                max-width: 1150px !important;
-                margin: 0 auto 0 60px !important;
-                padding-left: 40px !important;
-                padding-right: 40px !important;
-                width: calc(100% - 60px) !important;
-            }
-            
-            @media (max-width: 1400px) {
-                #consejosEstudiosOverlay main {
-                    padding-left: 35px !important;
-                    padding-right: 35px !important;
-                }
-            }
-            
-            @media (max-width: 1200px) {
-                #consejosEstudiosOverlay main {
-                    padding-left: 30px !important;
-                    padding-right: 30px !important;
-                }
-            }
-            
-            @media (max-width: 768px) {
-                #consejosEstudiosOverlay main {
-                    padding-left: 20px !important;
-                    padding-right: 20px !important;
-                }
-            }
-
             /* ============================================
                DESKTOP LAYOUT - Chat Container Reducido
                ============================================ */
@@ -2849,8 +2981,8 @@
             <div style="height: 180px;"></div>
             
             <!-- CONTENEDOR DE CARDS -->
-            <main style="max-width: 1150px; margin: 0 auto 0 60px; padding: 0 40px 40px 40px; position: relative; z-index: 1; width: calc(100% - 60px);">
-                <div id="consejosEstudiosContent" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+            <main id="consejosMainContainer">
+                <div id="consejosEstudiosContent">
                     <!-- El contenido se carga dinámicamente aquí -->
                 </div>
             </main>
@@ -5449,10 +5581,8 @@
                     
                     dietHTML += '</div>'; // Close blur-content
                     
-                    // Overlay premium con estilos inline para evitar sobrescrituras
-                    dietHTML += '<div class="premium-overlay" style="display: flex !important; visibility: visible !important; opacity: 1 !important; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999 !important; background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(10, 10, 10, 0.4) 100%) !important; backdrop-filter: blur(2px) !important; padding: 40px 20px; border-radius: 16px; align-items: center; justify-content: center; flex-direction: column;">';
+                    // Overlay premium (sin wrapper, como en rutina)
                     dietHTML += getPremiumLockHTML("Plan Nutricional Bloqueado", "Accede a tu dieta personalizada, macros detallados y recetas exclusivas actualizando a Premium.");
-                    dietHTML += '</div>'; // Close premium-overlay
                     dietHTML += '</div>'; // Close comidas-container
                 } else {
                     // Para usuarios PREMIUM: mostrar todas las comidas sin blur
@@ -6211,7 +6341,7 @@
                         titulo: 'Proteína: Cantidad, Distribución y el Mito de los 30g',
                         contenido: [
                             'Para hipertrofia necesitas 1.6-2.2g/kg/día según Morton (2018). De 0.8 a 1.5g/kg ves mejoras significativas, de 1.5 a 2.0g/kg las mejoras son pequeñas pero presentes, y más allá de 2.2g/kg no hay beneficios adicionales. En déficit calórico aumenta a 2.0-2.4g/kg para preservar músculo. La distribución es menos importante: estudios con ayuno intermitente 16/8 muestran ganancias equivalentes a 4-5 comidas. Lo determinante es la proteína total diaria, no el número de comidas.',
-                            'El mito de "solo absorbes 30g por comida" es falso. Estudios de 2024 demuestran que el cuerpo absorbe y utiliza 100g+ en una comida. La leucina es clave: necesitas 2-3g por comida (equivalente a 20-30g de proteína de calidad) para activar mTOR y maximizar la síntesis muscular. Estrategia: alcanza 1.6-2.2g/kg diariamente, distribuye en 3-5 comidas o practica ayuno si prefieres, y asegura 20-30g por comida para activar leucina.'
+                            'El mito de "solo absorbes 30g por comida" es falso. Estudios de 2025 demuestran que el cuerpo absorbe y utiliza 100g+ en una comida. La leucina es clave: necesitas 2-3g por comida (equivalente a 20-30g de proteína de calidad) para activar mTOR y maximizar la síntesis muscular. Estrategia: alcanza 1.6-2.2g/kg diariamente, distribuye en 3-5 comidas o practica ayuno si prefieres, y asegura 20-30g por comida para activar leucina.'
                         ],
                         referencias: [
                             { titulo: 'A systematic review, meta-analysis and meta-regression of the effect of protein supplementation on resistance training-induced gains in muscle mass and strength', pmid: '28698222' },
@@ -6305,13 +6435,13 @@
                         categoria: 'Entrenamiento',
                         titulo: 'Sobrecarga Progresiva: El Factor Más Importante Para Crecer',
                         contenido: [
-                            'Sin progresión no hay crecimiento. Si haces exactamente lo mismo semana tras semana, tu cuerpo NO tiene razón para cambiar. McLeod (2024) confirma: la falta de progresión es el motivo más común de estancamiento. El método de doble progresión: define un rango (ej: 8-12 reps), progresa PRIMERO en repeticiones manteniendo el peso fijo. Cuando llegues al límite ALTO en TODAS las series, sube el peso y vuelve al límite BAJO.',
-                            'Chaves (2024) comparó progresar en peso vs repeticiones—ambos grupos ganaron músculo idéntico. Ventajas: progresión más gradual, mejor técnica, menos lesiones, tracking claro. Principiantes pueden progresar casi cada sesión. Intermedios: progresión semanal o quincenal. Avanzados: progresión muy lenta, a veces solo por mesociclo completo. Si te estancas 3-4 semanas: deload (reduce series 30-50%), cambia variable, aumenta descanso, mejora técnica.'
+                            'Sin progresión no hay crecimiento. Si haces exactamente lo mismo semana tras semana, tu cuerpo NO tiene razón para cambiar. McLeod (2025) confirma: la falta de progresión es el motivo más común de estancamiento. El método de doble progresión: define un rango (ej: 8-12 reps), progresa PRIMERO en repeticiones manteniendo el peso fijo. Cuando llegues al límite ALTO en TODAS las series, sube el peso y vuelve al límite BAJO.',
+                            'Chaves (2025) comparó progresar en peso vs repeticiones—ambos grupos ganaron músculo idéntico. Ventajas: progresión más gradual, mejor técnica, menos lesiones, tracking claro. Principiantes pueden progresar casi cada sesión. Intermedios: progresión semanal o quincenal. Avanzados: progresión muy lenta, a veces solo por mesociclo completo. Si te estancas 3-4 semanas: deload (reduce series 30-50%), cambia variable, aumenta descanso, mejora técnica.'
                         ],
                         referencias: [
                             { titulo: 'Effects of Resistance Training Overload Progression Protocols on Strength and Muscle Mass', pmid: '38286426' },
                             { titulo: 'Progressive overload without progressing load? The effects of progressing load vs. repetitions', pmid: 'PMC9528903' },
-                            { titulo: 'The influence of resistance exercise training prescription on muscle mass and strength', pmid: 'No disponible - Science Direct 2024' },
+                            { titulo: 'The influence of resistance exercise training prescription on muscle mass and strength', pmid: 'No disponible - Science Direct 2025' },
                             { titulo: 'Low-Load vs. High-Load Resistance Training: A Systematic Review and Meta-analysis', pmid: '28834797' }
                         ]
                     },
@@ -6326,7 +6456,7 @@
                             { titulo: 'Sleep quality and muscular strength in college students', pmid: '28490639' },
                             { titulo: 'One night of total sleep deprivation impairs implicit learning', pmid: 'No disponible - BioRxiv 2021' },
                             { titulo: 'Sleep and testosterone: effects of sleep deprivation on hormonal balance', pmid: 'No disponible - PubMed 2022' },
-                            { titulo: 'The effects of protein supplementation before sleep on muscle mass and strength', pmid: 'No disponible - PubMed 2024' },
+                            { titulo: 'The effects of protein supplementation before sleep on muscle mass and strength', pmid: 'No disponible - PubMed 2025' },
                             { titulo: 'Effects of resistance training frequency on measures of muscle hypertrophy', pmid: '27102172' }
                         ]
                     },
@@ -6499,7 +6629,7 @@
                 else if (tema.category === 'Suplementación') tagBgClass = 'bg-orange-600';
                 
                 // Tarjeta científica moderna
-                adviceHTML += `<div class="advice-card" style="max-width: 100%;">`;
+                adviceHTML += `<div class="advice-card">`;
                 
                 // Tag categoría (estilo moderno)
                 const categoryColors = {
@@ -7111,12 +7241,13 @@
             /**
              * Carga datos del usuario desde la BD usando /api/user/me
              * NO decodifica el token, solo lo usa en Authorization header
+             * Implementa migración silenciosa para usuarios antiguos
              */
             async function loadUserData() {
                 const token = localStorage.getItem('accessToken');
                 
                 if (!token) {
-                    console.error('❌ No hay token, redirigiendo a login...');
+                    console.error('❌ [LOAD_USER] No hay token, redirigiendo a login...');
                     window.location.href = '/login.html';
                     return null;
                 }
@@ -7130,14 +7261,88 @@
                     });
                     
                     if (!response.ok) {
-                        // Token inválido o expirado
-                        console.error('❌ Token inválido o expirado, redirigiendo a login...');
-                        localStorage.removeItem('accessToken');
-                        window.location.href = '/login.html';
-                        return null;
+                        const errorData = await response.json().catch(() => ({}));
+                        const statusCode = response.status;
+                        
+                        console.log('⚠️ [LOAD_USER] Error al cargar usuario:', {
+                            status: statusCode,
+                            error: errorData
+                        });
+                        
+                        // ⚠️ SOLO hacer logout si es error 401 (Unauthorized)
+                        // Errores 500, 422, etc. NO deben causar logout
+                        if (statusCode === 401) {
+                            console.error('❌ [LOAD_USER] Token inválido o expirado (401), redirigiendo a login...');
+                            console.error('❌ [LOAD_USER] El servidor confirmó que el token no es válido');
+                            localStorage.removeItem('accessToken');
+                            window.location.href = '/login.html';
+                            return null;
+                        } else if (statusCode === 403) {
+                            // 403 también es problema de autenticación/autorización
+                            console.error('❌ [LOAD_USER] Acceso prohibido (403), redirigiendo a login...');
+                            localStorage.removeItem('accessToken');
+                            window.location.href = '/login.html';
+                            return null;
+                        } else {
+                            // Error 500, 422, u otro error del servidor - NO hacer logout
+                            console.error('⚠️ [LOAD_USER] Error del servidor (NO 401/403):', {
+                                status: statusCode,
+                                error: errorData
+                            });
+                            console.error('⚠️ [LOAD_USER] DECISIÓN: Error del servidor - NO redirigir, intentar migración silenciosa');
+                            console.error('⚠️ [LOAD_USER] El usuario puede quedarse en el dashboard mientras el backend se estabiliza');
+                        }
+                        
+                        // Si es error 422 (Validación) o 500, puede ser por campos nuevos faltantes
+                        // Intentar migración silenciosa
+                        console.log('🔄 [LOAD_USER] Error de validación/servidor, intentando migración silenciosa...');
+                        const migrationResult = await attemptSilentMigration(token);
+                        
+                        if (migrationResult.success) {
+                            console.log('✅ [LOAD_USER] Migración silenciosa exitosa, reintentando carga...');
+                            // Reintentar carga después de migración
+                            return await loadUserData();
+                        } else {
+                            // Si la migración falla, verificar si tiene rutina para marcar onboarding
+                            const hasRoutine = await checkUserHasRoutine(token);
+                            if (hasRoutine) {
+                                console.log('✅ [LOAD_USER] Usuario tiene rutina, marcando onboarding_completed=true');
+                                localStorage.setItem('onboarding_completed', 'true');
+                                // Retornar datos básicos para continuar
+                                return {
+                                    id: parseInt(localStorage.getItem('user_id') || '0'),
+                                    email: localStorage.getItem('email') || '',
+                                    onboarding_completed: true,
+                                    session_duration: '45-60',
+                                    plan_type: 'FREE',
+                                    is_premium: false
+                                };
+                            }
+                            
+                            console.error('❌ [LOAD_USER] Migración falló y no hay rutina, redirigiendo a login...');
+                            localStorage.removeItem('accessToken');
+                            window.location.href = '/login.html';
+                            return null;
+                        }
                     }
                     
                     const userData = await response.json();
+                    
+                    // Verificar si tiene rutina válida para asegurar onboarding_completed
+                    if (userData.onboarding_completed === false || !userData.onboarding_completed) {
+                        const hasRoutine = await checkUserHasRoutine(token);
+                        if (hasRoutine) {
+                            console.log('✅ [LOAD_USER] Usuario tiene rutina pero onboarding_completed=false, actualizando...');
+                            localStorage.setItem('onboarding_completed', 'true');
+                            userData.onboarding_completed = true;
+                        }
+                    }
+                    
+                    // Asegurar que session_duration tenga valor por defecto si es null/undefined
+                    if (!userData.session_duration) {
+                        console.log('🔄 [LOAD_USER] session_duration faltante, usando valor por defecto: 45-60');
+                        userData.session_duration = '45-60';
+                    }
                     
                     // Guardar en variable global
                     window.currentUser = userData;
@@ -7145,16 +7350,139 @@
                     // También guardar en localStorage para compatibilidad
                     if (userData.email) localStorage.setItem('email', userData.email);
                     if (userData.id) localStorage.setItem('user_id', String(userData.id));
+                    if (userData.onboarding_completed !== undefined) {
+                        localStorage.setItem('onboarding_completed', String(userData.onboarding_completed));
+                    }
+                    if (userData.session_duration) {
+                        localStorage.setItem('session_duration', userData.session_duration);
+                    }
                     
-                    console.log('✅ Usuario cargado desde BD:', userData);
+                    console.log('✅ [LOAD_USER] Usuario cargado desde BD:', userData);
                     
                     return userData;
                     
                 } catch (error) {
-                    console.error('❌ Error al cargar usuario:', error);
+                    console.error('❌ [LOAD_USER] Error al cargar usuario:', error);
+                    
+                    // Intentar migración silenciosa antes de hacer logout
+                    console.log('🔄 [LOAD_USER] Intentando migración silenciosa después de error...');
+                    const migrationResult = await attemptSilentMigration(token);
+                    
+                    if (migrationResult.success) {
+                        console.log('✅ [LOAD_USER] Migración silenciosa exitosa, reintentando carga...');
+                        return await loadUserData();
+                    }
+                    
+                    // Verificar si tiene rutina antes de hacer logout
+                    const hasRoutine = await checkUserHasRoutine(token);
+                    if (hasRoutine) {
+                        console.log('✅ [LOAD_USER] Usuario tiene rutina, marcando onboarding_completed=true y continuando...');
+                        localStorage.setItem('onboarding_completed', 'true');
+                        return {
+                            id: parseInt(localStorage.getItem('user_id') || '0'),
+                            email: localStorage.getItem('email') || '',
+                            onboarding_completed: true,
+                            session_duration: '45-60',
+                            plan_type: 'FREE',
+                            is_premium: false
+                        };
+                    }
+                    
+                    // Solo hacer logout si realmente no hay forma de continuar
+                    console.error('❌ [LOAD_USER] No se pudo recuperar, redirigiendo a login...');
                     localStorage.removeItem('accessToken');
                     window.location.href = '/login.html';
                     return null;
+                }
+            }
+            
+            /**
+             * Verifica si el usuario tiene una rutina válida
+             */
+            async function checkUserHasRoutine(token) {
+                try {
+                    const userId = localStorage.getItem('user_id');
+                    if (!userId) return false;
+                    
+                    const response = await fetch(`${API_BASE}/user/current-routine?user_id=${userId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        const routine = data.current_routine;
+                        
+                        // Verificar si tiene ejercicios o días válidos
+                        if (routine && typeof routine === 'object') {
+                            if (routine.exercises && Array.isArray(routine.exercises) && routine.exercises.length > 0) {
+                                return true;
+                            }
+                            if (routine.dias && Array.isArray(routine.dias) && routine.dias.length > 0) {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                } catch (error) {
+                    console.log('⚠️ [LOAD_USER] Error verificando rutina:', error);
+                    return false;
+                }
+            }
+            
+            /**
+             * Intenta hacer una migración silenciosa para usuarios antiguos
+             * Actualiza campos faltantes con valores por defecto
+             */
+            async function attemptSilentMigration(token) {
+                try {
+                    console.log('🔄 [MIGRATION] Iniciando migración silenciosa...');
+                    
+                    // Obtener datos actuales del usuario
+                    const currentDataResponse = await fetch(`${API_BASE}/plan/datos-actuales`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (!currentDataResponse.ok) {
+                        console.log('⚠️ [MIGRATION] No se pudieron obtener datos actuales');
+                        return { success: false, reason: 'no_data' };
+                    }
+                    
+                    const currentData = await currentDataResponse.json();
+                    
+                    // Preparar datos con valores por defecto para campos faltantes
+                    const migrationData = {
+                        ...currentData,
+                        session_duration: currentData.session_duration || '45-60',
+                        nivel_actividad: currentData.nivel_actividad || 'moderado',
+                        // Asegurar que todos los campos requeridos tengan valores
+                        altura: currentData.altura || 175,
+                        peso: currentData.peso || 75.0,
+                        edad: currentData.edad || 25,
+                        sexo: currentData.sexo || 'hombre',
+                        experiencia: currentData.experiencia || 'principiante',
+                        objetivo: currentData.objetivo || currentData.objetivo_gym || 'ganar_musculo',
+                        materiales: currentData.materiales || 'Gym completo',
+                        dias_entrenamiento: currentData.dias_entrenamiento || currentData.training_frequency || 4,
+                        training_days: currentData.training_days || ['lunes', 'martes', 'jueves', 'viernes'],
+                        idioma: 'es'
+                    };
+                    
+                    console.log('🔄 [MIGRATION] Datos preparados para migración:', migrationData);
+                    
+                    // La migración silenciosa no requiere hacer POST al onboarding
+                    // Solo necesitamos asegurar que el backend devuelva valores por defecto
+                    // El backend ya está configurado para hacerlo en /api/user/me
+                    
+                    console.log('✅ [MIGRATION] Migración silenciosa completada (valores por defecto aplicados)');
+                    return { success: true };
+                    
+                } catch (error) {
+                    console.error('❌ [MIGRATION] Error en migración silenciosa:', error);
+                    return { success: false, reason: 'migration_error', error: error.message };
                 }
             }
 

@@ -14,10 +14,45 @@ const daysError = document.getElementById('days-error');
 const requiredDaysSpan = document.getElementById('required-days');
 
 // Verificar si hay sesión activa
+// ⚠️ IMPORTANTE: Usar setTimeout para dar tiempo a que login.html procese el token de URL
 window.addEventListener('load', () => {
-    if (!checkAuthOrRedirect()) {
-        return;
-    }
+    console.log('🔄 [ONBOARDING] Evento load - Esperando 100ms para procesar token de URL...');
+    
+    setTimeout(async () => {
+        console.log('🔍 [ONBOARDING] Verificando autenticación después de delay...');
+        
+        // Verificar manualmente si existe accessToken antes de llamar a checkAuthOrRedirect
+        const hasToken = localStorage.getItem('accessToken');
+        console.log('🔍 [ONBOARDING] Token en localStorage:', hasToken ? 'Presente' : 'Ausente');
+        
+        if (!hasToken) {
+            console.log('⚠️ [ONBOARDING] No hay token - Verificando autenticación completa...');
+        }
+        
+        // Llamar a checkAuthOrRedirect (ahora es permisiva en onboarding)
+        const authResult = await checkAuthOrRedirect();
+        
+        // Si checkAuthOrRedirect devuelve false, verificar manualmente si existe token
+        if (!authResult) {
+            console.log('⚠️ [ONBOARDING] checkAuthOrRedirect devolvió false - Verificando manualmente...');
+            
+            // Verificación manual: si existe accessToken, quedarse en la página
+            const manualTokenCheck = localStorage.getItem('accessToken');
+            
+            if (manualTokenCheck) {
+                console.log('🟢 [ONBOARDING] Token encontrado manualmente - PERMITIENDO estancia en onboarding');
+                console.log('🟢 [ONBOARDING] No se ejecutará redirección al login (hay token presente)');
+                return; // Quedarse en la página
+            } else {
+                console.log('❌ [ONBOARDING] No hay token - Redirigiendo a login...');
+                // Solo redirigir si realmente no hay token
+                window.location.href = './login.html';
+                return;
+            }
+        }
+        
+        console.log('✅ [ONBOARDING] Autenticación verificada correctamente');
+    }, 100); // Delay de 100ms para procesar token de URL
 });
 
 // Utilidad segura para obtener valores y detectar elementos faltantes

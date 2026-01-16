@@ -82,8 +82,35 @@ async def login(
         data={"sub": str(db_user.id)},
         expires_delta=access_token_expires
     )
+    
+    # Calcular onboarding_completed dinámicamente
+    # Si tiene current_routine válida o tiene un Plan, consideramos que completó onboarding
+    has_valid_routine = False
+    if db_user.current_routine:
+        try:
+            import json
+            routine_data = json.loads(db_user.current_routine)
+            # Verificar que no sea solo el objeto vacío por defecto
+            if isinstance(routine_data, dict) and routine_data.get("exercises"):
+                has_valid_routine = len(routine_data.get("exercises", [])) > 0
+        except:
+            pass
+    
+    # Verificar si tiene un Plan en la BD
+    has_plan = db.query(models.Plan).filter(models.Plan.user_id == db_user.id).first() is not None
+    
+    # onboarding_completed = True si:
+    # 1. Está marcado explícitamente como True en BD, O
+    # 2. Tiene una rutina válida, O
+    # 3. Tiene un Plan guardado
+    onboarding_completed = bool(
+        db_user.onboarding_completed or 
+        has_valid_routine or 
+        has_plan
+    )
+    
     return {
         "access_token": access_token, 
         "token_type": "bearer",
-        "onboarding_completed": db_user.onboarding_completed
+        "onboarding_completed": onboarding_completed
     }

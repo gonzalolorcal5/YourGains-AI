@@ -42,6 +42,21 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
+# ---------- USER RESPONSE ----------
+class UserResponse(BaseModel):
+    """Schema de respuesta del usuario con valores por defecto para compatibilidad con usuarios antiguos"""
+    id: int
+    email: str
+    plan_type: str = "FREE"
+    is_premium: bool = False
+    onboarding_completed: bool = False
+    session_duration: str = "45-60"  # Valor por defecto para usuarios antiguos
+    profile_picture: Optional[str] = None
+    chat_uses_free: int = 2
+    stripe_customer_id: Optional[str] = None
+    stripe_subscription_id: Optional[str] = None
+    subscription_type: Optional[str] = None
+
 # ---------- EXTRA OPCIONAL ----------
 class UserCreate(BaseModel):
     email: str
