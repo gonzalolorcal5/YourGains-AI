@@ -24,9 +24,18 @@
       filter: drop-shadow(0 0 4px rgba(132, 204, 22, 0.45));
     }
   </style>
-  <script type="module">
-    import { checkAuthOrRedirect } from "./auth.js";
-    checkAuthOrRedirect();
+  <script src="/auth.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      if (typeof checkAuthOrRedirect === 'function') {
+        checkAuthOrRedirect();
+      } else {
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+          window.location.href = '/';
+        }
+      }
+    });
   </script>
 </head>
 <body class="min-h-screen bg-neutral-950 text-white">
@@ -43,7 +52,7 @@
         </div>
       </div>
       <div class="flex gap-3">
-         <a href="./dashboard.html" class="text-2xl text-neutral-400 hover:text-white transition" title="Volver al dashboard">&times;</a>
+         <a href="/dashboard.html" class="text-2xl text-neutral-400 hover:text-white transition" title="Volver al dashboard">&times;</a>
       </div>
     </div>
   </header>
@@ -235,8 +244,8 @@
   <!-- JAVASCRIPT (Funcionalidad del código nuevo) -->
   <!-- ============================================ -->
   <script type="module">
-    import { API_BASE } from "./config.js";
-    import { getAuthHeaders } from "./auth.js";
+    import { API_BASE } from "/config.js";
+    import { getAuthHeaders } from "/auth.js";
 
     // Variables globales
     let stripe;
