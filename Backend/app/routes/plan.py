@@ -135,6 +135,10 @@ async def generar_rutina(
         if hasattr(datos, 'training_days') and datos.training_days:
             datos_dict['training_days'] = datos.training_days
         
+        # Agregar 'session_duration' si está disponible
+        if hasattr(datos, 'session_duration'):
+            datos_dict['session_duration'] = datos.session_duration or '45-60'
+        
         # Agregar 'nutrition_goal' por defecto si no existe
         if 'nutrition_goal' not in datos_dict:
             if hasattr(datos, 'objetivo_nutricional') and datos.objetivo_nutricional:
@@ -414,6 +418,7 @@ async def generar_rutina(
             lesiones=datos.lesiones,
             alergias=datos.alergias,
             restricciones_dieta=datos.restricciones_dieta,
+            session_duration=getattr(datos, 'session_duration', '45-60'),  # Guardar duración de sesión
             rutina=rutina_str,
             dieta=dieta_str,
             motivacion=motivacion_str,
@@ -595,7 +600,8 @@ def obtener_datos_actuales(
             "restricciones_dieta": plan.restricciones_dieta or None,
             "dias_entrenamiento": training_frequency or 4,
             "training_frequency": training_frequency or 4,
-            "training_days": training_days or ["lunes", "martes", "jueves", "viernes"]
+            "training_days": training_days or ["lunes", "martes", "jueves", "viernes"],
+            "session_duration": plan.session_duration or "45-60"
         }
     except Exception as e:
         # Si hay error, retornar valores por defecto (no fallar)
@@ -633,7 +639,8 @@ def obtener_datos_actuales(
             "restricciones_dieta": None,
             "dias_entrenamiento": training_frequency or 4,
             "training_frequency": training_frequency or 4,
-            "training_days": training_days or ["lunes", "martes", "jueves", "viernes"]
+            "training_days": training_days or ["lunes", "martes", "jueves", "viernes"],
+            "session_duration": "45-60"
         }
 
 

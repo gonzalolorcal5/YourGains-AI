@@ -13,6 +13,7 @@ class PlanRequest(BaseModel):
     materiales: str
     dias_entrenamiento: int
     training_days: Optional[List[str]] = None  # ["lunes", "martes", "miércoles", ...]
+    session_duration: Optional[str] = '45-60'  # Duración de sesión: "30-45", "45-60", "60-75", "75-90", "90+"
     tipo_cuerpo: Optional[str] = None
     idioma: str = "es"
     puntos_fuertes: Optional[str] = None

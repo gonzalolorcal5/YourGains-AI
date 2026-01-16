@@ -4418,6 +4418,20 @@
                                     </p>
                                 </div>
                             </div>
+                            
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; color: #84cc16; font-weight: 600;">¿Cuánto tiempo tienes por sesión? <span style="color: #ef4444;">*</span></label>
+                                <select id="session_duration" name="session_duration" required
+                                    style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #404040; background: #1a1a1a; color: white;">
+                                    <option value="">Selecciona duración</option>
+                                    <option value="30-45">30-45 minutos</option>
+                                    <option value="45-60" selected>45-60 minutos (Recomendado)</option>
+                                    <option value="60-75">60-75 minutos</option>
+                                    <option value="75-90">75-90 minutos</option>
+                                    <option value="90+">Más de 90 minutos</option>
+                                </select>
+                                <p style="font-size: 12px; color: #999; margin-top: 4px;">Esto nos ayuda a ajustar el volumen de ejercicios</p>
+                            </div>
                         </div>
                         
                         <!-- Campos adicionales -->
@@ -4544,6 +4558,7 @@
                 if (userData.lesiones) document.getElementById('lesiones').value = userData.lesiones;
                 if (userData.alergias) document.getElementById('alergias').value = userData.alergias;
                 if (userData.restricciones_dieta) document.getElementById('restricciones_dieta').value = userData.restricciones_dieta;
+                if (userData.session_duration) document.getElementById('session_duration').value = userData.session_duration;
             }
             
             // Función para cargar el formulario de nueva rutina (MOVIDA FUERA DE initDashboard)
@@ -4670,6 +4685,7 @@
                         materiales: document.getElementById('materiales').value || '',
                         dias_entrenamiento: parseInt(document.getElementById('dias_entrenamiento').value), // Requerido por schema
                         training_days: selectedDays, // Días específicos de la semana (capitalizados)
+                        session_duration: document.getElementById('session_duration').value || '45-60', // Duración de sesión
                         lesiones: document.getElementById('lesiones').value || null,
                         alergias: document.getElementById('alergias').value || null,
                         restricciones_dieta: document.getElementById('restricciones_dieta').value || null,

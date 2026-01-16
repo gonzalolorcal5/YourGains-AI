@@ -53,6 +53,51 @@ logger.info(f"💰 Costo estimado por plan: ~$0.015-0.025 (depende de tokens)")
 logger.info(f"🔑 API Key: {'✅ Configurada' if OPENAI_API_KEY else '❌ No encontrada'}")
 logger.info("=" * 80)
 
+# ═══════════════════════════════════════════════════════
+# 🎯 CONSTRAINTS DE TIEMPO POR SESIÓN
+# ═══════════════════════════════════════════════════════
+SESSION_TIME_CONSTRAINTS = {
+    "30-45": {
+        "max_exercises": 4,
+        "sets_per_exercise": "3-4",
+        "rest_between_sets": "60-90s",
+        "warmup_time": "5min",
+        "total_time": "30-45min",
+        "description": "Sesión corta, enfocada en ejercicios compuestos"
+    },
+    "45-60": {
+        "max_exercises": 5,
+        "sets_per_exercise": "3-4",
+        "rest_between_sets": "90s",
+        "warmup_time": "5-7min",
+        "total_time": "45-60min",
+        "description": "Sesión estándar balanceada"
+    },
+    "60-75": {
+        "max_exercises": 6,
+        "sets_per_exercise": "4",
+        "rest_between_sets": "90-120s",
+        "warmup_time": "5-7min",
+        "total_time": "60-75min",
+        "description": "Sesión larga con ejercicios accesorios"
+    },
+    "75-90": {
+        "max_exercises": 7,
+        "sets_per_exercise": "4-5",
+        "rest_between_sets": "90-120s",
+        "warmup_time": "7-10min",
+        "total_time": "75-90min",
+        "description": "Sesión muy larga con alto volumen"
+    },
+    "90+": {
+        "max_exercises": 8,
+        "sets_per_exercise": "4-5",
+        "rest_between_sets": "120s",
+        "warmup_time": "10min",
+        "total_time": "90+min",
+        "description": "Sesión extensa para volumen máximo"
+    }
+}
 
 # ═══════════════════════════════════════════════════════
 # 🔥 NUEVA FUNCIÓN: Generar embedding de texto
@@ -716,6 +761,14 @@ async def generar_plan_personalizado(datos):
     # Normalizar días: capitalizar primera letra (Lunes, Martes, etc.)
     training_days = [day.capitalize() if day else day for day in training_days_raw] if training_days_raw else ['Lunes', 'Martes', 'Jueves', 'Viernes']
     
+    # Obtener duración de sesión
+    session_duration = datos.get('session_duration', '45-60')  # Default 45-60min
+    time_constraints = SESSION_TIME_CONSTRAINTS.get(session_duration, SESSION_TIME_CONSTRAINTS['45-60'])
+    
+    logger.info(f"⏱️ Duración de sesión: {session_duration} minutos")
+    logger.info(f"   Máximo de ejercicios: {time_constraints['max_exercises']}")
+    logger.info(f"   Series por ejercicio: {time_constraints['sets_per_exercise']}")
+    
     texto_dieta = f"""
 Quiero que ahora generes una dieta hiperpersonalizada basada en cálculos científicos (fórmula Mifflin-St Jeor).
 
@@ -836,6 +889,25 @@ IMPORTANTE: Las repeticiones deben ser strings como "8-10", "12-15", etc. NO nú
     # ═══════════════════════════════════════════════════════
     # 🔥 MODIFICACIÓN PRINCIPAL: INYECTAR CONTEXTO RAG
     # ═══════════════════════════════════════════════════════
+    
+    # Calcular valores para constraints de tiempo
+    warmup_time_str = time_constraints['warmup_time']
+    if '-' in warmup_time_str:
+        warmup_minutes = int(warmup_time_str.replace('min', '').split('-')[0])
+    else:
+        warmup_minutes = int(warmup_time_str.replace('min', ''))
+    
+    max_exercises = time_constraints['max_exercises']
+    sets_per_exercise = time_constraints['sets_per_exercise']
+    # Calcular series promedio (tomar el primer número si es rango)
+    if '-' in sets_per_exercise:
+        avg_sets = int(sets_per_exercise.split('-')[0])
+    else:
+        avg_sets = int(sets_per_exercise)
+    
+    # Calcular minutos de ejercicios: ejercicios × series × 45s/serie × (1 + descanso 90s)
+    ejercicio_minutes = int(max_exercises * avg_sets * 45 * 2.5 / 60)
+    total_estimated = warmup_minutes + ejercicio_minutes
     
     prompt = f"""
 Eres un entrenador profesional de fuerza y nutrición. Genera un plan completo y personalizado.
@@ -995,6 +1067,39 @@ REVISA LA RUTINA COMPLETA antes de devolverla y asegúrate de que:
    - ⚠️ CRÍTICO: El campo "dia" de cada objeto DEBE ser EXACTAMENTE uno de estos (en este orden): {', '.join(training_days)}
    - ⚠️ CRÍTICO: NO uses días que no estén en esta lista: {', '.join(training_days)}
    - Cada día debe tener su nombre específico con el día de la semana (ej: "Lunes - Pecho y Tríceps", "Martes - Espalda y Bíceps")
+   
+   ⚠️⚠️⚠️ RESTRICCIÓN CRÍTICA DE TIEMPO POR SESIÓN ⚠️⚠️⚠️
+   El usuario tiene disponible: {session_duration} minutos POR DÍA DE ENTRENAMIENTO (NO por semana total)
+   ⚠️ IMPORTANTE: Esta restricción aplica a CADA DÍA individualmente, no al total semanal
+   
+   CONSTRAINTS OBLIGATORIOS (APLICAN A CADA DÍA):
+   - Máximo de ejercicios por día: {time_constraints['max_exercises']} ejercicios
+   - Series por ejercicio: {time_constraints['sets_per_exercise']} series
+   - Descanso entre series: {time_constraints['rest_between_sets']}
+   - Tiempo de calentamiento: {time_constraints['warmup_time']}
+   - Descripción: {time_constraints['description']}
+   
+   ⚠️ REGLAS OBLIGATORIAS (POR DÍA):
+   1. ❌ PROHIBIDO: NO incluir MÁS de {time_constraints['max_exercises']} ejercicios por día
+   2. ❌ PROHIBIDO: NO poner más de {time_constraints['sets_per_exercise']} series por ejercicio
+   3. ✅ OBLIGATORIO: Calcular que calentamiento + ejercicios + descansos = {session_duration} minutos MÁXIMO POR DÍA
+   4. ✅ OBLIGATORIO: Si el tiempo no cuadra, REDUCE ejercicios o series, NUNCA ignores esta restricción
+   5. ✅ OBLIGATORIO: Prioriza ejercicios compuestos para sesiones cortas (30-45min)
+   6. ✅ OBLIGATORIO: Cada día de la semana debe respetar este límite de {session_duration} minutos individualmente
+   
+   CÁLCULO DE TIEMPO (EJEMPLO):
+   - Calentamiento: {time_constraints['warmup_time']} = ~{warmup_minutes} minutos
+   - Ejercicios: {time_constraints['max_exercises']} ejercicios × 4 series × 45s/serie × (1 + descanso 90s) = ~{ejercicio_minutes} minutos
+   - Total estimado: ~{total_estimated} minutos
+   
+   Si este cálculo excede {session_duration} minutos, DEBES ajustar:
+   - Reducir número de ejercicios
+   - Reducir series por ejercicio  
+   - Acortar descansos entre series
+   - Simplificar calentamiento
+   
+   ⚠️⚠️⚠️ CRÍTICO: Si generas una rutina que exceda {session_duration} minutos, será INVÁLIDA ⚠️⚠️⚠️
+   
    - El orden de los días en el array DEBE seguir: {', '.join(training_days)}
    - Ajusta los ejercicios y volumen según el objetivo de gym: {gym_goal}
      * Si es "ganar_musculo": Hipertrofia - 8-12 reps, 3-4 series, descansos 60-90s

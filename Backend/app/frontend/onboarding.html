@@ -27,11 +27,45 @@
                 overflow-x: hidden;
             }
             
+            /* FIX CRÍTICO: Forzar que los selects ocupen 100% y no se desborden */
+            select,
+            select:focus,
+            select:active {
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Forzar que el contenedor de cada campo ocupe 100% */
+            .form-container > form > div,
+            .form-container form > div {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Asegurar que inputs también se ajusten */
+            input,
+            textarea {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* FIX PRINCIPAL: Eliminar márgenes laterales y ocupar todo el ancho */
             .form-container {
-                margin: 16px;
-                padding: 20px;
-                max-width: calc(100vw - 32px);
+                margin: 0 !important;
+                padding: 16px !important;
+                max-width: 100vw !important;
+                width: 100% !important;
                 box-sizing: border-box;
+            }
+            
+            /* Asegurar que el contenedor padre también ocupe todo */
+            body > div {
+                width: 100% !important;
+                padding: 0 !important;
             }
             
             select {
@@ -212,7 +246,7 @@
             <div>
                 <label class="block text-sm mb-2">Objetivo de Gimnasio <span class="text-red-400">*</span></label>
                 <select id="gym_goal" name="gym_goal" required class="w-full px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-white focus:border-lime-400 focus:ring-2 focus:ring-lime-400 focus:outline-none transition-all">
-                    <option value="">Selecciona tu objetivo de gimnasio</option>
+                    <option value="">Selecciona objetivo</option>
                     <option value="ganar_musculo">Ganar masa muscular</option>
                     <option value="ganar_fuerza">Ganar fuerza</option>
                 </select>
@@ -222,7 +256,7 @@
             <div>
                 <label class="block text-sm mb-2">Objetivo Nutricional <span class="text-red-400">*</span></label>
                 <select id="nutrition_goal" name="nutrition_goal" required class="w-full px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-white focus:border-lime-400 focus:ring-2 focus:ring-lime-400 focus:outline-none transition-all">
-                    <option value="">Selecciona tu objetivo nutricional</option>
+                    <option value="">Selecciona objetivo</option>
                     <option value="volumen">Volumen</option>
                     <option value="definicion">Definición</option>
                     <option value="mantenimiento">Mantenimiento</option>
@@ -239,6 +273,20 @@
                     <option value="5">5 días/semana</option>
                     <option value="6">6 días/semana</option>
                 </select>
+            </div>
+
+            <!-- Tiempo disponible por sesión -->
+            <div>
+                <label class="block text-sm mb-2">¿Cuánto tiempo tienes por sesión? <span class="text-red-400">*</span></label>
+                <select id="session_duration" name="session_duration" required class="w-full px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-white focus:border-lime-400 focus:ring-2 focus:ring-lime-400 focus:outline-none transition-all">
+                    <option value="">Selecciona duración</option>
+                    <option value="30-45">30-45 minutos</option>
+                    <option value="45-60">45-60 minutos (Recomendado)</option>
+                    <option value="60-75">60-75 minutos</option>
+                    <option value="75-90">75-90 minutos</option>
+                    <option value="90+">Más de 90 minutos</option>
+                </select>
+                <p class="text-xs text-neutral-400 mt-1">Esto nos ayuda a ajustar el volumen de ejercicios</p>
             </div>
 
             <!-- Días específicos de entrenamiento -->
@@ -320,11 +368,11 @@
                 <label class="block text-sm mb-2">Nivel de actividad diaria <span class="text-red-400">*</span></label>
                 <select id="nivel_actividad" name="nivel_actividad" required class="w-full px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-white focus:border-lime-400 focus:ring-2 focus:ring-lime-400 focus:outline-none transition-all">
                     <option value="">Selecciona tu nivel de actividad</option>
-                    <option value="sedentario">Sedentario (poco o ningún ejercicio)</option>
-                    <option value="ligero">Ligero (ejercicio 1-3 días/semana)</option>
-                    <option value="moderado">Moderado (ejercicio 3-5 días/semana)</option>
-                    <option value="activo">Activo (ejercicio 6-7 días/semana)</option>
-                    <option value="muy_activo">Muy activo (ejercicio intenso + trabajo físico)</option>
+                    <option value="sedentario">Sedentario</option>
+                    <option value="ligero">Ligero (1-3 días/sem)</option>
+                    <option value="moderado">Moderado (3-5 días/sem)</option>
+                    <option value="activo">Activo (6-7 días/sem)</option>
+                    <option value="muy_activo">Muy activo</option>
                 </select>
                 <p class="text-xs text-neutral-400 mt-1">Esto nos ayuda a calcular tus calorías de forma más precisa</p>
             </div>
@@ -362,15 +410,15 @@
             </div>
 
             <p id="msg" class="text-center text-sm text-red-400 min-h-5"></p>
+
+            <!-- Footer con contacto -->
+            <div class="mt-6 pt-4 text-center border-t border-neutral-800">
+                <p class="text-neutral-400 text-xs">
+                    ¿Necesitas ayuda? <a href="mailto:contacto@yourgains.ai" class="text-lime-400 hover:underline">contacto@yourgains.ai</a>
+                </p>
+            </div>
         </form>
     </div>
-
-    <!-- Footer con contacto -->
-    <footer class="mt-8 py-4 text-center border-t border-neutral-800">
-        <p class="text-neutral-400 text-xs">
-            ¿Necesitas ayuda? <a href="mailto:contacto@yourgains.ai" class="text-lime-400 hover:underline">contacto@yourgains.ai</a>
-        </p>
-    </footer>
 
     <script type="module" src="./onboarding.js?v=2"></script>
 </body>

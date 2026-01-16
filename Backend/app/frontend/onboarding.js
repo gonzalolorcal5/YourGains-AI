@@ -139,7 +139,8 @@ form.addEventListener('submit', async (e) => {
             gym_goal: getFieldValueById('gym_goal'),
             nutrition_goal: getFieldValueById('nutrition_goal'),
             training_frequency: frequency,
-            training_days: Array.from(document.querySelectorAll('input[name="training_days"]:checked')).map(cb => cb.value)
+            training_days: Array.from(document.querySelectorAll('input[name="training_days"]:checked')).map(cb => cb.value),
+            session_duration: getFieldValueById('session_duration') || '45-60'  // Duración de sesión
         };
         
         // Debug: mostrar datos en consola

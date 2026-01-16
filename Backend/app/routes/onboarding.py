@@ -36,6 +36,7 @@ class OnboardingRequest(BaseModel):
     nutrition_goal: str  # volumen, definicion, mantenimiento
     training_frequency: int  # 3, 4, 5, 6
     training_days: List[str]  # ["lunes", "martes", "miércoles", ...]
+    session_duration: Optional[str] = "45-60"  # Duración de sesión: "30-45", "45-60", "60-75", "75-90", "90+"
 
 @router.post("/onboarding")
 async def process_onboarding(
@@ -90,7 +91,8 @@ async def process_onboarding(
             'gym_goal': data.gym_goal,
             'nutrition_goal': data.nutrition_goal,
             'training_frequency': data.training_frequency,
-            'training_days': data.training_days
+            'training_days': data.training_days,
+            'session_duration': data.session_duration or '45-60'  # Duración de sesión
         }
         
         # 🔧 FIX: Generar según tipo de usuario ANTES de guardar
@@ -160,6 +162,7 @@ async def process_onboarding(
             lesiones=data.lesiones,
             alergias=data.alergias,
             restricciones_dieta=data.restricciones_dieta,
+            session_duration=data.session_duration if hasattr(data, 'session_duration') else '45-60',  # Guardar duración de sesión
             rutina=json.dumps(rutina_json, ensure_ascii=False),
             dieta=json.dumps(dieta_json, ensure_ascii=False),
             motivacion=plan_data.get("motivacion", ""),
@@ -289,6 +292,7 @@ async def process_onboarding(
             lesiones=data.lesiones if hasattr(data, 'lesiones') else None,
             alergias=data.alergias if hasattr(data, 'alergias') else None,
             restricciones_dieta=data.restricciones_dieta if hasattr(data, 'restricciones_dieta') else None,
+            session_duration=data.session_duration if hasattr(data, 'session_duration') else '45-60',  # Guardar duración de sesión
             rutina=serialize_json(rutina_json, "rutina"),
             dieta=serialize_json(dieta_json, "dieta"),
             motivacion=plan_data.get("motivacion", ""),

@@ -66,6 +66,7 @@ class Plan(Base):
     lesiones = Column(String, nullable=True)
     alergias = Column(String, nullable=True)
     restricciones_dieta = Column(String, nullable=True)
+    session_duration = Column(String, nullable=True, default='45-60')  # Duración de sesión: "30-45", "45-60", "60-75", "75-90", "90+"
 
     rutina = Column(Text, nullable=False)
     dieta = Column(Text, nullable=False)
