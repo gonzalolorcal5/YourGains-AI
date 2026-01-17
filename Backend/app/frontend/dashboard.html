@@ -2097,9 +2097,9 @@
                     top: 210px; /* Bajado un poco más para reducir altura del chat */
                     left: 0;
                     right: 0;
-                    bottom: max(env(safe-area-inset-bottom, 0), 60px);
+                    bottom: 0;
                     width: 100%;
-                    height: calc(100dvh - 210px - max(env(safe-area-inset-bottom, 0px), 60px));
+                    height: calc(100dvh - 210px);
                     z-index: 9999;
                     background: #000000 !important; /* Negro puro forzado */
                     border-radius: 0;
@@ -2145,7 +2145,7 @@
                 
                 .chat-input-area {
                     flex-shrink: 0;
-                    padding: 12px 16px max(calc(20px + env(safe-area-inset-bottom, 0px)), 80px) 16px;
+                    padding: 12px 16px max(calc(16px + env(safe-area-inset-bottom, 0px)), 16px) 16px;
                     background: #000000 !important; /* Negro puro forzado */
                     border-top: 1px solid #1a1a1a;
                     position: relative;
@@ -4167,7 +4167,7 @@
                  * Usa /api/user/me como fuente única de verdad.
                  */
                 try {
-                    const token = localStorage.getItem('access_token');
+                    const token = localStorage.getItem('accessToken');
                     if (!token) {
                         console.log('⚠️ No hay token, usuario no autenticado');
                         return false;
