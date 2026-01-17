@@ -93,18 +93,35 @@ async def get_current_user_data(
         if last_plan and last_plan.session_duration:
             session_duration = last_plan.session_duration
         
+        # 🔥 Asegurar que todos los campos necesarios estén presentes
+        # get_current_user ya hace db.refresh, así que current_user tiene los datos más recientes
+        # Forzar refresh adicional para asegurar sincronización completa
+        db.refresh(current_user)
+        
+        # Preparar valores para la respuesta
+        user_id = current_user.id
+        user_email = current_user.email
+        user_plan_type = current_user.plan_type or "FREE"
+        user_is_premium = bool(current_user.is_premium)
+        user_stripe_customer_id = getattr(current_user, 'stripe_customer_id', None)
+        user_stripe_subscription_id = getattr(current_user, 'stripe_subscription_id', None)
+        user_subscription_type = getattr(current_user, 'subscription_type', None)
+        
+        # 🔥 LOG DE SINCRONIZACIÓN para depuración en Railway
+        print(f"[SYNC] Enviando estado al frontend: Usuario ID: {user_id}, Email: {user_email}, Premium: {user_is_premium}, Plan: {user_plan_type}, Onboarding: {onboarding_completed}, Stripe Customer: {user_stripe_customer_id}")
+        
         return UserResponse(
-            id=current_user.id,
-            email=current_user.email,
-            plan_type=current_user.plan_type or "FREE",
-            is_premium=bool(current_user.is_premium),
+            id=user_id,
+            email=user_email,
+            plan_type=user_plan_type,
+            is_premium=user_is_premium,
             onboarding_completed=onboarding_completed,
             session_duration=session_duration,
             profile_picture=getattr(current_user, 'profile_picture', None),
             chat_uses_free=getattr(current_user, 'chat_uses_free', 2),
-            stripe_customer_id=getattr(current_user, 'stripe_customer_id', None),
-            stripe_subscription_id=getattr(current_user, 'stripe_subscription_id', None),
-            subscription_type=getattr(current_user, 'subscription_type', None),
+            stripe_customer_id=user_stripe_customer_id,
+            stripe_subscription_id=user_stripe_subscription_id,
+            subscription_type=user_subscription_type,
         )
     
     except Exception as e:
@@ -113,17 +130,27 @@ async def get_current_user_data(
         import traceback
         traceback.print_exc()
         
+        # Preparar valores por defecto seguros
+        user_id = current_user.id if current_user else 0
+        user_email = current_user.email if current_user else ""
+        user_plan_type = getattr(current_user, 'plan_type', 'FREE') or "FREE"
+        user_is_premium = bool(getattr(current_user, 'is_premium', False))
+        user_stripe_customer_id = getattr(current_user, 'stripe_customer_id', None) if current_user else None
+        
+        # 🔥 LOG DE SINCRONIZACIÓN incluso en caso de error (con valores por defecto)
+        print(f"[SYNC] Enviando estado al frontend (ERROR): Usuario ID: {user_id}, Email: {user_email}, Premium: {user_is_premium}, Plan: {user_plan_type}, Onboarding: False (error), Stripe Customer: {user_stripe_customer_id}")
+        
         # Retornar valores por defecto seguros
         return UserResponse(
-            id=current_user.id if current_user else 0,
-            email=current_user.email if current_user else "",
-            plan_type=getattr(current_user, 'plan_type', 'FREE') or "FREE",
-            is_premium=bool(getattr(current_user, 'is_premium', False)),
+            id=user_id,
+            email=user_email,
+            plan_type=user_plan_type,
+            is_premium=user_is_premium,
             onboarding_completed=False,  # Por defecto False si hay error
             session_duration="45-60",  # Valor por defecto
             profile_picture=getattr(current_user, 'profile_picture', None) if current_user else None,
             chat_uses_free=getattr(current_user, 'chat_uses_free', 2) if current_user else 2,
-            stripe_customer_id=getattr(current_user, 'stripe_customer_id', None) if current_user else None,
+            stripe_customer_id=user_stripe_customer_id,
             stripe_subscription_id=getattr(current_user, 'stripe_subscription_id', None) if current_user else None,
             subscription_type=getattr(current_user, 'subscription_type', None) if current_user else None,
         )

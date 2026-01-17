@@ -98,9 +98,80 @@ export async function checkAuthOrRedirect() {
     return true; // Permitir acceso temporal para que checkPaymentSuccess pueda actuar
   }
 
-  // Intentar recuperar email del JWT si falta en localStorage
+  // ============================================
+  // PASO 1: RECUPERACIÓN SILENCIOSA (Si falta email pero hay token)
+  // ============================================
+  // 🔥 NUEVA LÓGICA: Si hay token pero falta email, intentar recuperación silenciosa del servidor
   if (token && !email) {
-    console.log('🔍 [AUTH] Intentando recuperar email del JWT...');
+    console.log('🔄 [AUTH] Token presente pero email faltante - Intentando recuperación silenciosa del servidor...');
+    try {
+      const recoveryResponse = await fetch(`${API_BASE}/api/user/me`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (recoveryResponse.status === 401) {
+        // Token realmente inválido - hacer logout
+        console.error('❌ [AUTH] Recuperación falló: Token inválido (401) - Redirigiendo a login');
+        if (!isStripeSuccess && !isOnboardingPage) {
+          logout();
+          return false;
+        }
+        // Si estamos en onboarding o hay pago, permitir temporalmente
+        console.log("⚠️ [AUTH] Error 401, pero se permite acceso temporal por verificación de pago activa o estancia en onboarding");
+        return true;
+      } else if (recoveryResponse.ok) {
+        // Recuperación exitosa - actualizar localStorage
+        const userData = await recoveryResponse.json();
+        console.log('✅ [AUTH] Recuperación silenciosa exitosa:', userData);
+        
+        // Actualizar localStorage con datos reales del servidor
+        if (userData.email) {
+          email = userData.email;
+          localStorage.setItem("email", userData.email);
+        }
+        if (userData.id) {
+          localStorage.setItem("user_id", String(userData.id));
+        }
+        if (userData.onboarding_completed !== undefined) {
+          localStorage.setItem("onboarding_completed", String(userData.onboarding_completed));
+        }
+        if (userData.is_premium !== undefined) {
+          localStorage.setItem("is_premium", String(userData.is_premium));
+        }
+        if (userData.plan_type) {
+          localStorage.setItem("plan_type", userData.plan_type);
+        }
+        if (userData.session_duration) {
+          localStorage.setItem("session_duration", userData.session_duration);
+        }
+        
+        // 🔥 AUTOCORRECCIÓN DE RUTA: Si está en onboarding pero el servidor dice que está completado
+        const serverOnboardingCompleted = userData.onboarding_completed === true || userData.onboarding_completed === "true";
+        if (isOnboardingPage && serverOnboardingCompleted) {
+          console.log('🔄 [AUTH] AUTOCORRECCIÓN: Usuario en onboarding.html pero servidor confirma onboarding completado');
+          console.log('🔄 [AUTH] Redirigiendo automáticamente al Dashboard...');
+          window.location.href = "./dashboard.html";
+          return true; // Retornar true aunque redirigamos (la redirección se ejecutará)
+        }
+      } else {
+        // Error del servidor (500, 422, etc.) - NO hacer logout, solo log
+        console.warn('⚠️ [AUTH] Recuperación falló con error del servidor:', recoveryResponse.status);
+        console.warn('⚠️ [AUTH] Continuando sin email (puede ser error temporal del servidor)');
+      }
+    } catch (error) {
+      // Error de red - NO hacer logout, solo log
+      console.warn('⚠️ [AUTH] Error de red durante recuperación silenciosa:', error);
+      console.warn('⚠️ [AUTH] Continuando sin email (puede ser error temporal de conexión)');
+    }
+  }
+  
+  // Intentar recuperar email del JWT como fallback si aún falta
+  if (token && !email) {
+    console.log('🔍 [AUTH] Intentando recuperar email del JWT como fallback...');
     const decoded = decodeJwt(token);
     if (decoded && decoded.email) {
       email = decoded.email;
@@ -112,9 +183,9 @@ export async function checkAuthOrRedirect() {
   }
 
   // ============================================
-  // PASO 1: VERIFICAR AUTENTICACIÓN (Token válido)
+  // PASO 2: VERIFICAR AUTENTICACIÓN (Token válido)
   // ============================================
-  console.log('🔍 [AUTH] PASO 1: Verificando autenticación (token válido)...');
+  console.log('🔍 [AUTH] PASO 2: Verificando autenticación (token válido)...');
   
   const tokenExists = !!token;
   const emailExists = !!email;
@@ -182,7 +253,7 @@ export async function checkAuthOrRedirect() {
     }
   } else {
     // Comportamiento normal: verificar autenticación básica
-    // 🟢 EXCEPCIÓN: Si estamos en onboarding.html, ya permitimos arriba, no llegamos aquí
+    // 🔥 MODIFICADO: Solo hacer logout si realmente no hay token o si el token está expirado Y el servidor confirma 401
     if (!token) {
       console.log('❌ [AUTH] DECISIÓN: No hay token - Redirigiendo a login (razón: token no existe)');
       if (!isStripeSuccess && !isOnboardingPage) {
@@ -193,50 +264,76 @@ export async function checkAuthOrRedirect() {
       return true;
     }
     
-    if (!email) {
-      console.log('❌ [AUTH] DECISIÓN: No hay email - Redirigiendo a login (razón: email no existe)');
-      // 🟢 PERMISIVO: Si estamos en onboarding, NO redirigir aunque falte email
+    // 🔥 MODIFICADO: Si falta email pero hay token, ya intentamos recuperación arriba
+    // Solo hacer logout si realmente no hay forma de continuar
+    if (!email && tokenExpired) {
+      console.log('❌ [AUTH] DECISIÓN: Email faltante y token expirado - Redirigiendo a login');
       if (!isStripeSuccess && !isOnboardingPage) {
         logout();
         return false;
       }
-      console.log("⚠️ [AUTH] Email no encontrado, pero se permite acceso temporal por verificación de pago activa o estancia en onboarding");
+      console.log("⚠️ [AUTH] Email faltante y token expirado, pero se permite acceso temporal por verificación de pago activa o estancia en onboarding");
       return true;
     }
     
+    // Si el token está expirado, verificar con el servidor antes de hacer logout
     if (tokenExpired) {
-      console.log('❌ [AUTH] DECISIÓN: Token expirado - Redirigiendo a login (razón: token realmente expirado)');
-      // 🟢 PERMISIVO: Si estamos en onboarding, NO redirigir aunque el token parezca expirado
-      if (!isStripeSuccess && !isOnboardingPage) {
-        logout();
-        return false;
+      console.log('⚠️ [AUTH] Token parece expirado localmente, verificando con servidor...');
+      try {
+        const verifyExpiredResponse = await fetch(`${API_BASE}/api/user/me`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (verifyExpiredResponse.status === 401) {
+          // El servidor confirma que el token está realmente expirado
+          console.log('❌ [AUTH] DECISIÓN: Token realmente expirado (servidor confirma 401) - Redirigiendo a login');
+          if (!isStripeSuccess && !isOnboardingPage) {
+            logout();
+            return false;
+          }
+          console.log("⚠️ [AUTH] Token expirado confirmado por servidor, pero se permite acceso temporal por verificación de pago activa o estancia en onboarding");
+          return true;
+        } else if (verifyExpiredResponse.ok) {
+          // El token sigue siendo válido según el servidor (puede ser un problema de sincronización de tiempo)
+          console.log('✅ [AUTH] Token válido según servidor (a pesar de expiración local) - Continuando');
+          // Actualizar timestamp para evitar futuras verificaciones incorrectas
+          localStorage.setItem("loginTimestamp", Date.now().toString());
+        }
+      } catch (error) {
+        // Error de red - NO hacer logout, asumir que el token es válido
+        console.warn('⚠️ [AUTH] Error de red al verificar token expirado:', error);
+        console.warn('⚠️ [AUTH] Asumiendo token válido (puede ser error temporal de conexión)');
       }
-      console.log("⚠️ [AUTH] Token expirado, pero se permite acceso temporal por verificación de pago activa o estancia en onboarding");
-      return true;
     }
   }
   
   // ============================================
-  // PASO 2: VERIFICAR INTEGRIDAD DE DATOS (Onboarding)
+  // PASO 3: VERIFICAR INTEGRIDAD DE DATOS (Onboarding)
   // ============================================
-  console.log('🔍 [AUTH] PASO 2: Verificando integridad de datos (onboarding)...');
+  console.log('🔍 [AUTH] PASO 3: Verificando integridad de datos (onboarding)...');
   console.log('🔍 [AUTH] Estado onboarding:', {
     onboardingCompleted: onboardingCompleted,
     isTrue: onboardingCompleted === "true"
   });
   
   // ============================================
-  // PASO 3: VERIFICACIÓN OPCIONAL AL SERVIDOR (Solo para validar token)
+  // PASO 4: VERIFICACIÓN AL SERVIDOR (Validar token y autocorrección de ruta)
   // ============================================
-  // Hacer una verificación ligera al servidor para validar el token
+  // Hacer una verificación al servidor para validar el token y obtener estado real
   // Solo hacer logout si es error 401 (Unauthorized)
   // Si es 500 o 422, solo mostrar error pero NO redirigir
+  // 🔥 NUEVO: Incluir autocorrección de ruta si está en onboarding pero servidor dice completado
   try {
-    console.log('🔍 [AUTH] PASO 3: Verificando token con servidor (opcional)...');
-    const verifyResponse = await fetch('/api/user/me', {
+    console.log('🔍 [AUTH] PASO 4: Verificando token con servidor y estado real del usuario...');
+    const verifyResponse = await fetch(`${API_BASE}/api/user/me`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
       }
     });
     
@@ -268,8 +365,43 @@ export async function checkAuthOrRedirect() {
       // NO hacer logout, solo mostrar error y continuar
       return true;
     } else {
-      // Token válido según el servidor
+      // Token válido según el servidor - obtener datos reales del usuario
+      const userData = await verifyResponse.json();
       console.log('✅ [AUTH] Token verificado con servidor - Válido');
+      console.log('✅ [AUTH] Datos del usuario obtenidos:', {
+        email: userData.email,
+        onboarding_completed: userData.onboarding_completed,
+        is_premium: userData.is_premium
+      });
+      
+      // Actualizar localStorage con datos reales del servidor
+      if (userData.email) {
+        localStorage.setItem("email", userData.email);
+      }
+      if (userData.id) {
+        localStorage.setItem("user_id", String(userData.id));
+      }
+      if (userData.onboarding_completed !== undefined) {
+        localStorage.setItem("onboarding_completed", String(userData.onboarding_completed));
+      }
+      if (userData.is_premium !== undefined) {
+        localStorage.setItem("is_premium", String(userData.is_premium));
+      }
+      if (userData.plan_type) {
+        localStorage.setItem("plan_type", userData.plan_type);
+      }
+      if (userData.session_duration) {
+        localStorage.setItem("session_duration", userData.session_duration);
+      }
+      
+      // 🔥 AUTOCORRECCIÓN DE RUTA: Si está en onboarding.html pero el servidor dice que onboarding_completed es true
+      const serverOnboardingCompleted = userData.onboarding_completed === true || userData.onboarding_completed === "true";
+      if (isOnboardingPage && serverOnboardingCompleted) {
+        console.log('🔄 [AUTH] AUTOCORRECCIÓN: Usuario en onboarding.html pero servidor confirma onboarding completado');
+        console.log('🔄 [AUTH] Redirigiendo automáticamente al Dashboard...');
+        window.location.href = "./dashboard.html";
+        return true; // Retornar true aunque redirigamos (la redirección se ejecutará)
+      }
     }
   } catch (error) {
     // Error de red o conexión - NO hacer logout, solo mostrar error
@@ -279,9 +411,15 @@ export async function checkAuthOrRedirect() {
     // NO hacer logout, solo mostrar error y continuar
   }
   
+  // ============================================
+  // PASO 5: DECISIÓN FINAL (Permitir acceso si token es válido)
+  // ============================================
+  // Obtener el valor actualizado de onboarding_completed (puede haber sido actualizado por el servidor)
+  const currentOnboardingCompleted = localStorage.getItem("onboarding_completed");
+  
   // ✅ Si el token es válido Y el onboarding está completado, NO redirigir bajo ninguna circunstancia
   // (excepto si el token realmente expira)
-  if (onboardingCompleted === "true") {
+  if (currentOnboardingCompleted === "true") {
     console.log('✅ [AUTH] DECISIÓN: Token válido + Onboarding completado - PERMITIR ACCESO (no redirigir)');
     console.log('✅ [AUTH] Autenticación exitosa - Usuario autenticado con onboarding completado');
     return true;

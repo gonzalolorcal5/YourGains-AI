@@ -109,7 +109,6 @@
     // Capturar token de OAuth callback (si existe en URL)
     const urlParams = new URLSearchParams(window.location.search);
     const oauthToken = urlParams.get("token");
-    const onboardingFromUrl = urlParams.get("onboarding");
     
     if (oauthToken) {
       console.log("🟢 Token OAuth recibido, procesando...");
@@ -118,7 +117,7 @@
         const payloadJson = atob(payloadBase64.replace(/-/g, "+").replace(/_/g, "/"));
         const payload = JSON.parse(decodeURIComponent(escape(payloadJson)));
         
-        // Guardar token y datos básicos del usuario
+        // Guardar token y datos básicos del usuario (temporalmente, se actualizarán desde el servidor)
         localStorage.setItem("accessToken", oauthToken);
         if (payload.email) {
           localStorage.setItem("email", payload.email);
@@ -128,19 +127,80 @@
           localStorage.setItem("user_id", uid);
         }
         localStorage.setItem("loginTimestamp", Date.now().toString());
-        localStorage.setItem("onboarding_completed", onboardingFromUrl === "true" ? "true" : "false");
+        
+        // 🔥 PASO 1: Consultar servidor para obtener datos REALES del usuario
+        console.log("🟢 Consultando servidor para obtener estado real del usuario...");
+        const API_BASE = window.location.origin;
+        const userResponse = await fetch(`${API_BASE}/api/user/me`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${oauthToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (!userResponse.ok) {
+          // Error al obtener datos del usuario
+          const errorData = await userResponse.json().catch(() => ({}));
+          console.error("❌ Error obteniendo datos del usuario:", {
+            status: userResponse.status,
+            error: errorData
+          });
+          
+          // Limpiar localStorage y redirigir con mensaje de error
+          localStorage.clear();
+          window.history.replaceState({}, document.title, "/login.html");
+          window.location.href = "./login.html?error=sincronizacion&message=Error al sincronizar datos. Por favor, intenta iniciar sesión nuevamente.";
+          return;
+        }
+        
+        // Obtener datos reales del usuario desde el servidor
+        const userData = await userResponse.json();
+        console.log("✅ Datos del usuario obtenidos del servidor:", userData);
+        
+        // Guardar valores REALES en localStorage (sobrescribir cualquier valor temporal)
+        if (userData.email) {
+          localStorage.setItem("email", userData.email);
+        }
+        if (userData.id) {
+          localStorage.setItem("user_id", String(userData.id));
+        }
+        if (userData.onboarding_completed !== undefined) {
+          localStorage.setItem("onboarding_completed", String(userData.onboarding_completed));
+        }
+        if (userData.is_premium !== undefined) {
+          localStorage.setItem("is_premium", String(userData.is_premium));
+        }
+        if (userData.plan_type) {
+          localStorage.setItem("plan_type", userData.plan_type);
+        }
+        if (userData.session_duration) {
+          localStorage.setItem("session_duration", userData.session_duration);
+        }
+        
+        // Limpiar URL (quitar query params)
+        window.history.replaceState({}, document.title, "/login.html");
+        
+        // 🔥 Redirigir basándose en el valor REAL del servidor, NO en el parámetro de URL
+        const onboardingCompleted = userData.onboarding_completed === true || userData.onboarding_completed === "true";
+        console.log("🟢 Redirigiendo basándose en estado real del servidor:", {
+          onboarding_completed: onboardingCompleted,
+          source: "server"
+        });
+        
+        if (onboardingCompleted) {
+          window.location.href = "./dashboard.html";
+        } else {
+          window.location.href = "./onboarding.html";
+        }
+        
       } catch (e) {
-        console.error("❌ Error procesando token OAuth", e);
-      }
-      
-      // Limpiar URL (quitar query params)
-      window.history.replaceState({}, document.title, "/login.html");
-      
-      // Redirigir según onboarding
-      if (onboardingFromUrl === "true") {
-        window.location.href = "./dashboard.html";
-      } else {
-        window.location.href = "./onboarding.html";
+        console.error("❌ Error procesando token OAuth o consultando servidor", e);
+        
+        // Limpiar localStorage y redirigir con mensaje de error
+        localStorage.clear();
+        window.history.replaceState({}, document.title, "/login.html");
+        window.location.href = "./login.html?error=sincronizacion&message=Error al sincronizar datos. Por favor, intenta iniciar sesión nuevamente.";
       }
     }
 
