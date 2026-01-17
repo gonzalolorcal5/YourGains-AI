@@ -104,13 +104,22 @@
   </footer>
 
   <script type="module">
+    // Importar API_BASE desde config.js (debe estar al principio del módulo)
+    import { API_BASE } from "./config.js";
+    
     console.log("🟢 Script login.html cargando...");
 
-    // Capturar token de OAuth callback (si existe en URL)
-    const urlParams = new URLSearchParams(window.location.search);
-    const oauthToken = urlParams.get("token");
-    
-    if (oauthToken) {
+    // 🔥 Función autoejecutable asíncrona para manejar el token OAuth
+    (async () => {
+      // Capturar token de OAuth callback (si existe en URL)
+      const urlParams = new URLSearchParams(window.location.search);
+      const oauthToken = urlParams.get("token");
+      
+      if (!oauthToken) {
+        // No hay token, continuar con el resto del script normalmente
+        return;
+      }
+      
       console.log("🟢 Token OAuth recibido, procesando...");
       try {
         const payloadBase64 = oauthToken.split(".")[1];
@@ -130,7 +139,6 @@
         
         // 🔥 PASO 1: Consultar servidor para obtener datos REALES del usuario
         console.log("🟢 Consultando servidor para obtener estado real del usuario...");
-        const API_BASE = window.location.origin;
         const userResponse = await fetch(`${API_BASE}/api/user/me`, {
           method: 'GET',
           headers: {
@@ -202,7 +210,7 @@
         window.history.replaceState({}, document.title, "/login.html");
         window.location.href = "./login.html?error=sincronizacion&message=Error al sincronizar datos. Por favor, intenta iniciar sesión nuevamente.";
       }
-    }
+    })();
 
     import { logout } from "./auth.js";
     console.log("🟢 Auth.js importado correctamente");
