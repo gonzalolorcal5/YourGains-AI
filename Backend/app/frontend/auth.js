@@ -85,13 +85,6 @@ export async function checkAuthOrRedirect() {
     currentPath: currentPath
   });
   
-  // 🟢 PERMISIVIDAD CRÍTICA: Si estamos en onboarding.html y hay token, PERMITIR SIEMPRE
-  if (isOnboardingPage && token) {
-    console.log('🟢 [AUTH] Permitiendo estancia en onboarding por presencia de token');
-    console.log('🟢 [AUTH] NO se ejecutará NINGUNA redirección al login desde onboarding');
-    return true; // PERMITIR SIEMPRE en onboarding si hay token
-  }
-  
   // Si hay parámetros de pago exitoso y no hay token, permitir acceso temporal
   if (isStripeSuccess && !token) {
     console.log("⚠️ [AUTH] Token no encontrado, pero se permite acceso temporal por verificación de pago activa");
@@ -216,11 +209,16 @@ export async function checkAuthOrRedirect() {
       if (!tokenAfterWait || !emailAfterWait) {
         if (isStripeSuccess || isOnboardingPage) {
           console.log("⚠️ [AUTH] Token no encontrado, pero se permite acceso temporal por verificación de pago activa o estancia en onboarding");
-          return true;
+          // NO retornar aquí - continuar al Paso 4 para validar con servidor si hay token
+          if (!tokenAfterWait) {
+            // Si realmente no hay token, no podemos continuar
+            return true;
+          }
+        } else {
+          console.log('❌ [AUTH] Sin token después de esperar, redirigiendo a login...');
+          logout();
+          return false;
         }
-        console.log('❌ [AUTH] Sin token después de esperar, redirigiendo a login...');
-        logout();
-        return false;
       }
       
       // Actualizar variables locales
@@ -241,15 +239,19 @@ export async function checkAuthOrRedirect() {
       if (!tokenAfterWait || !emailAfterWait || isTokenExpired()) {
         if (isStripeSuccess || isOnboardingPage) {
           console.log("⚠️ [AUTH] Token no encontrado, pero se permite acceso temporal por verificación de pago activa o estancia en onboarding");
-          return true;
+          // NO retornar aquí - continuar al Paso 4 para validar con servidor
+        } else {
+          console.log('❌ [AUTH] Token aún inválido después de esperar, redirigiendo a login...');
+          logout();
+          return false;
         }
-        console.log('❌ [AUTH] Token aún inválido después de esperar, redirigiendo a login...');
-        logout();
-        return false;
+      } else {
+        // Actualizar variables locales con los valores después de esperar
+        token = tokenAfterWait;
+        email = emailAfterWait;
+        console.log('✅ [AUTH] Token válido después de esperar, continuando al Paso 4...');
+        // NO retornar aquí - continuar al Paso 4 para validar con servidor
       }
-      
-      console.log('✅ [AUTH] Token válido después de esperar, continuando...');
-      return true;
     }
   } else {
     // Comportamiento normal: verificar autenticación básica
@@ -261,6 +263,7 @@ export async function checkAuthOrRedirect() {
         return false;
       }
       console.log("⚠️ [AUTH] Token no encontrado, pero se permite acceso temporal por verificación de pago activa o estancia en onboarding");
+      // Si no hay token, no podemos continuar al Paso 4
       return true;
     }
     
@@ -323,12 +326,26 @@ export async function checkAuthOrRedirect() {
   // ============================================
   // PASO 4: VERIFICACIÓN AL SERVIDOR (Validar token y autocorrección de ruta)
   // ============================================
+  // 🔥 FORZAR EJECUCIÓN: Este paso SIEMPRE debe ejecutarse si hay token para actualizar datos del servidor
   // Hacer una verificación al servidor para validar el token y obtener estado real
   // Solo hacer logout si es error 401 (Unauthorized)
   // Si es 500 o 422, solo mostrar error pero NO redirigir
   // 🔥 NUEVO: Incluir autocorrección de ruta si está en onboarding pero servidor dice completado
+  
+  // Solo ejecutar Paso 4 si hay token
+  if (!token) {
+    console.log('⚠️ [AUTH] PASO 4: No hay token, saltando verificación con servidor');
+    // Si no hay token pero estamos en onboarding o hay pago, permitir acceso temporal
+    if (isStripeSuccess || isOnboardingPage) {
+      return true;
+    }
+    // Si no hay token y no estamos en casos especiales, ya se manejó arriba
+    return false;
+  }
+  
   try {
     console.log('🔍 [AUTH] PASO 4: Verificando token con servidor y estado real del usuario...');
+    console.log('🔍 [AUTH] PASO 4: Token presente, consultando servidor para actualizar datos...');
     const verifyResponse = await fetch(`${API_BASE}/api/user/me`, {
       method: 'GET',
       headers: {
@@ -374,16 +391,18 @@ export async function checkAuthOrRedirect() {
         is_premium: userData.is_premium
       });
       
-      // Actualizar localStorage con datos reales del servidor
+      // 🔥 ACTUALIZAR LOCALSTORAGE: Asegurar que is_premium y onboarding_completed se actualicen siempre
       if (userData.email) {
         localStorage.setItem("email", userData.email);
       }
       if (userData.id) {
         localStorage.setItem("user_id", String(userData.id));
       }
+      // 🔥 CRÍTICO: Actualizar onboarding_completed desde el servidor
       if (userData.onboarding_completed !== undefined) {
         localStorage.setItem("onboarding_completed", String(userData.onboarding_completed));
       }
+      // 🔥 CRÍTICO: Actualizar is_premium desde el servidor
       if (userData.is_premium !== undefined) {
         localStorage.setItem("is_premium", String(userData.is_premium));
       }
@@ -393,6 +412,11 @@ export async function checkAuthOrRedirect() {
       if (userData.session_duration) {
         localStorage.setItem("session_duration", userData.session_duration);
       }
+      
+      console.log('✅ [AUTH] LocalStorage actualizado con datos del servidor:', {
+        onboarding_completed: userData.onboarding_completed,
+        is_premium: userData.is_premium
+      });
       
       // 🔥 AUTOCORRECCIÓN DE RUTA: Si está en onboarding.html pero el servidor dice que onboarding_completed es true
       const serverOnboardingCompleted = userData.onboarding_completed === true || userData.onboarding_completed === "true";

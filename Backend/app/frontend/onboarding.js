@@ -16,7 +16,7 @@ const requiredDaysSpan = document.getElementById('required-days');
 // Verificar si hay sesión activa
 // ⚠️ IMPORTANTE: Usar setTimeout para dar tiempo a que login.html procese el token de URL
 window.addEventListener('load', () => {
-    console.log('🔄 [ONBOARDING] Evento load - Esperando 100ms para procesar token de URL...');
+    console.log('🔄 [ONBOARDING] Evento load - Esperando 500ms para procesar token de URL y respuesta del servidor...');
     
     setTimeout(async () => {
         console.log('🔍 [ONBOARDING] Verificando autenticación después de delay...');
@@ -52,7 +52,7 @@ window.addEventListener('load', () => {
         }
         
         console.log('✅ [ONBOARDING] Autenticación verificada correctamente');
-    }, 100); // Delay de 100ms para procesar token de URL
+    }, 500); // Delay de 500ms para dar tiempo a que la respuesta del servidor llegue y el usuario sea redirigido al Dashboard
 });
 
 // Utilidad segura para obtener valores y detectar elementos faltantes
