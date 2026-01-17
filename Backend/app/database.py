@@ -4,10 +4,14 @@ from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import StaticPool
 from dotenv import load_dotenv
 import os
+import logging
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./gymai.db")
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:////data/gymai.db")
 
 engine = create_engine(
     DATABASE_URL,
@@ -32,3 +36,11 @@ from app import models  # NO importes Base desde models, importas los modelos
 
 # Crea tablas si no existen
 Base.metadata.create_all(bind=engine)
+
+# Log para confirmar ruta de la BD
+db_path = DATABASE_URL.replace("sqlite:///", "")
+logger.info(f"🔍 Base de datos configurada en: {db_path}")
+if "/data/" in db_path:
+    logger.info("✅ BD está en volumen persistente de Railway")
+else:
+    logger.warning("⚠️ ADVERTENCIA: BD NO está en volumen persistente, los datos se perderán en restarts")
