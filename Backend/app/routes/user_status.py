@@ -94,9 +94,11 @@ async def get_current_user_data(
             session_duration = last_plan.session_duration
         
         # 🔥 Asegurar que todos los campos necesarios estén presentes
-        # get_current_user ya hace db.refresh, así que current_user tiene los datos más recientes
-        # Forzar refresh adicional para asegurar sincronización completa
-        db.refresh(current_user)
+        # 🔥 CRÍTICO: Expirar todos los objetos cacheados y refrescar current_user
+        # Esto es necesario porque estamos haciendo cambios manuales en Railway y SQLAlchemy
+        # está sirviendo datos cacheados que no reflejan la realidad
+        db.expire_all()  # Expirar todos los objetos cacheados en la sesión
+        db.refresh(current_user)  # Forzar refresh del usuario para obtener datos frescos de la BD
         
         # Preparar valores para la respuesta
         user_id = current_user.id
@@ -129,6 +131,15 @@ async def get_current_user_data(
         print(f"❌ [USER_ME] Error crítico en get_current_user_data: {e}")
         import traceback
         traceback.print_exc()
+        
+        # 🔥 Intentar refrescar datos antes de usar valores por defecto
+        # Esto puede ayudar si el error fue por datos cacheados
+        if current_user:
+            try:
+                db.expire_all()  # Expirar todos los objetos cacheados
+                db.refresh(current_user)  # Refrescar usuario para obtener datos frescos
+            except Exception as refresh_error:
+                print(f"⚠️ [USER_ME] No se pudo refrescar usuario en bloque de error: {refresh_error}")
         
         # Preparar valores por defecto seguros
         user_id = current_user.id if current_user else 0
