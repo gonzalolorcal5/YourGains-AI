@@ -207,6 +207,23 @@ def _onboarding(): return _html("onboarding.html")
 @app.get("/tarifas.html")
 def _tarifas(): return _html("tarifas.html")
 
+@app.get("/stripe-config")
+def _stripe_config():
+    """Endpoint para obtener la clave pública de Stripe"""
+    import os
+    stripe_key = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
+    
+    if not stripe_key:
+        print("[ERROR] STRIPE_PUBLISHABLE_KEY no está configurada")
+        raise HTTPException(
+            status_code=500, 
+            detail="Stripe no configurado correctamente"
+        )
+    
+    return {
+        "publishableKey": stripe_key
+    }
+
 @app.get("/pago.html")
 def _pago(): return _html("pago.html")
 

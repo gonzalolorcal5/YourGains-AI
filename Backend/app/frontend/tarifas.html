@@ -24,17 +24,11 @@
       filter: drop-shadow(0 0 4px rgba(132, 204, 22, 0.45));
     }
   </style>
-  <script src="/auth.js"></script>
-  <script>
+  <script type="module">
+    import { checkAuthOrRedirect } from '/auth.js';
+    
     window.addEventListener('DOMContentLoaded', function() {
-      if (typeof checkAuthOrRedirect === 'function') {
-        checkAuthOrRedirect();
-      } else {
-        const token = localStorage.getItem('accessToken');
-        if (!token) {
-          window.location.href = '/';
-        }
-      }
+      checkAuthOrRedirect();
     });
   </script>
 </head>
