@@ -97,7 +97,7 @@
                 width: 280px;
                 height: 100vh;
                 background: #1a1a1a;
-                z-index: 1000;
+                z-index: 10001;
                 transition: left 0.3s ease;
                 box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
                 overflow-y: auto;
@@ -114,7 +114,7 @@
                 width: 100%;
                 height: 100%;
                 background: rgba(0, 0, 0, 0.7);
-                z-index: 999;
+                z-index: 10000;
                 display: none;
                 transition: opacity 0.3s ease;
             }
@@ -5035,15 +5035,30 @@
                 }
 
                 async function sendMessage() {
+                    // 1. Obtener el valor del input y limpiar espacios. Si está vacío, hacer return.
                     const message = chatInput.value.trim();
                     if (!message) return;
 
-                    // ⚠️ PRIORIDAD 1: Freemium limit - Comprobar ANTES de cualquier otra validación
-                    // Esto asegura que el modal siempre salte incluso si el usuario cierra y vuelve a intentar
-                    if (!isPremiumUser() && !canUseChat()) {
-                        // Mostrar modal de upgrade en lugar de mensaje en el chat
-                        showUpgradeModal();
-                        return;
+                    // Limpiar el input.
+                    chatInput.value = '';
+                    autoResizeTextarea();
+
+                    // Llamar a 'appendMessage('user', message)'.
+                    addMessage(message, true);
+                    
+                    // Llamar a 'showTypingIndicator()'.
+                    showTypingIndicator();
+
+                    // 2. VALIDACIÓN DE LÍMITES (Después de añadir mensaje, pero antes del fetch):
+                    // Si '!isPremium' Y 'chatUsesFree >= 2', ejecutar 'showPremiumModal("chat")' y hacer 'return' INMEDIATAMENTE.
+                    // Nota: Si el usuario es Premium, esta validación se ignora y puede hablar ilimitadamente.
+                    const chatUsesFree = getChatUsageCount();
+                    if (!isPremiumUser() && chatUsesFree >= 2) {
+                        hideTypingIndicator();
+                        showPremiumModal("chat");
+                        window.isProcessingMessage = false;
+                        updateSendButton();
+                        return; // INMEDIATAMENTE - sin hacer fetch al servidor
                     }
 
                     // RATE LIMITING: Prevenir envío excesivo de mensajes
@@ -5053,12 +5068,14 @@
                     
                     if (timeSinceLastMessage < 2000) { // 2 segundos de debounce
                         console.log('⚠️ Rate limit: Espera 2 segundos entre mensajes');
+                        hideTypingIndicator();
                         return;
                     }
                     
                     // Verificar si ya hay un mensaje procesándose
                     if (window.isProcessingMessage) {
                         console.log('⚠️ Ya hay un mensaje procesándose, espera...');
+                        hideTypingIndicator();
                         return;
                     }
                     
@@ -5069,15 +5086,11 @@
                     if (!checkAuthOrRedirect()) {
                         window.location.href = './login.html';
                         window.isProcessingMessage = false;
+                        hideTypingIndicator();
                         return;
                     }
 
-                    addMessage(message, true);
-                    chatInput.value = '';
-                    autoResizeTextarea();
-                    
-                    // Mostrar indicador de escritura
-                    showTypingIndicator();
+                    // Realizar la petición fetch al servidor.
                     
                     // Deshabilitar botón durante el envío
                     sendBtn.disabled = true;
