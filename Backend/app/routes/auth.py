@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from datetime import timedelta
 from dotenv import load_dotenv
 import os
+import json
 from pydantic import BaseModel
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -83,31 +84,30 @@ async def login(
         expires_delta=access_token_expires
     )
     
-    # Calcular onboarding_completed dinámicamente
-    # Si tiene current_routine válida o tiene un Plan, consideramos que completó onboarding
-    has_valid_routine = False
-    if db_user.current_routine:
-        try:
-            import json
-            routine_data = json.loads(db_user.current_routine)
-            # Verificar que no sea solo el objeto vacío por defecto
-            if isinstance(routine_data, dict) and routine_data.get("exercises"):
-                has_valid_routine = len(routine_data.get("exercises", [])) > 0
-        except:
-            pass
-    
-    # Verificar si tiene un Plan en la BD
+    # ✅ LÓGICA CONSISTENTE: Verificar Plan PRIMERO (es lo más confiable)
     has_plan = db.query(models.Plan).filter(models.Plan.user_id == db_user.id).first() is not None
-    
-    # onboarding_completed = True si:
-    # 1. Está marcado explícitamente como True en BD, O
-    # 2. Tiene una rutina válida, O
-    # 3. Tiene un Plan guardado
-    onboarding_completed = bool(
-        db_user.onboarding_completed or 
-        has_valid_routine or 
-        has_plan
-    )
+
+    # Si tiene plan, onboarding_completed = True OBLIGATORIAMENTE
+    if has_plan:
+        onboarding_completed = True
+    else:
+        # Si no tiene plan, verificar otros indicadores
+        has_valid_routine = False
+        if db_user.current_routine:
+            try:
+                routine_data = json.loads(db_user.current_routine)
+                if isinstance(routine_data, dict):
+                    has_valid_routine = (
+                        (routine_data.get("exercises") and len(routine_data.get("exercises", [])) > 0) or
+                        (routine_data.get("dias") and len(routine_data.get("dias", [])) > 0)
+                    )
+            except (json.JSONDecodeError, AttributeError, KeyError):
+                pass
+        
+        onboarding_completed = bool(
+            db_user.onboarding_completed or 
+            has_valid_routine
+        )
     
     return {
         "access_token": access_token, 

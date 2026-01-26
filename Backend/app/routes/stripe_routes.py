@@ -11,7 +11,6 @@ from pydantic import BaseModel
 import os
 import stripe
 from dotenv import load_dotenv
-from app.routes.stripe_webhook import generate_and_save_ai_plan
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
@@ -617,21 +616,11 @@ async def activate_premium_fallback(
                     db.commit()
                     logger.info(f"✅ Usuario {user_id} actualizado a {plan_type}")
                     
-                    # Generar plan personalizado con IA para usuario premium
-                    # IMPORTANTE: Esperar a que se complete la generación antes de responder
-                    # FORZAR regeneración cuando un usuario paga (puede tener template de FREE)
-                    logger.info(f"💎 Generando plan personalizado con IA para usuario {user_id} (forzado)...")
-                    plan_generated = False
-                    try:
-                        plan_generated = await generate_and_save_ai_plan(db, user_id, force=True)
-                        if plan_generated:
-                            logger.info(f"🎉 Plan generado exitosamente para usuario {user_id}")
-                        else:
-                            logger.warning(f"⚠️ No se pudo generar plan para usuario {user_id}")
-                    except Exception as e:
-                        logger.error(f"❌ Error generando plan para usuario {user_id}: {e}")
-                        import traceback
-                        logger.error(traceback.format_exc())
+                    # ✅ NO generar plan aquí - el webhook de Stripe ya lo generó
+                    # Solo verificar si el plan existe
+                    has_plan = bool(user.current_routine and user.current_routine != '{}')
+                    logger.info(f"✅ Usuario {user_id} activado como {plan_type}. Plan existe: {has_plan}")
+                    plan_generated = has_plan
                     
                     return build_response({
                         "success": True,
@@ -650,20 +639,11 @@ async def activate_premium_fallback(
                 user.plan_type = "PREMIUM_MONTHLY"
                 db.commit()
                 
-                # Generar plan personalizado con IA para usuario premium
-                # FORZAR regeneración cuando un usuario paga (puede tener template de FREE)
-                logger.info(f"💎 Generando plan personalizado con IA para usuario {user_id} (forzado)...")
-                plan_generated = False
-                try:
-                    plan_generated = await generate_and_save_ai_plan(db, user_id, force=True)
-                    if plan_generated:
-                        logger.info(f"🎉 Plan generado exitosamente para usuario {user_id}")
-                    else:
-                        logger.warning(f"⚠️ No se pudo generar plan para usuario {user_id}")
-                except Exception as e:
-                    logger.error(f"❌ Error generando plan para usuario {user_id}: {e}")
-                    import traceback
-                    logger.error(traceback.format_exc())
+                # ✅ NO generar plan aquí - el webhook de Stripe ya lo generó
+                # Solo verificar si el plan existe
+                has_plan = bool(user.current_routine and user.current_routine != '{}')
+                logger.info(f"✅ Usuario {user_id} activado como PREMIUM_MONTHLY. Plan existe: {has_plan}")
+                plan_generated = has_plan
                 
                 return build_response({
                     "success": True,
@@ -679,20 +659,11 @@ async def activate_premium_fallback(
         
         logger.info(f"✅ Usuario {user_id} activado en modo dev")
         
-        # Generar plan personalizado con IA para usuario premium
-        # FORZAR regeneración cuando un usuario paga (puede tener template de FREE)
-        logger.info(f"💎 Generando plan personalizado con IA para usuario {user_id} (forzado)...")
-        plan_generated = False
-        try:
-            plan_generated = await generate_and_save_ai_plan(db, user_id, force=True)
-            if plan_generated:
-                logger.info(f"🎉 Plan generado exitosamente para usuario {user_id}")
-            else:
-                logger.warning(f"⚠️ No se pudo generar plan para usuario {user_id}")
-        except Exception as e:
-            logger.error(f"❌ Error generando plan para usuario {user_id}: {e}")
-            import traceback
-            logger.error(traceback.format_exc())
+        # ✅ NO generar plan aquí - el webhook de Stripe ya lo generó
+        # Solo verificar si el plan existe
+        has_plan = bool(user.current_routine and user.current_routine != '{}')
+        logger.info(f"✅ Usuario {user_id} activado como PREMIUM_MONTHLY. Plan existe: {has_plan}")
+        plan_generated = has_plan
         
         return build_response({
             "success": True,

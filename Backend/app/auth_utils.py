@@ -92,15 +92,11 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     except (TypeError, ValueError):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido (sub no es ID)")
 
-    # 🔥 CRITICAL FIX: Expire all cached objects to force fresh query
-    db.expire_all()
-    
+    # ✅ OPTIMIZADO: PostgreSQL ya es persistente, no necesitamos expire_all() en cada request
+    # Solo hacemos la query directa - SQLAlchemy maneja el caché correctamente
     user = db.query(Usuario).filter(Usuario.id == user_id).first()
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuario no encontrado")
-    
-    # 🔥 CRITICAL FIX: Refresh object to get latest data from database
-    db.refresh(user)
     
     return user
 

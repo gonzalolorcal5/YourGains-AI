@@ -136,6 +136,103 @@ PUBLIC_DIR = os.path.join(STATIC_DIR, "public")  # .../Backend/static/public
 def __ping():
     return {"ok": True}
 
+@app.get("/health/env")
+def health_check_env():
+    """
+    Verifica que las variables de entorno estén correctamente configuradas.
+    NO expone valores sensibles, solo indica si están presentes y tienen el formato correcto.
+    """
+    from urllib.parse import urlparse
+    
+    checks = {
+        "database": {
+            "configured": False,
+            "is_postgres": False,
+            "is_railway_ref": False,
+            "message": ""
+        },
+        "stripe": {
+            "secret_key": False,
+            "publishable_key": False,
+            "price_mensual": False,
+            "price_anual": False,
+            "webhook_secret": False
+        },
+        "jwt": {
+            "secret_key": False,
+            "secret_key_length": 0
+        },
+        "openai": {
+            "api_key": False
+        }
+    }
+    
+    # Verificar DATABASE_URL
+    database_url = os.getenv("DATABASE_URL", "")
+    if database_url:
+        checks["database"]["configured"] = True
+        
+        # Verificar si es referencia de Railway
+        if database_url.startswith("${{Postgres.DATABASE_URL}}"):
+            checks["database"]["is_railway_ref"] = True
+            checks["database"]["message"] = "Usando referencia de Railway (correcto)"
+        # Verificar si es PostgreSQL
+        elif database_url.startswith("postgresql://") or database_url.startswith("postgres://"):
+            checks["database"]["is_postgres"] = True
+            try:
+                parsed = urlparse(database_url)
+                checks["database"]["message"] = f"PostgreSQL en {parsed.hostname}"
+            except:
+                checks["database"]["message"] = "PostgreSQL (URL válida)"
+        # Verificar si es SQLite (no permitido en producción)
+        elif database_url.startswith("sqlite://"):
+            checks["database"]["message"] = "SQLite detectado (no recomendado para producción)"
+        else:
+            checks["database"]["message"] = "Formato desconocido"
+    else:
+        checks["database"]["message"] = "No configurada"
+    
+    # Verificar Stripe
+    stripe_secret = os.getenv("STRIPE_SECRET_KEY", "")
+    if stripe_secret:
+        checks["stripe"]["secret_key"] = stripe_secret.startswith("sk_live_") or stripe_secret.startswith("sk_test_")
+    
+    stripe_publishable = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
+    if stripe_publishable:
+        checks["stripe"]["publishable_key"] = stripe_publishable.startswith("pk_live_") or stripe_publishable.startswith("pk_test_")
+    
+    checks["stripe"]["price_mensual"] = bool(os.getenv("STRIPE_PRICE_MENSUAL", "").startswith("price_"))
+    checks["stripe"]["price_anual"] = bool(os.getenv("STRIPE_PRICE_ANUAL", "").startswith("price_"))
+    checks["stripe"]["webhook_secret"] = bool(os.getenv("STRIPE_WEBHOOK_SECRET", "").startswith("whsec_"))
+    
+    # Verificar JWT
+    secret_key = os.getenv("SECRET_KEY", "")
+    if secret_key:
+        checks["jwt"]["secret_key"] = True
+        checks["jwt"]["secret_key_length"] = len(secret_key)
+    
+    # Verificar OpenAI
+    checks["openai"]["api_key"] = bool(os.getenv("OPENAI_API_KEY", "").startswith("sk-"))
+    
+    # Calcular estado general
+    all_ok = (
+        checks["database"]["configured"] and 
+        (checks["database"]["is_postgres"] or checks["database"]["is_railway_ref"]) and
+        all(checks["stripe"].values()) and
+        checks["jwt"]["secret_key"] and
+        checks["jwt"]["secret_key_length"] >= 32
+    )
+    
+    return {
+        "status": "ok" if all_ok else "warning",
+        "checks": checks,
+        "recommendations": {
+            "database_url": "Debe ser ${{Postgres.DATABASE_URL}} en Railway" if not checks["database"]["is_railway_ref"] else None,
+            "stripe": "Verifica todas las claves de Stripe" if not all(checks["stripe"].values()) else None,
+            "jwt": "SECRET_KEY debe tener mínimo 32 caracteres" if checks["jwt"]["secret_key_length"] < 32 else None
+        }
+    }
+
 @app.get("/__debug_ls")
 def __debug_ls():
     try:
