@@ -75,3 +75,15 @@ class Plan(Base):
     fecha_creacion = Column(DateTime, default=datetime.utcnow)
 
     usuario = relationship("Usuario", back_populates="planes")
+
+
+class ProcessedWebhookEvent(Base):
+    """
+    Idempotencia: eventos de Stripe ya procesados.
+    Evita duplicar planes cuando Stripe reenvía el mismo webhook (retry).
+    """
+    __tablename__ = "webhook_events_processed"
+
+    id = Column(Integer, primary_key=True, index=True)
+    stripe_event_id = Column(String(255), unique=True, nullable=False, index=True)
+    processed_at = Column(DateTime, default=datetime.utcnow, nullable=False)
