@@ -1,6 +1,7 @@
 # app/routes/onboarding.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
@@ -259,86 +260,150 @@ async def process_onboarding(
             }
         }
         
-        # Marcar onboarding como completado y guardar current_routine/current_diet
-        db.query(Usuario).filter(Usuario.id == usuario.id).update({
-            "onboarding_completed": True,
-            "current_routine": serialize_json(current_routine, "current_routine"),
-            "current_diet": serialize_json(current_diet, "current_diet")
-        })
-        
-        # ════════════════════════════════════════════════════════════
-        # CREAR REGISTRO EN TABLA PLANES (TANTO PARA FREE COMO PREMIUM)
-        # ════════════════════════════════════════════════════════════
-        
-        # Crear registro en tabla planes con datos reales del usuario
-        nuevo_plan = Plan(
-            user_id=usuario.id,
-            altura=data.altura,
-            peso=str(int(data.peso)),  # Guardar SIN "kg" para evitar problemas
-            edad=data.edad,
-            sexo=data.sexo,
-            experiencia=data.experiencia,
-            objetivo=f"{data.gym_goal} + {data.nutrition_goal}",  # Combinar objetivos (legacy)
-            objetivo_gym=data.gym_goal,  # Objetivo de gimnasio separado
-            objetivo_dieta=data.nutrition_goal,  # Objetivo nutricional separado (legacy)
-            objetivo_nutricional=data.nutrition_goal,  # Objetivo nutricional separado (nuevo)
-            materiales=data.materiales,
-            tipo_cuerpo=data.tipo_cuerpo if hasattr(data, 'tipo_cuerpo') else None,
-            nivel_actividad=data.nivel_actividad,  # ✅ Campo obligatorio del onboarding
-            idioma="es",
-            puntos_fuertes=None,
-            puntos_debiles=None,
-            entrenar_fuerte=None,
-            lesiones=data.lesiones if hasattr(data, 'lesiones') else None,
-            alergias=data.alergias if hasattr(data, 'alergias') else None,
-            restricciones_dieta=data.restricciones_dieta if hasattr(data, 'restricciones_dieta') else None,
-            session_duration=data.session_duration if hasattr(data, 'session_duration') else '45-60',  # Guardar duración de sesión
-            rutina=serialize_json(rutina_json, "rutina"),
-            dieta=serialize_json(dieta_json, "dieta"),
-            motivacion=plan_data.get("motivacion", ""),
-            fecha_creacion=datetime.utcnow()
-        )
-        
-        db.add(nuevo_plan)
-        db.flush()  # Para obtener el ID del plan
-        
-        print(f"✅ Plan creado en tabla planes (ID: {nuevo_plan.id}) para usuario {usuario.id}")
-        print(f"📊 Datos guardados en planes:")
-        print(f"   - Altura: {data.altura}cm")
-        print(f"   - Peso: {data.peso}kg")
-        print(f"   - Edad: {data.edad} años")
-        print(f"   - Sexo: {data.sexo}")
-        print(f"   - Objetivo Gym: {data.gym_goal}")
-        print(f"   - Objetivo Nutricional: {data.nutrition_goal}")
-        print(f"   - Objetivo Combinado: {data.gym_goal} + {data.nutrition_goal}")
-        
-        # 🛡️ PROTECCIÓN 5: Commit y return inmediato
-        db.commit()
-        
-        print(f"✅ Plan guardado en BD para usuario {usuario.id}")
-        print(f"📊 Resumen guardado:")
-        print(f"   - current_routine: {len(exercises)} ejercicios")
-        print(f"   - current_diet: {len(current_diet.get('meals', []))} comidas")
-        
-        # 🔍 LOGGING CRÍTICO: Verificar que se guardó correctamente
-        print(f"🔍 Verificando guardado para user_id: {usuario.id}")
-        usuario_check = db.query(Usuario).filter(Usuario.id == usuario.id).first()
-        if usuario_check and usuario_check.current_routine:
-            print(f"✅ Verificación: current_routine guardado ({len(usuario_check.current_routine)} chars)")
-            print(f"🔍 Primeros 100 chars: {usuario_check.current_routine[:100]}")
-        else:
-            print(f"❌ ERROR: current_routine NO guardado para user_id {usuario.id}")
-            print(f"❌ Usuario encontrado: {bool(usuario_check)}")
-            if usuario_check:
-                print(f"❌ current_routine es: {usuario_check.current_routine}")
-
-        return {
-            "message": "Plan personalizado creado exitosamente",
-            "plan_id": plan_id,
-            "rutina": rutina_json,
-            "dieta": dieta_json,
-            "motivacion": plan_data.get("motivacion", "¡Vamos a por ello! Con constancia y dedicación alcanzarás tu objetivo.")
-        }
+        try:
+            # Marcar onboarding como completado y guardar current_routine/current_diet
+            db.query(Usuario).filter(Usuario.id == usuario.id).update({
+                "onboarding_completed": True,
+                "current_routine": serialize_json(current_routine, "current_routine"),
+                "current_diet": serialize_json(current_diet, "current_diet")
+            })
+            
+            # ════════════════════════════════════════════════════════════
+            # CREAR REGISTRO EN TABLA PLANES (TANTO PARA FREE COMO PREMIUM)
+            # ════════════════════════════════════════════════════════════
+            
+            # Crear registro en tabla planes con datos reales del usuario
+            nuevo_plan = Plan(
+                user_id=usuario.id,
+                altura=data.altura,
+                peso=str(int(data.peso)),  # Guardar SIN "kg" para evitar problemas
+                edad=data.edad,
+                sexo=data.sexo,
+                experiencia=data.experiencia,
+                objetivo=f"{data.gym_goal} + {data.nutrition_goal}",  # Combinar objetivos (legacy)
+                objetivo_gym=data.gym_goal,  # Objetivo de gimnasio separado
+                objetivo_dieta=data.nutrition_goal,  # Objetivo nutricional separado (legacy)
+                objetivo_nutricional=data.nutrition_goal,  # Objetivo nutricional separado (nuevo)
+                materiales=data.materiales,
+                tipo_cuerpo=data.tipo_cuerpo if hasattr(data, 'tipo_cuerpo') else None,
+                nivel_actividad=data.nivel_actividad,  # ✅ Campo obligatorio del onboarding
+                idioma="es",
+                puntos_fuertes=None,
+                puntos_debiles=None,
+                entrenar_fuerte=None,
+                lesiones=data.lesiones if hasattr(data, 'lesiones') else None,
+                alergias=data.alergias if hasattr(data, 'alergias') else None,
+                restricciones_dieta=data.restricciones_dieta if hasattr(data, 'restricciones_dieta') else None,
+                session_duration=data.session_duration if hasattr(data, 'session_duration') else '45-60',  # Guardar duración de sesión
+                rutina=serialize_json(rutina_json, "rutina"),
+                dieta=serialize_json(dieta_json, "dieta"),
+                motivacion=plan_data.get("motivacion", ""),
+                fecha_creacion=datetime.utcnow()
+            )
+            
+            db.add(nuevo_plan)
+            db.flush()  # Para obtener el ID del plan
+            
+            print(f"✅ Plan creado en tabla planes (ID: {nuevo_plan.id}) para usuario {usuario.id}")
+            print(f"📊 Datos guardados en planes:")
+            print(f"   - Altura: {data.altura}cm")
+            print(f"   - Peso: {data.peso}kg")
+            print(f"   - Edad: {data.edad} años")
+            print(f"   - Sexo: {data.sexo}")
+            print(f"   - Objetivo Gym: {data.gym_goal}")
+            print(f"   - Objetivo Nutricional: {data.nutrition_goal}")
+            print(f"   - Objetivo Combinado: {data.gym_goal} + {data.nutrition_goal}")
+            
+            # 🛡️ PROTECCIÓN 5: Commit y return inmediato
+            db.commit()
+            
+            print(f"✅ Plan guardado en BD para usuario {usuario.id}")
+            print(f"📊 Resumen guardado:")
+            print(f"   - current_routine: {len(exercises)} ejercicios")
+            print(f"   - current_diet: {len(current_diet.get('meals', []))} comidas")
+            
+            # 🔍 LOGGING CRÍTICO: Verificar que se guardó correctamente
+            print(f"🔍 Verificando guardado para user_id: {usuario.id}")
+            usuario_check = db.query(Usuario).filter(Usuario.id == usuario.id).first()
+            if usuario_check and usuario_check.current_routine:
+                print(f"✅ Verificación: current_routine guardado ({len(usuario_check.current_routine)} chars)")
+                print(f"🔍 Primeros 100 chars: {usuario_check.current_routine[:100]}")
+            else:
+                print(f"❌ ERROR: current_routine NO guardado para user_id {usuario.id}")
+                print(f"❌ Usuario encontrado: {bool(usuario_check)}")
+                if usuario_check:
+                    print(f"❌ current_routine es: {usuario_check.current_routine}")
+            
+            return {
+                "message": "Plan personalizado creado exitosamente",
+                "plan_id": plan_id,
+                "rutina": rutina_json,
+                "dieta": dieta_json,
+                "motivacion": plan_data.get("motivacion", "¡Vamos a por ello! Con constancia y dedicación alcanzarás tu objetivo.")
+            }
+        except IntegrityError as integrity_error:
+            # 🛡️ MANEJO DE UNIQUE CONSTRAINT VIOLATION
+            print(f"⚠️ IntegrityError al crear/guardar plan para user_id {usuario.id}")
+            print(f"   Error: {integrity_error}")
+            
+            # Rollback para limpiar transacción fallida
+            db.rollback()
+            
+            # Intentar recuperación: buscar el plan que causó el conflicto
+            existing_plan = db.query(Plan).filter(Plan.user_id == usuario.id).first()
+            
+            if existing_plan:
+                # Plan existe (otro proceso lo creó), actualizar con datos nuevos
+                print(f"✅ Plan encontrado después de IntegrityError (id: {existing_plan.id}), actualizando...")
+                
+                existing_plan.altura = data.altura
+                existing_plan.peso = str(int(data.peso))
+                existing_plan.edad = data.edad
+                existing_plan.sexo = data.sexo
+                existing_plan.experiencia = data.experiencia
+                existing_plan.objetivo = f"{data.gym_goal} + {data.nutrition_goal}"
+                existing_plan.objetivo_gym = data.gym_goal
+                existing_plan.objetivo_dieta = data.nutrition_goal
+                existing_plan.objetivo_nutricional = data.nutrition_goal
+                existing_plan.materiales = data.materiales
+                existing_plan.tipo_cuerpo = data.tipo_cuerpo if hasattr(data, 'tipo_cuerpo') else None
+                existing_plan.nivel_actividad = data.nivel_actividad
+                existing_plan.idioma = "es"
+                existing_plan.lesiones = data.lesiones if hasattr(data, 'lesiones') else None
+                existing_plan.alergias = data.alergias if hasattr(data, 'alergias') else None
+                existing_plan.restricciones_dieta = data.restricciones_dieta if hasattr(data, 'restricciones_dieta') else None
+                existing_plan.session_duration = data.session_duration if hasattr(data, 'session_duration') else '45-60'
+                existing_plan.rutina = serialize_json(rutina_json, "rutina")
+                existing_plan.dieta = serialize_json(dieta_json, "dieta")
+                existing_plan.motivacion = plan_data.get("motivacion", "")
+                existing_plan.fecha_creacion = datetime.utcnow()
+                
+                # Volver a marcar onboarding como completado y guardar current_routine/current_diet
+                db.query(Usuario).filter(Usuario.id == usuario.id).update({
+                    "onboarding_completed": True,
+                    "current_routine": serialize_json(current_routine, "current_routine"),
+                    "current_diet": serialize_json(current_diet, "current_diet")
+                })
+                
+                db.commit()
+                db.refresh(existing_plan)
+                
+                plan_id = existing_plan.id
+                
+                return {
+                    "message": "Plan personalizado creado exitosamente",
+                    "plan_id": plan_id,
+                    "rutina": rutina_json,
+                    "dieta": dieta_json,
+                    "motivacion": plan_data.get("motivacion", "¡Vamos a por ello! Con constancia y dedicación alcanzarás tu objetivo.")
+                }
+            else:
+                # Edge case muy raro: plan se borró entre queries
+                print(f"❌ No se encontró plan después de IntegrityError para user_id {usuario.id}")
+                raise HTTPException(
+                    status_code=500,
+                    detail="Error al crear plan. Por favor, recarga la página e intenta de nuevo."
+                )
 
     except Exception as e:
         db.rollback()
