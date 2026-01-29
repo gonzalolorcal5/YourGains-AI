@@ -48,13 +48,14 @@ async def get_current_user_data(
     Envuelto en try/except para evitar errores 500 con usuarios antiguos.
     """
     try:
-        # 🔥 SOLO aquí hacemos refresh porque es el endpoint que devuelve datos al frontend
-        # No en get_current_user() que se ejecuta en cada request
-        db.expire_all()  # Expirar todos los objetos cacheados en la sesión
-        db.refresh(current_user)  # Forzar refresh del usuario para obtener datos frescos de la BD
+        # ✅ Obtener usuario desde la sesión actual para evitar error de persistencia
+        # current_user viene de get_current_user (sesión A cerrada), necesitamos obtenerlo en sesión B
+        user = db.query(Usuario).filter(Usuario.id == current_user.id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
         
         # Verificar si tiene Plan(es) en la BD - ESTO ES PRIORITARIO
-        last_plan = db.query(Plan).filter(Plan.user_id == current_user.id).order_by(Plan.id.desc()).first()
+        last_plan = db.query(Plan).filter(Plan.user_id == user.id).order_by(Plan.id.desc()).first()
         has_plan = last_plan is not None
         
         # ✅ REGLA CRÍTICA: Si tiene Plan → onboarding_completed = True OBLIGATORIAMENTE
@@ -64,9 +65,9 @@ async def get_current_user_data(
         else:
             # Si no tiene plan, verificar otros indicadores
             has_valid_routine = False
-            if current_user.current_routine:
+            if user.current_routine:
                 try:
-                    routine_data = json.loads(current_user.current_routine)
+                    routine_data = json.loads(user.current_routine)
                     if isinstance(routine_data, dict):
                         has_valid_routine = (
                             (routine_data.get("exercises") and len(routine_data.get("exercises", [])) > 0) or
@@ -76,19 +77,19 @@ async def get_current_user_data(
                     pass
             
             onboarding_completed = bool(
-                current_user.onboarding_completed or 
+                user.onboarding_completed or 
                 has_valid_routine
             )
             session_duration = "45-60"
         
         # Preparar valores para la respuesta
-        user_id = current_user.id
-        user_email = current_user.email
-        user_plan_type = current_user.plan_type or "FREE"
-        user_is_premium = bool(current_user.is_premium)
-        user_stripe_customer_id = getattr(current_user, 'stripe_customer_id', None)
-        user_stripe_subscription_id = getattr(current_user, 'stripe_subscription_id', None)
-        user_subscription_type = getattr(current_user, 'subscription_type', None)
+        user_id = user.id
+        user_email = user.email
+        user_plan_type = user.plan_type or "FREE"
+        user_is_premium = bool(user.is_premium)
+        user_stripe_customer_id = getattr(user, 'stripe_customer_id', None)
+        user_stripe_subscription_id = getattr(user, 'stripe_subscription_id', None)
+        user_subscription_type = getattr(user, 'subscription_type', None)
         
         # 🔥 LOG DE SINCRONIZACIÓN para depuración en Railway
         print(f"[USER_ME] Usuario ID: {user_id}, Email: {user_email}, "
@@ -103,8 +104,8 @@ async def get_current_user_data(
             is_premium=user_is_premium,
             onboarding_completed=onboarding_completed,
             session_duration=session_duration,
-            profile_picture=getattr(current_user, 'profile_picture', None),
-            chat_uses_free=getattr(current_user, 'chat_uses_free', 2),
+            profile_picture=getattr(user, 'profile_picture', None),
+            chat_uses_free=getattr(user, 'chat_uses_free', 2),
             stripe_customer_id=user_stripe_customer_id,
             stripe_subscription_id=user_stripe_subscription_id,
             subscription_type=user_subscription_type,

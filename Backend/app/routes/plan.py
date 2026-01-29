@@ -164,12 +164,114 @@ async def generar_rutina(
         # GENERAR PLAN (Operación asíncrona larga)
         # ==========================================
         print(f"🤖 Generando plan con {'GPT' if es_premium else 'template local'}...")
+
+        # ═══ LOGGING DETALLADO DE DATOS ENVIADOS A GPT ═══
+        if es_premium:
+            print(f"📤 [GPT INPUT] Datos enviados a generar_plan_personalizado:")
+            print(f"   - Usuario ID: {usuario.id}")
+            print(f"   - Objetivo: {datos_dict.get('objetivo')} / {datos_dict.get('gym_goal')}")
+            print(f"   - Training frequency: {datos_dict.get('training_frequency')} días/semana")
+            print(f"   - Training days: {datos_dict.get('training_days')}")
+            print(f"   - Session duration: {datos_dict.get('session_duration')}")
+            print(f"   - Experiencia: {datos_dict.get('experiencia')}")
+            print(f"   - Lesiones: {datos_dict.get('lesiones', 'Ninguna')}")
+            print(f"   - Alergias: {datos_dict.get('alergias', 'Ninguna')}")
+            print(f"   - Restricciones dieta: {datos_dict.get('restricciones_dieta', 'Ninguna')}")
+            print(f"   - Nivel actividad: {datos_dict.get('nivel_actividad')}")
+
         if es_premium:
             plan_generado = await generar_plan_personalizado(datos_dict)
         else:
             plan_generado = _generar_plan_basico_local(datos)
         
-        print(f"✅ Plan generado. Estructura recibida: {list(plan_generado.keys()) if isinstance(plan_generado, dict) else type(plan_generado)}")
+        # ═══ LOGGING DETALLADO DE RESPUESTA GPT ═══
+        print(f"")
+        print(f"{'='*70}")
+        print(f"📥 [GPT OUTPUT] Análisis de respuesta de GPT:")
+        print(f"{'='*70}")
+        print(f"Tipo de plan_generado: {type(plan_generado)}")
+
+        if isinstance(plan_generado, dict):
+            print(f"Keys disponibles: {list(plan_generado.keys())}")
+
+            # ═══ ANALIZAR RUTINA ═══
+            if 'rutina' in plan_generado:
+                rutina_raw = plan_generado['rutina']
+                print(f"")
+                print(f"🏋️ RUTINA:")
+                print(f"  - Tipo: {type(rutina_raw)}")
+
+                if isinstance(rutina_raw, dict):
+                    if 'dias' in rutina_raw:
+                        dias = rutina_raw['dias']
+                        print(f"  - Estructura: dict con 'dias'")
+                        print(f"  - Número de días: {len(dias) if isinstance(dias, list) else 'ERROR: dias no es lista'}")
+
+                        if isinstance(dias, list) and len(dias) > 0:
+                            print(f"  - Primer día: {dias[0].get('dia', 'N/A')}")
+                            ejercicios = dias[0].get('ejercicios', [])
+                            print(f"  - Ejercicios primer día: {len(ejercicios)}")
+
+                            if ejercicios:
+                                print(f"  - Primer ejercicio: {ejercicios[0].get('nombre', 'N/A')}")
+                            else:
+                                print(f"  ⚠️ PROBLEMA: Primer día SIN ejercicios")
+                        else:
+                            print(f"  ❌ PROBLEMA: Lista de días VACÍA")
+                    else:
+                        print(f"  ⚠️ PROBLEMA: rutina es dict pero NO tiene 'dias'")
+                        print(f"  - Keys de rutina: {list(rutina_raw.keys())}")
+                elif isinstance(rutina_raw, list):
+                    print(f"  - Estructura: lista directa")
+                    print(f"  - Número de elementos: {len(rutina_raw)}")
+                else:
+                    print(f"  ❌ PROBLEMA: rutina no es dict ni list, es {type(rutina_raw)}")
+            else:
+                print(f"  ❌ PROBLEMA CRÍTICO: 'rutina' NO está en plan_generado")
+
+            # ═══ ANALIZAR DIETA ═══
+            if 'dieta' in plan_generado:
+                dieta_raw = plan_generado['dieta']
+                print(f"")
+                print(f"🍽️ DIETA:")
+                print(f"  - Tipo: {type(dieta_raw)}")
+
+                if isinstance(dieta_raw, dict):
+                    has_comidas = 'comidas' in dieta_raw
+                    has_meals = 'meals' in dieta_raw
+                    print(f"  - Tiene 'comidas': {has_comidas}")
+                    print(f"  - Tiene 'meals': {has_meals}")
+
+                    comidas_key = 'comidas' if has_comidas else 'meals'
+                    if has_comidas or has_meals:
+                        comidas = dieta_raw.get(comidas_key, [])
+                        print(f"  - Número de comidas: {len(comidas) if isinstance(comidas, list) else 'ERROR: no es lista'}")
+
+                        if isinstance(comidas, list) and len(comidas) > 0:
+                            print(f"  - Primera comida: {comidas[0].get('nombre', 'N/A')}")
+                        else:
+                            print(f"  ⚠️ PROBLEMA: Lista de comidas VACÍA")
+                    else:
+                        print(f"  ⚠️ PROBLEMA: dieta NO tiene 'comidas' ni 'meals'")
+                        print(f"  - Keys de dieta: {list(dieta_raw.keys())}")
+
+                    # Macros
+                    if 'macros' in dieta_raw:
+                        macros = dieta_raw['macros']
+                        print(f"  - Macros: {macros}")
+                    else:
+                        print(f"  ⚠️ ADVERTENCIA: dieta sin 'macros'")
+                else:
+                    print(f"  ❌ PROBLEMA: dieta no es dict, es {type(dieta_raw)}")
+            else:
+                print(f"  ❌ PROBLEMA CRÍTICO: 'dieta' NO está en plan_generado")
+
+        else:
+            print(f"❌ PROBLEMA CRÍTICO: plan_generado NO es dict, es {type(plan_generado)}")
+            print(f"Contenido: {str(plan_generado)[:200]}...")
+
+        print(f"{'='*70}")
+        print(f"")
 
         # ==========================================
         # PARSING INTELIGENTE CON FALLBACKS
@@ -485,19 +587,110 @@ def obtener_planes(
     """
     Obtiene los datos actuales del usuario desde current_routine y current_diet
     NO devuelve planes antiguos, sino la rutina y dieta actuales
+    Incluye fallback para usuarios antiguos que tienen Plan pero no current_routine/current_diet
     """
     try:
-        # Obtener datos actuales del usuario
+        # 1. Intentar cargar desde Usuario.current_routine y current_diet
         current_routine = deserialize_json(usuario.current_routine or "{}", "current_routine")
         current_diet = deserialize_json(usuario.current_diet or "{}", "current_diet")
         
-        # Si no hay datos actuales, obtener el último plan como fallback
-        if not current_routine.get("exercises") and not current_diet.get("meals"):
-            planes = db.query(Plan).filter(Plan.user_id == usuario.id).order_by(Plan.fecha_creacion.desc()).limit(1).all()
-            if planes:
-                plan = planes[0]
-                current_routine = json.loads(plan.rutina)
-                current_diet = json.loads(plan.dieta)
+        # 2. Verificar si están vacíos
+        routine_is_empty = (
+            not current_routine or
+            current_routine == {} or
+            not current_routine.get("exercises") or
+            len(current_routine.get("exercises", [])) == 0
+        )
+        
+        diet_is_empty = (
+            not current_diet or
+            current_diet == {} or
+            not current_diet.get("meals") or
+            len(current_diet.get("meals", [])) == 0
+        )
+        
+        # 3. Si AMBOS están vacíos, hacer fallback desde Plan
+        if routine_is_empty and diet_is_empty:
+            print(f"⚠️ current_routine y current_diet vacíos para usuario {usuario.id}, intentando fallback desde Plan...")
+            plan = db.query(Plan).filter(Plan.user_id == usuario.id).order_by(Plan.id.desc()).first()
+            
+            if plan:
+                print(f"✅ Plan encontrado (ID: {plan.id}), cargando datos...")
+                try:
+                    # Cargar rutina y dieta desde Plan
+                    routine_from_plan = json.loads(plan.rutina or '{}')
+                    diet_from_plan = json.loads(plan.dieta or '{}')
+                    
+                    # Convertir routine_from_plan["dias"] al formato exercises (si existe)
+                    if isinstance(routine_from_plan, dict) and "dias" in routine_from_plan:
+                        exercises = []
+                        for dia in routine_from_plan.get("dias", []):
+                            for ejercicio in dia.get("ejercicios", []):
+                                exercises.append({
+                                    "name": ejercicio.get("nombre", ""),
+                                    "sets": ejercicio.get("series", 3),
+                                    "reps": ejercicio.get("repeticiones", "10-12"),
+                                    "weight": "moderado",
+                                    "day": dia.get("dia", "")
+                                })
+                        
+                        current_routine = {
+                            "exercises": exercises,
+                            "schedule": {},
+                            "created_at": datetime.utcnow().isoformat(),
+                            "version": "1.0.0"
+                        }
+                        
+                        # Si hay metadata en la rutina original, preservarla
+                        if "metadata" in routine_from_plan:
+                            current_routine["metadata"] = routine_from_plan["metadata"]
+                    else:
+                        # Si ya está en formato exercises, usar directamente
+                        current_routine = routine_from_plan
+                    
+                    # Usar diet_from_plan directamente (ya está en formato correcto)
+                    # Pero asegurar que tenga estructura current_diet si viene en formato GPT
+                    if isinstance(diet_from_plan, dict):
+                        # Si tiene "comidas" pero no "meals", convertir
+                        if "comidas" in diet_from_plan and "meals" not in diet_from_plan:
+                            diet_from_plan["meals"] = diet_from_plan.pop("comidas")
+                        
+                        # Asegurar que tenga total_kcal
+                        if "total_kcal" not in diet_from_plan:
+                            macros = diet_from_plan.get("macros", {})
+                            if isinstance(macros, dict):
+                                total_kcal = macros.get("calorias") or macros.get("total_kcal") or 0
+                                if total_kcal:
+                                    diet_from_plan["total_kcal"] = int(total_kcal)
+                                else:
+                                    # Calcular desde comidas
+                                    meals = diet_from_plan.get("meals", [])
+                                    diet_from_plan["total_kcal"] = sum([meal.get("kcal", 0) for meal in meals])
+                        
+                        current_diet = diet_from_plan
+                    else:
+                        current_diet = diet_from_plan
+                    
+                    print(f"✅ Fallback exitoso: {len(current_routine.get('exercises', []))} ejercicios, {len(current_diet.get('meals', []))} comidas")
+                    
+                    # 4. OPCIONALMENTE sincronizar de vuelta a Usuario para que la próxima vez no necesite fallback
+                    try:
+                        usuario.current_routine = json.dumps(current_routine, ensure_ascii=False)
+                        usuario.current_diet = json.dumps(current_diet, ensure_ascii=False)
+                        db.commit()
+                        print(f"✅ Datos sincronizados de vuelta a Usuario.current_routine/current_diet")
+                    except Exception as sync_err:
+                        print(f"⚠️ Error sincronizando a Usuario (no crítico): {sync_err}")
+                        db.rollback()
+                        # Continuar aunque falle la sincronización
+                    
+                except Exception as fallback_err:
+                    print(f"❌ Error en fallback desde Plan: {fallback_err}")
+                    import traceback
+                    traceback.print_exc()
+                    # Continuar con datos vacíos si falla el fallback
+            else:
+                print(f"⚠️ No se encontró Plan para usuario {usuario.id}, usando datos vacíos")
         
         # Devolver como si fuera un plan (manteniendo compatibilidad)
         return [
@@ -508,6 +701,9 @@ def obtener_planes(
             )
         ]
     except Exception as e:
+        print(f"❌ Error obteniendo datos actuales: {e}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Error obteniendo datos actuales: {str(e)}")
 
 
@@ -722,7 +918,87 @@ def obtener_rutina_actual(
                             training_days = metadata.get('training_days')
             except (json.JSONDecodeError, AttributeError, KeyError):
                 pass
-        
+
+        # ─── FALLBACK: Si current_routine/current_diet vacíos, cargar desde Plan (usuarios antiguos) ───
+        routine = deserialize_json(usuario.current_routine or "{}", "current_routine")
+        diet = deserialize_json(usuario.current_diet or "{}", "current_diet")
+
+        routine_is_empty = (
+            routine == {} or
+            not routine.get("exercises") or
+            len(routine.get("exercises", [])) == 0
+        )
+        diet_is_empty = (
+            diet == {} or
+            not diet.get("meals") or
+            len(diet.get("meals", [])) == 0
+        )
+
+        if routine_is_empty and diet_is_empty:
+            print(f"⚠️ Usuario {user_id}: current_routine/diet vacíos, buscando en Plan...")
+            plan = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
+
+            if plan:
+                print(f"✅ Plan encontrado (ID: {plan.id}), cargando datos...")
+                try:
+                    routine_from_plan = json.loads(plan.rutina or '{}')
+                    diet_from_plan = json.loads(plan.dieta or '{}')
+
+                    if isinstance(routine_from_plan, dict) and "dias" in routine_from_plan:
+                        exercises = []
+                        for dia in routine_from_plan.get("dias", []):
+                            for ejercicio in dia.get("ejercicios", []):
+                                exercises.append({
+                                    "name": ejercicio.get("nombre", ""),
+                                    "sets": ejercicio.get("series", 3),
+                                    "reps": ejercicio.get("repeticiones", "10-12"),
+                                    "weight": "moderado",
+                                    "day": dia.get("dia", "")
+                                })
+                        routine = {
+                            "exercises": exercises,
+                            "schedule": {},
+                            "created_at": datetime.utcnow().isoformat(),
+                            "version": "1.0.0"
+                        }
+                        if "metadata" in routine_from_plan:
+                            routine["metadata"] = routine_from_plan["metadata"]
+                    else:
+                        routine = routine_from_plan
+
+                    if isinstance(diet_from_plan, dict):
+                        if "comidas" in diet_from_plan and "meals" not in diet_from_plan:
+                            diet_from_plan["meals"] = diet_from_plan.pop("comidas")
+                        if "total_kcal" not in diet_from_plan:
+                            macros = diet_from_plan.get("macros", {})
+                            if isinstance(macros, dict):
+                                total_kcal = macros.get("calorias") or macros.get("total_kcal") or 0
+                                if total_kcal:
+                                    diet_from_plan["total_kcal"] = int(total_kcal)
+                                else:
+                                    diet_from_plan["total_kcal"] = sum(
+                                        [meal.get("kcal", 0) for meal in diet_from_plan.get("meals", [])]
+                                    )
+                        diet = diet_from_plan
+                    else:
+                        diet = diet_from_plan
+
+                    print(f"✅ Fallback exitoso: {len(routine.get('exercises', []))} ejercicios, {len(diet.get('meals', []))} comidas")
+
+                    try:
+                        usuario.current_routine = json.dumps(routine, ensure_ascii=False)
+                        usuario.current_diet = json.dumps(diet, ensure_ascii=False)
+                        db.commit()
+                        db.refresh(usuario)
+                        print(f"✅ Datos sincronizados de vuelta a Usuario.current_routine/current_diet")
+                    except Exception as sync_err:
+                        print(f"⚠️ Error sincronizando a Usuario (no crítico): {sync_err}")
+                        db.rollback()
+                except Exception as fallback_err:
+                    print(f"❌ Error en fallback desde Plan: {fallback_err}")
+                    import traceback
+                    traceback.print_exc()
+
         # Verificar si es premium
         is_premium = usuario.is_premium or usuario.plan_type == "PREMIUM"
         print(f"💎 Usuario premium: {is_premium}")

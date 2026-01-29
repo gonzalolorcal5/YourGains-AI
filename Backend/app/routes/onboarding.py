@@ -272,6 +272,68 @@ async def process_onboarding(
             # CREAR REGISTRO EN TABLA PLANES (TANTO PARA FREE COMO PREMIUM)
             # ════════════════════════════════════════════════════════════
             
+            # ✅ SINCRONIZAR current_routine y current_diet con el Plan ANTES de crearlo
+            # Esto asegura que el dashboard pueda leer los datos desde Usuario.current_routine/current_diet
+            # Convertir rutina_json al formato current_routine
+            exercises_plan = []
+            if "dias" in rutina_json:
+                for dia in rutina_json.get("dias", []):
+                    for ejercicio in dia.get("ejercicios", []):
+                        exercises_plan.append({
+                            "name": ejercicio.get("nombre", ""),
+                            "sets": ejercicio.get("series", 3),
+                            "reps": ejercicio.get("repeticiones", "10-12"),
+                            "weight": "moderado",
+                            "day": dia.get("dia", "")
+                        })
+            
+            current_routine_plan = {
+                "exercises": exercises_plan,
+                "schedule": {},
+                "created_at": datetime.utcnow().isoformat(),
+                "version": "1.0.0",
+                "metadata": {
+                    "gym_goal": data.gym_goal,
+                    "training_frequency": data.training_frequency,
+                    "training_days": data.training_days
+                }
+            }
+            
+            # Convertir dieta_json al formato current_diet
+            # Extraer macros y calorías del plan generado
+            macros_plan_diet = dieta_json.get("macros", {})
+            if not macros_plan_diet or (isinstance(macros_plan_diet, dict) and len(macros_plan_diet) == 0):
+                metadata_macros = dieta_json.get("metadata", {}).get("macros_objetivo", {})
+                if metadata_macros:
+                    macros_plan_diet = {
+                        "proteina": metadata_macros.get("proteina", 0),
+                        "carbohidratos": metadata_macros.get("carbohidratos", 0),
+                        "grasas": metadata_macros.get("grasas", 0)
+                    }
+            
+            # Calcular total_kcal
+            total_kcal_plan = macros_plan_diet.get("calorias") if isinstance(macros_plan_diet, dict) else None
+            if not total_kcal_plan or total_kcal_plan <= 0:
+                total_kcal_plan = sum([meal.get("kcal", 0) for meal in dieta_json.get("comidas", [])])
+            
+            current_diet_plan = {
+                "meals": dieta_json.get("comidas", []),
+                "total_kcal": int(total_kcal_plan) if total_kcal_plan else 2200,
+                "macros": macros_plan_diet,
+                "objetivo": f"{data.gym_goal} + {data.nutrition_goal}",
+                "created_at": datetime.utcnow().isoformat(),
+                "version": "1.0.0",
+                "metadata": {
+                    "nutrition_goal": data.nutrition_goal
+                }
+            }
+            
+            # Actualizar Usuario con current_routine y current_diet ANTES de crear el Plan
+            db.query(Usuario).filter(Usuario.id == usuario.id).update({
+                "current_routine": serialize_json(current_routine_plan, "current_routine"),
+                "current_diet": serialize_json(current_diet_plan, "current_diet")
+            })
+            
             # Crear registro en tabla planes con datos reales del usuario
             nuevo_plan = Plan(
                 user_id=usuario.id,
@@ -303,6 +365,7 @@ async def process_onboarding(
             
             db.add(nuevo_plan)
             db.flush()  # Para obtener el ID del plan
+            plan_id = nuevo_plan.id
             
             print(f"✅ Plan creado en tabla planes (ID: {nuevo_plan.id}) para usuario {usuario.id}")
             print(f"📊 Datos guardados en planes:")
@@ -342,67 +405,164 @@ async def process_onboarding(
                 "motivacion": plan_data.get("motivacion", "¡Vamos a por ello! Con constancia y dedicación alcanzarás tu objetivo.")
             }
         except IntegrityError as integrity_error:
-            # 🛡️ MANEJO DE UNIQUE CONSTRAINT VIOLATION
-            print(f"⚠️ IntegrityError al crear/guardar plan para user_id {usuario.id}")
-            print(f"   Error: {integrity_error}")
+            # Extraer mensaje de error original de PostgreSQL
+            error_detail = str(integrity_error.orig) if hasattr(integrity_error, 'orig') else str(integrity_error)
+            error_lower = error_detail.lower()
             
-            # Rollback para limpiar transacción fallida
-            db.rollback()
+            print(f"🚨 IntegrityError capturado para user_id {usuario.id}")
+            print(f"   Error completo: {error_detail}")
             
-            # Intentar recuperación: buscar el plan que causó el conflicto
-            existing_plan = db.query(Plan).filter(Plan.user_id == usuario.id).first()
+            # CASO 1: FOREIGN KEY VIOLATION (usuario no existe en tabla usuarios)
+            if "foreign key" in error_lower or "fkey" in error_lower or "violates foreign key constraint" in error_lower:
+                print(f"❌ FOREIGN KEY violation: Usuario {usuario.id} no existe en tabla usuarios")
+                print(f"   Esto indica que la sesión del usuario es inválida o el usuario fue borrado")
+                
+                db.rollback()
+                
+                raise HTTPException(
+                    status_code=401,
+                    detail="Sesión inválida. Por favor, cierra sesión y vuelve a iniciar sesión con Google."
+                )
             
-            if existing_plan:
-                # Plan existe (otro proceso lo creó), actualizar con datos nuevos
-                print(f"✅ Plan encontrado después de IntegrityError (id: {existing_plan.id}), actualizando...")
+            # CASO 2: UNIQUE CONSTRAINT VIOLATION (plan duplicado por concurrencia/doble submit)
+            elif "unique" in error_lower or "duplicate key" in error_lower:
+                print(f"⚠️ UNIQUE constraint violation: Ya existe plan para user_id {usuario.id}")
+                print(f"   Probablemente causado por: doble submit, race condition, o retry del navegador")
+                print(f"   Estrategia de recuperación: buscar plan existente y actualizar con datos nuevos")
                 
-                existing_plan.altura = data.altura
-                existing_plan.peso = str(int(data.peso))
-                existing_plan.edad = data.edad
-                existing_plan.sexo = data.sexo
-                existing_plan.experiencia = data.experiencia
-                existing_plan.objetivo = f"{data.gym_goal} + {data.nutrition_goal}"
-                existing_plan.objetivo_gym = data.gym_goal
-                existing_plan.objetivo_dieta = data.nutrition_goal
-                existing_plan.objetivo_nutricional = data.nutrition_goal
-                existing_plan.materiales = data.materiales
-                existing_plan.tipo_cuerpo = data.tipo_cuerpo if hasattr(data, 'tipo_cuerpo') else None
-                existing_plan.nivel_actividad = data.nivel_actividad
-                existing_plan.idioma = "es"
-                existing_plan.lesiones = data.lesiones if hasattr(data, 'lesiones') else None
-                existing_plan.alergias = data.alergias if hasattr(data, 'alergias') else None
-                existing_plan.restricciones_dieta = data.restricciones_dieta if hasattr(data, 'restricciones_dieta') else None
-                existing_plan.session_duration = data.session_duration if hasattr(data, 'session_duration') else '45-60'
-                existing_plan.rutina = serialize_json(rutina_json, "rutina")
-                existing_plan.dieta = serialize_json(dieta_json, "dieta")
-                existing_plan.motivacion = plan_data.get("motivacion", "")
-                existing_plan.fecha_creacion = datetime.utcnow()
+                # Rollback para limpiar transacción fallida
+                db.rollback()
                 
-                # Volver a marcar onboarding como completado y guardar current_routine/current_diet
-                db.query(Usuario).filter(Usuario.id == usuario.id).update({
-                    "onboarding_completed": True,
-                    "current_routine": serialize_json(current_routine, "current_routine"),
-                    "current_diet": serialize_json(current_diet, "current_diet")
-                })
+                # Buscar el plan que causó el conflicto
+                existing_plan = db.query(Plan).filter(Plan.user_id == usuario.id).first()
                 
-                db.commit()
-                db.refresh(existing_plan)
-                
-                plan_id = existing_plan.id
-                
-                return {
-                    "message": "Plan personalizado creado exitosamente",
-                    "plan_id": plan_id,
-                    "rutina": rutina_json,
-                    "dieta": dieta_json,
-                    "motivacion": plan_data.get("motivacion", "¡Vamos a por ello! Con constancia y dedicación alcanzarás tu objetivo.")
-                }
+                if existing_plan:
+                    print(f"✅ Plan encontrado (id: {existing_plan.id}), actualizando con datos del formulario...")
+                    
+                    # Actualizar TODOS los campos del plan existente
+                    existing_plan.altura = data.altura
+                    existing_plan.peso = str(int(data.peso))
+                    existing_plan.edad = data.edad
+                    existing_plan.sexo = data.sexo
+                    existing_plan.experiencia = data.experiencia
+                    existing_plan.objetivo = f"{data.gym_goal} + {data.nutrition_goal}"
+                    existing_plan.objetivo_gym = data.gym_goal
+                    existing_plan.objetivo_dieta = data.nutrition_goal
+                    existing_plan.objetivo_nutricional = data.nutrition_goal
+                    existing_plan.materiales = data.materiales
+                    existing_plan.tipo_cuerpo = data.tipo_cuerpo if hasattr(data, 'tipo_cuerpo') else None
+                    existing_plan.nivel_actividad = data.nivel_actividad
+                    existing_plan.idioma = "es"
+                    existing_plan.lesiones = data.lesiones if hasattr(data, 'lesiones') else None
+                    existing_plan.alergias = data.alergias if hasattr(data, 'alergias') else None
+                    existing_plan.restricciones_dieta = data.restricciones_dieta if hasattr(data, 'restricciones_dieta') else None
+                    existing_plan.session_duration = data.session_duration if hasattr(data, 'session_duration') else '45-60'
+                    existing_plan.rutina = serialize_json(rutina_json, "rutina")
+                    existing_plan.dieta = serialize_json(dieta_json, "dieta")
+                    existing_plan.motivacion = plan_data.get("motivacion", "")
+                    existing_plan.fecha_creacion = datetime.utcnow()
+                    
+                    # ✅ SINCRONIZAR current_routine y current_diet con el Plan actualizado
+                    # Convertir rutina_json al formato current_routine
+                    exercises_update = []
+                    if "dias" in rutina_json:
+                        for dia in rutina_json.get("dias", []):
+                            for ejercicio in dia.get("ejercicios", []):
+                                exercises_update.append({
+                                    "name": ejercicio.get("nombre", ""),
+                                    "sets": ejercicio.get("series", 3),
+                                    "reps": ejercicio.get("repeticiones", "10-12"),
+                                    "weight": "moderado",
+                                    "day": dia.get("dia", "")
+                                })
+                    
+                    current_routine_update = {
+                        "exercises": exercises_update,
+                        "schedule": {},
+                        "created_at": datetime.utcnow().isoformat(),
+                        "version": "1.0.0",
+                        "metadata": {
+                            "gym_goal": data.gym_goal,
+                            "training_frequency": data.training_frequency,
+                            "training_days": data.training_days
+                        }
+                    }
+                    
+                    # Convertir dieta_json al formato current_diet
+                    macros_update = dieta_json.get("macros", {})
+                    if not macros_update or (isinstance(macros_update, dict) and len(macros_update) == 0):
+                        metadata_macros = dieta_json.get("metadata", {}).get("macros_objetivo", {})
+                        if metadata_macros:
+                            macros_update = {
+                                "proteina": metadata_macros.get("proteina", 0),
+                                "carbohidratos": metadata_macros.get("carbohidratos", 0),
+                                "grasas": metadata_macros.get("grasas", 0)
+                            }
+                    
+                    # Calcular total_kcal
+                    total_kcal_update = macros_update.get("calorias") if isinstance(macros_update, dict) else None
+                    if not total_kcal_update or total_kcal_update <= 0:
+                        total_kcal_update = sum([meal.get("kcal", 0) for meal in dieta_json.get("comidas", [])])
+                    
+                    current_diet_update = {
+                        "meals": dieta_json.get("comidas", []),
+                        "total_kcal": int(total_kcal_update) if total_kcal_update else 2200,
+                        "macros": macros_update,
+                        "objetivo": f"{data.gym_goal} + {data.nutrition_goal}",
+                        "created_at": datetime.utcnow().isoformat(),
+                        "version": "1.0.0",
+                        "metadata": {
+                            "nutrition_goal": data.nutrition_goal
+                        }
+                    }
+                    
+                    # Re-aplicar actualización de Usuario (onboarding_completed + current_routine/current_diet)
+                    db.query(Usuario).filter(Usuario.id == usuario.id).update({
+                        "onboarding_completed": True,
+                        "current_routine": serialize_json(current_routine_update, "current_routine"),
+                        "current_diet": serialize_json(current_diet_update, "current_diet")
+                    })
+                    
+                    db.commit()
+                    db.refresh(existing_plan)
+                    
+                    plan_id = existing_plan.id
+                    
+                    print(f"✅ Plan actualizado exitosamente (id: {plan_id})")
+                    print(f"   Usuario {usuario.id} puede continuar normalmente")
+                    
+                    # Return en formato idéntico al camino feliz
+                    return {
+                        "message": "Plan personalizado creado exitosamente",
+                        "plan_id": plan_id,
+                        "rutina": rutina_json,
+                        "dieta": dieta_json,
+                        "motivacion": plan_data.get("motivacion", "¡Vamos a por ello! Con constancia y dedicación alcanzarás tu objetivo.")
+                    }
+                else:
+                    # Edge case ultra-raro: UNIQUE violation pero plan no existe
+                    # Esto solo puede pasar si el plan se borra exactamente entre el error y esta búsqueda
+                    print(f"❌ ANOMALÍA DETECTADA: UNIQUE violation pero no hay plan para user_id {usuario.id}")
+                    print(f"   Esto es extremadamente raro y puede indicar problema de concurrencia complejo")
+                    
+                    db.rollback()
+                    
+                    raise HTTPException(
+                        status_code=500,
+                        detail="Error temporal al crear plan. Por favor, recarga la página e intenta de nuevo en unos segundos."
+                    )
+            
+            # CASO 3: OTRO TIPO DE INTEGRITYERROR (NOT NULL, CHECK, etc)
             else:
-                # Edge case muy raro: plan se borró entre queries
-                print(f"❌ No se encontró plan después de IntegrityError para user_id {usuario.id}")
+                print(f"❌ IntegrityError de tipo desconocido:")
+                print(f"   Error: {error_detail}")
+                print(f"   Posibles causas: NOT NULL violation, CHECK constraint, o constraint personalizado")
+                
+                db.rollback()
+                
                 raise HTTPException(
                     status_code=500,
-                    detail="Error al crear plan. Por favor, recarga la página e intenta de nuevo."
+                    detail="Error al validar datos del plan. Por favor, verifica que todos los campos estén completos e intenta de nuevo."
                 )
 
     except Exception as e:

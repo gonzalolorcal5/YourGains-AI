@@ -106,6 +106,11 @@ async def generate_and_save_ai_plan(db: Session, user_id: int):
         # Guardar en DB
         user.current_routine = json.dumps(current_routine, ensure_ascii=False)
         user.current_diet = json.dumps(current_diet, ensure_ascii=False)
+        
+        # Sincronizar Plan también
+        plan_data.rutina = json.dumps(plan["rutina"], ensure_ascii=False)
+        plan_data.dieta = json.dumps(plan["dieta"], ensure_ascii=False)
+        
         db.commit()
         
         print(f"✅ Plan de IA generado y guardado para usuario {user_id}")

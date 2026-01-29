@@ -230,10 +230,10 @@ async def generate_and_save_ai_plan(db: Session, user_id: int, force: bool = Fal
         user.current_routine = json.dumps(rutina_json, ensure_ascii=False)
         user.current_diet = json.dumps(dieta_json, ensure_ascii=False)
         
-        # Actualizar historial (objeto Plan) también
+        # Actualizar también el Plan para mantener sincronización
         if plan_data:
-            plan_data.rutina = user.current_routine
-            plan_data.dieta = user.current_diet
+            plan_data.rutina = json.dumps(plan["rutina"], ensure_ascii=False)
+            plan_data.dieta = json.dumps(plan["dieta"], ensure_ascii=False)
             # También guardar la motivación si existe
             if "motivacion" in plan:
                 plan_data.motivacion = json.dumps(plan["motivacion"], ensure_ascii=False) if isinstance(plan["motivacion"], (dict, list)) else plan["motivacion"]
