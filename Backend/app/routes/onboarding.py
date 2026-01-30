@@ -11,8 +11,6 @@ from app.database import get_db
 from app.models import Usuario, Plan
 from app.auth_utils import get_current_user
 from app.utils.gpt import generar_plan_personalizado
-from app.utils.json_helpers import serialize_json
-
 router = APIRouter()
 
 class OnboardingRequest(BaseModel):
@@ -50,6 +48,26 @@ async def process_onboarding(
     🛡️ PROTEGIDO: Una sola generación por usuario
     """
     try:
+        # 🛡️ PROTECCIÓN: Limpiar transacciones pendientes y caché de sesión
+        try:
+            db.rollback()
+            db.expire_all()
+            print(f"✅ Sesión limpiada al inicio para user_id {usuario.id}")
+        except Exception as cleanup_err:
+            print(f"⚠️ Error en limpieza inicial: {cleanup_err}")
+
+        # 🔍 VERIFICACIÓN: Eliminar plan existente si hay uno
+        existing_check = db.query(Plan).filter(Plan.user_id == usuario.id).first()
+        if existing_check:
+            print(f"⚠️ Plan existente encontrado (id: {existing_check.id}), eliminando...")
+            try:
+                db.delete(existing_check)
+                db.commit()
+                print(f"✅ Plan existente eliminado")
+            except Exception as del_err:
+                print(f"❌ Error eliminando: {del_err}")
+                db.rollback()
+
         # 🛡️ PROTECCIÓN 1: Verificar si ya tiene un plan
         existing_plan = db.query(Plan).filter(Plan.user_id == usuario.id).first()
         if existing_plan:
@@ -176,8 +194,6 @@ async def process_onboarding(
         plan_id = nuevo_plan.id
         
         # 🛡️ PROTECCIÓN 4: Guardar también en current_routine y current_diet para modificaciones dinámicas
-        from app.utils.json_helpers import serialize_json
-        
         # Convertir rutina de formato "dias" a formato "exercises" para current_routine
         exercises = []
         if "dias" in rutina_json:
@@ -264,8 +280,8 @@ async def process_onboarding(
             # Marcar onboarding como completado y guardar current_routine/current_diet
             db.query(Usuario).filter(Usuario.id == usuario.id).update({
                 "onboarding_completed": True,
-                "current_routine": serialize_json(current_routine, "current_routine"),
-                "current_diet": serialize_json(current_diet, "current_diet")
+                "current_routine": json.dumps(current_routine, ensure_ascii=False),
+                "current_diet": json.dumps(current_diet, ensure_ascii=False)
             })
             
             # ════════════════════════════════════════════════════════════
@@ -330,8 +346,8 @@ async def process_onboarding(
             
             # Actualizar Usuario con current_routine y current_diet ANTES de crear el Plan
             db.query(Usuario).filter(Usuario.id == usuario.id).update({
-                "current_routine": serialize_json(current_routine_plan, "current_routine"),
-                "current_diet": serialize_json(current_diet_plan, "current_diet")
+                "current_routine": json.dumps(current_routine_plan, ensure_ascii=False),
+                "current_diet": json.dumps(current_diet_plan, ensure_ascii=False)
             })
             
             # Crear registro en tabla planes con datos reales del usuario
@@ -357,12 +373,12 @@ async def process_onboarding(
                 alergias=data.alergias if hasattr(data, 'alergias') else None,
                 restricciones_dieta=data.restricciones_dieta if hasattr(data, 'restricciones_dieta') else None,
                 session_duration=data.session_duration if hasattr(data, 'session_duration') else '45-60',  # Guardar duración de sesión
-                rutina=serialize_json(rutina_json, "rutina"),
-                dieta=serialize_json(dieta_json, "dieta"),
+                rutina=json.dumps(rutina_json, ensure_ascii=False),
+                dieta=json.dumps(dieta_json, ensure_ascii=False),
                 motivacion=plan_data.get("motivacion", ""),
                 fecha_creacion=datetime.utcnow()
             )
-            
+
             db.add(nuevo_plan)
             db.flush()  # Para obtener el ID del plan
             plan_id = nuevo_plan.id
@@ -457,8 +473,8 @@ async def process_onboarding(
                     existing_plan.alergias = data.alergias if hasattr(data, 'alergias') else None
                     existing_plan.restricciones_dieta = data.restricciones_dieta if hasattr(data, 'restricciones_dieta') else None
                     existing_plan.session_duration = data.session_duration if hasattr(data, 'session_duration') else '45-60'
-                    existing_plan.rutina = serialize_json(rutina_json, "rutina")
-                    existing_plan.dieta = serialize_json(dieta_json, "dieta")
+                    existing_plan.rutina = json.dumps(rutina_json, ensure_ascii=False)
+                    existing_plan.dieta = json.dumps(dieta_json, ensure_ascii=False)
                     existing_plan.motivacion = plan_data.get("motivacion", "")
                     existing_plan.fecha_creacion = datetime.utcnow()
                     
@@ -519,8 +535,8 @@ async def process_onboarding(
                     # Re-aplicar actualización de Usuario (onboarding_completed + current_routine/current_diet)
                     db.query(Usuario).filter(Usuario.id == usuario.id).update({
                         "onboarding_completed": True,
-                        "current_routine": serialize_json(current_routine_update, "current_routine"),
-                        "current_diet": serialize_json(current_diet_update, "current_diet")
+                        "current_routine": json.dumps(current_routine_update, ensure_ascii=False),
+                        "current_diet": json.dumps(current_diet_update, ensure_ascii=False)
                     })
                     
                     db.commit()
