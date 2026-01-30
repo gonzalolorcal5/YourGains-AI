@@ -38,14 +38,14 @@ class Usuario(Base):
     # Lock mechanism para evitar generaciones duplicadas de plan
     is_generating_plan = Column(Boolean, default=False, nullable=False)
 
-    planes = relationship("Plan", back_populates="usuario")
+    plan = relationship("Plan", back_populates="usuario", uselist=False)
 
 
 class Plan(Base):
     __tablename__ = "planes"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("usuarios.id"))
+    user_id = Column(Integer, ForeignKey("usuarios.id"), unique=True)
 
     altura = Column(Integer, nullable=False)
     peso = Column(String, nullable=False)
@@ -74,7 +74,7 @@ class Plan(Base):
 
     fecha_creacion = Column(DateTime, default=datetime.utcnow)
 
-    usuario = relationship("Usuario", back_populates="planes")
+    usuario = relationship("Usuario", back_populates="plan")
 
 
 class ProcessedWebhookEvent(Base):

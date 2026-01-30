@@ -22,7 +22,9 @@ endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
 
 async def generate_and_save_ai_plan(db: Session, user_id: int):
     """
-    Genera un plan personalizado con IA para un usuario premium
+    Asciende el plan existente (template FREE) a plan personalizado con IA.
+    NUNCA crea un nuevo Plan: solo busca el plan del usuario en tabla planes
+    y actualiza rutina/dieta. Si no hay plan, retorna sin crear (usuario debe completar onboarding).
     """
     try:
         user = db.query(Usuario).filter(Usuario.id == user_id).first()
@@ -30,11 +32,10 @@ async def generate_and_save_ai_plan(db: Session, user_id: int):
             print(f"❌ Usuario {user_id} no encontrado")
             return
         
-        # Obtener datos del onboarding desde la tabla planes
+        # Plan existente (el que rellenó siendo FREE) — no se crea uno nuevo
         plan_data = db.query(Plan).filter(Plan.user_id == user_id).first()
-        
         if not plan_data:
-            print(f"❌ No hay datos de onboarding para usuario {user_id}")
+            print(f"❌ No hay plan en tabla planes para usuario {user_id}. Debe completar onboarding.")
             return
         
         # Preparar datos del usuario
@@ -107,7 +108,7 @@ async def generate_and_save_ai_plan(db: Session, user_id: int):
         user.current_routine = json.dumps(current_routine, ensure_ascii=False)
         user.current_diet = json.dumps(current_diet, ensure_ascii=False)
         
-        # Sincronizar Plan también
+        # Actualizar plan existente (ascender template → IA), sin db.add(Plan)
         plan_data.rutina = json.dumps(plan["rutina"], ensure_ascii=False)
         plan_data.dieta = json.dumps(plan["dieta"], ensure_ascii=False)
         

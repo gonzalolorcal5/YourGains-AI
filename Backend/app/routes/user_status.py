@@ -54,33 +54,12 @@ async def get_current_user_data(
         if not user:
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
         
-        # Verificar si tiene Plan(es) en la BD - ESTO ES PRIORITARIO
+        # ✅ REGLA BLOQUE 3: onboarding_completed depende de que exista un registro en tabla planes
+        # (no solo del booleano en BD, para evitar estado "zombi")
         last_plan = db.query(Plan).filter(Plan.user_id == user.id).order_by(Plan.id.desc()).first()
         has_plan = last_plan is not None
-        
-        # ✅ REGLA CRÍTICA: Si tiene Plan → onboarding_completed = True OBLIGATORIAMENTE
-        if has_plan:
-            onboarding_completed = True
-            session_duration = last_plan.session_duration if last_plan.session_duration else "45-60"
-        else:
-            # Si no tiene plan, verificar otros indicadores
-            has_valid_routine = False
-            if user.current_routine:
-                try:
-                    routine_data = json.loads(user.current_routine)
-                    if isinstance(routine_data, dict):
-                        has_valid_routine = (
-                            (routine_data.get("exercises") and len(routine_data.get("exercises", [])) > 0) or
-                            (routine_data.get("dias") and len(routine_data.get("dias", [])) > 0)
-                        )
-                except (json.JSONDecodeError, AttributeError, KeyError):
-                    pass
-            
-            onboarding_completed = bool(
-                user.onboarding_completed or 
-                has_valid_routine
-            )
-            session_duration = "45-60"
+        onboarding_completed = has_plan
+        session_duration = last_plan.session_duration if (last_plan and last_plan.session_duration) else "45-60"
         
         # Preparar valores para la respuesta
         user_id = user.id

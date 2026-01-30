@@ -60,7 +60,11 @@ def _user_has_premium_generated_plan(user: Usuario) -> bool:
 # Exportada para uso en stripe_routes.py
 async def generate_and_save_ai_plan(db: Session, user_id: int, force: bool = False):
     """
-    Genera plan personalizado con IA para usuario premium.
+    'Asciende' el plan existente de template (FREE) a plan personalizado con IA.
+    NUNCA crea un nuevo Plan (db.add(Plan(...))): solo busca el plan del usuario
+    en tabla planes y actualiza rutina/dieta/motivacion con el resultado de la IA.
+    Si no hay plan (usuario no completó onboarding), retorna False.
+
     Incluye protecciones contra duplicados y race conditions (lock + idempotencia).
 
     Args:
@@ -142,10 +146,10 @@ async def generate_and_save_ai_plan(db: Session, user_id: int, force: bool = Fal
         plan_data = db.query(Plan).filter(Plan.user_id == user_id).order_by(Plan.id.desc()).first()
 
         if not plan_data:
-            print(f"[PASO 4] No hay datos de onboarding para user_id {user_id}. Usuario debe completar onboarding.")
+            print(f"[PASO 4] No hay plan en tabla planes para user_id {user_id}. Usuario debe completar onboarding (no se crea plan nuevo).")
             return False
 
-        # Preparar datos del usuario desde el onboarding
+        # Preparar datos del usuario desde el plan existente (ascender template → IA)
         # Intentar obtener training_days y training_frequency desde el plan si existen
         training_days = ['lunes', 'martes', 'jueves', 'viernes']  # Default
         training_frequency = 4  # Default

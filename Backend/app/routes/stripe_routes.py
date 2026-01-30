@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 import traceback
 import logging
 from app.database import get_db
-from app.models import Usuario
+from app.models import Usuario, Plan
 from app.auth_utils import get_user_id_from_token, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 from datetime import timedelta
 from pydantic import BaseModel
@@ -564,11 +564,10 @@ async def activate_premium_fallback(
                 logger.info(f"🔑 Token JWT generado para usuario {user_id}")
             return data
 
-        # Si ya es premium, no forzamos una nueva generación de plan para que el endpoint sea idempotente
+        # Si ya es premium, no forzamos una nueva generación de plan (BLOQUE 3: plan = registro en tabla planes)
         if user.is_premium:
             logger.info(f"✅ Usuario {user_id} ya es premium")
-            # Comprobar si ya tiene plan generado
-            has_plan = bool(getattr(user, "current_routine", None) and getattr(user, "current_diet", None))
+            has_plan = db.query(Plan).filter(Plan.user_id == user_id).first() is not None
             return build_response({
                 "success": True,
                 "is_premium": True,
@@ -616,10 +615,10 @@ async def activate_premium_fallback(
                     db.commit()
                     logger.info(f"✅ Usuario {user_id} actualizado a {plan_type}")
                     
-                    # ✅ NO generar plan aquí - el webhook de Stripe ya lo generó
-                    # Solo verificar si el plan existe
-                    has_plan = bool(user.current_routine and user.current_routine != '{}')
-                    logger.info(f"✅ Usuario {user_id} activado como {plan_type}. Plan existe: {has_plan}")
+                    # ✅ BLOQUE 3: No crear plan aquí; el webhook asciende el plan existente con IA
+                    # Plan existe = registro en tabla planes (consistente con onboarding_completed)
+                    has_plan = db.query(Plan).filter(Plan.user_id == user_id).first() is not None
+                    logger.info(f"✅ Usuario {user_id} activado como {plan_type}. Plan en BD: {has_plan}")
                     plan_generated = has_plan
                     
                     return build_response({
@@ -639,10 +638,9 @@ async def activate_premium_fallback(
                 user.plan_type = "PREMIUM_MONTHLY"
                 db.commit()
                 
-                # ✅ NO generar plan aquí - el webhook de Stripe ya lo generó
-                # Solo verificar si el plan existe
-                has_plan = bool(user.current_routine and user.current_routine != '{}')
-                logger.info(f"✅ Usuario {user_id} activado como PREMIUM_MONTHLY. Plan existe: {has_plan}")
+                # ✅ BLOQUE 3: No crear plan aquí; plan existe = registro en tabla planes
+                has_plan = db.query(Plan).filter(Plan.user_id == user_id).first() is not None
+                logger.info(f"✅ Usuario {user_id} activado como PREMIUM_MONTHLY. Plan en BD: {has_plan}")
                 plan_generated = has_plan
                 
                 return build_response({
@@ -659,10 +657,9 @@ async def activate_premium_fallback(
         
         logger.info(f"✅ Usuario {user_id} activado en modo dev")
         
-        # ✅ NO generar plan aquí - el webhook de Stripe ya lo generó
-        # Solo verificar si el plan existe
-        has_plan = bool(user.current_routine and user.current_routine != '{}')
-        logger.info(f"✅ Usuario {user_id} activado como PREMIUM_MONTHLY. Plan existe: {has_plan}")
+        # ✅ BLOQUE 3: No crear plan aquí; plan existe = registro en tabla planes
+        has_plan = db.query(Plan).filter(Plan.user_id == user_id).first() is not None
+        logger.info(f"✅ Usuario {user_id} activado como PREMIUM_MONTHLY. Plan en BD: {has_plan}")
         plan_generated = has_plan
         
         return build_response({

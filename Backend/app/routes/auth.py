@@ -84,30 +84,10 @@ async def login(
         expires_delta=access_token_expires
     )
     
-    # ✅ LÓGICA CONSISTENTE: Verificar Plan PRIMERO (es lo más confiable)
+    # ✅ BLOQUE 3: onboarding_completed = True solo si existe registro en tabla planes
+    # (evita estado zombi: booleano True pero sin plan real)
     has_plan = db.query(models.Plan).filter(models.Plan.user_id == db_user.id).first() is not None
-
-    # Si tiene plan, onboarding_completed = True OBLIGATORIAMENTE
-    if has_plan:
-        onboarding_completed = True
-    else:
-        # Si no tiene plan, verificar otros indicadores
-        has_valid_routine = False
-        if db_user.current_routine:
-            try:
-                routine_data = json.loads(db_user.current_routine)
-                if isinstance(routine_data, dict):
-                    has_valid_routine = (
-                        (routine_data.get("exercises") and len(routine_data.get("exercises", [])) > 0) or
-                        (routine_data.get("dias") and len(routine_data.get("dias", [])) > 0)
-                    )
-            except (json.JSONDecodeError, AttributeError, KeyError):
-                pass
-        
-        onboarding_completed = bool(
-            db_user.onboarding_completed or 
-            has_valid_routine
-        )
+    onboarding_completed = has_plan
     
     return {
         "access_token": access_token, 

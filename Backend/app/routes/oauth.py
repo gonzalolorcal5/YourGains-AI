@@ -125,35 +125,10 @@ async def google_callback(
             db.commit()
             db.refresh(user)
         
-        # 5. Calcular onboarding_completed dinámicamente (igual que en auth.py)
-        # Si tiene current_routine válida o tiene un Plan, consideramos que completó onboarding
-        has_valid_routine = False
-        if user.current_routine:
-            try:
-                import json
-                routine_data = json.loads(user.current_routine)
-                # Verificar que no sea solo el objeto vacío por defecto
-                if isinstance(routine_data, dict) and routine_data.get("exercises"):
-                    has_valid_routine = len(routine_data.get("exercises", [])) > 0
-                # También verificar formato alternativo con "dias"
-                elif isinstance(routine_data, dict) and routine_data.get("dias"):
-                    has_valid_routine = len(routine_data.get("dias", [])) > 0
-            except (json.JSONDecodeError, AttributeError, KeyError):
-                pass
-        
-        # Verificar si tiene un Plan en la BD
+        # 5. BLOQUE 3: onboarding_completed solo si existe registro en tabla planes
         from app.models import Plan
         has_plan = db.query(Plan).filter(Plan.user_id == user.id).first() is not None
-        
-        # onboarding_completed = True si:
-        # 1. Está marcado explícitamente como True en BD, O
-        # 2. Tiene una rutina válida, O
-        # 3. Tiene un Plan guardado
-        onboarding_completed = bool(
-            user.onboarding_completed or 
-            has_valid_routine or 
-            has_plan
-        )
+        onboarding_completed = has_plan
         
         # 6. Generar JWT token (solo incluye user_id, igual que auth.py)
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
