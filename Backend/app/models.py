@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Text
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Text, Float
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.database import Base
@@ -39,6 +39,7 @@ class Usuario(Base):
     is_generating_plan = Column(Boolean, default=False, nullable=False)
 
     plan = relationship("Plan", back_populates="usuario", uselist=False)
+    body_scans = relationship("BodyScan", backref="usuario", cascade="all, delete-orphan")
 
 
 class Plan(Base):
@@ -75,6 +76,28 @@ class Plan(Base):
     fecha_creacion = Column(DateTime, default=datetime.utcnow)
 
     usuario = relationship("Usuario", back_populates="plan")
+
+
+class BodyScan(Base):
+    """Análisis de foto corporal (body scan) con IA usando datos del usuario."""
+    __tablename__ = "body_scans"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
+
+    fecha_scan = Column(DateTime, default=datetime.utcnow)
+    peso = Column(Float, nullable=True)
+    altura = Column(Float, nullable=True)
+    experiencia = Column(String, nullable=True)
+    tipo_cuerpo = Column(String, nullable=True)
+    grasa_estimada_min = Column(Float, nullable=True)
+    grasa_estimada_max = Column(Float, nullable=True)
+
+    puntos_fuertes = Column(Text, nullable=True)
+    puntos_debiles = Column(Text, nullable=True)
+    recomendacion = Column(String, nullable=True)
+    analisis_completo = Column(Text, nullable=True)
+    image_url = Column(Text, nullable=True)
 
 
 class ProcessedWebhookEvent(Base):

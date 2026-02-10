@@ -8,6 +8,7 @@ __pycache__/
 *.pyo
 *.pyd
 *.sqlite3
+yourgains_local.db
 
 # node
 node_modules/

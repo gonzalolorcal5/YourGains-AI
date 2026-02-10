@@ -9,6 +9,7 @@ from openai import AsyncOpenAI
 from openai import RateLimitError, APIError
 import logging
 from app.utils.nutrition_calculator import get_complete_nutrition_plan
+from app.utils.routine_templates import get_generic_plan
 from fastapi import HTTPException
 
 # ═══════════════════════════════════════════════════════
@@ -1224,96 +1225,91 @@ REGLAS CRÍTICAS:
     logger.info(f"📦 Modelo: {MODEL}")
     logger.info(f"📚 RAG activo: {len(rag_context) > 0 if rag_context else False}")
     logger.info("=" * 80)
-    
-    # ═══════════════════════════════════════════════════════
-    # 🔄 RETRY LOGIC CON EXPONENTIAL BACKOFF
-    # ═══════════════════════════════════════════════════════
-    MAX_RETRIES = 3
-    BASE_DELAY = 2  # Segundos base para exponential backoff
-    
-    response = None
-    last_error = None
-    
-    for attempt in range(MAX_RETRIES):
-        try:
-            logger.info(f"🔄 Intento {attempt + 1}/{MAX_RETRIES} de generación de plan")
-            
-            response = await client.chat.completions.create(
-                model=MODEL,  # ✅ GPT-4o con sistema RAG completo
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.85,
-                max_tokens=2500,  # 🛡️ Limitar tokens para evitar excesos
-                timeout=120.0  # 🛡️ Timeout aumentado a 2 minutos
+
+    try:
+        # ═══════════════════════════════════════════════════════
+        # 🔄 RETRY LOGIC CON EXPONENTIAL BACKOFF
+        # ═══════════════════════════════════════════════════════
+        MAX_RETRIES = 3
+        BASE_DELAY = 2  # Segundos base para exponential backoff
+
+        response = None
+        last_error = None
+
+        for attempt in range(MAX_RETRIES):
+            try:
+                logger.info(f"🔄 Intento {attempt + 1}/{MAX_RETRIES} de generación de plan")
+
+                response = await client.chat.completions.create(
+                    model=MODEL,  # ✅ GPT-4o con sistema RAG completo
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.85,
+                    max_tokens=2500,  # 🛡️ Limitar tokens para evitar excesos
+                    timeout=120.0  # 🛡️ Timeout aumentado a 2 minutos
+                )
+
+                # ✅ Éxito: salir del loop de retry
+                logger.info(f"✅ Plan generado exitosamente en intento {attempt + 1}")
+                break
+
+            except RateLimitError as e:
+                last_error = e
+                if attempt < MAX_RETRIES - 1:
+                    delay = BASE_DELAY * (2 ** attempt)
+                    logger.warning(f"⚠️ Rate limit alcanzado (intento {attempt + 1}/{MAX_RETRIES}). Esperando {delay}s antes de reintentar...")
+                    await asyncio.sleep(delay)
+                else:
+                    logger.error(f"❌ Rate limit después de {MAX_RETRIES} intentos")
+                    raise HTTPException(
+                        status_code=429,
+                        detail="El servicio está temporalmente saturado. Por favor, espera unos segundos e intenta de nuevo."
+                    )
+            except APIError as e:
+                last_error = e
+                if attempt < MAX_RETRIES - 1 and hasattr(e, 'status_code') and e.status_code in [500, 502, 503]:
+                    delay = BASE_DELAY * (2 ** attempt)
+                    logger.warning(f"⚠️ Error de API {e.status_code} (intento {attempt + 1}/{MAX_RETRIES}). Esperando {delay}s antes de reintentar...")
+                    await asyncio.sleep(delay)
+                else:
+                    logger.error(f"❌ Error de API no recuperable: {e}")
+                    raise HTTPException(
+                        status_code=500,
+                        detail=f"Error temporal del servicio de IA. Por favor, intenta de nuevo en unos momentos."
+                    )
+            except asyncio.TimeoutError as e:
+                last_error = e
+                if attempt < MAX_RETRIES - 1:
+                    delay = BASE_DELAY * (2 ** attempt)
+                    logger.warning(f"⚠️ Timeout en generación (intento {attempt + 1}/{MAX_RETRIES}). Esperando {delay}s antes de reintentar...")
+                    await asyncio.sleep(delay)
+                else:
+                    logger.error(f"❌ Timeout después de {MAX_RETRIES} intentos")
+                    raise HTTPException(
+                        status_code=504,
+                        detail="La generación del plan tardó demasiado. Intenta de nuevo."
+                    )
+            except Exception as e:
+                last_error = e
+                if attempt < MAX_RETRIES - 1:
+                    delay = BASE_DELAY * (2 ** attempt)
+                    logger.warning(f"⚠️ Error inesperado: {type(e).__name__} (intento {attempt + 1}/{MAX_RETRIES}). Esperando {delay}s antes de reintentar...")
+                    await asyncio.sleep(delay)
+                else:
+                    logger.error(f"❌ Error no recuperable después de {MAX_RETRIES} intentos: {e}")
+                    raise HTTPException(
+                        status_code=500,
+                        detail=f"Error al generar plan: {str(e)}"
+                    )
+
+        # Si llegamos aquí sin response, hubo un error no manejado
+        if response is None:
+            logger.error(f"❌ No se pudo generar plan después de {MAX_RETRIES} intentos. Último error: {last_error}")
+            raise HTTPException(
+                status_code=500,
+                detail="No se pudo generar el plan después de varios intentos. Por favor, intenta de nuevo más tarde."
             )
-            
-            # ✅ Éxito: salir del loop de retry
-            logger.info(f"✅ Plan generado exitosamente en intento {attempt + 1}")
-            break
-            
-        except RateLimitError as e:
-            last_error = e
-            if attempt < MAX_RETRIES - 1:
-                # Exponential backoff: 2s, 4s, 8s
-                delay = BASE_DELAY * (2 ** attempt)
-                logger.warning(f"⚠️ Rate limit alcanzado (intento {attempt + 1}/{MAX_RETRIES}). Esperando {delay}s antes de reintentar...")
-                await asyncio.sleep(delay)
-            else:
-                logger.error(f"❌ Rate limit después de {MAX_RETRIES} intentos")
-                raise HTTPException(
-                    status_code=429,
-                    detail="El servicio está temporalmente saturado. Por favor, espera unos segundos e intenta de nuevo."
-                )
-                
-        except APIError as e:
-            last_error = e
-            # Errores de API que pueden ser temporales (500, 502, 503)
-            if attempt < MAX_RETRIES - 1 and hasattr(e, 'status_code') and e.status_code in [500, 502, 503]:
-                delay = BASE_DELAY * (2 ** attempt)
-                logger.warning(f"⚠️ Error de API {e.status_code} (intento {attempt + 1}/{MAX_RETRIES}). Esperando {delay}s antes de reintentar...")
-                await asyncio.sleep(delay)
-            else:
-                logger.error(f"❌ Error de API no recuperable: {e}")
-                raise HTTPException(
-                    status_code=500,
-                    detail=f"Error temporal del servicio de IA. Por favor, intenta de nuevo en unos momentos."
-                )
-                
-        except asyncio.TimeoutError as e:
-            last_error = e
-            if attempt < MAX_RETRIES - 1:
-                delay = BASE_DELAY * (2 ** attempt)
-                logger.warning(f"⚠️ Timeout en generación (intento {attempt + 1}/{MAX_RETRIES}). Esperando {delay}s antes de reintentar...")
-                await asyncio.sleep(delay)
-            else:
-                logger.error(f"❌ Timeout después de {MAX_RETRIES} intentos")
-                raise HTTPException(
-                    status_code=504,
-                    detail="La generación del plan tardó demasiado. Intenta de nuevo."
-                )
-                
-        except Exception as e:
-            # Otros errores no esperados
-            last_error = e
-            if attempt < MAX_RETRIES - 1:
-                delay = BASE_DELAY * (2 ** attempt)
-                logger.warning(f"⚠️ Error inesperado: {type(e).__name__} (intento {attempt + 1}/{MAX_RETRIES}). Esperando {delay}s antes de reintentar...")
-                await asyncio.sleep(delay)
-            else:
-                logger.error(f"❌ Error no recuperable después de {MAX_RETRIES} intentos: {e}")
-                raise HTTPException(
-                    status_code=500,
-                    detail=f"Error al generar plan: {str(e)}"
-                )
-    
-    # Si llegamos aquí sin response, hubo un error no manejado
-    if response is None:
-        logger.error(f"❌ No se pudo generar plan después de {MAX_RETRIES} intentos. Último error: {last_error}")
-        raise HTTPException(
-            status_code=500,
-            detail="No se pudo generar el plan después de varios intentos. Por favor, intenta de nuevo más tarde."
-        )
-    
-    # 📊 Logging de tokens usados y costo estimado
+
+        # 📊 Logging de tokens usados y costo estimado
         if hasattr(response, 'usage') and response.usage:
             tokens_used = response.usage.total_tokens
             prompt_tokens = response.usage.prompt_tokens if hasattr(response.usage, 'prompt_tokens') else 0
@@ -1339,97 +1335,87 @@ REGLAS CRÍTICAS:
             
             if tokens_used > 3000:
                 logger.warning(f"⚠️ Plan usando muchos tokens: {tokens_used} (costo GPT: ${gpt_cost:.4f}, total: ${total_cost:.4f})")
-        
-    contenido = response.choices[0].message.content
-    logger.info(f"✅ Plan generado exitosamente con GPT-4o")
-    print("Respuesta cruda de GPT:", contenido[:200] + "...")  # Solo mostrar primeros 200 chars
 
-    # 🧹 LIMPIAR MARKDOWN SI EXISTE
-    response_text = contenido.strip()
-    
-    # Si viene con markdown ```json, limpiarlo
-    if response_text.startswith('```'):
-        logger.info("🧹 Limpiando markdown de respuesta...")
-        # Extraer JSON entre ```json y ```
-        if '```json' in response_text:
-            response_text = response_text.split('```json')[1].split('```')[0].strip()
-        elif '```' in response_text:
-            # Si solo tiene ``` sin json
-            parts = response_text.split('```')
-            if len(parts) >= 2:
-                response_text = parts[1].strip()
-    
-    logger.info(f"📄 Texto limpio para parsear: {response_text[:100]}...")
-    
-    # Buscar el primer bloque JSON que aparezca en la respuesta
-    json_match = re.search(r'\{[\s\S]*\}', response_text)
-    if not json_match:
-        logger.error(f"❌ No se encontró JSON válido en: {response_text[:500]}")
-        raise ValueError("No se encontró un JSON válido en la respuesta de GPT")
+        contenido = response.choices[0].message.content
+        logger.info(f"✅ Plan generado exitosamente con GPT-4o")
+        print("Respuesta cruda de GPT:", contenido[:200] + "...")  # Solo mostrar primeros 200 chars
 
-    json_str = json_match.group(0)
-    logger.info(f"✅ JSON extraído, parseando...")
-    
-    try:
-        data = json.loads(json_str)
-        logger.info(f"✅ JSON parseado exitosamente")
-    except json.JSONDecodeError as e:
-        logger.error(f"❌ Error parseando JSON: {e}")
-        logger.error(f"JSON problemático: {json_str[:500]}")
-        raise
+        # 🧹 LIMPIAR MARKDOWN SI EXISTE
+        response_text = contenido.strip()
 
-    # ═══════════════════════════════════════════════════════
-    # AÑADIR METADATOS CIENTÍFICOS A LA DIETA
-    # ═══════════════════════════════════════════════════════
-    
-    from datetime import datetime
-    
-    # Asegurar que la dieta tenga metadata
-    if 'metadata' not in data['dieta']:
-        data['dieta']['metadata'] = {}
-    
-    # Añadir valores calculados científicamente
-    data['dieta']['metadata'].update({
-        'tmb': tmb,
-        'tdee': tdee,
-        'calorias_objetivo': kcal_objetivo,
-        'macros_objetivo': macros,
-        'fecha_calculo': datetime.now().isoformat(),
-        'nivel_actividad': datos.get('nivel_actividad', 'moderado'),
-        'metodo_calculo': 'Mifflin-St Jeor',
-        'diferencia_mantenimiento': diferencia_mantenimiento,
-        'rag_used': bool(rag_context)  # 🔥 NUEVO: Indicar si se usó RAG
-    })
-    
-    logger.info("📦 Metadatos científicos añadidos a la dieta:")
-    logger.info(f"   TMB: {tmb} kcal/día")
-    logger.info(f"   TDEE: {tdee} kcal/día")
-    logger.info(f"   Calorías objetivo: {kcal_objetivo} kcal/día")
-    logger.info(f"   Método: Mifflin-St Jeor")
-    logger.info(f"   RAG usado: {bool(rag_context)}")
-    
-    # ═══════════════════════════════════════════════════════
-    # AÑADIR MACROS A NIVEL RAIZ DE LA DIETA (CRÍTICO)
-    # ═══════════════════════════════════════════════════════
-    # Los macros calculados científicamente deben estar en plan.dieta.macros
-    # para que el frontend pueda acceder a ellos fácilmente
-    data['dieta']['macros'] = {
-        'proteina': macros['proteina'],
-        'carbohidratos': macros['carbohidratos'],
-        'grasas': macros['grasas'],
-        'calorias': kcal_objetivo
-    }
-    
-    logger.info(f"✅ Macros añadidos a plan.dieta.macros:")
-    logger.info(f"   Proteína: {macros['proteina']}g")
-    logger.info(f"   Carbohidratos: {macros['carbohidratos']}g")
-    logger.info(f"   Grasas: {macros['grasas']}g")
+        # Si viene con markdown ```json, limpiarlo
+        if response_text.startswith('```'):
+            logger.info("🧹 Limpiando markdown de respuesta...")
+            if '```json' in response_text:
+                response_text = response_text.split('```json')[1].split('```')[0].strip()
+            elif '```' in response_text:
+                parts = response_text.split('```')
+                if len(parts) >= 2:
+                    response_text = parts[1].strip()
 
-    return {
-        "rutina": data["rutina"],
-        "dieta": data["dieta"],
-        "motivacion": data["motivacion"]
-    }
+        logger.info(f"📄 Texto limpio para parsear: {response_text[:100]}...")
+
+        # Buscar el primer bloque JSON que aparezca en la respuesta
+        json_match = re.search(r'\{[\s\S]*\}', response_text)
+        if not json_match:
+            logger.error(f"❌ No se encontró JSON válido en: {response_text[:500]}")
+            raise ValueError("No se encontró un JSON válido en la respuesta de GPT")
+
+        json_str = json_match.group(0)
+        logger.info(f"✅ JSON extraído, parseando...")
+
+        try:
+            data = json.loads(json_str)
+            logger.info(f"✅ JSON parseado exitosamente")
+        except json.JSONDecodeError as e:
+            logger.error(f"❌ Error parseando JSON: {e}")
+            logger.error(f"JSON problemático: {json_str[:500]}")
+            raise
+
+        # AÑADIR METADATOS CIENTÍFICOS A LA DIETA
+        from datetime import datetime
+        if 'metadata' not in data['dieta']:
+            data['dieta']['metadata'] = {}
+        data['dieta']['metadata'].update({
+            'tmb': tmb,
+            'tdee': tdee,
+            'calorias_objetivo': kcal_objetivo,
+            'macros_objetivo': macros,
+            'fecha_calculo': datetime.now().isoformat(),
+            'nivel_actividad': datos.get('nivel_actividad', 'moderado'),
+            'metodo_calculo': 'Mifflin-St Jeor',
+            'diferencia_mantenimiento': diferencia_mantenimiento,
+            'rag_used': bool(rag_context)
+        })
+        data['dieta']['macros'] = {
+            'proteina': macros['proteina'],
+            'carbohidratos': macros['carbohidratos'],
+            'grasas': macros['grasas'],
+            'calorias': kcal_objetivo
+        }
+        logger.info(f"✅ Macros añadidos a plan.dieta.macros")
+
+        # Sello de calidad: el Dashboard usa is_ai_generated y plan_version para ocultar barra de carga
+        return {
+            "rutina": data["rutina"],
+            "dieta": data["dieta"],
+            "motivacion": data["motivacion"],
+            "is_ai_generated": True,
+            "plan_version": "premium_v1",
+        }
+
+    except Exception as e:
+        # Fallo de API, timeout o parsing: devolver plan template marcado como procesado para no bloquear al usuario
+        logger.warning(f"⚠️ GPT/API falló o timeout; usando rutina básica (fallback). Error: {e}")
+        fallback_plan = get_generic_plan(datos)
+        return {
+            "rutina": fallback_plan["rutina"],
+            "dieta": fallback_plan["dieta"],
+            "motivacion": fallback_plan.get("motivacion", "¡Vamos a por ello! Con constancia alcanzarás tu objetivo."),
+            "fallback": True,
+            "is_ai_generated": False,
+            "plan_version": "premium_v1",
+        }
 
 
 async def generar_comida_personalizada(datos: Dict[str, Any]) -> Dict[str, Any]:

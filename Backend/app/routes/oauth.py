@@ -114,7 +114,7 @@ async def google_callback(
                     google_id=google_id,
                     oauth_provider='google',
                     profile_picture=profile_picture,
-                    hashed_password=None,
+                    hashed_password="",
                     onboarding_completed=False,
                     is_premium=False,
                     plan_type='FREE',

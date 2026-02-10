@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Request
 from dotenv import load_dotenv
 import os
+from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.staticfiles import StaticFiles
@@ -18,6 +19,8 @@ from app.routes import (
     user_status,
     chat,
     onboarding,
+    bodyscan,
+    articles,
     # Importamos Stripe directamente aqui para que si falla, explote y veamos el error
     stripe_routes,
     stripe_webhook,
@@ -52,6 +55,7 @@ async def custom_rate_limit_handler(request: Request, exc: RateLimitExceeded):
             "retry_after": exc.retry_after if hasattr(exc, 'retry_after') else 60
         }
     )
+
 
 # ═══════════════════════════════════════════════════════
 # CONFIGURACIÓN CORS - SEGURIDAD
@@ -110,6 +114,8 @@ app.include_router(plan.router)
 app.include_router(analisis_cuerpo.router)
 app.include_router(user_status.router)
 app.include_router(chat.router, prefix="/api", tags=["chat"])
+app.include_router(bodyscan.router, prefix="/api", tags=["BodyScan"])
+app.include_router(articles.router, prefix="/api", tags=["Articles"])
 app.include_router(onboarding.router)
 
 # --------- STRIPE ROUTERS (Sin try-except gigante) ---------
@@ -123,11 +129,28 @@ if HAS_STRIPE_CLI:
 print("[INFO] Stripe routes enabled")
 
 
-# --------- paths de frontend ---------
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))   # .../app
-FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")       # .../app/frontend
-STATIC_DIR = os.path.join(os.path.dirname(BASE_DIR), "static")  # .../Backend/static
-PUBLIC_DIR = os.path.join(STATIC_DIR, "public")  # .../Backend/static/public
+# --------- paths de frontend (absolutos para que funcionen en local/Windows) ---------
+# main.py está en Backend/app/main.py → _base = Backend/app
+_base = Path(__file__).resolve().parent
+BASE_DIR = _base
+# HTMLs están en Backend/app/frontend/ → usar _base / "frontend"
+_candidate = _base / "frontend"
+if (_candidate / "login.html").exists():
+    FRONTEND_DIR = _candidate
+else:
+    _fallback = _base.parent / "frontend"
+    FRONTEND_DIR = _fallback if (_fallback / "login.html").exists() else _candidate
+STATIC_DIR = _base.parent / "static"
+PUBLIC_DIR = STATIC_DIR / "public"
+
+# --------- MOUNTS PRIMERO: estáticos antes que cualquier catch-all ---------
+# Así /public/*, /static/* y /images/* nunca caen en "redirect a login"
+app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR)), name="static")
+IMAGES_DIR = FRONTEND_DIR / "images"
+if IMAGES_DIR.exists():
+    app.mount("/images", StaticFiles(directory=str(IMAGES_DIR)), name="images")
+if PUBLIC_DIR.exists():
+    app.mount("/public", StaticFiles(directory=str(PUBLIC_DIR)), name="public")
 
 # --------- health & debug ---------
 @app.get("/ping")
@@ -273,7 +296,11 @@ def _html(name: str):
 
 @app.get("/")
 def root():
-    """Servir landing page (index.html)"""
+    """Raíz: landing/index si existen; si no, login.html (nunca 404)."""
+    for name in ("landing.html", "index.html"):
+        p = os.path.join(FRONTEND_DIR, name)
+        if os.path.exists(p):
+            return _html(name)
     index_path = os.path.join(STATIC_DIR, "index.html")
     if os.path.exists(index_path):
         response = FileResponse(index_path)
@@ -281,8 +308,11 @@ def root():
         response.headers["Pragma"] = "no-cache"
         response.headers["Expires"] = "0"
         return response
-    # Fallback: redirigir a login si no existe index.html
-    return RedirectResponse(url="/login.html")
+    # Sin landing/index: servir login directamente (evitar 404)
+    login_path = os.path.join(FRONTEND_DIR, "login.html")
+    if os.path.exists(login_path):
+        return _html("login.html")
+    return RedirectResponse(url="/login")
 
 @app.get("/login.html")
 def _login(): return _html("login.html")
@@ -290,9 +320,9 @@ def _login(): return _html("login.html")
 @app.get("/login")
 def _login_route(): return _html("login.html")
 
+@app.get("/dashboard")
 @app.get("/dashboard.html")
-def _dashboard(): 
-    # Usamos la función helper que ya incluye el debug
+def _dashboard():
     return _html("dashboard.html")
 
 @app.get("/rutina.html")
@@ -342,11 +372,14 @@ def _cookies():
         return response
     raise HTTPException(status_code=404, detail="Cookies page not found")
 
-# Servir archivos JS específicos (Añadimos anti-cache aquí también por si acaso)
+# Servir archivos JS (mismo origen que el HTML → sin CORS; anti-cache para dev)
 def _serve_js_no_cache(filename):
     path = os.path.join(FRONTEND_DIR, filename)
-    response = FileResponse(path, media_type="application/javascript")
+    if not os.path.exists(path):
+        raise HTTPException(status_code=404, detail=f"Script not found: {filename}")
+    response = FileResponse(path, media_type="application/javascript; charset=utf-8")
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
     return response
 
 @app.get("/auth.js")
@@ -398,23 +431,25 @@ def _mobile_rutina(): return _serve_public_image("mobile-rutina.png")
 @app.get("/public/mobile-dieta.png")
 def _mobile_dieta(): return _serve_public_image("mobile-dieta.png")
 
-# --------- Configuración de archivos estáticos ---------
+# --------- Fallback SPA: ÚLTIMA ruta registrada (catch-all) ---------
+# Nunca devolver redirect a login para peticiones de archivos estáticos (.js, .css, imágenes)
+STATIC_EXTENSIONS = (".js", ".css", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".ico", ".woff", ".woff2", ".webp")
 
-# estáticos (css/js/img)
-app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
-
-# Montar carpeta de imágenes específicamente
-IMAGES_DIR = os.path.join(FRONTEND_DIR, "images")
-if os.path.exists(IMAGES_DIR):
-    app.mount("/images", StaticFiles(directory=IMAGES_DIR), name="images")
-
-# Montar carpeta static para landing page (public assets) con NO-CACHE
-if os.path.exists(PUBLIC_DIR):
-    print(f"[INFO] Montando /public con NO-CACHE desde: {PUBLIC_DIR}")
-    print(f"[INFO] Archivos en /public: {os.listdir(PUBLIC_DIR) if os.path.exists(PUBLIC_DIR) else 'No existe'}")
-    app.mount("/public", StaticFiles(directory=PUBLIC_DIR), name="public")
-else:
-    print(f"[WARN] PUBLIC_DIR no existe: {PUBLIC_DIR}")
+@app.get("/{path:path}")
+def _spa_fallback(path: str):
+    # Excluir rutas de sistema
+    if path.startswith(("__", "_")):
+        raise HTTPException(status_code=404, detail="Not Found")
+    path_lower = path.lower()
+    if path_lower.startswith(("api/", "static/", "public/", "images/")):
+        raise HTTPException(status_code=404, detail="Not found")
+    if path in ("auth.js", "config.js", "onboarding.js", "cookie-consent.js",
+                "ping", "_ping", "__ping", "health", "docs", "openapi.json", "redoc"):
+        raise HTTPException(status_code=404, detail="Not found")
+    # No enviar HTML de login para peticiones que piden un archivo estático
+    if path_lower.endswith(STATIC_EXTENSIONS):
+        raise HTTPException(status_code=404, detail="Not found")
+    return RedirectResponse(url="/login", status_code=302)
 
 # --------- openapi custom ---------
 def custom_openapi():
@@ -443,7 +478,8 @@ async def _print_routes():
     try:
         paths = sorted({getattr(r, "path", "") for r in app.routes})
         print("[ROUTES]", paths)
-        # Debug inicial de directorios
-        print(f"[STARTUP DEBUG] FRONTEND_DIR es: {FRONTEND_DIR}")
+        login_path = FRONTEND_DIR / "login.html"
+        print(f"[STARTUP] FRONTEND_DIR = {FRONTEND_DIR}")
+        print(f"[STARTUP] login.html existe: {login_path.exists()}")
     except Exception as e:
         print("[ROUTES-ERROR]", e)
