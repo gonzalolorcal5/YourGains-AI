@@ -1092,10 +1092,6 @@
             }
             
             /* ═══ Modales Full-Screen (slide from bottom) ═══ */
-            body.modal-open #app-shell {
-                filter: blur(5px);
-                transition: filter 0.25s ease;
-            }
             .overlay {
                 display: none;
                 position: fixed;
@@ -2466,6 +2462,9 @@
                 min-width: 0;
                 max-width: 100%;
                 box-sizing: border-box;
+                height: auto !important;
+                overflow: visible !important;
+                align-self: start;
             }
 
             /* Tarjetas premium del modal Consejos: no fundir con fondo negro */
@@ -4040,6 +4039,7 @@
             /* ═══ VISIBILIDAD RADICAL: modal Consejos (36k chars inyectados deben verse) ═══ */
             #consejosEstudiosContent {
                 display: grid !important;
+                grid-auto-rows: minmax(min-content, auto) !important;
                 visibility: visible !important;
                 opacity: 1 !important;
                 min-height: 500px !important;
@@ -4071,8 +4071,11 @@
                 max-height: 100% !important;
             }
             #consejosEstudiosOverlay #consejosEstudiosContent {
-                flex: 1 1 auto !important;
+                flex: unset !important;
+                grid-auto-rows: auto !important;
                 min-height: 400px !important;
+                height: auto !important;
+                overflow-y: auto !important;
             }
 
         </style>
@@ -4193,12 +4196,13 @@
 
             /** Abre el modal de Body Scan (siempre accesible; restricción Premium solo al analizar más de un escaneo). */
             function openBodyScan() {
+                console.log('🟢 [BodyScan] openBodyScan() called');
                 var overlay = document.getElementById('bodyScanOverlay');
-                if (!overlay) return;
-                var modalsContainer = document.getElementById('modals-container');
-                if (modalsContainer && overlay.parentNode !== modalsContainer) {
-                    modalsContainer.appendChild(overlay);
+                if (!overlay) {
+                    console.error('❌ [BodyScan] bodyScanOverlay not found');
+                    return;
                 }
+                // Limpiar estado previo
                 bodyScanSelectedFiles = [];
                 var fileInput = document.getElementById('bodyScanFileInput');
                 if (fileInput) fileInput.value = '';
@@ -4207,17 +4211,32 @@
                 var analyzeBtn = document.getElementById('bodyScanAnalyzeBtn');
                 if (analyzeBtn) analyzeBtn.disabled = true;
                 showBodyScanStep('bodyScanStepUpload');
+                // Cerrar cualquier otro overlay abierto primero
+                document.querySelectorAll('.overlay.open').forEach(function(el) {
+                    if (el.id !== 'bodyScanOverlay') {
+                        el.classList.remove('open', 'active');
+                        el.style.display = 'none';
+                    }
+                });
+                // Abrir síncronamente
+                overlay.classList.add('open', 'active');
+                overlay.style.display = 'flex';
                 document.body.classList.add('modal-open');
-                overlay.classList.add('active');
+                console.log('🟢 [BodyScan] opened');
             }
             window.openBodyScan = openBodyScan;
             window.openBodyScanModal = openBodyScan;
 
             window.closeBodyScanModal = function() {
+                console.log('🔴 [BodyScan] closeBodyScanModal() called');
                 var modal = document.getElementById('bodyScanOverlay');
                 if (!modal) return;
-                modal.classList.remove('active');
-                document.body.classList.remove('modal-open');
+                modal.classList.remove('active', 'open');
+                setTimeout(function() {
+                    modal.style.display = 'none';
+                    var anyOpen = document.querySelectorAll('.overlay.open, .global-modal.active').length > 0;
+                    if (!anyOpen) document.body.classList.remove('modal-open');
+                }, 350);
             };
 
             function showBodyScanStep(stepId) {
@@ -4469,6 +4488,7 @@
                 </div>
             </div>
         </div>
+        </div>
 
         <!-- Overlay para Consejos y Estudios -->
         <div class="overlay" id="consejosEstudiosOverlay">
@@ -4641,61 +4661,6 @@
                         </button>
                     </div>
                 </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Body Scan (id="bodyScanOverlay": formulario drag & drop; se mueve a #modals-container al abrir) -->
-        <div class="overlay body-scan-modal global-modal" id="bodyScanOverlay" onclick="if(event.target === this) closeBodyScanModal()">
-            <div class="modal-panel" onclick="event.stopPropagation()">
-                <header class="modal-header">
-                    <span class="modal-title">Body Scan IA</span>
-                    <button type="button" class="modal-close" onclick="closeBodyScanModal()" aria-label="Cerrar">&times;</button>
-                </header>
-                <div class="modal-body">
-            <div class="overlay-content body-scan-content" style="padding-top: 0;">
-                <p class="subtitle">Sube hasta 3 fotos para analizar composición muscular y % graso</p>
-
-                <!-- Paso 1: Subida -->
-                <div id="bodyScanStepUpload" class="body-scan-step active">
-                    <div class="body-scan-upload-zone" id="bodyScanUploadZone" onclick="document.getElementById('bodyScanFileInput').click()">
-                        <p style="color: #a3a3a3; margin-bottom: 8px;">Haz clic o arrastra aquí</p>
-                        <p style="color: #737373; font-size: 13px;">Máximo 3 imágenes (JPG, PNG)</p>
-                    </div>
-                    <input type="file" id="bodyScanFileInput" accept="image/jpeg,image/png,image/webp" multiple style="display: none;">
-                    <div class="body-scan-previews" id="bodyScanPreviews"></div>
-                    <button type="button" id="bodyScanAnalyzeBtn" class="premium-modal-button" style="width: 100%; margin-top: 8px;" disabled onclick="runBodyScanAnalyze()">
-                        Analizar fotos
-                    </button>
-                </div>
-
-                <!-- Paso 2: Carga -->
-                <div id="bodyScanStepLoading" class="body-scan-step">
-                    <div class="body-scan-progress-wrap">
-                        <div class="body-scan-progress-bar">
-                            <div class="body-scan-progress-fill"></div>
-                        </div>
-                        <p class="body-scan-progress-text">Analizando composición muscular y porcentaje graso...</p>
-                    </div>
-                </div>
-
-                <!-- Paso 3: Resultados -->
-                <div id="bodyScanStepResults" class="body-scan-step">
-                    <div class="body-scan-result-fat" id="bodyScanFatCard">
-                        <div class="value" id="bodyScanFatValue">--</div>
-                        <div class="label">Grasa corporal estimada</div>
-                    </div>
-                    <div class="body-scan-badges" id="bodyScanBadges"></div>
-                    <div class="body-scan-recommendation" id="bodyScanRecommendation">--</div>
-                    <div class="body-scan-list-title">Puntos fuertes</div>
-                    <div class="body-scan-list" id="bodyScanStrong"></div>
-                    <div class="body-scan-list-title">Puntos a mejorar</div>
-                    <div class="body-scan-list" id="bodyScanWeak"></div>
-                    <div class="body-scan-list-title">Análisis completo</div>
-                    <div class="body-scan-list" id="bodyScanFull"></div>
-                    <button type="button" class="premium-modal-button-secondary" style="width: 100%;" onclick="closeBodyScanModal()">Cerrar</button>
-                </div>
-            </div>
                 </div>
             </div>
         </div>
@@ -7880,21 +7845,37 @@
             // Función ÚNICA para abrir modales (unificación de openOverlay)
             function openOverlay(overlayId) {
                 try {
+                    // Cerrar cualquier overlay que esté abierto antes de abrir uno nuevo
+                    document.querySelectorAll('.overlay.open').forEach(function(el) {
+                        if (el.id !== overlayId) {
+                            el.classList.remove('open', 'active');
+                            el.style.display = 'none';
+                        }
+                    });
+                    
                     const overlay = document.getElementById(overlayId);
                     if (!overlay) {
                         console.error('Overlay no encontrado:', overlayId);
                         return;
                     }
-                    document.body.classList.add('modal-open');
+                    
+                    // Asegurar estado limpio antes de abrir
                     overlay.style.display = 'flex';
-                    overlay.offsetHeight;
+                    overlay.offsetHeight; // forzar reflow
+                    
                     requestAnimationFrame(function() {
-                        overlay.classList.add('open');
-                        void overlay.offsetWidth; /* forzar reflow para que el navegador recalcule el layout */
-                        // Cargar contenido según el modal abierto
+                        overlay.classList.add('open', 'active');
+                        document.body.classList.add('modal-open');
+                        
+                        // Cargar contenido según el modal
                         switch (overlayId) {
                             case 'consejosEstudiosOverlay':
-                                if (typeof loadAdviceAndStudiesContent === 'function') loadAdviceAndStudiesContent();
+                                if (typeof loadAdviceAndStudiesContent === 'function') {
+                                    var container = document.getElementById('consejosEstudiosContent');
+                                    if (container && container.children.length === 0) {
+                                        loadAdviceAndStudiesContent();
+                                    }
+                                }
                                 break;
                             case 'rutinaDietaOverlay':
                                 if (typeof loadRoutineAndDietContent === 'function') loadRoutineAndDietContent();
@@ -7912,13 +7893,22 @@
 
             function closeOverlay(overlayId) {
                 var overlay = document.getElementById(overlayId);
-                if (!overlay) {
-                    console.error('Overlay no encontrado:', overlayId);
-                    return;
-                }
-                overlay.classList.remove('open');
+                if (!overlay) return;
+                
+                overlay.classList.remove('open', 'active');
+                
+                // Usar setTimeout como fallback robusto en lugar de depender de transitionend
+                setTimeout(function() {
+                    overlay.style.display = 'none';
+                    // Solo quitar modal-open si no hay ningún otro overlay abierto
+                    var anyOpen = document.querySelectorAll('.overlay.open, .global-modal.active').length > 0;
+                    if (!anyOpen) {
+                        document.body.classList.remove('modal-open');
+                    }
+                }, 350); // 350ms = duración de la transición CSS
+                
+                // Lógica especial para rutinaDieta
                 if (overlayId === 'rutinaDietaOverlay') {
-                    overlay.classList.remove('lectura-facil');
                     setTimeout(function() {
                         var columns = document.querySelectorAll('#rutinaDietaOverlay .content-column');
                         columns.forEach(function(col) {
@@ -7926,17 +7916,6 @@
                             col.style.width = '';
                         });
                     }, 350);
-                }
-                var panel = overlay.querySelector('.modal-panel');
-                function onClosed() {
-                    overlay.style.display = 'none';
-                    document.body.classList.remove('modal-open');
-                    if (panel) panel.removeEventListener('transitionend', onClosed);
-                }
-                if (panel) {
-                    panel.addEventListener('transitionend', onClosed);
-                } else {
-                    onClosed();
                 }
             }
             window.closeOverlay = closeOverlay;
@@ -8131,7 +8110,7 @@
                         (dia.ejercicios || []).forEach(ejercicio => {
                             routineHTML += `<div class="exercise">`;
                             routineHTML += `<div class="exercise-name">${ejercicio.nombre}</div>`;
-                            routineHTML += `<div class="exercise-details">Series: ${ejercicio.series} | Reps: ${ejercicio.repeticiones} | Descanso: ${ejercicio.descanso}</div>`;
+                            routineHTML += `<div class="exercise-details">Series: ${ejercicio.series || '-'} | Reps: ${ejercicio.repeticiones || ejercicio.reps || '-'} | Descanso: ${ejercicio.descanso || '-'}</div>`;
                             routineHTML += `</div>`;
                         });
                         routineHTML += `</div>`;
@@ -8152,7 +8131,7 @@
                             (dia.ejercicios || []).forEach(ejercicio => {
                                 routineHTML += `<div class="exercise">`;
                                 routineHTML += `<div class="exercise-name">${ejercicio.nombre}</div>`;
-                                routineHTML += `<div class="exercise-details">Series: ${ejercicio.series} | Reps: ${ejercicio.repeticiones} | Descanso: ${ejercicio.descanso}</div>`;
+                                routineHTML += `<div class="exercise-details">Series: ${ejercicio.series || '-'} | Reps: ${ejercicio.repeticiones || ejercicio.reps || '-'} | Descanso: ${ejercicio.descanso || '-'}</div>`;
                                 routineHTML += `</div>`;
                             });
                             routineHTML += `</div>`; // Close blur-content
@@ -8236,6 +8215,7 @@
                         return;
                     }
                     container.innerHTML = '';
+                    container.scrollTop = 0;
                     articles.forEach(function(article, index) {
                         const card = createArticleCardForModal(article, isPremium, index);
                         container.appendChild(card);
@@ -8342,7 +8322,7 @@
                         contentHTML += '</div>';
                     }
                 }
-                card.style.cssText = 'background:#1a1a1a;border:1px solid #262626;border-radius:12px;padding:24px;transition:all 0.3s ease;position:relative;overflow:hidden;' + (isLocked ? 'filter:blur(5px);opacity:0.6;pointer-events:none;' : '');
+                card.style.cssText = 'background:#1a1a1a;border:1px solid rgba(132,204,22,0.2);border-radius:12px;padding:24px;transition:all 0.3s ease;position:relative;height:auto;' + (isLocked ? 'filter:blur(5px);opacity:0.6;pointer-events:none;overflow:hidden;' : '');
                 card.innerHTML = contentHTML;
                 card.addEventListener('mouseenter', function() {
                     if (!isLocked) { card.style.borderColor = '#84cc16'; card.style.transform = 'translateY(-4px)'; card.style.boxShadow = '0 8px 24px rgba(132,204,22,0.2)'; }
@@ -10466,12 +10446,76 @@
         <!-- ═══════════════════════════════════════════════════════ -->
         <!-- MODALES GLOBALES (Fuera de #app-shell para evitar z-index jail) -->
         <!-- ═══════════════════════════════════════════════════════ -->
-        <div id="modals-container"></div>
+        <div id="modals-container">
+            <!-- bodyScanOverlay vive aquí permanentemente — no necesita ser movido por JS -->
+            <!-- Modal Body Scan -->
+            <div class="overlay body-scan-modal" id="bodyScanOverlay" onclick="if(event.target === this) closeBodyScanModal()">
+                <div class="modal-panel" onclick="event.stopPropagation()">
+                    <header class="modal-header">
+                        <span class="modal-title">Body Scan IA</span>
+                        <button type="button" class="modal-close" onclick="closeBodyScanModal()" aria-label="Cerrar">&times;</button>
+                    </header>
+                    <div class="modal-body">
+                <div class="overlay-content body-scan-content" style="padding-top: 0;">
+                    <p class="subtitle">Sube hasta 3 fotos para analizar composición muscular y % graso</p>
+
+                    <!-- Paso 1: Subida -->
+                    <div id="bodyScanStepUpload" class="body-scan-step active">
+                        <div class="body-scan-upload-zone" id="bodyScanUploadZone" onclick="document.getElementById('bodyScanFileInput').click()">
+                            <p style="color: #a3a3a3; margin-bottom: 8px;">Haz clic o arrastra aquí</p>
+                            <p style="color: #737373; font-size: 13px;">Máximo 3 imágenes (JPG, PNG)</p>
+                        </div>
+                        <input type="file" id="bodyScanFileInput" accept="image/jpeg,image/png,image/webp" multiple style="display: none;">
+                        <div class="body-scan-previews" id="bodyScanPreviews"></div>
+                        <button type="button" id="bodyScanAnalyzeBtn" class="premium-modal-button" style="width: 100%; margin-top: 8px;" disabled onclick="runBodyScanAnalyze()">
+                            Analizar fotos
+                        </button>
+                    </div>
+
+                    <!-- Paso 2: Carga -->
+                    <div id="bodyScanStepLoading" class="body-scan-step">
+                        <div class="body-scan-progress-wrap">
+                            <div class="body-scan-progress-bar">
+                                <div class="body-scan-progress-fill"></div>
+                            </div>
+                            <p class="body-scan-progress-text">Analizando composición muscular y porcentaje graso...</p>
+                        </div>
+                    </div>
+
+                    <!-- Paso 3: Resultados -->
+                    <div id="bodyScanStepResults" class="body-scan-step">
+                        <div class="body-scan-result-fat" id="bodyScanFatCard">
+                            <div class="value" id="bodyScanFatValue">--</div>
+                            <div class="label">Grasa corporal estimada</div>
+                        </div>
+                        <div class="body-scan-badges" id="bodyScanBadges"></div>
+                        <div class="body-scan-recommendation" id="bodyScanRecommendation">--</div>
+                        <div class="body-scan-list-title">Puntos fuertes</div>
+                        <div class="body-scan-list" id="bodyScanStrong"></div>
+                        <div class="body-scan-list-title">Puntos a mejorar</div>
+                        <div class="body-scan-list" id="bodyScanWeak"></div>
+                        <div class="body-scan-list-title">Análisis completo</div>
+                        <div class="body-scan-list" id="bodyScanFull"></div>
+                        <button type="button" class="premium-modal-button-secondary" style="width: 100%;" onclick="closeBodyScanModal()">Cerrar</button>
+                    </div>
+                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <style>
         #modals-container {
-            /* Este contenedor NO debe tener overflow: hidden */
-            position: relative;
+            /* Contenedor de modales — sin position para no crear contexto de apilamiento */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
             z-index: 10000;
+        }
+        #modals-container > * {
+            pointer-events: auto;
         }
         /* Modal base - Todos los modales heredan esto */
         .global-modal {

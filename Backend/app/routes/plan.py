@@ -880,6 +880,48 @@ def obtener_datos_actuales(
         }
 
 
+def _normalizar_formato_a(routine: dict) -> dict:
+    """
+    Detecta si una rutina está en Formato B (exercises[]) y la convierte a Formato A (dias[]).
+    Si ya está en Formato A, la devuelve intacta.
+    Compatibilidad hacia atrás para usuarios con datos antiguos en BD.
+    """
+    if not routine or not isinstance(routine, dict):
+        return routine
+
+    # Si ya tiene dias[], está en Formato A — devolver intacto
+    if routine.get("dias"):
+        return routine
+
+    # Si tiene exercises[], está en Formato B — convertir a Formato A
+    if routine.get("exercises"):
+        exercises = routine["exercises"]
+        dias_map = {}
+        for ex in exercises:
+            day = ex.get("day") or ex.get("dia") or "General"
+            if day not in dias_map:
+                dias_map[day] = {
+                    "dia": day,
+                    "ejercicios": []
+                }
+            dias_map[day]["ejercicios"].append({
+                "nombre": ex.get("name") or ex.get("nombre") or "",
+                "series": ex.get("sets") or ex.get("series") or 3,
+                "repeticiones": ex.get("reps") or ex.get("repeticiones") or "10-12",
+                "descanso": ex.get("rest") or ex.get("descanso") or "60s",
+            })
+        return {
+            "dias": list(dias_map.values()),
+            "titulo": routine.get("titulo", ""),
+            "consejos": routine.get("consejos", []),
+            "metadata": routine.get("metadata", {}),
+            "created_at": routine.get("created_at", ""),
+            "version": "2.0.0",
+        }
+
+    return routine
+
+
 @router.get("/user/current-routine")
 def obtener_rutina_actual(
     user_id: int,
@@ -964,14 +1006,14 @@ def obtener_rutina_actual(
         diet = deserialize_json(usuario.current_diet or "{}", "current_diet")
 
         routine_is_empty = (
+            not routine or
             routine == {} or
-            not routine.get("exercises") or
-            len(routine.get("exercises", [])) == 0
+            (not routine.get("dias") and not routine.get("exercises"))
         )
         diet_is_empty = (
+            not diet or
             diet == {} or
-            not diet.get("meals") or
-            len(diet.get("meals", [])) == 0
+            (not diet.get("comidas") and not diet.get("meals"))
         )
 
         if routine_is_empty and diet_is_empty:
@@ -984,25 +1026,9 @@ def obtener_rutina_actual(
                     routine_from_plan = json.loads(plan.rutina or '{}')
                     diet_from_plan = json.loads(plan.dieta or '{}')
 
-                    if isinstance(routine_from_plan, dict) and "dias" in routine_from_plan:
-                        exercises = []
-                        for dia in routine_from_plan.get("dias", []):
-                            for ejercicio in dia.get("ejercicios", []):
-                                exercises.append({
-                                    "name": ejercicio.get("nombre", ""),
-                                    "sets": ejercicio.get("series", 3),
-                                    "reps": ejercicio.get("repeticiones", "10-12"),
-                                    "weight": "moderado",
-                                    "day": dia.get("dia", "")
-                                })
-                        routine = {
-                            "exercises": exercises,
-                            "schedule": {},
-                            "created_at": datetime.utcnow().isoformat(),
-                            "version": "1.0.0"
-                        }
-                        if "metadata" in routine_from_plan:
-                            routine["metadata"] = routine_from_plan["metadata"]
+                    # Formato A directo — usar _normalizar_formato_a para compatibilidad con cualquier formato
+                    if isinstance(routine_from_plan, dict):
+                        routine = _normalizar_formato_a(routine_from_plan)
                     else:
                         routine = routine_from_plan
 
@@ -1291,75 +1317,35 @@ def obtener_rutina_actual(
                 print(f"❌ Error generando plan genérico: {str(e)}")
                 raise HTTPException(status_code=500, detail=f"Error generando rutina genérica: {str(e)}")
             
-            # Convertir rutina genérica al formato esperado por el frontend
+            # Formato A directo — sin conversión
             try:
                 print(f"🔄 Convirtiendo rutina genérica al formato del frontend...")
-                exercises = []
-                if "dias" in generic_plan["rutina"]:
-                    print(f"📋 Procesando {len(generic_plan['rutina']['dias'])} días de rutina")
-                    for dia in generic_plan["rutina"]["dias"]:
-                        if "ejercicios" in dia:  # Solo días con ejercicios
-                            for ejercicio in dia["ejercicios"]:
-                                exercises.append({
-                                    "name": ejercicio.get("nombre", ""),
-                                    "sets": ejercicio.get("series", 3),
-                                    "reps": ejercicio.get("reps", "10-12"),
-                                    "weight": ejercicio.get("peso", "moderado"),
-                                    "day": dia.get("dia", "")
-                                })
-                
                 current_routine = {
-                    "exercises": exercises,
-                    "schedule": {},
+                    "dias": generic_plan["rutina"].get("dias", []),
+                    "titulo": generic_plan["rutina"].get("titulo", ""),
+                    "consejos": generic_plan["rutina"].get("consejos", []),
+                    "metadata": {
+                        "gym_goal": (plan_data.objetivo_gym or plan_data.objetivo or "") if plan_data else "",
+                        "training_frequency": training_frequency,
+                        "training_days": training_days or [],
+                        "is_generic": True,
+                    },
                     "created_at": "2024-01-01T00:00:00",
-                    "version": "generic-1.0.0",
-                    "is_generic": True,  # Marcar como genérico
-                    "titulo": generic_plan["rutina"]["titulo"]  # Incluir título personalizado
+                    "version": "2.0.0",
                 }
-                
-                # Convertir dieta genérica al formato esperado
-                meals = []
-                for comida in generic_plan["dieta"]["comidas"]:
-                    # Los alimentos ya vienen como strings en el formato correcto
-                    alimentos_lista = comida.get("alimentos", [])
-                    kcal_comida = comida.get("kcal", 0)
-                    
-                    meals.append({
-                        "nombre": comida.get("nombre", ""),
-                        "kcal": kcal_comida,
-                        "alimentos": alimentos_lista,  # Ya están en formato string correcto
-                        "total": f"{kcal_comida} kcal"
-                    })
-                
-                # Obtener el resumen de la dieta genérica (ya contiene las calorías correctas)
-                resumen_dieta = generic_plan["dieta"].get("resumen", f"Plan nutricional para {user_data['objetivo']}")
-                print(f"📊 Resumen de dieta genérica: {resumen_dieta}")
-                
-                # Obtener macros de generic_plan (ya calculados en get_generic_plan)
-                macros_dieta = generic_plan["dieta"].get("macros", {})
-                # Si no existen, calcular desde comidas
-                if not macros_dieta or all(v == 0 for v in macros_dieta.values()):
-                    proteina_total = sum(int(comida.get("macros", {}).get("proteinas", 0) or 0) for comida in generic_plan["dieta"].get("comidas", []))
-                    carbohidratos_total = sum(int(comida.get("macros", {}).get("hidratos", 0) or 0) for comida in generic_plan["dieta"].get("comidas", []))
-                    grasas_total = sum(int(comida.get("macros", {}).get("grasas", 0) or 0) for comida in generic_plan["dieta"].get("comidas", []))
-                    macros_dieta = {
-                        "proteina": round(proteina_total, 1),
-                        "carbohidratos": round(carbohidratos_total, 1),
-                        "grasas": round(grasas_total, 1)
-                    }
-                
+
                 current_diet = {
-                    "meals": meals,
-                    "total_kcal": sum([meal["kcal"] for meal in meals]),
-                    "macros": macros_dieta,
-                    "objetivo": user_data["objetivo"],
+                    "comidas": generic_plan["dieta"].get("comidas", []),
+                    "macros": generic_plan["dieta"].get("macros", {}),
+                    "total_kcal": generic_plan["dieta"].get("metadata", {}).get("calorias_objetivo") or sum(c.get("kcal", 0) for c in generic_plan["dieta"].get("comidas", [])),
+                    "metadata": {"nutrition_goal": (plan_data.objetivo_nutricional or "") if plan_data else ""},
                     "created_at": "2024-01-01T00:00:00",
-                    "version": "generic-1.0.0",
-                    "is_generic": True,  # Marcar como genérico
-                    "titulo": resumen_dieta  # Usar resumen como título (ya contiene calorías correctas)
+                    "version": "2.0.0",
+                    "is_generic": True,
                 }
-                
-                print(f"✅ Conversión completada: {len(exercises)} ejercicios, {len(meals)} comidas")
+                n_dias = len(current_routine.get("dias") or [])
+                n_comidas = len(current_diet.get("comidas") or [])
+                print(f"✅ Conversión completada: {n_dias} días de rutina, {n_comidas} comidas")
             except Exception as e:
                 print(f"❌ Error convirtiendo plan genérico: {str(e)}")
                 raise HTTPException(status_code=500, detail=f"Error convirtiendo plan genérico: {str(e)}")
@@ -1397,6 +1383,9 @@ def obtener_rutina_actual(
         
         # Rutina premium lista si: is_ai_generated, fallback o longitud > 1500 (evitar barra eterna)
         is_premium_routine_ready = _check_is_premium_routine_ready(is_premium, current_routine)
+
+        # Normalizar a Formato A por si hay datos antiguos en BD
+        current_routine = _normalizar_formato_a(current_routine)
 
         return {
             "success": True,

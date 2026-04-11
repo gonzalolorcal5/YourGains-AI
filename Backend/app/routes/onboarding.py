@@ -113,40 +113,43 @@ def _kcal_from_dieta(dieta_json: dict, data: OnboardingRequest) -> int:
 
 
 def _build_current_routine_diet(rutina_json: dict, dieta_json: dict, data: OnboardingRequest) -> tuple:
-    """Construye (current_routine_dict, current_diet_dict) para Usuario."""
-    exercises = []
-    if "dias" in rutina_json:
-        for dia in rutina_json.get("dias", []):
-            for ej in dia.get("ejercicios", []):
-                exercises.append({
-                    "name": ej.get("nombre", ""),
-                    "sets": ej.get("series", 3),
-                    "reps": ej.get("repeticiones", "10-12"),
-                    "weight": "moderado",
-                    "day": dia.get("dia", ""),
-                })
+    """
+    Construye (current_routine_dict, current_diet_dict) para Usuario.
+    Guarda Formato A directamente — NO convierte a lista plana.
+    Esto preserva la estructura de días necesaria para el frontend y el tracking.
+    """
+    # Asegurar que metadata esté presente en la rutina
+    if "metadata" not in rutina_json:
+        rutina_json["metadata"] = {}
+    rutina_json["metadata"].update({
+        "gym_goal": data.gym_goal,
+        "training_frequency": data.training_frequency,
+        "training_days": data.training_days,
+    })
+
     current_routine = {
-        "exercises": exercises,
-        "schedule": {},
+        "dias": rutina_json.get("dias", []),
+        "titulo": rutina_json.get("titulo", ""),
+        "consejos": rutina_json.get("consejos", []),
+        "metadata": rutina_json.get("metadata", {}),
         "created_at": datetime.utcnow().isoformat(),
-        "version": "1.0.0",
-        "metadata": {
-            "gym_goal": data.gym_goal,
-            "training_frequency": data.training_frequency,
-            "training_days": data.training_days,
-        },
+        "version": "2.0.0",
     }
+
+    # Dieta: mantener estructura original con comidas[]
     macros = dieta_json.get("macros", {}) or {}
     if not macros and dieta_json.get("metadata", {}).get("macros_objetivo"):
         macros = dieta_json["metadata"]["macros_objetivo"]
+
     current_diet = {
-        "meals": dieta_json.get("comidas", []),
-        "total_kcal": _kcal_from_dieta(dieta_json, data),
+        "comidas": dieta_json.get("comidas", []),
         "macros": macros,
-        "created_at": datetime.utcnow().isoformat(),
-        "version": "1.0.0",
+        "total_kcal": _kcal_from_dieta(dieta_json, data),
         "metadata": {"nutrition_goal": data.nutrition_goal},
+        "created_at": datetime.utcnow().isoformat(),
+        "version": "2.0.0",
     }
+
     return current_routine, current_diet
 
 
