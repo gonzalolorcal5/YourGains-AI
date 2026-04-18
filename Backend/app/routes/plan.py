@@ -23,41 +23,34 @@ security = HTTPBearer()
 
 
 def _check_is_premium_routine_ready(is_premium: bool, current_routine) -> bool:
-    """
-    Determina si la rutina premium está lista para mostrarse (evitar barra de carga eterna).
-    Prioriza que el usuario vea "algo" en lugar de esperar indefinidamente.
-
-    Para usuario Premium, la rutina está lista si:
-    a) Tiene is_ai_generated: true
-    b) Tiene fallback: true
-    c) La longitud del texto de la rutina es > 1500 caracteres
-    """
-    if not is_premium or current_routine is None:
+    if not is_premium or not current_routine:
         return False
-    routine_str = None
-    routine_dict = None
+
     if isinstance(current_routine, str):
-        routine_str = current_routine
         try:
-            routine_dict = json.loads(current_routine) if current_routine.strip() else {}
-        except (TypeError, json.JSONDecodeError):
-            routine_dict = {}
+            routine_dict = json.loads(current_routine)
+        except Exception:
+            return False
     elif isinstance(current_routine, dict):
         routine_dict = current_routine
-        try:
-            routine_str = json.dumps(current_routine, ensure_ascii=False)
-        except (TypeError, ValueError):
-            routine_str = str(current_routine)
     else:
         return False
-    if routine_dict:
-        if routine_dict.get("is_ai_generated") is True:
-            return True
-        if routine_dict.get("fallback") is True:
-            return True
-    length = len(routine_str or "")
-    if length > 1500:
+
+    # 1. Flags explícitos de IA — caso principal para planes nuevos
+    if routine_dict.get("is_ai_generated") is True:
         return True
+    if routine_dict.get("is_premium_generated") is True:
+        return True
+
+    # 2. Versión 2.0.0 — estándar nuevo introducido en stripe_webhook.py
+    if routine_dict.get("version") == "2.0.0":
+        return True
+
+    # 3. Fallback legacy — rutinas antiguas generadas por IA antes de los flags
+    # Solo válido si tiene estructura "dias" (Formato A) y NO tiene "exercises" (Formato B template)
+    if "dias" in routine_dict and "exercises" not in routine_dict:
+        return True
+
     return False
 
 

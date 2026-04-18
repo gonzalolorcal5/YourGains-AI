@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 
 from app.database import SessionLocal
 from app.models import Usuario, Plan
-from app.utils.gpt import generar_plan_personalizado
+from app.routes.stripe_webhook import generate_and_save_ai_plan
 
 router = APIRouter()
 
@@ -19,109 +19,6 @@ router = APIRouter()
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), '.env'))
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
-
-async def generate_and_save_ai_plan(db: Session, user_id: int):
-    """
-    Asciende el plan existente (template FREE) a plan personalizado con IA.
-    NUNCA crea un nuevo Plan: solo busca el plan del usuario en tabla planes
-    y actualiza rutina/dieta. Si no hay plan, retorna sin crear (usuario debe completar onboarding).
-    """
-    try:
-        user = db.query(Usuario).filter(Usuario.id == user_id).first()
-        if not user:
-            print(f"❌ Usuario {user_id} no encontrado")
-            return
-        
-        # Plan existente (el que rellenó siendo FREE) — no se crea uno nuevo
-        plan_data = db.query(Plan).filter(Plan.user_id == user_id).first()
-        if not plan_data:
-            print(f"❌ No hay plan en tabla planes para usuario {user_id}. Debe completar onboarding.")
-            return
-        
-        # Preparar datos del usuario
-        user_info = {
-            'altura': plan_data.altura or 175,
-            'peso': float(plan_data.peso) if plan_data.peso else 75.0,
-            'edad': plan_data.edad or 25,
-            'sexo': plan_data.sexo or 'masculino',
-            'objetivo': plan_data.objetivo or 'ganar_musculo',
-            'experiencia': plan_data.experiencia or 'principiante',
-            'materiales': plan_data.materiales or 'gym_completo',
-            'tipo_cuerpo': plan_data.tipo_cuerpo or 'mesomorfo',
-            'alergias': plan_data.alergias or 'Ninguna',
-            'restricciones': plan_data.restricciones_dieta or 'Ninguna',
-            'lesiones': plan_data.lesiones or 'Ninguna'
-        }
-        
-        print(f"🤖 Generando plan con IA para usuario {user_id}...")
-        print(f"📋 Datos: {user_info['sexo']}, {user_info['edad']} años, {user_info['altura']}cm, {user_info['peso']}kg")
-        
-        # Generar plan con GPT usando la función existente - AÑADIR await
-        plan = await generar_plan_personalizado(user_info)
-        
-        # Convertir al formato esperado por current_routine y current_diet
-        from datetime import datetime
-        
-        # Convertir rutina de formato "dias" a formato "exercises"
-        exercises = []
-        if "rutina" in plan and "dias" in plan["rutina"]:
-            for dia in plan["rutina"]["dias"]:
-                for ejercicio in dia.get("ejercicios", []):
-                    exercises.append({
-                        "name": ejercicio.get("nombre", ""),
-                        "sets": ejercicio.get("series", 3),
-                        "reps": ejercicio.get("repeticiones", "10-12"),
-                        "weight": "moderado",
-                        "day": dia.get("dia", "")
-                    })
-        
-        current_routine = {
-            "exercises": exercises,
-            "schedule": {},
-            "created_at": datetime.utcnow().isoformat(),
-            "version": "1.0.0"
-        }
-        
-        # Convertir dieta al formato current_diet
-        # Extraer macros del plan generado (ahora están en plan["dieta"].macros gracias a gpt.py)
-        macros_plan = plan["dieta"].get("macros", {})
-        # Si no están en el nivel raíz, intentar desde metadata
-        if not macros_plan or (isinstance(macros_plan, dict) and len(macros_plan) == 0):
-            metadata_macros = plan["dieta"].get("metadata", {}).get("macros_objetivo", {})
-            if metadata_macros:
-                macros_plan = {
-                    "proteina": metadata_macros.get("proteina", 0),
-                    "carbohidratos": metadata_macros.get("carbohidratos", 0),
-                    "grasas": metadata_macros.get("grasas", 0)
-                }
-        
-        current_diet = {
-            "meals": plan["dieta"].get("comidas", []),
-            "total_kcal": plan["dieta"].get("total_calorias", 2200),
-            "macros": macros_plan,  # ✅ Usar macros del plan generado en lugar de {}
-            "objetivo": user_info['objetivo'],
-            "created_at": datetime.utcnow().isoformat(),
-            "version": "1.0.0"
-        }
-        
-        # Guardar en DB
-        user.current_routine = json.dumps(current_routine, ensure_ascii=False)
-        user.current_diet = json.dumps(current_diet, ensure_ascii=False)
-        
-        # Actualizar plan existente (ascender template → IA), sin db.add(Plan)
-        plan_data.rutina = json.dumps(plan["rutina"], ensure_ascii=False)
-        plan_data.dieta = json.dumps(plan["dieta"], ensure_ascii=False)
-        
-        db.commit()
-        
-        print(f"✅ Plan de IA generado y guardado para usuario {user_id}")
-        print(f"🏋️ Ejercicios: {len(exercises)}")
-        print(f"🍽️ Comidas: {len(current_diet.get('meals', []))}")
-        
-    except Exception as e:
-        print(f"❌ Error generando plan para usuario {user_id}: {e}")
-        import traceback
-        traceback.print_exc()
 
 def set_customer_id_by_email(db: Session, email: str, customer_id: str):
     user = db.query(Usuario).filter(Usuario.email == email).first()
@@ -139,7 +36,7 @@ async def set_premium_by_customer(db: Session, customer_id: str, is_premium: boo
             user.chat_uses_free = 2
         else:
             print(f"💎 Usuario {user.id} se hizo PREMIUM, generando plan con IA...")
-            await generate_and_save_ai_plan(db, user.id)
+            await generate_and_save_ai_plan(db, user.id, force=True)
         
         db.commit()
         print(f"✅ Usuario {user.id} actualizado a {'PREMIUM' if is_premium else 'FREE'}")
@@ -259,7 +156,7 @@ async def stripe_webhook_cli(request: Request):
                         
                         # Generar plan con IA
                         print(f"🤖 Iniciando generación de plan con IA...")
-                        await generate_and_save_ai_plan(db, user.id)
+                        await generate_and_save_ai_plan(db, user.id, force=True)
                         print(f"🎉 Plan generado exitosamente para usuario {user.id}")
                     else:
                         print(f"❌ No se encontró usuario con ID: {user_id}")

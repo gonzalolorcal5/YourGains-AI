@@ -5,6 +5,7 @@ import traceback
 import logging
 from app.database import get_db
 from app.models import Usuario, Plan
+from app.routes.plan import _check_is_premium_routine_ready
 from app.auth_utils import get_user_id_from_token, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 from datetime import timedelta
 from pydantic import BaseModel
@@ -567,12 +568,13 @@ async def activate_premium_fallback(
         # Si ya es premium, no forzamos una nueva generación de plan (BLOQUE 3: plan = registro en tabla planes)
         if user.is_premium:
             logger.info(f"✅ Usuario {user_id} ya es premium")
-            has_plan = db.query(Plan).filter(Plan.user_id == user_id).first() is not None
+            db.refresh(user)
+            plan_generated = _check_is_premium_routine_ready(True, user.current_routine or '{}')
             return build_response({
                 "success": True,
                 "is_premium": True,
                 "plan_type": user.plan_type,
-                "plan_generated": has_plan,
+                "plan_generated": plan_generated,
                 "activated_by": "already_premium"
             })
 
@@ -617,9 +619,9 @@ async def activate_premium_fallback(
                     
                     # ✅ BLOQUE 3: No crear plan aquí; el webhook asciende el plan existente con IA
                     # Plan existe = registro en tabla planes (consistente con onboarding_completed)
-                    has_plan = db.query(Plan).filter(Plan.user_id == user_id).first() is not None
-                    logger.info(f"✅ Usuario {user_id} activado como {plan_type}. Plan en BD: {has_plan}")
-                    plan_generated = has_plan
+                    db.refresh(user)
+                    plan_generated = _check_is_premium_routine_ready(True, user.current_routine or '{}')
+                    logger.info(f"✅ Usuario {user_id} activado como {plan_type}. Plan listo: {plan_generated}")
                     
                     return build_response({
                         "success": True,
@@ -639,9 +641,9 @@ async def activate_premium_fallback(
                 db.commit()
                 
                 # ✅ BLOQUE 3: No crear plan aquí; plan existe = registro en tabla planes
-                has_plan = db.query(Plan).filter(Plan.user_id == user_id).first() is not None
-                logger.info(f"✅ Usuario {user_id} activado como PREMIUM_MONTHLY. Plan en BD: {has_plan}")
-                plan_generated = has_plan
+                db.refresh(user)
+                plan_generated = _check_is_premium_routine_ready(True, user.current_routine or '{}')
+                logger.info(f"✅ Usuario {user_id} activado como PREMIUM_MONTHLY. Plan listo: {plan_generated}")
                 
                 return build_response({
                     "success": True,
@@ -650,25 +652,15 @@ async def activate_premium_fallback(
                     "activated_by": "fallback_dev_error"
                 })
 
-        # Sin session_id: activar directamente (modo dev)
-        user.is_premium = True
-        user.plan_type = "PREMIUM_MONTHLY"
-        db.commit()
-        
-        logger.info(f"✅ Usuario {user_id} activado en modo dev")
-        
-        # ✅ BLOQUE 3: No crear plan aquí; plan existe = registro en tabla planes
-        has_plan = db.query(Plan).filter(Plan.user_id == user_id).first() is not None
-        logger.info(f"✅ Usuario {user_id} activado como PREMIUM_MONTHLY. Plan en BD: {has_plan}")
-        plan_generated = has_plan
-        
-        return build_response({
-            "success": True,
-            "is_premium": True,
-            "plan_generated": plan_generated,
-            "activated_by": "fallback_direct"
-        })
+        # Sin session_id: rechazar — no se puede verificar pago sin session_id
+        logger.warning(f"⚠️ Intento de activar premium sin session_id para user_id {user_id}")
+        raise HTTPException(
+            status_code=403,
+            detail="Se requiere un session_id válido de Stripe para activar Premium."
+        )
 
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error en fallback: {e}")
         logger.error(traceback.format_exc())

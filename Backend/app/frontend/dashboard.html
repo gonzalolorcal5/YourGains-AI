@@ -6646,6 +6646,35 @@
             let isProcessingPayment = false;
             
             async function initDashboard() {
+                // ⚡ PRE-PASO: Si viene de pago Stripe y no hay token, obtenerlo ANTES de loadUserData
+                // Esto evita que loadUserData redirija a login cuando el usuario viene en incógnito
+                const _preUrlParams = new URLSearchParams(window.location.search);
+                const _preSuccess = _preUrlParams.get('success') === '1';
+                const _preSessionId = _preUrlParams.get('session_id');
+                const _preToken = localStorage.getItem('accessToken');
+                
+                if (_preSuccess && _preSessionId && !_preToken) {
+                    console.log('⚡ [PRE-AUTH] Pago detectado sin token, obteniendo token de activate-premium...');
+                    try {
+                        const _preResp = await fetch(`${API_BASE}/stripe/activate-premium`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ session_id: _preSessionId })
+                        });
+                        if (_preResp.ok) {
+                            const _preResult = await _preResp.json();
+                            if (_preResult.access_token && _preResult.email) {
+                                localStorage.setItem('accessToken', _preResult.access_token);
+                                localStorage.setItem('email', _preResult.email);
+                                localStorage.setItem('loginTimestamp', Date.now().toString());
+                                console.log('✅ [PRE-AUTH] Token obtenido y guardado antes de loadUserData');
+                            }
+                        }
+                    } catch (_preErr) {
+                        console.warn('⚠️ [PRE-AUTH] Error obteniendo token previo:', _preErr);
+                    }
+                }
+
                 // 🔥 CRÍTICO: Cargar datos del usuario desde BD ANTES de cualquier otra cosa
                 // Esto evita el redirect loop porque NO decodifica el token
                 const userData = await loadUserData();
