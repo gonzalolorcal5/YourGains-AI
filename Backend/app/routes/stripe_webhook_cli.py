@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 
 from app.database import SessionLocal
 from app.models import Usuario, Plan
-from app.routes.stripe_webhook import generate_and_save_ai_plan
+from app.routes.stripe_webhook import generate_and_save_ai_plan, _user_has_premium_generated_plan
 
 router = APIRouter()
 
@@ -30,16 +30,29 @@ def set_customer_id_by_email(db: Session, email: str, customer_id: str):
 async def set_premium_by_customer(db: Session, customer_id: str, is_premium: bool):
     user = db.query(Usuario).filter(Usuario.stripe_customer_id == customer_id).first()
     if user:
+        was_already_premium = user.is_premium
+
         user.is_premium = is_premium
-        user.plan_type = "PREMIUM" if is_premium else "FREE"
+        user.plan_type = "PREMIUM_MONTHLY" if is_premium else "FREE"
         if not is_premium:
             user.chat_uses_free = 2
-        else:
-            print(f"💎 Usuario {user.id} se hizo PREMIUM, generando plan con IA...")
-            await generate_and_save_ai_plan(db, user.id, force=True)
-        
+
+        # Comitear estado inmediatamente para que eventos paralelos lo vean
         db.commit()
-        print(f"✅ Usuario {user.id} actualizado a {'PREMIUM' if is_premium else 'FREE'}")
+        db.refresh(user)
+
+        if is_premium:
+            # Triple validación anti-duplicados:
+            # 1. ¿Ya era premium antes de este evento? → otro evento ya lo activó
+            # 2. ¿Ya tiene plan generado por IA guardado?
+            # 3. ¿Está el lock de generación activo ahora mismo?
+            if was_already_premium or _user_has_premium_generated_plan(user) or getattr(user, 'is_generating_plan', False):
+                print(f"⚠️ Skipping generación: was_already_premium={was_already_premium}, plan_exists={_user_has_premium_generated_plan(user)}, lock={getattr(user, 'is_generating_plan', False)} (user_id {user.id})")
+            else:
+                print(f"💎 Usuario {user.id} se hizo PREMIUM, generando plan con IA...")
+                await generate_and_save_ai_plan(db, user.id, force=True)
+
+        print(f"✅ Usuario {user.id} actualizado a {'PREMIUM_MONTHLY' if is_premium else 'FREE'}")
 
 @router.post("/webhook")
 async def stripe_webhook_cli(request: Request):
