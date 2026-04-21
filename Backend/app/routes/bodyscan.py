@@ -106,37 +106,67 @@ async def analyze_body_scan(
         experiencia = (plan.experiencia or "principiante").strip() or "principiante"
 
     # Construir contenido del mensaje: texto + imágenes
-    prompt = f"""Eres un experto en fitness y composición corporal. Analiza las imágenes que te envío junto con estos datos del usuario:
+    prompt = f"""You are a body composition analysis system integrated into 
+YourGains AI, a professional personalized fitness application. Your role 
+is to objectively evaluate body progress photos for training planning 
+purposes, exactly as a certified personal trainer would do in a 
+professional follow-up consultation.
 
-- Peso: {peso or "no indicado"} kg
-- Altura: {altura or "no indicado"} cm
-- Sexo: {sexo}
-- Nivel de experiencia: {experiencia}
+The user has voluntarily submitted these images within the platform 
+to receive guidance on their training program.
 
-Debes determinar, con precisión y basándote en las imágenes y los datos:
+User biometric data registered on the platform:
+- Weight: {peso or "not provided"} kg
+- Height: {altura or "not provided"} cm
+- Biological sex: {sexo}
+- Training level: {experiencia}
 
-1. tipo_cuerpo: clasificación (ectomorfo, mesomorfo, endomorfo o intermedio; ej. "mesomorfo-ectomorfo").
-2. grasa_estimada_min y grasa_estimada_max: rango de % graso corporal estimado visualmente (números, ej. 12 y 18).
-3. puntos_fuertes: texto breve con 2-4 grupos musculares o aspectos positivos visibles.
-4. puntos_debiles: texto breve con 2-4 aspectos a mejorar o grupos a priorizar.
-5. recomendacion: una sola palabra o frase corta: "Volumen", "Definición", "Recomposición" o "Mantenimiento", según lo que más le convenga.
-6. analisis_completo: párrafo breve (2-4 frases) con tu análisis global y consejo profesional.
+Based ONLY on what is clearly visible in the images, perform a professional 
+body composition assessment determining:
 
-Responde ÚNICAMENTE con un JSON válido, sin markdown ni texto alrededor, con esta estructura exacta:
+1. tipo_cuerpo: predominant somatotype (ectomorph, mesomorph, endomorph, 
+   or combination such as "mesomorfo-ectomorfo"). Always respond in Spanish.
+
+2. grasa_estimada_min and grasa_estimada_max: estimated body fat percentage 
+   range based on visual assessment (integer numbers, e.g. 12 and 18).
+
+3. puntos_fuertes: 2-4 muscle groups or positive physical characteristics 
+   that are CLEARLY VISIBLE in the images. Do NOT mention muscle groups 
+   that are not visible in the photos. Respond in Spanish.
+
+4. musculos_rezagados: mention ONLY muscle groups that are clearly visible 
+   in the images AND appear less developed compared to the rest. Use a 
+   careful, professional tone — phrase it as an observation, not a 
+   criticism. Example: "Por lo que se aprecia en la foto, el grupo muscular 
+   que parece más rezagado es X. Si quieres trabajarlo, podrías enfocarte 
+   más en él en tu próxima rutina." If no muscle group appears clearly 
+   underdeveloped in the visible areas, or if the muscle group is not 
+   visible in the photo, respond with null.
+   Do NOT mention body parts not visible in the photos. Respond in Spanish.
+
+5. analisis_completo: professional assessment in 2-4 sentences with key 
+   observations and training focus recommendation. Write in Spanish. 
+   Naturally mention, without sounding like a legal disclaimer, that the 
+   body fat and composition values are visual orientative estimates and 
+   that actual results depend on individual factors such as genetics, 
+   rest and adherence to the plan. Do NOT suggest a specific goal 
+   (bulk/cut) — that depends on the user's personal objectives.
+
+Respond ONLY with the following valid JSON object, no additional text, 
+no markdown, no explanations outside the JSON:
 
 {{
   "tipo_cuerpo": "string",
   "grasa_estimada_min": number,
   "grasa_estimada_max": number,
   "puntos_fuertes": "string",
-  "puntos_debiles": "string",
-  "recomendacion": "string",
+  "musculos_rezagados": "string or null",
   "analisis_completo": "string"
 }}
 """
 
     content = [{"type": "text", "text": prompt}]
-    for b64 in images[:5]:  # Máximo 5 imágenes por petición
+    for b64 in images[:3]:  # Máximo 3 imágenes por petición (alineado con frontend)
         url = _normalize_base64_url(b64)
         if url:
             content.append({"type": "image_url", "image_url": {"url": url}})
@@ -159,7 +189,7 @@ Responde ÚNICAMENTE con un JSON válido, sin markdown ni texto alrededor, con e
     try:
         data = _extract_json_from_response(raw)
     except (ValueError, json.JSONDecodeError) as e:
-        logger.warning("Respuesta GPT no es JSON válido: %s", raw[:300])
+        logger.warning("Respuesta GPT no es JSON válido COMPLETO: %s", raw)
         raise HTTPException(status_code=502, detail=f"La IA no devolvió JSON válido: {str(e)}")
 
     # Guardar en BodyScan
@@ -173,8 +203,8 @@ Responde ÚNICAMENTE con un JSON válido, sin markdown ni texto alrededor, con e
         grasa_estimada_min=data.get("grasa_estimada_min"),
         grasa_estimada_max=data.get("grasa_estimada_max"),
         puntos_fuertes=data.get("puntos_fuertes"),
-        puntos_debiles=data.get("puntos_debiles"),
-        recomendacion=data.get("recomendacion"),
+        puntos_debiles=data.get("musculos_rezagados"),
+        recomendacion=None,
         analisis_completo=data.get("analisis_completo"),
         image_url=None,
     )
@@ -189,8 +219,8 @@ Responde ÚNICAMENTE con un JSON válido, sin markdown ni texto alrededor, con e
         "grasa_estimada_min": scan.grasa_estimada_min,
         "grasa_estimada_max": scan.grasa_estimada_max,
         "puntos_fuertes": scan.puntos_fuertes,
-        "puntos_debiles": scan.puntos_debiles,
-        "recomendacion": scan.recomendacion,
+        "musculos_rezagados": scan.puntos_debiles,
+        "recomendacion": None,
         "analisis_completo": scan.analisis_completo,
         "peso": scan.peso,
         "altura": scan.altura,

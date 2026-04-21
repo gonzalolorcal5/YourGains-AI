@@ -110,3 +110,43 @@ class ProcessedWebhookEvent(Base):
     id = Column(Integer, primary_key=True, index=True)
     stripe_event_id = Column(String(255), unique=True, nullable=False, index=True)
     processed_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class EntrenamientoSession(Base):
+    """
+    Registra que un usuario ha ido a entrenar en una fecha real.
+    Desvinculado del día de la semana para dar flexibilidad.
+    """
+    __tablename__ = "entrenamiento_sessions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False, index=True)
+
+    # La fecha real en la que fue al gimnasio
+    fecha = Column(DateTime, default=datetime.utcnow, index=True)
+
+    # El día de la rutina que eligió manualmente (ej: "Día 1 - Empuje")
+    nombre_rutina = Column(String, nullable=False)
+
+    # Notas opcionales sobre cómo se sintió ese día
+    notas = Column(Text, nullable=True)
+
+
+class EntrenamientoSet(Base):
+    """
+    Registra cada serie individual dentro de una sesión de entrenamiento.
+    """
+    __tablename__ = "entrenamiento_sets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    session_id = Column(Integer, ForeignKey("entrenamiento_sessions.id"), nullable=False, index=True)
+
+    ejercicio_nombre = Column(String, nullable=False)
+
+    # Datos del trackeo
+    peso = Column(Float, nullable=True)     # Los kilos levantados
+    reps = Column(Integer, nullable=True)   # Repeticiones logradas
+    rpe = Column(Integer, nullable=True)    # Esfuerzo (RPE) del 1 al 10
+
+    # Orden en el que se hizo la serie
+    numero_serie = Column(Integer, nullable=False)

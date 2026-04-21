@@ -21,6 +21,7 @@ from app.routes import (
     onboarding,
     bodyscan,
     articles,
+    tracking,
     # Importamos Stripe directamente aqui para que si falla, explote y veamos el error
     stripe_routes,
     stripe_webhook,
@@ -116,6 +117,7 @@ app.include_router(user_status.router)
 app.include_router(chat.router, prefix="/api", tags=["chat"])
 app.include_router(bodyscan.router, prefix="/api", tags=["BodyScan"])
 app.include_router(articles.router, prefix="/api", tags=["Articles"])
+app.include_router(tracking.router)
 app.include_router(onboarding.router)
 
 # --------- STRIPE ROUTERS (Sin try-except gigante) ---------

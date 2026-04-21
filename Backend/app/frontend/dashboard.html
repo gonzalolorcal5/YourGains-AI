@@ -4355,9 +4355,6 @@
                             var tipo = data.tipo_cuerpo ? (' | ' + data.tipo_cuerpo) : '';
                             showSuccessNotification('Body Scan completado: ' + fatText + tipo);
                         }
-                        if (typeof closeBodyScanModal === 'function') {
-                            closeBodyScanModal();
-                        }
                     })
                     .catch(function(err) {
                         showBodyScanStep('bodyScanStepUpload');
@@ -4399,14 +4396,16 @@
                     }
                 }
 
-                var rec = document.getElementById('bodyScanRecommendation');
-                if (rec) rec.textContent = data.recomendacion || '--';
-
                 var strong = document.getElementById('bodyScanStrong');
                 if (strong) strong.textContent = data.puntos_fuertes || '--';
 
                 var weak = document.getElementById('bodyScanWeak');
-                if (weak) weak.textContent = data.puntos_debiles || '--';
+                var rezagadosVal = data.musculos_rezagados;
+                if (!rezagadosVal || rezagadosVal === 'null' || 
+                    rezagadosVal.trim() === '') {
+                    rezagadosVal = 'Ninguno apreciable en las fotos.';
+                }
+                if (weak) weak.textContent = rezagadosVal;
 
                 var full = document.getElementById('bodyScanFull');
                 if (full) full.textContent = data.analisis_completo || '--';
@@ -10499,6 +10498,10 @@
                         <button type="button" id="bodyScanAnalyzeBtn" class="premium-modal-button" style="width: 100%; margin-top: 8px;" disabled onclick="runBodyScanAnalyze()">
                             Analizar fotos
                         </button>
+                        <p style="color: #737373; font-size: 12px; margin-top: 12px; text-align: center; line-height: 1.5;">
+                            💡 Para mayor precisión, genera tu plan primero.<br>
+                            El análisis usa tu peso, altura y experiencia real.
+                        </p>
                     </div>
 
                     <!-- Paso 2: Carga -->
@@ -10518,13 +10521,17 @@
                             <div class="label">Grasa corporal estimada</div>
                         </div>
                         <div class="body-scan-badges" id="bodyScanBadges"></div>
-                        <div class="body-scan-recommendation" id="bodyScanRecommendation">--</div>
                         <div class="body-scan-list-title">Puntos fuertes</div>
                         <div class="body-scan-list" id="bodyScanStrong"></div>
-                        <div class="body-scan-list-title">Puntos a mejorar</div>
+                        <div class="body-scan-list-title">Músculos rezagados</div>
                         <div class="body-scan-list" id="bodyScanWeak"></div>
                         <div class="body-scan-list-title">Análisis completo</div>
                         <div class="body-scan-list" id="bodyScanFull"></div>
+                        <p style="color: #525252; font-size: 11px; text-align: center; line-height: 1.6; margin-top: 16px; margin-bottom: 12px; padding: 0 8px;">
+                            Análisis generado por IA a partir de estimaciones visuales.
+                            Los resultados son orientativos y no sustituyen la valoración
+                            de un profesional de la salud o el deporte.
+                        </p>
                         <button type="button" class="premium-modal-button-secondary" style="width: 100%;" onclick="closeBodyScanModal()">Cerrar</button>
                     </div>
                 </div>
