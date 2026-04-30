@@ -155,11 +155,16 @@
                 flex-direction: column;
                 padding-bottom: 70px;
                 padding-bottom: calc(70px + env(safe-area-inset-bottom, 0));
+                position: relative;
             }
             
             .app-view {
                 display: none;
-                flex: 1;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
                 flex-direction: column;
                 min-height: 0;
                 overflow: hidden;
@@ -350,6 +355,92 @@
                 color: rgba(255, 255, 255, 0.5);
                 font-size: 15px;
                 text-align: center;
+            }
+
+            .tracking-day-pills {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+                margin: 16px 0 20px;
+            }
+            .tracking-day-pill {
+                border: 1px solid rgba(132, 204, 22, 0.35);
+                background: rgba(132, 204, 22, 0.08);
+                color: #d9f99d;
+                border-radius: 999px;
+                padding: 8px 14px;
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+            }
+            .tracking-day-pill.active {
+                background: #84cc16;
+                color: #111;
+                border-color: #84cc16;
+            }
+            .tracking-day-panel {
+                margin-top: 10px;
+            }
+            .tracking-exercise-card {
+                background: rgba(20, 20, 20, 0.75);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 12px;
+                padding: 14px;
+                margin-bottom: 12px;
+            }
+            .tracking-exercise-title {
+                color: #fff;
+                font-size: 16px;
+                font-weight: 700;
+                margin-bottom: 10px;
+            }
+            .tracking-set-row {
+                display: grid;
+                grid-template-columns: 56px 1fr 1fr 1fr auto;
+                gap: 8px;
+                align-items: center;
+                margin-bottom: 8px;
+            }
+            .tracking-set-badge {
+                color: #84cc16;
+                font-size: 12px;
+                font-weight: 700;
+                text-align: center;
+            }
+            .tracking-input {
+                width: 100%;
+                background: #141414;
+                border: 1px solid #333;
+                color: #fff;
+                border-radius: 8px;
+                padding: 8px 10px;
+                font-size: 13px;
+            }
+            .tracking-save-btn {
+                border: 1px solid rgba(132, 204, 22, 0.5);
+                background: rgba(132, 204, 22, 0.15);
+                color: #84cc16;
+                border-radius: 8px;
+                padding: 8px 10px;
+                font-size: 12px;
+                font-weight: 700;
+                cursor: pointer;
+                min-width: 72px;
+            }
+            .tracking-save-btn.saving {
+                opacity: 0.8;
+                cursor: wait;
+            }
+            .tracking-feedback {
+                min-height: 16px;
+                font-size: 12px;
+                margin-top: 4px;
+            }
+            .tracking-feedback.success {
+                color: #84cc16;
+            }
+            .tracking-feedback.error {
+                color: #f87171;
             }
             
             /* ═══ Bento Grid (Jerarquía Visual) — Scroll interno, sin rebote al contenedor ═══ */
@@ -4429,8 +4520,8 @@
                 </div>
                 <div id="app-view-entreno" class="app-view">
                     <div style="padding: 24px 16px; background: linear-gradient(135deg, rgba(132, 204, 22, 0.1) 0%, transparent 100%); border-bottom: 1px solid rgba(132, 204, 22, 0.2);">
-                        <h2 style="font-size: 28px; font-weight: 700; margin-bottom: 8px;">💪 Mi Rutina</h2>
-                        <p style="font-size: 14px; color: #999;">Tu plan personalizado de entrenamiento</p>
+                        <h2 style="font-size: 28px; font-weight: 700; margin-bottom: 8px;">💪 Registro de Entrenos</h2>
+                        <p style="font-size: 14px; color: #999;">Anota tus repeticiones, kg y rango de esfuerzo para mejorar más rápido.</p>
                     </div>
                     <div style="flex: 1; overflow-y: auto; padding: 16px;">
                         <div id="routine-container" style="max-width: 800px; margin: 0 auto;">
@@ -4830,11 +4921,22 @@
                     var response = await fetch(url, opts);
                     if (!response.ok) throw new Error('Error ' + response.status);
                     var data = await response.json();
-                    if (!data.routine || !data.routine.semanas) {
+                    var routine = data && data.current_routine;
+                    var dias = (routine && routine.dias) || [];
+                    var metadata = (routine && routine.metadata) || {};
+                    var isGeneric = metadata.is_generic === true;
+
+                    if (!routine || !dias.length) {
                         container.innerHTML = '<div style="text-align: center; padding: 40px;"><div style="font-size: 48px; margin-bottom: 16px;">📋</div><h3 style="font-size: 20px; margin-bottom: 12px;">No tienes rutina asignada</h3><p style="color: #999; margin-bottom: 24px;">Completa tu perfil para generar tu plan personalizado</p><button onclick="window.location.href=\'onboarding.html\'" style="background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;">Completar Perfil</button></div>';
                         return;
                     }
-                    renderRoutineContent(data.routine, container);
+
+                    if (isGeneric) {
+                        renderRoutineGenericCTA(routine, container);
+                        return;
+                    }
+
+                    renderRoutineTracking(routine, container);
                 } catch (error) {
                     console.error('❌ Error cargando rutina:', error);
                     container.innerHTML = '<div style="text-align: center; padding: 40px; color: #ef4444;">❌ Error cargando rutina: ' + (error.message || String(error)) + '</div>';
@@ -4842,24 +4944,299 @@
             }
 
             /**
-             * Renderiza el contenido de la rutina con diseño limpio
+             * Renderiza CTA para usuarios con rutina genérica
              */
-            function renderRoutineContent(routine, container) {
+            function renderRoutineGenericCTA(routine, container) {
                 var html = '';
-                html += '<div style="background: linear-gradient(135deg, rgba(132, 204, 22, 0.15) 0%, rgba(132, 204, 22, 0.05) 100%); border: 1px solid rgba(132, 204, 22, 0.3); border-radius: 12px; padding: 20px; margin-bottom: 24px;"><h3 style="font-size: 22px; font-weight: 700; color: #84cc16; margin-bottom: 8px;">' + (routine.nombre || 'Tu Rutina Personalizada') + '</h3>' + (routine.descripcion ? '<p style="font-size: 14px; color: #ccc;">' + routine.descripcion + '</p>' : '') + '</div>';
-                (routine.semanas || []).forEach(function(semana, semanaIdx) {
-                    html += '<div style="margin-bottom: 32px;"><h4 style="font-size: 18px; font-weight: 700; color: white; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid rgba(132, 204, 22, 0.3);">📅 Semana ' + (semana.semana != null ? semana.semana : semanaIdx + 1) + '</h4>';
-                    (semana.dias || []).forEach(function(dia, diaIdx) {
-                        var diaId = 'semana-' + semanaIdx + '-dia-' + diaIdx;
-                        html += '<div style="background: rgba(30, 30, 30, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 20px; margin-bottom: 16px;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;"><h5 style="font-size: 18px; font-weight: 600; color: #84cc16;">' + (dia.dia || dia.nombre || 'Día ' + (diaIdx + 1)) + '</h5><button onclick="toggleDayCompletion(\'' + diaId + '\')" id="btn-' + diaId + '" style="background: rgba(132, 204, 22, 0.2); border: 1px solid rgba(132, 204, 22, 0.4); color: #84cc16; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s;">✓ Marcar como completado</button></div><div style="overflow-x: auto;"><table style="width: 100%; border-collapse: collapse; font-size: 14px;"><thead><tr style="border-bottom: 1px solid rgba(132, 204, 22, 0.2);"><th style="text-align: left; padding: 8px; color: #84cc16;">Ejercicio</th><th style="text-align: center; padding: 8px; color: #84cc16;">Series</th><th style="text-align: center; padding: 8px; color: #84cc16;">Reps</th><th style="text-align: center; padding: 8px; color: #84cc16;">Descanso</th><th style="text-align: left; padding: 8px; color: #84cc16;">Notas</th></tr></thead><tbody>';
-                        (dia.ejercicios || []).forEach(function(ejercicio) {
-                            html += '<tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);"><td style="padding: 12px 8px; color: white; font-weight: 500;">' + (ejercicio.nombre || '-') + '</td><td style="padding: 12px 8px; text-align: center; color: #ccc;">' + (ejercicio.series != null ? ejercicio.series : '-') + '</td><td style="padding: 12px 8px; text-align: center; color: #ccc;">' + (ejercicio.reps || '-') + '</td><td style="padding: 12px 8px; text-align: center; color: #ccc;">' + (ejercicio.descanso || '-') + '</td><td style="padding: 12px 8px; color: #999; font-size: 12px;">' + (ejercicio.notas || '-') + '</td></tr>';
-                        });
-                        html += '</tbody></table></div></div>';
+                html += '<div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.18) 0%, rgba(245, 158, 11, 0.06) 100%); border: 1px solid rgba(245, 158, 11, 0.45); border-radius: 14px; padding: 24px; text-align: center;">';
+                html += '<div style="font-size: 44px; margin-bottom: 12px;">🔓</div>';
+                html += '<h3 style="font-size: 22px; font-weight: 700; color: #f59e0b; margin-bottom: 10px;">Desbloquea tu rutina personalizada</h3>';
+                html += '<p style="font-size: 14px; color: #ddd; margin-bottom: 18px;">Ahora mismo estás viendo una rutina genérica. Hazte premium para activar tracking completo y una planificación ajustada a ti.</p>';
+                html += '<button onclick="handleUpgrade()" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #111; border: none; padding: 12px 22px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer;">Hazte Premium</button>';
+                if (routine && routine.titulo) {
+                    html += '<p style="font-size: 12px; color: #aaa; margin-top: 16px;">Rutina actual: ' + routine.titulo + '</p>';
+                }
+                html += '</div>';
+                container.innerHTML = html;
+            }
+
+            /**
+             * Renderiza la rutina premium con tracking por día
+             */
+            function renderRoutineTracking(routine, container) {
+                var dias = routine.dias || [];
+                var initialDayIndex = 0;
+                var html = '';
+                html += '<div style="background: linear-gradient(135deg, rgba(132, 204, 22, 0.15) 0%, rgba(132, 204, 22, 0.05) 100%); border: 1px solid rgba(132, 204, 22, 0.3); border-radius: 12px; padding: 20px; margin-bottom: 16px;"><h3 style="font-size: 22px; font-weight: 700; color: #84cc16; margin-bottom: 8px;">' + (routine.nombre || routine.titulo || 'Tu Rutina Personalizada') + '</h3>' + (routine.descripcion ? '<p style="font-size: 14px; color: #ccc;">' + routine.descripcion + '</p>' : '') + '</div>';
+                html += '<button type="button" id="btn-resumen-semanal" onclick="abrirResumenSemanal()" style="width: 100%; margin-bottom: 16px; padding: 12px; background: rgba(132, 204, 22, 0.1); border: 1px solid rgba(132, 204, 22, 0.35); border-radius: 10px; color: #84cc16; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">📊 Resumen Semanal IA</button>';
+                html += '<div class="tracking-day-pills">';
+                dias.forEach(function(dia, diaIdx) {
+                    html += '<button type="button" class="tracking-day-pill ' + (diaIdx === initialDayIndex ? 'active' : '') + '" data-day-index="' + diaIdx + '">' + (dia.dia || dia.nombre || ('Día ' + (diaIdx + 1))) + '</button>';
+                });
+                html += '</div>';
+                html += '<div id="tracking-day-panel" class="tracking-day-panel"></div>';
+                container.innerHTML = html;
+
+                window.__routineTrackingState = { routine: routine, selectedDayIndex: initialDayIndex };
+                renderTrackingDayPanel(container).catch(function(e) {
+                    console.error('Error precargando datos:', e);
+                });
+                bindRoutineTrackingEvents(container);
+            }
+
+            async function precargarDatosDia(nombreRutina, nombreDia) {
+                try {
+                    var token = localStorage.getItem('accessToken');
+                    var url = '/api/tracking/sesion-semana-actual'
+                        + '?nombre_rutina=' + encodeURIComponent(nombreRutina)
+                        + '&dia_rutina=' + encodeURIComponent(nombreDia);
+                    var res = await fetch(url, {
+                        headers: { 'Authorization': 'Bearer ' + token }
                     });
+                    if (!res.ok) return {};
+                    var data = await res.json();
+                    if (!data.has_data || !data.sets || !data.sets.length) {
+                        return {};
+                    }
+                    // Construir mapa: "ejercicio_nombre|numero_serie" → {peso, reps, rpe}
+                    var mapaSet = {};
+                    data.sets.forEach(function(s) {
+                        var key = (s.ejercicio_nombre || '').trim()
+                            + '|' + s.numero_serie;
+                        mapaSet[key] = s;
+                    });
+                    return mapaSet;
+                } catch (e) {
+                    console.error('Error precargando datos día:', e);
+                    return {};
+                }
+            }
+
+            async function renderTrackingDayPanel(container) {
+                var state = window.__routineTrackingState || {};
+                var routine = state.routine || {};
+                var dayIndex = state.selectedDayIndex || 0;
+
+                // RACE CONDITION FIX: guardar el dayIndex al inicio
+                // para verificar después del await que no cambió
+                var dayIndexAlInicio = dayIndex;
+
+                var dias = routine.dias || [];
+                var dia = dias[dayIndex];
+                var panel = container.querySelector('#tracking-day-panel');
+                if (!panel || !dia) return;
+
+                var nombreDia = dia.dia || dia.nombre ||
+                    ('Día ' + (dayIndex + 1));
+                var nombreRutina = routine.titulo || routine.nombre ||
+                    'Rutina Personalizada';
+
+                // Fetch de datos previos esta semana
+                var mapaSet = await precargarDatosDia(
+                    nombreRutina, nombreDia
+                );
+
+                // RACE CONDITION CHECK: si el usuario cambió de día
+                // mientras cargaba, abortar silenciosamente
+                var stateActual = window.__routineTrackingState || {};
+                if ((stateActual.selectedDayIndex || 0) !== dayIndexAlInicio) {
+                    return;
+                }
+
+                var html = '';
+                (dia.ejercicios || []).forEach(function(ejercicio, exIdx) {
+                    var rawSeries = parseInt(ejercicio.series, 10);
+                    var seriesCount = Number.isFinite(rawSeries) &&
+                        rawSeries > 0 ? rawSeries : 1;
+                    html += '<div class="tracking-exercise-card">';
+                    html += '<div class="tracking-exercise-title">'
+                        + (ejercicio.nombre || ('Ejercicio ' + (exIdx + 1)))
+                        + '</div>';
+                    for (var setIdx = 0; setIdx < seriesCount; setIdx++) {
+                        var rowId = 'd' + dayIndex + '-e' + exIdx +
+                            '-s' + setIdx;
+                        var setKey = (ejercicio.nombre || '').trim() +
+                            '|' + (setIdx + 1);
+                        var setData = mapaSet[setKey] || {};
+                        var valKg = setData.peso != null ?
+                            setData.peso : '';
+                        var valReps = setData.reps != null ?
+                            setData.reps : '';
+                        var valRpe = setData.rpe != null ?
+                            setData.rpe : '';
+                        var yaGuardado = setData.peso != null ||
+                            setData.reps != null;
+
+                        html += '<div class="tracking-set-row"'
+                            + ' data-row-id="' + rowId + '"'
+                            + ' data-day-index="' + dayIndex + '"'
+                            + ' data-ex-index="' + exIdx + '"'
+                            + ' data-set-index="' + setIdx + '"'
+                            + ' data-exercise-name="'
+                            + (ejercicio.nombre || '') + '">';
+                        html += '<div class="tracking-set-badge">Serie '
+                            + (setIdx + 1) + '</div>';
+                        html += '<input class="tracking-input"'
+                            + ' type="number" step="0.5" min="0"'
+                            + ' placeholder="Kg" data-field="kg"'
+                            + (valKg !== '' ?
+                                ' value="' + valKg + '"' : '')
+                            + ' />';
+                        html += '<input class="tracking-input"'
+                            + ' type="number" step="1" min="0"'
+                            + ' placeholder="Reps" data-field="reps"'
+                            + (valReps !== '' ?
+                                ' value="' + valReps + '"' : '')
+                            + ' />';
+                        html += '<input class="tracking-input"'
+                            + ' type="number" step="1" min="1" max="10"'
+                            + ' placeholder="RPE" data-field="rpe"'
+                            + (valRpe !== '' ?
+                                ' value="' + valRpe + '"' : '')
+                            + ' />';
+                        html += '<button type="button"'
+                            + ' class="tracking-save-btn'
+                            + (yaGuardado ? ' saved' : '') + '"'
+                            + ' data-action="save-row">'
+                            + (yaGuardado ? 'Actualizar' : 'Guardar')
+                            + '</button>';
+                        html += '</div>';
+                        html += '<div id="feedback-' + rowId +
+                            '" class="tracking-feedback"></div>';
+                    }
                     html += '</div>';
                 });
-                container.innerHTML = html;
+
+                if (!html) {
+                    html = '<div style="text-align:center; color:#aaa;'
+                        + ' padding:18px;">No hay ejercicios para'
+                        + ' este día.</div>';
+                }
+                panel.innerHTML = html;
+            }
+
+            function bindRoutineTrackingEvents(container) {
+                if (container.__trackingBound) return;
+                container.__trackingBound = true;
+                container.addEventListener('click', function(ev) {
+                    var dayPill = ev.target.closest('.tracking-day-pill');
+                    if (dayPill) {
+                        var newDayIndex = parseInt(dayPill.getAttribute('data-day-index'), 10);
+                        var state = window.__routineTrackingState || {};
+                        if (!Number.isFinite(newDayIndex)) return;
+                        state.selectedDayIndex = newDayIndex;
+                        window.__routineTrackingState = state;
+                        container.querySelectorAll('.tracking-day-pill').forEach(function(btn) {
+                            btn.classList.toggle('active', parseInt(btn.getAttribute('data-day-index'), 10) === newDayIndex);
+                        });
+                        renderTrackingDayPanel(container).catch(function(e) {
+                            console.error('Error precargando datos:', e);
+                        });
+                        return;
+                    }
+
+                    var saveBtn = ev.target.closest('[data-action="save-row"]');
+                    if (saveBtn) {
+                        saveTrackingRow(saveBtn);
+                    }
+                });
+            }
+
+            async function saveTrackingRow(saveBtn) {
+                var row = saveBtn.closest('.tracking-set-row');
+                if (!row) return;
+                var rowId = row.getAttribute('data-row-id');
+                var feedback = document.getElementById('feedback-' + rowId);
+                var dayIndex = parseInt(row.getAttribute('data-day-index'), 10);
+                var exIndex = parseInt(row.getAttribute('data-ex-index'), 10);
+                var setIndex = parseInt(row.getAttribute('data-set-index'), 10);
+                var exerciseName = row.getAttribute('data-exercise-name') || '';
+                var kgInput = row.querySelector('[data-field="kg"]');
+                var repsInput = row.querySelector('[data-field="reps"]');
+                var rpeInput = row.querySelector('[data-field="rpe"]');
+                var kgVal = kgInput ? kgInput.value.trim() : '';
+                var repsVal = repsInput ? repsInput.value.trim() : '';
+                var rpeVal = rpeInput ? rpeInput.value.trim() : '';
+                // Validación: kg y reps son obligatorios
+                if (kgVal === '' || repsVal === '') {
+                    setTrackingFeedback(feedback,
+                        'Introduce al menos Kg y Reps.', false);
+                    return;
+                }
+                var state = window.__routineTrackingState || {};
+                var dias = (state.routine && state.routine.dias) || [];
+                var diaActual = dias[dayIndex] || {};
+                var nombreDia = diaActual.dia || diaActual.nombre ||
+                    ('Día ' + (dayIndex + 1));
+                var nombreRutina = (state.routine &&
+                    (state.routine.titulo || state.routine.nombre)) ||
+                    'Rutina Personalizada';
+                var payload = {
+                    nombre_rutina: nombreRutina,
+                    dia_rutina: nombreDia,
+                    ejercicio_nombre: exerciseName,
+                    peso: parseFloat(kgVal),
+                    repes: parseInt(repsVal, 10),
+                    rpe: rpeVal !== '' ? parseInt(rpeVal, 10) : null,
+                    numero_serie: setIndex + 1
+                };
+
+                if (!payload.ejercicio_nombre || Number.isNaN(payload.peso) || Number.isNaN(payload.repes)) {
+                    setTrackingFeedback(feedback, 'Completa Kg y Reps con valores válidos.', false);
+                    return;
+                }
+
+                saveBtn.disabled = true;
+                saveBtn.classList.add('saving');
+                saveBtn.textContent = 'Guardando...';
+                setTrackingFeedback(feedback, 'Guardando...', true, true);
+                if (kgInput) kgInput.disabled = true;
+                if (repsInput) repsInput.disabled = true;
+                if (rpeInput) rpeInput.disabled = true;
+
+                try {
+                    var token = localStorage.getItem('accessToken');
+                    var headers = { 'Content-Type': 'application/json' };
+                    if (token) headers['Authorization'] = 'Bearer ' + token;
+
+                    var res = await fetch('/api/tracking/guardar-serie', {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify(payload)
+                    });
+                    if (!res.ok) {
+                        var text = await res.text();
+                        throw new Error(text || ('Error ' + res.status));
+                    }
+                    setTrackingFeedback(feedback, 'Serie guardada', true);
+                    saveBtn.textContent = 'Guardado';
+                } catch (error) {
+                    console.error('❌ Error guardando serie:', error);
+                    setTrackingFeedback(feedback, 'Error al guardar. Intenta de nuevo.', false);
+                    saveBtn.textContent = 'Reintentar';
+                } finally {
+                    saveBtn.disabled = false;
+                    saveBtn.classList.remove('saving');
+                    if (kgInput) kgInput.disabled = false;
+                    if (repsInput) repsInput.disabled = false;
+                    if (rpeInput) rpeInput.disabled = false;
+
+                    // Limpiar feedback de éxito tras 3 segundos
+                    setTimeout(function() {
+                        if (feedback &&
+                            feedback.textContent === 'Serie guardada') {
+                            setTrackingFeedback(feedback, '', true, true);
+                        }
+                    }, 3000);
+                }
+            }
+
+            function setTrackingFeedback(element, message, success, neutral) {
+                if (!element) return;
+                element.textContent = message;
+                element.classList.remove('success', 'error');
+                if (neutral) return;
+                element.classList.add(success ? 'success' : 'error');
             }
 
             /**
@@ -4885,6 +5262,83 @@
                 }
             }
             window.loadRoutineView = loadRoutineView;
+            function cerrarResumenSemanal() {
+                var overlay = document.getElementById('resumenSemanalOverlay');
+                if (overlay) overlay.style.display = 'none';
+            }
+
+            async function abrirResumenSemanal() {
+                var overlay = document.getElementById('resumenSemanalOverlay');
+                var content = document.getElementById('resumenSemanalContent');
+                if (!overlay || !content) return;
+
+                // Mostrar overlay con loading
+                overlay.style.display = 'flex';
+                content.innerHTML = '<div style="text-align: center; padding: 40px 20px; color: #84cc16;"><div style="font-size: 40px; margin-bottom: 12px;">⟳</div><div style="font-size: 15px;">Analizando tu semana...</div></div>';
+
+                try {
+                    var token = localStorage.getItem('accessToken');
+                    var res = await fetch('/api/tracking/resumen-semanal', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+                    if (!res.ok) throw new Error('Error ' + res.status);
+                    var data = await res.json();
+
+                    if (!data.tiene_datos) {
+                        content.innerHTML = '<div style="text-align: center; padding: 40px 20px;">'
+                            + '<div style="font-size: 48px; margin-bottom: 16px;">📋</div>'
+                            + '<p style="color: #999; font-size: 15px; line-height: 1.6;">'
+                            + (data.mensaje || 'Aún no tienes entrenamientos esta semana.')
+                            + '</p></div>';
+                        return;
+                    }
+
+                    var r = data.resumen;
+                    var html = '';
+
+                    // Resumen general
+                    html += '<div style="background: rgba(132,204,22,0.08); border: 1px solid rgba(132,204,22,0.25); border-radius: 12px; padding: 16px; margin-bottom: 16px;">';
+                    html += '<p style="color: #e5e5e5; font-size: 14px; line-height: 1.7; margin: 0;">' + (r.resumen_general || '') + '</p>';
+                    html += '</div>';
+
+                    // Análisis por ejercicio
+                    if (r.analisis_por_ejercicio && r.analisis_por_ejercicio.length) {
+                        html += '<div style="margin-bottom: 16px;">';
+                        html += '<h4 style="font-size: 13px; font-weight: 600; color: #737373; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Por ejercicio</h4>';
+                        r.analisis_por_ejercicio.forEach(function(ej) {
+                            html += '<div style="background: #242424; border-radius: 10px; padding: 14px; margin-bottom: 8px;">';
+                            html += '<div style="font-size: 14px; font-weight: 600; color: #e5e5e5; margin-bottom: 4px;">' + (ej.ejercicio || '') + '</div>';
+                            html += '<div style="font-size: 13px; color: #a3a3a3; line-height: 1.5;">' + (ej.observacion || '') + '</div>';
+                            if (ej.peso_recomendado_proxima_semana != null) {
+                                html += '<div style="margin-top: 8px; font-size: 12px; color: #84cc16; font-weight: 600;">→ Recomendado próx. semana: ' + ej.peso_recomendado_proxima_semana + ' kg</div>';
+                            }
+                            html += '</div>';
+                        });
+                        html += '</div>';
+                    }
+
+                    // Conclusión
+                    if (r.conclusion) {
+                        html += '<div style="background: rgba(132,204,22,0.05); border-left: 3px solid #84cc16; padding: 14px 16px; border-radius: 0 10px 10px 0;">';
+                        html += '<p style="color: #e5e5e5; font-size: 14px; line-height: 1.7; margin: 0;">' + r.conclusion + '</p>';
+                        html += '</div>';
+                    }
+
+                    content.innerHTML = html;
+
+                } catch (error) {
+                    content.innerHTML = '<div style="text-align: center; padding: 40px 20px;">'
+                        + '<p style="color: #ef4444; font-size: 14px;">Error generando el resumen. Inténtalo de nuevo.</p></div>';
+                    console.error('Error resumen semanal:', error);
+                }
+            }
+
+            window.abrirResumenSemanal = abrirResumenSemanal;
+            window.cerrarResumenSemanal = cerrarResumenSemanal;
             window.toggleDayCompletion = toggleDayCompletion;
 
             // Desarrollo local: email por defecto si no hay ninguno (perfil no vacío)
@@ -10475,6 +10929,20 @@
         <!-- MODALES GLOBALES (Fuera de #app-shell para evitar z-index jail) -->
         <!-- ═══════════════════════════════════════════════════════ -->
         <div id="modals-container">
+            <div class="overlay" id="resumenSemanalOverlay" style="display:none; align-items: flex-end; justify-content: center;">
+                <div style="background: #1a1a1a; border-radius: 20px 20px 0 0; width: 100%; max-width: 480px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden;">
+                    <div style="padding: 20px 20px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;">
+                        <h3 style="font-size: 18px; font-weight: 700; color: #84cc16; margin: 0;">📊 Resumen Semanal IA</h3>
+                        <button type="button" onclick="cerrarResumenSemanal()" style="background: none; border: none; color: #737373; font-size: 22px; cursor: pointer; padding: 4px;">×</button>
+                    </div>
+                    <div id="resumenSemanalContent" style="flex: 1; overflow-y: auto; padding: 20px;">
+                        <div style="text-align: center; padding: 40px 20px; color: #84cc16;">
+                            <div style="font-size: 40px; margin-bottom: 12px;">⟳</div>
+                            <div style="font-size: 15px;">Analizando tu semana...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- bodyScanOverlay vive aquí permanentemente — no necesita ser movido por JS -->
             <!-- Modal Body Scan -->
             <div class="overlay body-scan-modal" id="bodyScanOverlay" onclick="if(event.target === this) closeBodyScanModal()">
