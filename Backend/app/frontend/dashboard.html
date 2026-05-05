@@ -52,11 +52,16 @@
             body.modal-open #app-shell {
                 overflow: visible;
             }
+            /* Con modal abierto: la tab bar es fixed y puede asomar por subpíxeles / backdrop semitransparente */
+            body.modal-open .app-tab-bar {
+                visibility: hidden;
+                pointer-events: none;
+            }
             
             .app-header {
                 flex-shrink: 0;
-                height: 56px;
-                min-height: 56px;
+                height: 68px;
+                min-height: 68px;
                 padding: 0 16px;
                 padding-top: env(safe-area-inset-top, 0);
                 display: flex;
@@ -75,11 +80,12 @@
                 gap: 6px;
                 text-decoration: none;
                 color: white;
+                transform: translateY(4px);
             }
             
             .app-header-logo .dna-icon {
-                width: 24px;
-                height: 24px;
+                width: 34px;
+                height: 34px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -92,9 +98,9 @@
             }
             
             .app-header-logo .logo-text {
-                font-size: 18px;
+                font-size: 24px;
                 font-weight: 700;
-                letter-spacing: -0.3px;
+                letter-spacing: -0.35px;
             }
             
             .app-header-logo .logo-text .ai {
@@ -108,18 +114,25 @@
                     justify-content: center;
                     padding-left: 16px;
                     padding-right: 16px;
+                    padding-top: calc(env(safe-area-inset-top, 0px) + 42px);
+                    padding-bottom: 6px;
+                    min-height: 110px;
+                    height: auto;
                 }
                 .app-header-logo {
                     flex: 1;
                     justify-content: center;
                     max-width: 100%;
+                    transform: translateY(8px);
                 }
                 .app-header-logo .dna-icon {
-                    width: 32px;
-                    height: 32px;
+                    width: 54px;
+                    height: 54px;
                 }
                 .app-header-logo .logo-text {
-                    font-size: 22px;
+                    font-size: 38px;
+                    font-weight: 800;
+                    letter-spacing: -0.55px;
                 }
                 .app-premium-badge {
                     position: absolute;
@@ -144,7 +157,7 @@
             }
             
             body.user-is-premium .app-premium-badge {
-                display: flex;
+                display: none;
             }
             
             .app-main {
@@ -153,8 +166,8 @@
                 overflow: hidden;
                 display: flex;
                 flex-direction: column;
-                padding-bottom: 70px;
-                padding-bottom: calc(70px + env(safe-area-inset-bottom, 0));
+                padding-bottom: 82px;
+                padding-bottom: calc(82px + env(safe-area-inset-bottom, 0));
                 position: relative;
             }
             
@@ -179,9 +192,9 @@
                 bottom: 0;
                 left: 0;
                 right: 0;
-                height: 70px;
-                height: calc(70px + env(safe-area-inset-bottom, 0));
-                min-height: 70px;
+                height: 82px;
+                height: calc(82px + env(safe-area-inset-bottom, 0));
+                min-height: 82px;
                 padding-bottom: env(safe-area-inset-bottom, 0);
                 background: rgba(0, 0, 0, 0.8);
                 backdrop-filter: blur(10px);
@@ -195,18 +208,18 @@
             
             .app-tab-bar button {
                 flex: 1;
-                max-width: 80px;
+                max-width: 100px;
                 height: 100%;
-                min-height: 44px;
+                min-height: 48px;
                 background: none;
                 border: none;
-                color: rgba(255, 255, 255, 0.6);
+                color: rgba(255, 255, 255, 0.9);
                 cursor: pointer;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                gap: 4px;
+                gap: 6px;
                 transition: color 0.2s ease, transform 0.15s ease;
                 -webkit-tap-highlight-color: transparent;
             }
@@ -220,22 +233,43 @@
             }
             
             .app-tab-bar button svg {
-                width: 24px;
-                height: 24px;
+                width: 30px;
+                height: 30px;
                 flex-shrink: 0;
             }
             
             .app-tab-bar button span {
-                font-size: 10px;
-                font-weight: 500;
+                font-size: 12px;
+                font-weight: 600;
                 letter-spacing: 0.2px;
             }
             
+            #app-view-chat {
+                flex-direction: column;
+                overflow: hidden;
+                padding-bottom: 82px;
+                padding-bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+            }
+            
+            #app-view-chat .main-layout {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                min-height: 0;
+                overflow: hidden;
+                height: 100%;
+            }
+
             /* ═══ Vista Entreno — Solo visible con .active (no sobrescribir .app-view display: none) ═══ */
             #app-view-entreno {
                 overflow: hidden;
                 flex-direction: column;
                 min-height: 0;
+            }
+            #app-view-perfil {
+                flex-direction: column;
+                overflow-y: auto;
+                background: #000;
             }
             #app-view-entreno.active {
                 display: flex;
@@ -304,7 +338,7 @@
                 flex-direction: column;
                 justify-content: center;
                 background: #111;
-                border: 1px solid #222;
+                border: 2px solid #84cc16;
                 border-radius: 20px;
                 padding: 24px;
                 margin-bottom: 16px;
@@ -447,31 +481,42 @@
             .bento-grid {
                 display: grid;
                 grid-template-columns: repeat(4, 1fr);
-                gap: 16px;
-                padding: 20px;
-                overflow-y: auto;
+                gap: 26px;
+                padding: 85px 14px 14px 14px;
                 flex: 1;
-                min-height: 0;
+                height: auto;
+                min-height: 100%;
                 align-content: start;
-                overscroll-behavior: contain;
-                -webkit-overflow-scrolling: touch;
+                grid-template-rows: repeat(3, minmax(140px, 172px));
+                overflow: hidden;
+                box-sizing: border-box;
             }
             @media (max-width: 768px) {
                 .bento-grid {
                     grid-template-columns: repeat(2, 1fr);
-                    gap: 12px;
-                    padding: 16px;
+                    grid-template-rows: repeat(3, minmax(140px, 172px));
+                    gap: 26px;
+                    padding: 83px 14px 14px 14px;
+                    height: 100%;
+                    align-content: start;
+                    overflow: hidden;
                 }
             }
             .bento-card {
                 background: #111;
                 border: 1px solid #222;
                 border-radius: 24px;
-                padding: 20px;
-                min-height: 120px;
+                padding: 16px;
+                min-height: 0;
+                height: 100%;
+                max-height: 196px;
+                box-sizing: border-box;
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                gap: 12px;
                 cursor: pointer;
                 transition: transform 0.2s ease;
                 position: relative;
@@ -488,7 +533,7 @@
                 transform: none;
             }
             .bento-card-plan { grid-column: span 2; min-height: 140px; }
-            .bento-card-bodyscan { background: linear-gradient(135deg, #111 0%, rgba(30, 35, 20, 0.6) 100%); }
+            .bento-card-bodyscan { background: #111; }
             @media (max-width: 768px) {
                 .bento-card-plan { grid-column: span 2; }
             }
@@ -508,16 +553,18 @@
                 border: 1px solid rgba(132, 204, 22, 0.4);
             }
             .bento-card-badge-soon {
-                background: rgba(255, 255, 255, 0.06);
-                color: rgba(255, 255, 255, 0.5);
-                border: 1px solid #333;
+                background: rgba(132, 204, 22, 0.15);
+                color: #84cc16;
+                border: 1px solid rgba(132, 204, 22, 0.4);
             }
             .bento-card-title {
-                font-size: 16px;
+                font-size: 17px;
                 font-weight: 700;
                 color: #fff;
-                margin-bottom: 6px;
+                margin: 0;
                 letter-spacing: -0.2px;
+                line-height: 1.3;
+                text-align: center;
             }
             .bento-card-subtitle {
                 font-size: 13px;
@@ -554,16 +601,20 @@
             .bento-card-btn:hover { background: rgba(132, 204, 22, 0.15); }
             .bento-card-btn:active { transform: scale(0.98); }
             .bento-card-icon {
-                width: 40px;
-                height: 40px;
+                width: 52px;
+                height: 52px;
+                color: rgba(255, 255, 255, 0.95);
+                flex-shrink: 0;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                margin-bottom: 10px;
-                color: rgba(255, 255, 255, 0.6);
             }
-            .bento-card-icon svg { width: 100%; height: 100%; }
-            .bento-card-bodyscan .bento-card-icon { color: #84cc16; }
+
+            .bento-card-icon svg {
+                width: 100%;
+                height: 100%;
+            }
+            .bento-card-bodyscan .bento-card-icon { color: rgba(255, 255, 255, 0.95); }
             
             /* Skeleton de carga (Bento Grid) – pulso gris sutil */
             .bento-card.skeleton .bento-card-title,
@@ -908,6 +959,66 @@
                 background: #444;
             }
             
+            .chat-welcome {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                padding: 32px 20px;
+                text-align: center;
+            }
+
+            .chat-welcome-logo {
+                width: 56px;
+                height: 56px;
+                margin-bottom: 16px;
+                opacity: 0.9;
+            }
+
+            .chat-welcome-title {
+                font-size: 22px;
+                font-weight: 700;
+                color: #ffffff;
+                margin-bottom: 6px;
+                letter-spacing: -0.3px;
+            }
+
+            .chat-welcome-subtitle {
+                font-size: 14px;
+                color: #737373;
+                margin-bottom: 32px;
+                line-height: 1.5;
+            }
+
+            .chat-welcome-suggestions {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                max-width: 320px;
+            }
+
+            .chat-welcome-suggestion {
+                background: #1a1a1a;
+                border: 1px solid #2a2a2a;
+                border-radius: 12px;
+                padding: 13px 16px;
+                color: #e5e5e5;
+                font-size: 14px;
+                text-align: left;
+                cursor: pointer;
+                transition: background 0.15s, border-color 0.15s;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .chat-welcome-suggestion:hover,
+            .chat-welcome-suggestion:active {
+                background: rgba(132, 204, 22, 0.08);
+                border-color: rgba(132, 204, 22, 0.3);
+                color: #ffffff;
+            }
+            
             .chat-input-area {
                 flex-shrink: 0;
                 padding: 16px;
@@ -1200,6 +1311,8 @@
                 display: flex !important;
                 pointer-events: auto;
                 z-index: 10000;
+                min-height: 100%;
+                min-height: 100dvh;
             }
             .overlay .modal-panel {
                 position: relative;
@@ -1208,6 +1321,8 @@
                 max-width: 100%;
                 height: 100%;
                 max-height: 100%;
+                min-height: 100%;
+                min-height: 100dvh;
                 background: #000;
                 border-radius: 24px 24px 0 0;
                 display: flex;
@@ -1216,6 +1331,8 @@
                 transform: translateY(100%);
                 transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
                 box-shadow: 0 -4px 40px rgba(0, 0, 0, 0.5);
+                padding-bottom: env(safe-area-inset-bottom, 0);
+                box-sizing: border-box;
             }
             .overlay.open .modal-panel {
                 transform: translateY(0);
@@ -1225,7 +1342,6 @@
                 height: 56px;
                 min-height: 56px;
                 padding: 0 16px;
-                padding-top: env(safe-area-inset-top, 0);
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
@@ -1270,7 +1386,10 @@
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
                 padding: 20px;
+                background: #000;
                 overscroll-behavior: contain;
+                scrollbar-color: #1a1a1a #000000;
+                scrollbar-width: thin;
             }
             
             /* ═══ Modal de Perfil (Full-Screen, UX nativa) ═══ */
@@ -1281,47 +1400,86 @@
             }
             .profile-overlay-header {
                 flex-shrink: 0;
-                padding: 32px 20px 24px;
+                padding: 36px 24px 28px;
                 text-align: center;
                 border-bottom: 1px solid #222;
                 background: #0a0a0a;
             }
             .profile-avatar {
-                width: 80px;
-                height: 80px;
+                width: 92px;
+                height: 92px;
                 border-radius: 50%;
                 background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
                 color: #000;
-                font-size: 32px;
-                font-weight: 700;
+                font-size: 38px;
+                font-weight: 800;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                margin: 0 auto 16px;
+                margin: 0 auto 18px;
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
             }
+            .avatar-wrapper {
+                position: relative;
+                width: 92px;
+                height: 92px;
+                margin: 0 auto 18px;
+            }
+            .profile-avatar {
+                width: 100%;
+                height: 100%;
+                margin: 0 !important;
+                overflow: hidden;
+            }
+            .avatar-edit-btn {
+                position: absolute;
+                bottom: 0;
+                right: -4px;
+                background: #222;
+                border: 2px solid #000;
+                color: #84cc16;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+                transition: transform 0.2s;
+                -webkit-tap-highlight-color: transparent;
+            }
+            .avatar-edit-btn:active {
+                transform: scale(0.9);
+            }
+            .avatar-edit-btn svg {
+                width: 18px;
+                height: 18px;
+            }
             .profile-email {
-                font-size: 18px;
-                font-weight: 500;
+                font-size: 22px;
+                font-weight: 700;
                 color: rgba(255, 255, 255, 0.95);
                 word-break: break-all;
                 line-height: 1.3;
             }
             .profile-list {
-                padding: 16px 0;
+                padding: 20px 0;
                 list-style: none;
             }
             .profile-list-tile {
                 display: flex;
                 align-items: center;
                 width: 100%;
-                padding: 16px 20px;
+                padding: 18px 24px;
                 background: transparent;
                 border: none;
                 border-bottom: 1px solid #222;
                 color: rgba(255, 255, 255, 0.9);
-                font-size: 16px;
+                font-size: 19px;
+                font-weight: 650;
+                letter-spacing: -0.15px;
                 text-align: left;
                 cursor: pointer;
                 transition: background 0.2s ease, transform 0.15s ease;
@@ -1339,10 +1497,10 @@
                 background: rgba(229, 115, 115, 0.15);
             }
             .profile-list-tile svg {
-                width: 24px;
-                height: 24px;
+                width: 28px;
+                height: 28px;
                 flex-shrink: 0;
-                margin-right: 16px;
+                margin-right: 18px;
                 opacity: 0.9;
             }
             .profile-list-tile.profile-list-tile-logout svg {
@@ -1352,9 +1510,19 @@
                 flex: 1;
             }
             .profile-list-tile .tile-arrow {
-                color: rgba(255, 255, 255, 0.4);
+                color: rgba(132, 204, 22, 0.95);
                 font-size: 18px;
-                margin-left: 8px;
+                font-weight: 700;
+                line-height: 1;
+                width: 28px;
+                height: 28px;
+                margin-left: 10px;
+                border: 1px solid rgba(132, 204, 22, 0.4);
+                border-radius: 999px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
             }
             .profile-list-tile.profile-list-tile-logout .tile-arrow {
                 display: none;
@@ -1451,6 +1619,10 @@
             .overlay .modal-body::-webkit-scrollbar-thumb:hover,
             .overlay-content::-webkit-scrollbar-thumb:hover {
                 background: #262626;
+            }
+            .overlay .modal-body::-webkit-scrollbar-corner,
+            .overlay-content::-webkit-scrollbar-corner {
+                background: #000000;
             }
 
             /* Estilos específicos para el modal de Premium Upgrade */
@@ -2075,19 +2247,6 @@
                     display: none;
                 }
             }
-            
-                .overlay {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.85);
-                    display: none;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 10000;
-                }
 
                 .overlay-content {
                     background: #111111;
@@ -4176,13 +4335,12 @@
             <header class="app-header">
                 <a href="#" class="app-header-logo" onclick="return false;">
                     <div class="dna-icon">
-                        <svg viewBox="0 0 800 800" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+                        <svg viewBox="0 0 800 800" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
                             <path transform="translate(237)" d="m0 0h19l10 5 8 6 4 4 4 8v5h1v10h234v-10l1-1 1-6 5-9 5-3 3-5 5-1 7-3h19l12 6 7 7h2l2 5 3 13v38l-2 20-3 15v8l-2 3-1 5h-2l-6 15-2 6-1 2-1 4-9 15-5 7-2 1-1 3-2 1-2 4-2 1-2 4-4 2-2 3-2 4-7 7-4 1-8 8-10 8-1 3-4 1-5 1-20-12-24-12-26-10-4-1v-2l10-4 14-8 10-7 1-1-91-1-16-10-13-11-10-9-6-4-1-4-4-2v-5l1-2 186-1 1-6 6-14 3-10 2-1h-232l2 1 2 6v7l4 5 9 17 5 7 1 3 3 2 1 4 4 2 2 5 10 10 17 13 14 9 23 12 21 8 26 8 22 9 22 11 8 5 5 1v2l12 8 12 9 4 1 3 5 4 1 3 5 15 15 4 2 1 4 5 3 1 3 5 5 7 10 7 11 8 16 1 8 6 18h2l1 7-1 1 3 17 1 14v12l-2 21-2 11 1 4-2 3-2 4-6 17v5l-10 19-12 18-5 5-2 4-4 2-2 5-5 3-15 15-2 4-4 1-15 12-5-2-23-13-23-11-24-9 1-3 19-10 15-10-94-1-14-9-14-11-15-15-4-2-1-4h-2l2-5h184l2-5h2l2-9h2l5-15h-229l1 7 2 1 1 7h2l2 4v5h2l6 10 1 3 5 5 1 3 3 2 1 4 5 3 7 7 2 4 8 6 3 1 2 4 17 11 23 12 21 8 36 12 20 9 21 11 21 14 14 11 11 10 4 1 3 5 4 2 3 3 1 4 4 3 3 2 1 4 3 1 1 3 2 1 1 3 4 4 10 16 1 6 3 1 3 9 2 7h2l1 8 2 4 2 2v8l3 14 2 21v38l-2 9-2 7-2 2-7 6-8 5-5 2h-18l-10-4-8-7-3-1-5-9-1-7h-1v-10h-234v10l-1 1-1 6-5 9-5 3-8 6-8 3h-18l-12-6-7-7h-2l-2-5-3-13v-38l2-21 3-14v-8l3-3 2-8 1-3 2-2 5-15h2l2-8 12-18 2-1 1-3 2-1 1-3 3-1 1-4 5-3 2-3 2-4 10-10 4-1 11-10 11-8 5 1 16 10 26 13 24 9 5 3-3 2-17 9-12 8-2 2 91 1 16 10 13 11 10 9 6 4 1 4 4 2v5l-1 2-184 1-7 15-5 15-2 1h232l-2-1-5-15-8-17-7-10-1-3-3-2-1-4-4-2-2-5-10-10-17-13-14-9-23-12-21-8-29-9-23-10-25-13-6-2v-2l-12-8-13-10-7-5-4-2-2-4-16-16-4-2-2-5-3-1-1-4-3-1-1-3-5-5-12-20-6-12v-5h-2l-1-8-6-20-3-18-1-13v-14l2-20 4-19 5-15v-5h2l1-7 9-17 9-14 6-8 3-1 1-4 3-1 1-4 6-4 16-16 2-4 4-1 3-5 4-1 8-6 5 2 23 13 23 11 24 9-1 3-19 10-15 10 98 1 1 3 13 9 11 9 14 14 4 2 1 4h2l-2 5h-184l-2 5h-2l-2 9h-2l-5 15h230l-5-15h-2l-2-9h-2l-6-10-1-3-5-5-1-3-3-2-1-4-5-3-7-7-2-4-3-2-3-1-1-3-4-1-2-4-17-11-23-12-21-8-36-12-20-9-21-11-21-14-14-11-12-11-5-2-8-8-1-4-4-3-3-2-1-4-3-1-1-3-2-1-1-3-4-4-10-16-1-6-3-1-2-9-3-7h-2l-1-8-2-4-2-2v-8l-3-14-2-21v-38l2-9 2-7 2-2 7-6 8-5zm296 5m-259 8m251 0m-250 1m249 0m-308 1m367 0m-307 1m247 0m-308 1m62 0m245 0m62 0m-306 2 1 2zm243 0 1 2zm-242 2 1 2zm241 0 1 2zm-240 3 1 3zm239 0 1 3zm-238 15v1h238v-1z" fill="#84CC16"/>
                         </svg>
                     </div>
                     <span class="logo-text"><span class="your-gains">YourGains</span><span class="ai"> AI</span></span>
                 </a>
-                <span class="app-premium-badge" aria-hidden="true">Premium</span>
             </header>
             <main class="app-main">
                 <div id="app-view-home" class="app-view">
@@ -4190,51 +4348,72 @@
                         <!-- TARJETA 1: MI RUTINA -->
                         <div class="bento-card skeleton" id="bentoRutinaCard" role="button" tabindex="0" style="cursor: pointer;">
                             <div class="bento-card-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"/>
+                                    <path d="m2.5 21.5 1.4-1.4"/>
+                                    <path d="m20.1 3.9 1.4-1.4"/>
+                                    <path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"/>
+                                    <path d="m9.6 14.4 4.8-4.8"/>
+                                </svg>
                             </div>
                             <div>
-                                <div class="bento-card-title">💪 Mi Rutina</div>
-                                <div class="bento-card-subtitle" id="bentoRoutinePreview">Plan personalizado de entrenamiento</div>
+                                <div class="bento-card-title">Mi Rutina</div>
+                                <span id="bentoRoutinePreview" style="display:none" aria-hidden="true"></span>
                             </div>
                         </div>
                         <!-- TARJETA 2: MI DIETA -->
                         <div class="bento-card skeleton" id="bentoDietaCard" role="button" tabindex="0" style="cursor: pointer;">
                             <div class="bento-card-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 6.528V3a1 1 0 0 1 1-1h0"/>
+                                    <path d="M18.237 21A15 15 0 0 0 22 11a6 6 0 0 0-10-4.472A6 6 0 0 0 2 11a15.1 15.1 0 0 0 3.763 10 3 3 0 0 0 3.648.648 5.5 5.5 0 0 1 5.178 0A3 3 0 0 0 18.237 21"/>
+                                </svg>
                             </div>
                             <div>
-                                <div class="bento-card-title">🍎 Mi Dieta</div>
-                                <div class="bento-card-meta" id="bentoDietMeta" style="font-size: 22px; color: #84cc16; font-weight: 700; margin-bottom: 4px;">— kcal</div>
-                                <div class="bento-plan-macros" id="bentoDietMacros" style="font-size: 14px; color: rgba(255, 255, 255, 0.75); font-weight: 500;"></div>
+                                <div class="bento-card-title">Mi Dieta</div>
+                                <div class="bento-card-meta" id="bentoDietMeta" style="display:none; font-size: 22px; color: #84cc16; font-weight: 700; margin-bottom: 4px;">— kcal</div>
+                                <div class="bento-plan-macros" id="bentoDietMacros" style="display:none; font-size: 14px; color: rgba(255, 255, 255, 0.75); font-weight: 500;"></div>
                             </div>
                         </div>
+                        <!-- TARJETA 3: GENERAR NUEVO PLAN -->
+                        <div class="bento-card bento-card-action" id="generate-plan-card" role="button" tabindex="0">
+                            <div class="bento-card-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"/>
+                                    <path d="M2 6h4"/>
+                                    <path d="M2 10h4"/>
+                                    <path d="M2 14h4"/>
+                                    <path d="M2 18h4"/>
+                                    <path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/>
+                                </svg>
+                            </div>
+                            <div class="bento-card-title">Generar Nuevo Plan</div>
+                        </div>
+                        <!-- TARJETA 4: AVANZA MÁS RÁPIDO -->
+                        <div class="bento-card" onclick="openOverlay('consejosEstudiosOverlay')" role="button" tabindex="0">
+                            <div class="bento-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/></svg>
+                            </div>
+                            <div class="bento-card-title">Avanza más rápido</div>
+                        </div>
+                        <!-- TARJETA 5: BODY SCAN IA -->
                         <div class="bento-card bento-card-bodyscan" role="button" tabindex="0" onclick="openBodyScan()">
-                            <span class="bento-card-badge bento-card-badge-new">NUEVO</span>
                             <div class="bento-card-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                             </div>
                             <div class="bento-card-title">Body Scan IA</div>
                         </div>
+                        <!-- TARJETA 6: FOOD SCAN -->
                         <div class="bento-card bento-card-disabled" role="presentation">
                             <span class="bento-card-badge bento-card-badge-soon">Muy pronto</span>
                             <div class="bento-card-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5h11"/><path d="M6.5 10h11"/><path d="M6.5 13.5h11"/><path d="M6.5 17h11"/><rect x="2" y="4" width="6" height="16" rx="1"/><rect x="16" y="4" width="6" height="16" rx="1"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+                                    <path d="M7 2v20"/>
+                                    <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+                                </svg>
                             </div>
-                            <div class="bento-card-title">Log de Fuerza</div>
-                        </div>
-                        <div class="bento-card bento-card-action" id="generate-plan-card" role="button" tabindex="0">
-                            <div class="bento-card-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M3 12h18"/><circle cx="12" cy="12" r="9"/></svg>
-                            </div>
-                            <div class="bento-card-title">Generar Nuevo Plan</div>
-                            <div class="bento-card-subtitle">Rutina y dieta con IA</div>
-                        </div>
-                        <div class="bento-card" onclick="openOverlay('consejosEstudiosOverlay')" role="button" tabindex="0">
-                            <div class="bento-card-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/></svg>
-                            </div>
-                            <div class="bento-card-title">Consejos y Estudios</div>
-                            <div class="bento-card-subtitle">Conocimiento aplicado al fitness</div>
+                            <div class="bento-card-title">Food Scan</div>
                         </div>
                     </div>
                 </div>
@@ -4532,6 +4711,49 @@
                         </div>
                     </div>
                 </div>
+                <div id="app-view-perfil" class="app-view">
+                    <div style="flex: 1; overflow-y: auto; padding-top: 96px; padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));">
+                        <div class="profile-overlay-header">
+                            <div class="avatar-wrapper">
+                                <div class="profile-avatar" id="profileAvatar">?</div>
+                                <div class="avatar-edit-btn" onclick="document.getElementById('avatarInput').click()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                                </div>
+                                <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                            </div>
+                            <div class="profile-email" id="profileEmail">—</div>
+                        </div>
+                        <ul class="profile-list">
+                            <li>
+                                <button type="button" class="profile-list-tile" onclick="handleViewProfile();">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    <span>Mis Datos Físicos</span>
+                                    <span class="tile-arrow">›</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="profile-list-tile" onclick="handleAbout();">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                    <span>Quiénes Somos</span>
+                                    <span class="tile-arrow">›</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="profile-list-tile" onclick="handleTerms();">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                    <span>Términos y Privacidad</span>
+                                    <span class="tile-arrow">›</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="profile-list-tile profile-list-tile-logout" onclick="handleLogout();">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                                    <span>Cerrar Sesión</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </main>
             <nav class="app-tab-bar" role="navigation" aria-label="Navegación principal">
                 <button type="button" class="app-tab" data-tab="home" aria-label="Home">
@@ -4539,11 +4761,22 @@
                     <span>Home</span>
                 </button>
                 <button type="button" class="app-tab" data-tab="entreno" aria-label="Entreno">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5h11"/><path d="M6.5 10h11"/><path d="M6.5 13.5h11"/><path d="M6.5 17h11"/><rect x="2" y="4" width="6" height="16" rx="1"/><rect x="16" y="4" width="6" height="16" rx="1"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12.409 13.017A5 5 0 0 1 22 15c0 3.866-4 7-9 7-4.077 0-8.153-.82-10.371-2.462-.426-.316-.631-.832-.62-1.362C2.118 12.723 2.627 2 10 2a3 3 0 0 1 3 3 2 2 0 0 1-2 2c-1.105 0-1.64-.444-2-1"/>
+                        <path d="M15 14a5 5 0 0 0-7.584 2"/>
+                        <path d="M9.964 6.825C8.019 7.977 9.5 13 8 15"/>
+                    </svg>
                     <span>Entreno</span>
                 </button>
                 <button type="button" class="app-tab active" data-tab="chat" aria-label="IA Chat">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 8V4H8"/>
+                        <rect width="16" height="12" x="4" y="8" rx="2"/>
+                        <path d="M2 14h2"/>
+                        <path d="M20 14h2"/>
+                        <path d="M15 13v2"/>
+                        <path d="M9 13v2"/>
+                    </svg>
                     <span>IA Chat</span>
                 </button>
                 <button type="button" class="app-tab" data-tab="perfil" aria-label="Perfil">
@@ -4557,8 +4790,7 @@
         <!-- Overlay para Rutina y Dieta -->
         <div class="overlay" id="rutinaDietaOverlay">
             <div class="modal-panel">
-                <header class="modal-header">
-                    <span class="modal-title">Rutina y Dieta</span>
+                <header class="modal-header" style="justify-content: flex-end;">
                     <button type="button" class="modal-close" onclick="closeOverlay('rutinaDietaOverlay')" aria-label="Cerrar">&times;</button>
                 </header>
                 <div class="modal-body">
@@ -4646,58 +4878,13 @@
         <div class="overlay" id="nuevaRutinaOverlay" onclick="if(event.target === this) closeOverlay('nuevaRutinaOverlay')">
             <div class="modal-panel" onclick="event.stopPropagation()">
                 <header class="modal-header">
-                    <span class="modal-title">Nueva rutina</span>
+                    <span class="modal-title" style="visibility: hidden;">Nueva rutina</span>
                     <button type="button" class="modal-close" onclick="closeOverlay('nuevaRutinaOverlay')" aria-label="Cerrar">&times;</button>
                 </header>
                 <div class="modal-body">
                     <div id="nuevaRutinaContent" style="max-width: 1200px; margin: 0 auto;">
                         <!-- El contenido se cargará aquí -->
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal de Perfil (Full-Screen, Tab Bar → Perfil) -->
-        <div class="overlay" id="profileOverlay" onclick="if(event.target === this) closeOverlay('profileOverlay')">
-            <div class="modal-panel" onclick="event.stopPropagation()">
-                <header class="modal-header">
-                    <span class="modal-title">Perfil</span>
-                    <button type="button" class="modal-close" onclick="closeOverlay('profileOverlay')" aria-label="Cerrar">&times;</button>
-                </header>
-                <div class="modal-body">
-                    <div class="profile-overlay-header">
-                        <div class="profile-avatar" id="profileAvatar">?</div>
-                        <div class="profile-email" id="profileEmail">—</div>
-                    </div>
-                    <ul class="profile-list">
-                        <li>
-                            <button type="button" class="profile-list-tile" onclick="closeOverlay('profileOverlay'); handleViewProfile();">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                <span>Mis Datos Físicos</span>
-                                <span class="tile-arrow">›</span>
-                            </button>
-                        </li>
-                        <li>
-                            <button type="button" class="profile-list-tile" onclick="closeOverlay('profileOverlay'); handleAbout();">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                                <span>Quiénes Somos</span>
-                                <span class="tile-arrow">›</span>
-                            </button>
-                        </li>
-                        <li>
-                            <button type="button" class="profile-list-tile" onclick="closeOverlay('profileOverlay'); handleTerms();">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                                <span>Términos y Privacidad</span>
-                                <span class="tile-arrow">›</span>
-                            </button>
-                        </li>
-                        <li>
-                            <button type="button" class="profile-list-tile profile-list-tile-logout" onclick="closeOverlay('profileOverlay'); handleLogout();">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                                <span>Cerrar Sesión</span>
-                            </button>
-                        </li>
-                    </ul>
                 </div>
             </div>
         </div>
@@ -4785,11 +4972,18 @@
                 var avatarEl = document.getElementById('profileAvatar');
                 if (!emailEl) return;
                 var email = (localStorage.getItem('email') || localStorage.getItem('userEmail') || '').trim();
-                if (!email) email = 'usuario@ejemplo.com'; // desarrollo local: perfil nunca vacío
+                if (!email) email = 'usuario@ejemplo.com';
                 emailEl.textContent = email || '—';
                 if (avatarEl) {
-                    var initial = email ? email.charAt(0).toUpperCase() : '?';
-                    avatarEl.textContent = initial;
+                    var savedAvatar = localStorage.getItem('profile_picture');
+                    if (savedAvatar && savedAvatar.startsWith('data:image')) {
+                        avatarEl.innerHTML = '<img src="' + savedAvatar + '" style="width:100%; height:100%; object-fit:cover;">';
+                        avatarEl.style.background = 'transparent';
+                    } else {
+                        var initial = email ? email.charAt(0).toUpperCase() : '?';
+                        avatarEl.textContent = initial;
+                        avatarEl.style.background = 'linear-gradient(135deg, #84cc16 0%, #65a30d 100%)';
+                    }
                 }
             }
             
@@ -4798,8 +4992,27 @@
              */
             function switchView(viewName) {
                 if (viewName === 'perfil') {
+                    document.querySelectorAll('.app-view').forEach(function(v) { v.classList.remove('active'); });
+                    document.querySelectorAll('.app-tab-bar .app-tab').forEach(function(b) { b.classList.remove('active'); });
+                    var perfilView = document.getElementById('app-view-perfil');
+                    if (perfilView) perfilView.classList.add('active');
+                    var perfilBtn = document.querySelector('.app-tab-bar .app-tab[data-tab="perfil"]');
+                    if (perfilBtn) perfilBtn.classList.add('active');
+                    
                     if (typeof updateProfileOverlayContent === 'function') updateProfileOverlayContent();
-                    if (typeof openOverlay === 'function') openOverlay('profileOverlay');
+                    
+                    // Sincronizar avatar desde el backend
+                    var token = localStorage.getItem('accessToken');
+                    if (token) {
+                        fetch('/api/user/me', { headers: { 'Authorization': 'Bearer ' + token } })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.profile_picture) {
+                                localStorage.setItem('profile_picture', data.profile_picture);
+                                updateProfileOverlayContent();
+                            }
+                        }).catch(e => console.error('Error sincronizando perfil:', e));
+                    }
                     return;
                 }
                 document.querySelectorAll('.app-view').forEach(function(v) { v.classList.remove('active'); });
@@ -4808,12 +5021,130 @@
                 if (targetView) targetView.classList.add('active');
                 var targetBtn = document.querySelector('.app-tab-bar .app-tab[data-tab="' + viewName + '"]');
                 if (targetBtn) targetBtn.classList.add('active');
-                if (viewName === 'entreno' && typeof loadRoutineView === 'function') loadRoutineView();
-                else if (viewName === 'home' && typeof updateBentoPlanCard === 'function') updateBentoPlanCard();
+                if (viewName === 'entreno' && typeof loadRoutineView === 'function') {
+                    loadRoutineView();
+                } else if (viewName === 'home' && typeof updateBentoPlanCard === 'function') {
+                    updateBentoPlanCard();
+                } else if (viewName === 'chat') {
+                    var chatMessages = document.getElementById('chatMessages');
+                    if (chatMessages && chatMessages.children.length === 0) {
+                        var welcomeDiv = document.createElement('div');
+                        welcomeDiv.className = 'chat-welcome';
+                        welcomeDiv.id = 'chatWelcomeScreen';
+                        welcomeDiv.innerHTML = [
+                            '<svg class="chat-welcome-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">',
+                            '<path d="M12 18V5"/>',
+                            '<path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"/>',
+                            '<path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"/>',
+                            '<path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"/>',
+                            '<path d="M18 18a4 4 0 0 0 2-7.464"/>',
+                            '<path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"/>',
+                            '<path d="M6 18a4 4 0 0 1-2-7.464"/>',
+                            '<path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"/>',
+                            '</svg>',
+                            '<div class="chat-welcome-title">YourGains AI</div>',
+                            '<div class="chat-welcome-subtitle">Tu entrenador personal inteligente.<br>Pregúntame lo que necesites.</div>',
+                            '<div class="chat-welcome-suggestions">',
+                            '<button class="chat-welcome-suggestion" onclick="sendWelcomeSuggestion(this)">¿Cómo puedo mejorar mi rutina de entrenamiento?</button>',
+                            '<button class="chat-welcome-suggestion" onclick="sendWelcomeSuggestion(this)">¿Qué debo comer antes y después de entrenar?</button>',
+                            '<button class="chat-welcome-suggestion" onclick="sendWelcomeSuggestion(this)">¿Cómo sé si estoy progresando correctamente?</button>',
+                            '</div>'
+                        ].join('');
+                        chatMessages.appendChild(welcomeDiv);
+                    }
+                }
             }
             window.switchView = switchView;
 
+            function sendWelcomeSuggestion(btn) {
+                var text = btn ? btn.textContent.trim() : '';
+                if (!text) return;
+                var chatInput = document.getElementById('chatInput');
+                if (chatInput) {
+                    chatInput.value = text;
+                    if (typeof window.sendMessage === 'function') {
+                        window.sendMessage();
+                    } else {
+                        var sendBtn = document.getElementById('sendBtn');
+                        if (sendBtn) sendBtn.click();
+                    }
+                }
+            }
+            window.sendWelcomeSuggestion = sendWelcomeSuggestion;
+
             document.addEventListener('DOMContentLoaded', function() {
+                var avatarInput = document.getElementById('avatarInput');
+                if (avatarInput) {
+                    avatarInput.addEventListener('change', function(e) {
+                        var file = e.target.files[0];
+                        if (!file) return;
+                        
+                        var reader = new FileReader();
+                        reader.onload = function(event) {
+                            var img = new Image();
+                            img.onload = async function() {
+                                var canvas = document.createElement('canvas');
+                                var ctx = canvas.getContext('2d');
+                                var MAX_SIZE = 250; // Resolución ideal para un avatar
+                                var width = img.width;
+                                var height = img.height;
+
+                                if (width > height) {
+                                    if (width > MAX_SIZE) {
+                                        height *= MAX_SIZE / width;
+                                        width = MAX_SIZE;
+                                    }
+                                } else {
+                                    if (height > MAX_SIZE) {
+                                        width *= MAX_SIZE / height;
+                                        height = MAX_SIZE;
+                                    }
+                                }
+                                
+                                canvas.width = width;
+                                canvas.height = height;
+                                ctx.drawImage(img, 0, 0, width, height);
+                                
+                                // Bucle de compresión dinámica (Max ~50KB = ~68000 caracteres base64)
+                                var quality = 0.9;
+                                var base64 = canvas.toDataURL('image/jpeg', quality);
+                                
+                                while (base64.length > 68000 && quality > 0.1) {
+                                    quality -= 0.1;
+                                    base64 = canvas.toDataURL('image/jpeg', quality);
+                                }
+                                
+                                // 1. Mostrar instantáneamente en UI
+                                localStorage.setItem('profile_picture', base64);
+                                updateProfileOverlayContent();
+
+                                // 2. Enviar a BD en segundo plano
+                                try {
+                                    var token = localStorage.getItem('accessToken');
+                                    var res = await fetch('/api/user/avatar', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'Authorization': 'Bearer ' + token
+                                        },
+                                        body: JSON.stringify({ profile_picture: base64 })
+                                    });
+                                    if (!res.ok) throw new Error('Error al subir avatar');
+                                    
+                                    // 3. Feedback visual de éxito
+                                    if (typeof showReloadNotification === 'function') {
+                                        showReloadNotification('📸 Foto de perfil actualizada');
+                                    }
+                                } catch (err) {
+                                    console.error('Error guardando avatar:', err);
+                                }
+                            };
+                            img.src = event.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                }
+
                 if (typeof switchView === 'function') switchView('home');
             });
 
@@ -4967,14 +5298,20 @@
                 var dias = routine.dias || [];
                 var initialDayIndex = 0;
                 var html = '';
-                html += '<div style="background: linear-gradient(135deg, rgba(132, 204, 22, 0.15) 0%, rgba(132, 204, 22, 0.05) 100%); border: 1px solid rgba(132, 204, 22, 0.3); border-radius: 12px; padding: 20px; margin-bottom: 16px;"><h3 style="font-size: 22px; font-weight: 700; color: #84cc16; margin-bottom: 8px;">' + (routine.nombre || routine.titulo || 'Tu Rutina Personalizada') + '</h3>' + (routine.descripcion ? '<p style="font-size: 14px; color: #ccc;">' + routine.descripcion + '</p>' : '') + '</div>';
-                html += '<button type="button" id="btn-resumen-semanal" onclick="abrirResumenSemanal()" style="width: 100%; margin-bottom: 16px; padding: 12px; background: rgba(132, 204, 22, 0.1); border: 1px solid rgba(132, 204, 22, 0.35); border-radius: 10px; color: #84cc16; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">📊 Resumen Semanal IA</button>';
+                html += '<div style="display: flex; gap: 8px; margin-bottom: 16px;">';
+                html += '<button type="button" id="tab-registro" onclick="switchTrackingTab(\'registro\')" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(132,204,22,0.5); background: rgba(132,204,22,0.15); color: #84cc16; font-size: 14px; font-weight: 600; cursor: pointer;">Registro</button>';
+                html += '<button type="button" id="tab-historial" onclick="switchTrackingTab(\'historial\')" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #737373; font-size: 14px; font-weight: 600; cursor: pointer;">Historial</button>';
+                html += '</div>';
+                html += '<div id="tracking-registro-view">';
+                html += '<button type="button" id="btn-resumen-semanal" onclick="abrirResumenSemanal()" style="width: 100%; margin-bottom: 16px; padding: 12px; background: rgba(132, 204, 22, 0.1); border: 1px solid rgba(132, 204, 22, 0.35); border-radius: 10px; color: #84cc16; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">Resumen Semanal IA</button>';
                 html += '<div class="tracking-day-pills">';
                 dias.forEach(function(dia, diaIdx) {
                     html += '<button type="button" class="tracking-day-pill ' + (diaIdx === initialDayIndex ? 'active' : '') + '" data-day-index="' + diaIdx + '">' + (dia.dia || dia.nombre || ('Día ' + (diaIdx + 1))) + '</button>';
                 });
                 html += '</div>';
                 html += '<div id="tracking-day-panel" class="tracking-day-panel"></div>';
+                html += '</div>'; // cierre tracking-registro-view
+                html += '<div id="tracking-historial-view" style="display:none;"></div>';
                 container.innerHTML = html;
 
                 window.__routineTrackingState = { routine: routine, selectedDayIndex: initialDayIndex };
@@ -5262,6 +5599,176 @@
                 }
             }
             window.loadRoutineView = loadRoutineView;
+            function switchTrackingTab(tab) {
+                var registroView = document.getElementById('tracking-registro-view');
+                var historialView = document.getElementById('tracking-historial-view');
+                var tabRegistro = document.getElementById('tab-registro');
+                var tabHistorial = document.getElementById('tab-historial');
+                if (!registroView || !historialView) return;
+
+                if (tab === 'registro') {
+                    registroView.style.display = 'block';
+                    historialView.style.display = 'none';
+                    if (tabRegistro) {
+                        tabRegistro.style.background = 'rgba(132,204,22,0.15)';
+                        tabRegistro.style.borderColor = 'rgba(132,204,22,0.5)';
+                        tabRegistro.style.color = '#84cc16';
+                    }
+                    if (tabHistorial) {
+                        tabHistorial.style.background = 'transparent';
+                        tabHistorial.style.borderColor = 'rgba(255,255,255,0.1)';
+                        tabHistorial.style.color = '#737373';
+                    }
+                } else {
+                    registroView.style.display = 'none';
+                    historialView.style.display = 'block';
+                    if (tabHistorial) {
+                        tabHistorial.style.background = 'rgba(132,204,22,0.15)';
+                        tabHistorial.style.borderColor = 'rgba(132,204,22,0.5)';
+                        tabHistorial.style.color = '#84cc16';
+                    }
+                    if (tabRegistro) {
+                        tabRegistro.style.background = 'transparent';
+                        tabRegistro.style.borderColor = 'rgba(255,255,255,0.1)';
+                        tabRegistro.style.color = '#737373';
+                    }
+                    cargarHistorialEntrenos();
+                }
+            }
+            window.switchTrackingTab = switchTrackingTab;
+            async function cargarHistorialEntrenos() {
+                var container = document.getElementById('tracking-historial-view');
+                if (!container) return;
+
+                container.innerHTML = '<div style="text-align:center; padding: 30px; color: #84cc16;"><div style="font-size: 32px; margin-bottom: 10px;">⟳</div><div style="font-size: 14px;">Cargando historial...</div></div>';
+
+                try {
+                    var token = localStorage.getItem('accessToken');
+                    var res = await fetch('/api/tracking/historial?limit=50', {
+                        headers: { 'Authorization': 'Bearer ' + token }
+                    });
+                    if (!res.ok) throw new Error('Error ' + res.status);
+                    var data = await res.json();
+
+                    if (!data.sessions || !data.sessions.length) {
+                        container.innerHTML = '<div style="text-align:center; padding: 40px 20px;">'
+                            + '<div style="font-size: 40px; margin-bottom: 12px;">📋</div>'
+                            + '<p style="color: #737373; font-size: 14px;">Aún no tienes entrenos registrados.<br>¡Empieza a registrar tus series!</p>'
+                            + '</div>';
+                        return;
+                    }
+
+                    // Agrupar sesiones por semana
+                    var semanas = {};
+                    data.sessions.forEach(function(sesion) {
+                        var fecha = new Date(sesion.fecha);
+                        // Calcular lunes de esa semana
+                        var diaSemana = fecha.getDay() === 0 ? 6 : fecha.getDay() - 1;
+                        var lunes = new Date(fecha);
+                        lunes.setDate(fecha.getDate() - diaSemana);
+                        lunes.setHours(0, 0, 0, 0);
+                        var keyLunes = lunes.toISOString().split('T')[0];
+
+                        if (!semanas[keyLunes]) {
+                            semanas[keyLunes] = { lunes: lunes, sesiones: [] };
+                        }
+                        semanas[keyLunes].sesiones.push(sesion);
+                    });
+
+                    var MESES = ['Ene','Feb','Mar','Abr','May','Jun',
+                                 'Jul','Ago','Sep','Oct','Nov','Dic'];
+                    var DIAS = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+                    var html = '';
+                    var semanaKeys = Object.keys(semanas).sort().reverse();
+
+                    semanaKeys.forEach(function(key, semanaIdx) {
+                        var semana = semanas[key];
+                        var lunes = semana.lunes;
+                        var expandida = semanaIdx === 0; // solo la más reciente expandida
+                        var semanaId = 'semana-' + key.replace(/-/g, '');
+
+                        var labelSemana = 'Semana ' + lunes.getDate() + ' '
+                            + MESES[lunes.getMonth()] + ' ' + lunes.getFullYear();
+
+                        html += '<div style="margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; overflow: hidden;">';
+
+                        // Header colapsable
+                        html += '<button type="button" onclick="toggleSemana(\'' + semanaId + '\')"'
+                            + ' style="width: 100%; padding: 12px 14px; background: #1e1e1e;'
+                            + ' border: none; display: flex; align-items: center;'
+                            + ' justify-content: space-between; cursor: pointer;">'
+                            + '<span style="font-size: 13px; font-weight: 700; color: #e5e5e5;">'
+                            + labelSemana + '</span>'
+                            + '<span id="arrow-' + semanaId + '" style="font-size: 11px; color: #737373;">'
+                            + (expandida ? '▲' : '▼') + '</span>'
+                            + '</button>';
+
+                        // Contenido de la semana
+                        html += '<div id="' + semanaId + '" style="display:' + (expandida ? 'block' : 'none') + '; padding: 8px 10px 10px;">';
+
+                        semana.sesiones.forEach(function(sesion) {
+                            var fechaSesion = new Date(sesion.fecha);
+                            var labelDia = DIAS[fechaSesion.getDay()] + ' '
+                                + fechaSesion.getDate() + ' ' + MESES[fechaSesion.getMonth()];
+                            var partes = (sesion.nombre_rutina || '').split(' | ');
+                            var diaNombre = partes.length > 1 ? partes[1] : sesion.nombre_rutina;
+
+                            html += '<div style="margin-bottom: 8px;">';
+                            html += '<div style="font-size: 12px; font-weight: 600; color: #84cc16;'
+                                + ' margin-bottom: 6px; padding: 4px 0; border-bottom:'
+                                + ' 1px solid rgba(255,255,255,0.05);">'
+                                + labelDia + ' · ' + diaNombre + '</div>';
+
+                            // Agrupar sets por ejercicio
+                            var ejercicios = {};
+                            (sesion.sets || []).forEach(function(s) {
+                                var nombre = s.ejercicio_nombre || 'Ejercicio';
+                                if (!ejercicios[nombre]) ejercicios[nombre] = [];
+                                ejercicios[nombre].push(s);
+                            });
+
+                            Object.keys(ejercicios).forEach(function(nombreEj) {
+                                var sets = ejercicios[nombreEj];
+                                html += '<div style="margin-bottom: 6px; padding-left: 4px;">';
+                                html += '<div style="font-size: 12px; color: #e5e5e5;'
+                                    + ' margin-bottom: 2px;">' + nombreEj + '</div>';
+                                sets.forEach(function(s) {
+                                    var lineaSerie = s.numero_serie + '. '
+                                        + (s.peso != null ? s.peso + 'kg' : '--')
+                                        + ' × '
+                                        + (s.reps != null ? s.reps : '--') + ' reps';
+                                    if (s.rpe != null) lineaSerie += '  RPE ' + s.rpe;
+                                    html += '<div style="font-size: 11px; color: #737373;'
+                                        + ' padding: 1px 0 1px 8px;">' + lineaSerie + '</div>';
+                                });
+                                html += '</div>';
+                            });
+
+                            html += '</div>'; // cierre sesion
+                        });
+
+                        html += '</div>'; // cierre contenido semana
+                        html += '</div>'; // cierre semana card
+                    });
+
+                    container.innerHTML = html;
+
+                } catch (error) {
+                    container.innerHTML = '<div style="text-align:center; padding: 40px 20px;">'
+                        + '<p style="color: #ef4444; font-size: 14px;">Error cargando historial.</p></div>';
+                    console.error('Error historial:', error);
+                }
+            }
+            function toggleSemana(id) {
+                var el = document.getElementById(id);
+                var arrow = document.getElementById('arrow-' + id);
+                if (!el) return;
+                var abierto = el.style.display !== 'none';
+                el.style.display = abierto ? 'none' : 'block';
+                if (arrow) arrow.textContent = abierto ? '▼' : '▲';
+            }
+            window.cargarHistorialEntrenos = cargarHistorialEntrenos;
             function cerrarResumenSemanal() {
                 var overlay = document.getElementById('resumenSemanalOverlay');
                 if (overlay) overlay.style.display = 'none';
@@ -7294,6 +7801,12 @@
                     chatInput.value = '';
                     autoResizeTextarea();
 
+                    // Eliminar pantalla de bienvenida si existe
+                    var welcomeScreen = document.getElementById('chatWelcomeScreen');
+                    if (welcomeScreen && welcomeScreen.parentNode) {
+                        welcomeScreen.parentNode.removeChild(welcomeScreen);
+                    }
+
                     // Llamar a 'appendMessage('user', message)'.
                     addMessage(message, true);
                     
@@ -7533,6 +8046,7 @@
                 
                 // Event listeners básicos y funcionales
                 sendBtn.addEventListener('click', sendMessage);
+                window.sendMessage = sendMessage;
                 chatInput.addEventListener('input', () => {
                     updateSendButton();
                     autoResizeTextarea();
@@ -10748,7 +11262,7 @@
                     return '<label style="display:block;padding:12px;border:2px solid #404040;border-radius:8px;text-align:center;cursor:pointer;background:#1a1a1a;user-select:none;" onmouseover="if(!this.querySelector(\'input\').checked){this.style.borderColor=\'#84cc16\';this.style.background=\'rgba(132,204,22,0.05)\'}" onmouseout="if(!this.querySelector(\'input\').checked){this.style.borderColor=\'#404040\';this.style.background=\'#1a1a1a\'}"><input type="checkbox" name="regen_training_days" value="' + val + '" style="display:none" onchange="' + chg + '"><span style="color:white;font-weight:500;font-size:14px">' + d + '</span></label>';
                 }).join('');
                 return '<form id="regenerate-plan-form" style="color:white">' +
-                    '<div style="text-align:center;margin-bottom:32px"><h2 style="font-size:24px;margin-bottom:8px">🔄 Regenerar Plan Completo</h2><p style="color:#999;font-size:14px">Actualiza tus datos y crea un plan completamente nuevo</p></div>' +
+                    '<div style="text-align:center;margin-bottom:32px"><h2 style="font-size:24px;margin-bottom:8px">Regenerar Plan Completo</h2><p style="color:#999;font-size:14px">Actualiza tus datos y crea un plan completamente nuevo</p></div>' +
                     '<div class="data-group"><div class="data-group-title"><div class="bar"></div><h3>📊 Datos Físicos</h3></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">' +
                     '<div class="profile-data-input"><label>Altura (cm)</label><input type="number" id="regen_altura" min="100" max="250" required placeholder="170"></div>' +
                     '<div class="profile-data-input"><label>Peso (kg)</label><input type="number" id="regen_peso" min="30" max="200" step="0.1" required placeholder="70"></div>' +
@@ -10776,7 +11290,7 @@
                     '<p style="color:#fbbf24;font-size:13px;margin:24px 0;padding:12px;background:rgba(251,191,36,0.1);border-radius:8px">⚠️ Advertencia: Regenerar tu plan reemplazará completamente tu rutina y dieta actuales. Esta acción no se puede deshacer.</p>' +
                     '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px">' +
                     '<button type="button" onclick="closeOverlay(\'nuevaRutinaOverlay\')" class="premium-modal-button-secondary">Cancelar</button>' +
-                    '<button type="submit" id="regen_submit_btn" style="background:linear-gradient(135deg,#84cc16 0%,#65a30d 100%);color:white;border:none;padding:14px 32px;border-radius:12px;font-weight:600;font-size:16px;cursor:pointer">🔄 Regenerar Plan Completo</button>' +
+                    '<button type="submit" id="regen_submit_btn" style="background:linear-gradient(135deg,#84cc16 0%,#65a30d 100%);color:white;border:none;padding:14px 32px;border-radius:12px;font-weight:600;font-size:16px;cursor:pointer">Regenerar Plan Completo</button>' +
                     '</div><p id="regen_message" style="text-align:center;margin-top:16px;font-size:14px"></p></form>';
             }
 
@@ -10877,7 +11391,7 @@
                         if (message) { message.textContent = '❌ ' + err.message; message.style.color = '#ef4444'; }
                     } finally {
                         submitBtn.disabled = false;
-                        submitBtn.textContent = '🔄 Regenerar Plan Completo';
+                        submitBtn.textContent = 'Regenerar Plan Completo';
                     }
                 });
             }
@@ -10932,7 +11446,7 @@
             <div class="overlay" id="resumenSemanalOverlay" style="display:none; align-items: flex-end; justify-content: center;">
                 <div style="background: #1a1a1a; border-radius: 20px 20px 0 0; width: 100%; max-width: 480px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden;">
                     <div style="padding: 20px 20px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;">
-                        <h3 style="font-size: 18px; font-weight: 700; color: #84cc16; margin: 0;">📊 Resumen Semanal IA</h3>
+                        <h3 style="font-size: 18px; font-weight: 700; color: #84cc16; margin: 0;">Resumen Semanal IA</h3>
                         <button type="button" onclick="cerrarResumenSemanal()" style="background: none; border: none; color: #737373; font-size: 22px; cursor: pointer; padding: 4px;">×</button>
                     </div>
                     <div id="resumenSemanalContent" style="flex: 1; overflow-y: auto; padding: 20px;">
@@ -10947,8 +11461,9 @@
             <!-- Modal Body Scan -->
             <div class="overlay body-scan-modal" id="bodyScanOverlay" onclick="if(event.target === this) closeBodyScanModal()">
                 <div class="modal-panel" onclick="event.stopPropagation()">
-                    <header class="modal-header">
-                        <span class="modal-title">Body Scan IA</span>
+                    <header class="modal-header" style="position: relative;">
+                        <span style="position: absolute; left: 50%; transform: translateX(-50%); font-size: 19px; font-weight: 700; color: #ffffff; letter-spacing: -0.3px; white-space: nowrap;">Body Scan IA</span>
+                        <span style="flex: 1;"></span>
                         <button type="button" class="modal-close" onclick="closeBodyScanModal()" aria-label="Cerrar">&times;</button>
                     </header>
                     <div class="modal-body">
@@ -10961,7 +11476,7 @@
                             <p style="color: #a3a3a3; margin-bottom: 8px;">Haz clic o arrastra aquí</p>
                             <p style="color: #737373; font-size: 13px;">Máximo 3 imágenes (JPG, PNG)</p>
                         </div>
-                        <input type="file" id="bodyScanFileInput" accept="image/jpeg,image/png,image/webp" multiple style="display: none;">
+                        <input type="file" id="bodyScanFileInput" accept="image/*" multiple style="display: none;">
                         <div class="body-scan-previews" id="bodyScanPreviews"></div>
                         <button type="button" id="bodyScanAnalyzeBtn" class="premium-modal-button" style="width: 100%; margin-top: 8px;" disabled onclick="runBodyScanAnalyze()">
                             Analizar fotos

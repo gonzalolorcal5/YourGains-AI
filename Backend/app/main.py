@@ -17,6 +17,7 @@ from app.routes import (
     plan,
     analisis_cuerpo,
     user_status,
+    user,
     chat,
     onboarding,
     bodyscan,
@@ -114,6 +115,7 @@ app.include_router(oauth.router)
 app.include_router(plan.router)
 app.include_router(analisis_cuerpo.router)
 app.include_router(user_status.router)
+app.include_router(user.router)
 app.include_router(chat.router, prefix="/api", tags=["chat"])
 app.include_router(bodyscan.router, prefix="/api", tags=["BodyScan"])
 app.include_router(articles.router, prefix="/api", tags=["Articles"])

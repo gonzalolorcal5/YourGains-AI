@@ -147,74 +147,54 @@ async def call_openai_chat(message: str, user_email: str) -> str:
 def _validate_message_security(message: str) -> Tuple[bool, Optional[str]]:
     """
     Valida la seguridad del mensaje del usuario.
+    Delega la gestión de creación de rutinas/dietas al LLM.
     Retorna: (es_válido, mensaje_error)
     """
     message_lower = message.lower().strip()
-    
-    # Detectar solicitudes de rutinas/dietas completas
-    rutina_keywords = ["crea una rutina", "genera una rutina", "hazme una rutina", 
-                       "quiero una rutina", "dame una rutina", "plan de entrenamiento",
-                       "crea un plan", "genera un plan", "hazme un plan"]
-    dieta_keywords = ["crea una dieta", "genera una dieta", "hazme una dieta",
-                      "quiero una dieta", "dame una dieta", "plan de dieta",
-                      "crea un plan nutricional", "genera un plan nutricional"]
-    
-    if any(keyword in message_lower for keyword in rutina_keywords):
-        return False, "Las rutinas completas se generan desde la opción 'Generar rutina' en el menú. Puedo ayudarte con dudas específicas sobre ejercicios o técnicas de entrenamiento."
-    
-    if any(keyword in message_lower for keyword in dieta_keywords):
-        return False, "Los planes de dieta completos se generan desde la opción 'Generar rutina' en el menú. Puedo ayudarte con dudas específicas sobre nutrición deportiva."
-    
-    # Detectar intentos de prompt injection comunes
+
+    # 1. Detectar intentos de prompt injection reales y peligrosos
     injection_patterns = [
         "ignore previous instructions",
         "ignore all previous",
         "forget everything",
-        "you are now",
-        "act as if",
-        "pretend to be",
-        "system:",
-        "assistant:",
-        "role:",
-        "you are a",
-        "act as a",
-        "disregard",
-        "override"
+        "forget your instructions",
+        "disregard your instructions",
+        "override your instructions",
+        "jailbreak",
+        "dan mode",
+        "developer mode"
     ]
-    
+
     if any(pattern in message_lower for pattern in injection_patterns):
         logger.warning(f"⚠️ Posible intento de prompt injection detectado: {message[:100]}")
         return False, "Solo puedo ayudarte con temas de entrenamiento, nutrición y fitness. ¿En qué puedo ayudarte con tu rutina o alimentación?"
-    
-    # Detectar temas fuera de dominio (básico)
+
+    # 2. Detectar temas fuera de dominio (Mantenemos la lógica existente)
     off_topic_keywords = ["código", "programar", "hack", "exploit", "sql injection",
                           "xss", "bypass", "admin", "root", "password", "token",
                           "api key", "secret", "política", "elecciones", "partido"]
-    
-    # Solo rechazar si NO hay palabras relacionadas con fitness
+
     fitness_keywords = ["ejercicio", "entrenar", "gimnasio", "fitness", "nutrición",
                         "dieta", "proteína", "carbohidrato", "musculo", "fuerza",
                         "cardio", "peso", "repetición", "serie", "rutina", "plan",
-                        # Términos científicos de nutrición y metabolismo
                         "gluconeogénesis", "gluconeogenesis", "metabolismo", "enzima",
                         "glucosa", "insulina", "glucógeno", "glucogeno", "aminoácido",
                         "aminoacido", "mTOR", "m tor", "síntesis", "sintesis", "catabolismo",
                         "anabolismo", "lipólisis", "lipolisis", "termogénesis", "termogenesis",
                         "oxidación", "oxidacion", "beta oxidación", "mitocondria", "atp",
                         "adp", "creatina", "carnitina", "bcaa", "beta alanina",
-                        # Términos de fisiología y bioquímica aplicada al fitness
                         "hipertrofia", "atrofia", "sarcopenia", "miofibrilar", "hiperplasia",
                         "testosterona", "cortisol", "gh", "hormona de crecimiento", "igf-1",
                         "colesterol", "triglicéridos", "trigliceridos", "ácido láctico",
                         "acido lactico", "ph", "acidez", "alcalinidad"]
-    
+
     has_fitness_context = any(keyword in message_lower for keyword in fitness_keywords)
     has_off_topic = any(keyword in message_lower for keyword in off_topic_keywords)
-    
+
     if has_off_topic and not has_fitness_context:
         logger.warning(f"⚠️ Tema fuera de dominio detectado: {message[:100]}")
         return False, "Solo puedo ayudarte con temas de entrenamiento, nutrición y fitness. ¿En qué puedo ayudarte con tu rutina o alimentación?"
-    
+
     return True, None
 
 def _demo_answer(msg: str) -> str:
