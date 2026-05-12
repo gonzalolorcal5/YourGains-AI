@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2000_vegano",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2000,
+    "restriccion": "vegano",
+    "macros": {
+      "proteinas_g": 175,
+      "carbohidratos_g": 175,
+      "grasas_g": 66
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Yogur de soja",
+            "cantidad": "166g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "26g"
+          },
+          {
+            "nombre": "Sirope de agave",
+            "cantidad": "49g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 43,
+          "carbohidratos_g": 43,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 300,
+        "alimentos": [
+          {
+            "nombre": "Avena cocida",
+            "cantidad": "26g"
+          },
+          {
+            "nombre": "Pasas",
+            "cantidad": "30g"
+          },
+          {
+            "nombre": "Leche desnatada",
+            "cantidad": "250ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 26,
+          "carbohidratos_g": 26,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 600,
+        "alimentos": [
+          {
+            "nombre": "Alubias blancas",
+            "cantidad": "140g"
+          },
+          {
+            "nombre": "Tofu marinado",
+            "cantidad": "130g"
+          },
+          {
+            "nombre": "Espinacas",
+            "cantidad": "800g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 52,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 200,
+        "alimentos": [
+          {
+            "nombre": "Heura en trozos",
+            "cantidad": "60g"
+          },
+          {
+            "nombre": "Tortitas de arroz",
+            "cantidad": "17g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "333g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 17,
+          "carbohidratos_g": 17,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Tofu al horno",
+            "cantidad": "120g"
+          },
+          {
+            "nombre": "Puré de patata",
+            "cantidad": "154g"
+          },
+          {
+            "nombre": "Judías verdes",
+            "cantidad": "400g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 35,
+          "carbohidratos_g": 35,
+          "grasas_g": 13
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

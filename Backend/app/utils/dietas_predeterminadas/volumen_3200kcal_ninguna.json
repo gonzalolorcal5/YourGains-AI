@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_3200_ninguna",
+    "objetivo": "volumen",
+    "kcal_objetivo": 3200,
+    "restriccion": "ninguna",
+    "macros": {
+      "proteinas_g": 200,
+      "carbohidratos_g": 400,
+      "grasas_g": 88
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 800,
+        "alimentos": [
+          {
+            "nombre": "Batido de frutas (Plátano/Fresa)",
+            "cantidad": "533g"
+          },
+          {
+            "nombre": "Avena",
+            "cantidad": "69g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "66g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 50,
+          "carbohidratos_g": 100,
+          "grasas_g": 22
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Crema de arroz",
+            "cantidad": "44g"
+          },
+          {
+            "nombre": "Proteína Whey aislada",
+            "cantidad": "40g"
+          },
+          {
+            "nombre": "Mermelada",
+            "cantidad": "64g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 60,
+          "grasas_g": 13
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 960,
+        "alimentos": [
+          {
+            "nombre": "Boniato al horno",
+            "cantidad": "368g"
+          },
+          {
+            "nombre": "Salmón al horno",
+            "cantidad": "160g"
+          },
+          {
+            "nombre": "Espárragos trigueros",
+            "cantidad": "1440g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 60,
+          "carbohidratos_g": 120,
+          "grasas_g": 26
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "42g"
+          },
+          {
+            "nombre": "Jamón serrano magro",
+            "cantidad": "64g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "533g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 20,
+          "carbohidratos_g": 40,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 640,
+        "alimentos": [
+          {
+            "nombre": "Huevos",
+            "cantidad": "138g"
+          },
+          {
+            "nombre": "Patata cocida",
+            "cantidad": "247g"
+          },
+          {
+            "nombre": "Cebolla",
+            "cantidad": "533g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 80,
+          "grasas_g": 17
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Ninguna."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_2500_vegetariano",
+    "objetivo": "volumen",
+    "kcal_objetivo": 2500,
+    "restriccion": "vegetariano",
+    "macros": {
+      "proteinas_g": 156,
+      "carbohidratos_g": 312,
+      "grasas_g": 69
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Huevos revueltos",
+            "cantidad": "135g"
+          },
+          {
+            "nombre": "Pan integral",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Aguacate",
+            "cantidad": "125g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 39,
+          "carbohidratos_g": 78,
+          "grasas_g": 17
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Manzana",
+            "cantidad": "237g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "20g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "31g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 23,
+          "carbohidratos_g": 46,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Ensalada de pasta",
+            "cantidad": "70g"
+          },
+          {
+            "nombre": "Atún y huevo duro",
+            "cantidad": "175g"
+          },
+          {
+            "nombre": "Aceitunas y tomate",
+            "cantidad": "500g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 46,
+          "carbohidratos_g": 93,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Requesón desnatado",
+            "cantidad": "116g"
+          },
+          {
+            "nombre": "Sirope cero",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Canela",
+            "cantidad": "83g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 15,
+          "carbohidratos_g": 31,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Heura",
+            "cantidad": "183g"
+          },
+          {
+            "nombre": "Boniato",
+            "cantidad": "191g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "833g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 62,
+          "grasas_g": 13
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegetariano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

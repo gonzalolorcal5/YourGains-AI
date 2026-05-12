@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_2800_vegetariano",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 2800,
+    "restriccion": "vegetariano",
+    "macros": {
+      "proteinas_g": 210,
+      "carbohidratos_g": 280,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Crema de arroz",
+            "cantidad": "65g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "58g"
+          },
+          {
+            "nombre": "Canela",
+            "cantidad": "233g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 70,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Manzana",
+            "cantidad": "266g"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "23g"
+          },
+          {
+            "nombre": "Café",
+            "cantidad": "700g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 42,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Macarrones",
+            "cantidad": "78g"
+          },
+          {
+            "nombre": "Soja texturizada",
+            "cantidad": "182g"
+          },
+          {
+            "nombre": "Champiñones",
+            "cantidad": "1260g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 63,
+          "carbohidratos_g": 84,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Yogur griego",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Arándanos",
+            "cantidad": "163g"
+          },
+          {
+            "nombre": "Almendras",
+            "cantidad": "14g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 28,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Berenjena rellena",
+            "cantidad": "186g"
+          },
+          {
+            "nombre": "Patatas baby",
+            "cantidad": "216g"
+          },
+          {
+            "nombre": "Tomates cherry",
+            "cantidad": "933g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 42,
+          "carbohidratos_g": 56,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegetariano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

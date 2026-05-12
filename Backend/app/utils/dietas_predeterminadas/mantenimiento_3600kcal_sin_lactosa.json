@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_3600_sin_lactosa",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 3600,
+    "restriccion": "sin_lactosa",
+    "macros": {
+      "proteinas_g": 270,
+      "carbohidratos_g": 360,
+      "grasas_g": 120
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 900,
+        "alimentos": [
+          {
+            "nombre": "Yogur sin lactosa",
+            "cantidad": "300g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "48g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "90g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 67,
+          "carbohidratos_g": 90,
+          "grasas_g": 30
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Gominolas deportivas o ositos",
+            "cantidad": "54g"
+          },
+          {
+            "nombre": "Proteína aislada (Isolate) o Vegetal",
+            "cantidad": "45g"
+          },
+          {
+            "nombre": "Pre-entreno líquido",
+            "cantidad": "540g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 54,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 1080,
+        "alimentos": [
+          {
+            "nombre": "Lentejas cocidas",
+            "cantidad": "309g"
+          },
+          {
+            "nombre": "Patata cocida",
+            "cantidad": "417g"
+          },
+          {
+            "nombre": "Zanahoria",
+            "cantidad": "864g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 81,
+          "carbohidratos_g": 108,
+          "grasas_g": 36
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Proteína de ternera o huevo",
+            "cantidad": "30g"
+          },
+          {
+            "nombre": "Crema de cacahuete",
+            "cantidad": "20g"
+          },
+          {
+            "nombre": "Leche sin lactosa",
+            "cantidad": "264ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 36,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 720,
+        "alimentos": [
+          {
+            "nombre": "Queso sin lactosa",
+            "cantidad": "240g"
+          },
+          {
+            "nombre": "Salmón ahumado",
+            "cantidad": "120g"
+          },
+          {
+            "nombre": "Tostadas integrales",
+            "cantidad": "60g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 54,
+          "carbohidratos_g": 72,
+          "grasas_g": 24
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin lactosa."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

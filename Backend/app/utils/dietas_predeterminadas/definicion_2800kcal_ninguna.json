@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2800_ninguna",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2800,
+    "restriccion": "ninguna",
+    "macros": {
+      "proteinas_g": 244,
+      "carbohidratos_g": 244,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Pan de espelta",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Huevo a la plancha",
+            "cantidad": "151g"
+          },
+          {
+            "nombre": "Aguacate",
+            "cantidad": "140g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 61,
+          "carbohidratos_g": 61,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Crema de arroz",
+            "cantidad": "39g"
+          },
+          {
+            "nombre": "Proteína Whey aislada",
+            "cantidad": "35g"
+          },
+          {
+            "nombre": "Mermelada",
+            "cantidad": "56g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 36,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Puré de patata",
+            "cantidad": "324g"
+          },
+          {
+            "nombre": "Albóndigas de ternera",
+            "cantidad": "154g"
+          },
+          {
+            "nombre": "Guisantes",
+            "cantidad": "336g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 73,
+          "carbohidratos_g": 73,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Requesón",
+            "cantidad": "130g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "27g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "14g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 24,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Revuelto de gulas",
+            "cantidad": "121g"
+          },
+          {
+            "nombre": "Gambas",
+            "cantidad": "223g"
+          },
+          {
+            "nombre": "Pan tostado",
+            "cantidad": "74g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 49,
+          "carbohidratos_g": 49,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Ninguna."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

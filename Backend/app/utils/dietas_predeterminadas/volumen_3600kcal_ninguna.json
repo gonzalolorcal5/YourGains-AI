@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_3600_ninguna",
+    "objetivo": "volumen",
+    "kcal_objetivo": 3600,
+    "restriccion": "ninguna",
+    "macros": {
+      "proteinas_g": 225,
+      "carbohidratos_g": 450,
+      "grasas_g": 100
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 900,
+        "alimentos": [
+          {
+            "nombre": "Tostadas de arroz",
+            "cantidad": "78g"
+          },
+          {
+            "nombre": "Atún al natural",
+            "cantidad": "270g"
+          },
+          {
+            "nombre": "Pimientos asados",
+            "cantidad": "900g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 56,
+          "carbohidratos_g": 112,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Barrita de proteínas (baja en azúcar)",
+            "cantidad": "54g"
+          },
+          {
+            "nombre": "Pera",
+            "cantidad": "306g"
+          },
+          {
+            "nombre": "Nueces de macadamia",
+            "cantidad": "27g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 33,
+          "carbohidratos_g": 67,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 1080,
+        "alimentos": [
+          {
+            "nombre": "Boniato al horno",
+            "cantidad": "414g"
+          },
+          {
+            "nombre": "Salmón al horno",
+            "cantidad": "180g"
+          },
+          {
+            "nombre": "Espárragos trigueros",
+            "cantidad": "1620g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 67,
+          "carbohidratos_g": 135,
+          "grasas_g": 30
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "108g"
+          },
+          {
+            "nombre": "Pan",
+            "cantidad": "48g"
+          },
+          {
+            "nombre": "Queso light",
+            "cantidad": "72g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 22,
+          "carbohidratos_g": 45,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 720,
+        "alimentos": [
+          {
+            "nombre": "Revuelto de gulas",
+            "cantidad": "156g"
+          },
+          {
+            "nombre": "Gambas",
+            "cantidad": "288g"
+          },
+          {
+            "nombre": "Pan tostado",
+            "cantidad": "96g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 45,
+          "carbohidratos_g": 90,
+          "grasas_g": 20
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Ninguna."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

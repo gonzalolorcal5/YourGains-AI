@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_2500_vegano",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 2500,
+    "restriccion": "vegano",
+    "macros": {
+      "proteinas_g": 187,
+      "carbohidratos_g": 250,
+      "grasas_g": 83
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de avena",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Sirope sin azúcar",
+            "cantidad": "208g"
+          },
+          {
+            "nombre": "Fresas",
+            "cantidad": "625g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 46,
+          "carbohidratos_g": 62,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Manzana",
+            "cantidad": "237g"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "21g"
+          },
+          {
+            "nombre": "Café",
+            "cantidad": "625g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 28,
+          "carbohidratos_g": 37,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Ñoquis de patata",
+            "cantidad": "150g"
+          },
+          {
+            "nombre": "Lonchas de pavo vegano",
+            "cantidad": "225g"
+          },
+          {
+            "nombre": "Salsa de tomate casera",
+            "cantidad": "625g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 56,
+          "carbohidratos_g": 75,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Hummus",
+            "cantidad": "49g"
+          },
+          {
+            "nombre": "Palitos de zanahoria",
+            "cantidad": "199g"
+          },
+          {
+            "nombre": "Lonchas de pavo vegano",
+            "cantidad": "75g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 18,
+          "carbohidratos_g": 25,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Seitan asado",
+            "cantidad": "166g"
+          },
+          {
+            "nombre": "Patata panadera",
+            "cantidad": "193g"
+          },
+          {
+            "nombre": "Champiñones al ajillo",
+            "cantidad": "333g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 37,
+          "carbohidratos_g": 50,
+          "grasas_g": 16
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

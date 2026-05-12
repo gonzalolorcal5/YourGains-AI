@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_3600_sin_lactosa",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 3600,
+    "restriccion": "sin_lactosa",
+    "macros": {
+      "proteinas_g": 270,
+      "carbohidratos_g": 360,
+      "grasas_g": 120
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 900,
+        "alimentos": [
+          {
+            "nombre": "Harina de avena",
+            "cantidad": "75g"
+          },
+          {
+            "nombre": "Claras de huevo",
+            "cantidad": "600g"
+          },
+          {
+            "nombre": "Arándanos",
+            "cantidad": "525g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 67,
+          "carbohidratos_g": 90,
+          "grasas_g": 30
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Cereales tipo Corn Flakes",
+            "cantidad": "45g"
+          },
+          {
+            "nombre": "Leche sin lactosa",
+            "cantidad": "396ml"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "201g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 54,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 1080,
+        "alimentos": [
+          {
+            "nombre": "Arroz blanco",
+            "cantidad": "270g"
+          },
+          {
+            "nombre": "Pechuga de pollo",
+            "cantidad": "216g"
+          },
+          {
+            "nombre": "Brócoli",
+            "cantidad": "1008g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 81,
+          "carbohidratos_g": 108,
+          "grasas_g": 36
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Yogur de soja",
+            "cantidad": "144g"
+          },
+          {
+            "nombre": "Granola sin azúcar",
+            "cantidad": "30g"
+          },
+          {
+            "nombre": "Frambuesas",
+            "cantidad": "216g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 36,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 720,
+        "alimentos": [
+          {
+            "nombre": "Merluza",
+            "cantidad": "264g"
+          },
+          {
+            "nombre": "Boniato",
+            "cantidad": "276g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "1200g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 54,
+          "carbohidratos_g": 72,
+          "grasas_g": 24
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin lactosa."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

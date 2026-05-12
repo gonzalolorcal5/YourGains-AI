@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_2500_sin_frutos_secos",
+    "objetivo": "volumen",
+    "kcal_objetivo": 2500,
+    "restriccion": "sin_frutos_secos",
+    "macros": {
+      "proteinas_g": 156,
+      "carbohidratos_g": 312,
+      "grasas_g": 69
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Requesón desnatado",
+            "cantidad": "291g"
+          },
+          {
+            "nombre": "Semillas de calabaza",
+            "cantidad": "33g"
+          },
+          {
+            "nombre": "Manzana",
+            "cantidad": "395g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 39,
+          "carbohidratos_g": 78,
+          "grasas_g": 17
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Yogur griego",
+            "cantidad": "125g"
+          },
+          {
+            "nombre": "Avena",
+            "cantidad": "32g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "37g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 23,
+          "carbohidratos_g": 46,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Trigo sarraceno",
+            "cantidad": "70g"
+          },
+          {
+            "nombre": "Pechuga de pavo asada",
+            "cantidad": "225g"
+          },
+          {
+            "nombre": "Calabaza asada",
+            "cantidad": "750g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 46,
+          "carbohidratos_g": 93,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Puding de chía (Proteína + Chía + Leche)",
+            "cantidad": "83ml"
+          },
+          {
+            "nombre": "Fresas",
+            "cantidad": "249g"
+          },
+          {
+            "nombre": "Sirope cero",
+            "cantidad": "83g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 15,
+          "carbohidratos_g": 31,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Filete de ternera fino",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Boniato frito (Airfryer)",
+            "cantidad": "191g"
+          },
+          {
+            "nombre": "Pimientos de Padrón",
+            "cantidad": "333g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 62,
+          "grasas_g": 13
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin frutos secos."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_3200_sin_frutos_secos",
+    "objetivo": "volumen",
+    "kcal_objetivo": 3200,
+    "restriccion": "sin_frutos_secos",
+    "macros": {
+      "proteinas_g": 200,
+      "carbohidratos_g": 400,
+      "grasas_g": 88
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 800,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "106g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "240g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "29g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 50,
+          "carbohidratos_g": 100,
+          "grasas_g": 22
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Pan de centeno",
+            "cantidad": "64g"
+          },
+          {
+            "nombre": "Atún al natural",
+            "cantidad": "144g"
+          },
+          {
+            "nombre": "Pimientos",
+            "cantidad": "560g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 60,
+          "grasas_g": 13
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 960,
+        "alimentos": [
+          {
+            "nombre": "Quinoa",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Pavo a la plancha",
+            "cantidad": "288g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "1920g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 60,
+          "carbohidratos_g": 120,
+          "grasas_g": 26
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Huevos revueltos",
+            "cantidad": "69g"
+          },
+          {
+            "nombre": "Pan integral",
+            "cantidad": "42g"
+          },
+          {
+            "nombre": "Aguacate",
+            "cantidad": "64g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 20,
+          "carbohidratos_g": 40,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 640,
+        "alimentos": [
+          {
+            "nombre": "Merluza",
+            "cantidad": "234g"
+          },
+          {
+            "nombre": "Boniato",
+            "cantidad": "245g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "1066g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 80,
+          "grasas_g": 17
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin frutos secos."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

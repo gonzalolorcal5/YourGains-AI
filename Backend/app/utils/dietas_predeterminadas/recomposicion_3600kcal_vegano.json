@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_3600_vegano",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 3600,
+    "restriccion": "vegano",
+    "macros": {
+      "proteinas_g": 270,
+      "carbohidratos_g": 360,
+      "grasas_g": 120
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 900,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "120g"
+          },
+          {
+            "nombre": "Lonchas de pavo vegano",
+            "cantidad": "270g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "33g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 67,
+          "carbohidratos_g": 90,
+          "grasas_g": 30
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Barrita de proteínas (baja en azúcar)",
+            "cantidad": "54g"
+          },
+          {
+            "nombre": "Pera",
+            "cantidad": "306g"
+          },
+          {
+            "nombre": "Nueces de macadamia",
+            "cantidad": "27g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 54,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 1080,
+        "alimentos": [
+          {
+            "nombre": "Boniato al horno",
+            "cantidad": "414g"
+          },
+          {
+            "nombre": "Tempeh asado",
+            "cantidad": "180g"
+          },
+          {
+            "nombre": "Espárragos trigueros",
+            "cantidad": "1620g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 81,
+          "carbohidratos_g": 108,
+          "grasas_g": 36
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Requesón",
+            "cantidad": "168g"
+          },
+          {
+            "nombre": "Sirope de agave",
+            "cantidad": "36g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "19g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 36,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 720,
+        "alimentos": [
+          {
+            "nombre": "Tofu firme",
+            "cantidad": "144g"
+          },
+          {
+            "nombre": "Ensalada verde",
+            "cantidad": "1200g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "26g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 54,
+          "carbohidratos_g": 72,
+          "grasas_g": 24
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

@@ -69,6 +69,122 @@ def _user_data_from_request(data: OnboardingRequest) -> dict:
     }
 
 
+def _servir_rutina_banco(data: OnboardingRequest) -> dict | None:
+    """
+    Intenta servir una rutina del banco de JSONs predeterminados.
+    Devuelve dict con 'rutina', 'dieta' y 'motivacion', o None si no encuentra archivo.
+    """
+    import random
+    from pathlib import Path
+
+    try:
+        training_frequency = data.training_frequency
+        session_duration = data.session_duration or "45-60"
+
+        duracion_map = {
+            "<30": "menos30min",
+            "30-45": "menos30min",
+            "45-60": "45min",
+            "60-75": "60min",
+            "75-90": "90min",
+            "90+": "90min",
+        }
+        duracion_key = duracion_map.get(session_duration, "45min")
+
+        base_path = Path(__file__).resolve().parent.parent / "utils" / "rutinas_predeterminadas"
+        archivo = base_path / f"{training_frequency}dias_{duracion_key}.json"
+
+        if not archivo.exists():
+            print(f"⚠️ [BANCO] Archivo no encontrado: {archivo}")
+            return None
+
+        with open(archivo, "r", encoding="utf-8") as f:
+            rutinas = json.load(f)
+
+        if not rutinas:
+            print(f"⚠️ [BANCO] Archivo vacío: {archivo}")
+            return None
+
+        elegida = random.choice(rutinas)
+        print(f"✅ [BANCO] Rutina elegida: {elegida.get('id')} — {elegida.get('titulo')}")
+
+        return {
+            "rutina": {
+                "dias": elegida.get("dias", []),
+                "consejos": elegida.get("consejos", []),
+                "titulo": elegida.get("titulo", ""),
+                "is_ai_generated": False,
+                "version": "2.0.0",
+            },
+            "dieta": {
+                "comidas": [],
+                "macros": {},
+                "version": "2.0.0",
+            },
+            "motivacion": "¡Tu plan está listo! Entrena con constancia y verás resultados.",
+        }
+
+    except Exception as e:
+        print(f"❌ [BANCO] Error cargando rutina: {e}")
+        return None
+
+
+def _servir_dieta_banco(data: OnboardingRequest, kcal_objetivo: int) -> dict | None:
+    import json
+    from pathlib import Path
+
+    try:
+        # 1. Matching Objetivo
+        objetivo_map = {
+            "perder grasa": "definicion",
+            "ganar masa muscular": "volumen",
+            "mantenimiento": "mantenimiento",
+            "recomposicion": "recomposicion",
+        }
+        objetivo_key = objetivo_map.get(data.nutrition_goal.lower().strip(), "mantenimiento")
+
+        # 2. Matching Kcal
+        rangos_kcal = [1600, 1800, 2000, 2200, 2500, 2800, 3200, 3600]
+        kcal_key = min(rangos_kcal, key=lambda x: abs(x - kcal_objetivo))
+
+        # 3. Matching Restricciones
+        restricciones_texto = f"{data.alergias or ''} {data.restricciones_dieta or ''}".lower()
+        restriccion_key = "ninguna"
+        if "vegan" in restricciones_texto:
+            restriccion_key = "vegano"
+        elif "vegetariano" in restricciones_texto:
+            restriccion_key = "vegetariano"
+        elif "lactosa" in restricciones_texto:
+            restriccion_key = "sin_lactosa"
+        elif "gluten" in restricciones_texto:
+            restriccion_key = "sin_gluten"
+        elif "pescado" in restricciones_texto:
+            restriccion_key = "sin_pescado"
+        elif "frutos secos" in restricciones_texto:
+            restriccion_key = "sin_frutos_secos"
+        elif "brocoli" in restricciones_texto or "brócoli" in restricciones_texto:
+            restriccion_key = "sin_brocoli"
+
+        base_path = Path(__file__).resolve().parent.parent / "utils" / "dietas_predeterminadas"
+        archivo = base_path / f"{objetivo_key}_{kcal_key}kcal_{restriccion_key}.json"
+
+        if not archivo.exists():
+            archivo = base_path / f"{objetivo_key}_{kcal_key}kcal_ninguna.json"
+            if not archivo.exists():
+                return None
+
+        with open(archivo, "r", encoding="utf-8") as f:
+            dietas = json.load(f)
+
+        if not dietas:
+            return None
+        return dietas[0]
+
+    except Exception as e:
+        print(f"❌ [BANCO DIETAS] Error cargando dieta: {e}")
+        return None
+
+
 def _apply_metadata(rutina_json: dict, dieta_json: dict, data: OnboardingRequest) -> None:
     """Añade metadata a rutina y dieta in-place."""
     if "metadata" not in rutina_json:
@@ -238,6 +354,21 @@ async def process_onboarding(
 
         plan_existente = db.query(Plan).filter_by(user_id=usuario.id).first()
         is_premium = usuario.is_premium or (getattr(usuario, "plan_type", None) or "").upper() == "PREMIUM"
+
+        # Calcular TDEE objetivo (banco de dietas + consistencia)
+        from app.utils.nutrition_calculator import get_complete_nutrition_plan
+        try:
+            tdee_data = get_complete_nutrition_plan({
+                "peso": data.peso,
+                "altura": data.altura,
+                "edad": data.edad,
+                "sexo": data.sexo,
+                "nivel_actividad": data.nivel_actividad,
+            }, data.nutrition_goal)
+            kcal_calculadas = tdee_data.get("calorias_objetivo", 2200)
+        except Exception:
+            kcal_calculadas = 2200
+
         user_data = _user_data_from_request(data)
 
         print(f"🔍 Onboarding user_id={usuario.id} premium={is_premium} plan_existente={plan_existente is not None}")
@@ -273,6 +404,7 @@ async def process_onboarding(
                 print(f"✅ Plan nuevo creado con IA (id={plan_id})")
 
             current_routine, current_diet = _build_current_routine_diet(rutina_json, dieta_json, data)
+            current_diet["locked"] = False
             motivacion = plan_data.get("motivacion", "")
             rutina_return = rutina_json
             dieta_return = dieta_json
@@ -294,12 +426,41 @@ async def process_onboarding(
                     dieta_json = {}
                 _apply_metadata(rutina_json, dieta_json, data)
                 current_routine, current_diet = _build_current_routine_diet(rutina_json, dieta_json, data)
+                current_diet["locked"] = True
+                for comida in current_diet.get("comidas", []):
+                    if isinstance(comida, dict):
+                        comida["alimentos"] = [{"nombre": "🔒 Hazte Premium para ver los alimentos", "cantidad": "-"}]
+                plan_existente.dieta = json.dumps(current_diet, ensure_ascii=False)
                 motivacion = plan_existente.motivacion or ""
                 rutina_return = rutina_json
-                dieta_return = dieta_json
+                dieta_return = current_diet
                 print(f"✅ Plan existente actualizado (solo datos físicos) id={plan_id}")
             else:
-                plan_data = get_generic_plan(user_data)
+                tiene_lesiones = bool(
+                    (data.lesiones or "").strip() and
+                    (data.lesiones or "").strip().lower() not in ["ninguna", "ninguno", "no", "none", ""]
+                )
+
+                plan_data = None
+
+                if not tiene_lesiones:
+                    rutina_banco = _servir_rutina_banco(data)
+                    dieta_banco = _servir_dieta_banco(data, kcal_calculadas)
+
+                    if rutina_banco and dieta_banco:
+                        plan_data = {
+                            "rutina": rutina_banco["rutina"],
+                            "dieta": dieta_banco,
+                            "motivacion": rutina_banco["motivacion"],
+                        }
+                        print(f"✅ [BANCO] Rutina y Dieta servidas desde banco para user_id {usuario.id}")
+                    else:
+                        print(f"⚠️ [BANCO] Faltan archivos, fallback a template")
+
+                if plan_data is None:
+                    print(f"⚠️ Usando template (lesiones o sin banco disponible)")
+                    plan_data = get_generic_plan(user_data)
+
                 rutina_json = plan_data.get("rutina", {})
                 dieta_json = plan_data.get("dieta", {})
                 _apply_metadata(rutina_json, dieta_json, data)
@@ -308,10 +469,15 @@ async def process_onboarding(
                 db.flush()
                 plan_id = nuevo.id
                 current_routine, current_diet = _build_current_routine_diet(rutina_json, dieta_json, data)
+                current_diet["locked"] = True
+                for comida in current_diet.get("comidas", []):
+                    if isinstance(comida, dict):
+                        comida["alimentos"] = [{"nombre": "🔒 Hazte Premium para ver los alimentos", "cantidad": "-"}]
+                nuevo.dieta = json.dumps(current_diet, ensure_ascii=False)
                 motivacion = plan_data.get("motivacion", "")
                 rutina_return = rutina_json
-                dieta_return = dieta_json
-                print(f"✅ Plan nuevo creado con template id={plan_id}")
+                dieta_return = current_diet
+                print(f"✅ Plan nuevo creado id={plan_id}")
 
         # Siempre marcar onboarding completado y sincronizar current_routine/current_diet
         db.query(Usuario).filter(Usuario.id == usuario.id).update({

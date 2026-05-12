@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_2800_sin_pescado",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 2800,
+    "restriccion": "sin_pescado",
+    "macros": {
+      "proteinas_g": 210,
+      "carbohidratos_g": 280,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Crema de arroz",
+            "cantidad": "65g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "58g"
+          },
+          {
+            "nombre": "Canela",
+            "cantidad": "233g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 70,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Yogur griego",
+            "cantidad": "140g"
+          },
+          {
+            "nombre": "Avena",
+            "cantidad": "36g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "42g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 42,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Ensalada de pasta",
+            "cantidad": "78g"
+          },
+          {
+            "nombre": "Atún y huevo duro",
+            "cantidad": "196g"
+          },
+          {
+            "nombre": "Aceitunas y tomate",
+            "cantidad": "560g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 63,
+          "carbohidratos_g": 84,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Requesón",
+            "cantidad": "130g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "27g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "14g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 28,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Pechuga de pollo asada",
+            "cantidad": "111g"
+          },
+          {
+            "nombre": "Gazpacho",
+            "cantidad": "373g"
+          },
+          {
+            "nombre": "Huevo duro picado",
+            "cantidad": "121g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 42,
+          "carbohidratos_g": 56,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin pescado."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

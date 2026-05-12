@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2800_sin_brocoli",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2800,
+    "restriccion": "sin_brocoli",
+    "macros": {
+      "proteinas_g": 244,
+      "carbohidratos_g": 244,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Batido de frutas (Plátano/Fresa)",
+            "cantidad": "466g"
+          },
+          {
+            "nombre": "Avena",
+            "cantidad": "60g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "58g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 61,
+          "carbohidratos_g": 61,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Pan de centeno",
+            "cantidad": "56g"
+          },
+          {
+            "nombre": "Atún al natural",
+            "cantidad": "125g"
+          },
+          {
+            "nombre": "Pimientos",
+            "cantidad": "489g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 36,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Fideos de arroz",
+            "cantidad": "75g"
+          },
+          {
+            "nombre": "Tiras de ternera",
+            "cantidad": "140g"
+          },
+          {
+            "nombre": "Cebolla y zanahoria salteadas",
+            "cantidad": "700g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 73,
+          "carbohidratos_g": 73,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Batido de Proteína",
+            "cantidad": "23g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "205ml"
+          },
+          {
+            "nombre": "Fresas",
+            "cantidad": "279g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 24,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Queso cottage",
+            "cantidad": "186g"
+          },
+          {
+            "nombre": "Salmón ahumado",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Tostadas integrales",
+            "cantidad": "46g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 49,
+          "carbohidratos_g": 49,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin brocoli."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

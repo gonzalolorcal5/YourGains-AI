@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_3200_sin_lactosa",
+    "objetivo": "volumen",
+    "kcal_objetivo": 3200,
+    "restriccion": "sin_lactosa",
+    "macros": {
+      "proteinas_g": 200,
+      "carbohidratos_g": 400,
+      "grasas_g": 88
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 800,
+        "alimentos": [
+          {
+            "nombre": "Kéfir de agua",
+            "cantidad": "400g"
+          },
+          {
+            "nombre": "Copos de maíz",
+            "cantidad": "66g"
+          },
+          {
+            "nombre": "Semillas de chía",
+            "cantidad": "53g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 50,
+          "carbohidratos_g": 100,
+          "grasas_g": 22
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "104g"
+          },
+          {
+            "nombre": "Pan tostado",
+            "cantidad": "64g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "17g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 60,
+          "grasas_g": 13
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 960,
+        "alimentos": [
+          {
+            "nombre": "Pasta integral",
+            "cantidad": "224g"
+          },
+          {
+            "nombre": "Ternera magra",
+            "cantidad": "128g"
+          },
+          {
+            "nombre": "Ensalada mixta",
+            "cantidad": "1600g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 60,
+          "carbohidratos_g": 120,
+          "grasas_g": 26
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Queso sin lactosa",
+            "cantidad": "106g"
+          },
+          {
+            "nombre": "Mermelada light",
+            "cantidad": "64g"
+          },
+          {
+            "nombre": "Tostadas integrales",
+            "cantidad": "26g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 20,
+          "carbohidratos_g": 40,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 640,
+        "alimentos": [
+          {
+            "nombre": "Tortilla francesa",
+            "cantidad": "138g"
+          },
+          {
+            "nombre": "Queso tierno sin lactosa",
+            "cantidad": "64g"
+          },
+          {
+            "nombre": "Ensalada de canónigos",
+            "cantidad": "1066g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 80,
+          "grasas_g": 17
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin lactosa."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

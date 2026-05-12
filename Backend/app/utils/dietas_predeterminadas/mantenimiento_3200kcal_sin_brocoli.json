@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_3200_sin_brocoli",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 3200,
+    "restriccion": "sin_brocoli",
+    "macros": {
+      "proteinas_g": 240,
+      "carbohidratos_g": 320,
+      "grasas_g": 106
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 800,
+        "alimentos": [
+          {
+            "nombre": "Huevos revueltos",
+            "cantidad": "173g"
+          },
+          {
+            "nombre": "Pan integral",
+            "cantidad": "106g"
+          },
+          {
+            "nombre": "Aguacate",
+            "cantidad": "160g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 60,
+          "carbohidratos_g": 80,
+          "grasas_g": 26
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Zumo de naranja natural",
+            "cantidad": "320ml"
+          },
+          {
+            "nombre": "Tostada",
+            "cantidad": "64g"
+          },
+          {
+            "nombre": "Pavo",
+            "cantidad": "144g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 48,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 960,
+        "alimentos": [
+          {
+            "nombre": "Ñoquis de patata",
+            "cantidad": "192g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "288g"
+          },
+          {
+            "nombre": "Salsa de tomate casera",
+            "cantidad": "800g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 72,
+          "carbohidratos_g": 96,
+          "grasas_g": 32
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Yogur de proteínas",
+            "cantidad": "128g"
+          },
+          {
+            "nombre": "Granola sin azúcar",
+            "cantidad": "26g"
+          },
+          {
+            "nombre": "Frambuesas",
+            "cantidad": "192g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 32,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 640,
+        "alimentos": [
+          {
+            "nombre": "Merluza",
+            "cantidad": "234g"
+          },
+          {
+            "nombre": "Boniato",
+            "cantidad": "245g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "1066g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 48,
+          "carbohidratos_g": 64,
+          "grasas_g": 21
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin brocoli."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

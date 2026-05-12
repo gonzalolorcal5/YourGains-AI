@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_2500_sin_pescado",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 2500,
+    "restriccion": "sin_pescado",
+    "macros": {
+      "proteinas_g": 187,
+      "carbohidratos_g": 250,
+      "grasas_g": 83
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Huevos",
+            "cantidad": "135g"
+          },
+          {
+            "nombre": "Jamón cocido",
+            "cantidad": "187g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "1041g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 46,
+          "carbohidratos_g": 62,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "50g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "112g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "625g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 28,
+          "carbohidratos_g": 37,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Edamame",
+            "cantidad": "200g"
+          },
+          {
+            "nombre": "Arroz para sushi",
+            "cantidad": "187g"
+          },
+          {
+            "nombre": "Tofu marinado",
+            "cantidad": "125g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 56,
+          "carbohidratos_g": 75,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Leche con cacao puro",
+            "cantidad": "183ml"
+          },
+          {
+            "nombre": "Pan tostado",
+            "cantidad": "33g"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "14g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 18,
+          "carbohidratos_g": 25,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Pechuga de pollo asada",
+            "cantidad": "99g"
+          },
+          {
+            "nombre": "Gazpacho",
+            "cantidad": "333g"
+          },
+          {
+            "nombre": "Huevo duro picado",
+            "cantidad": "108g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 37,
+          "carbohidratos_g": 50,
+          "grasas_g": 16
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin pescado."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

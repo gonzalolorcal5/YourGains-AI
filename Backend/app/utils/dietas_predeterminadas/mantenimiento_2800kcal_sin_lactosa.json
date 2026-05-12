@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_2800_sin_lactosa",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 2800,
+    "restriccion": "sin_lactosa",
+    "macros": {
+      "proteinas_g": 210,
+      "carbohidratos_g": 280,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Avena",
+            "cantidad": "60g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "151g"
+          },
+          {
+            "nombre": "Espinacas baby",
+            "cantidad": "933g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 70,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de arroz",
+            "cantidad": "36g"
+          },
+          {
+            "nombre": "Crema de cacahuete",
+            "cantidad": "23g"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "156g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 42,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Macarrones",
+            "cantidad": "78g"
+          },
+          {
+            "nombre": "Carne picada de pollo",
+            "cantidad": "182g"
+          },
+          {
+            "nombre": "Champiñones",
+            "cantidad": "1260g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 63,
+          "carbohidratos_g": 84,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Pan",
+            "cantidad": "37g"
+          },
+          {
+            "nombre": "Queso en lonchas sin lactosa",
+            "cantidad": "55g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 28,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Pechuga de pollo",
+            "cantidad": "111g"
+          },
+          {
+            "nombre": "Ensalada verde",
+            "cantidad": "933g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "20g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 42,
+          "carbohidratos_g": 56,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin lactosa."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Text, Float
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Text, Float, Date
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.database import Base
@@ -37,6 +37,17 @@ class Usuario(Base):
     
     # Lock mechanism para evitar generaciones duplicadas de plan
     is_generating_plan = Column(Boolean, default=False, nullable=False)
+
+    racha_actual = Column(Integer, default=0, nullable=False)
+    mejor_racha = Column(Integer, default=0, nullable=False)
+    ultima_sesion_fecha = Column(Date, nullable=True)
+
+    # Control de emails automáticos de retención
+    fecha_registro = Column(DateTime, nullable=True, default=datetime.utcnow)
+    email_day1_sent = Column(Boolean, default=False, nullable=False)
+    email_day3_sent = Column(Boolean, default=False, nullable=False)
+    email_day7_sent = Column(Boolean, default=False, nullable=False)
+    email_day18_sent = Column(Boolean, default=False, nullable=False)
 
     plan = relationship("Plan", back_populates="usuario", uselist=False)
     body_scans = relationship("BodyScan", backref="usuario", cascade="all, delete-orphan")

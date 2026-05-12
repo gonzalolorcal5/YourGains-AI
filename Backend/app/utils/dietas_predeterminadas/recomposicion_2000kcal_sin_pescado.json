@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_2000_sin_pescado",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 2000,
+    "restriccion": "sin_pescado",
+    "macros": {
+      "proteinas_g": 150,
+      "carbohidratos_g": 200,
+      "grasas_g": 66
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Porridge de avena",
+            "cantidad": "43g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "366ml"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "28g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 37,
+          "carbohidratos_g": 50,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 300,
+        "alimentos": [
+          {
+            "nombre": "Crema de arroz",
+            "cantidad": "28g"
+          },
+          {
+            "nombre": "Proteína Whey aislada",
+            "cantidad": "25g"
+          },
+          {
+            "nombre": "Mermelada",
+            "cantidad": "40g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 22,
+          "carbohidratos_g": 30,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 600,
+        "alimentos": [
+          {
+            "nombre": "Pasta de lentejas rojas",
+            "cantidad": "56g"
+          },
+          {
+            "nombre": "Tiras de pavo",
+            "cantidad": "240g"
+          },
+          {
+            "nombre": "Ajo y perejil",
+            "cantidad": "400g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 45,
+          "carbohidratos_g": 60,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 200,
+        "alimentos": [
+          {
+            "nombre": "Leche con cacao puro",
+            "cantidad": "146ml"
+          },
+          {
+            "nombre": "Pan tostado",
+            "cantidad": "26g"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "11g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 15,
+          "carbohidratos_g": 20,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Filete de ternera fino",
+            "cantidad": "66g"
+          },
+          {
+            "nombre": "Boniato frito (Airfryer)",
+            "cantidad": "153g"
+          },
+          {
+            "nombre": "Pimientos de Padrón",
+            "cantidad": "266g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 40,
+          "grasas_g": 13
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin pescado."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

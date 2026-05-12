@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_3600_sin_lactosa",
+    "objetivo": "volumen",
+    "kcal_objetivo": 3600,
+    "restriccion": "sin_lactosa",
+    "macros": {
+      "proteinas_g": 225,
+      "carbohidratos_g": 450,
+      "grasas_g": 100
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 900,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de avena",
+            "cantidad": "120g"
+          },
+          {
+            "nombre": "Sirope sin azúcar",
+            "cantidad": "300g"
+          },
+          {
+            "nombre": "Fresas",
+            "cantidad": "900g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 56,
+          "carbohidratos_g": 112,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Yogur sin lactosa",
+            "cantidad": "180g"
+          },
+          {
+            "nombre": "Avena",
+            "cantidad": "46g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "54g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 33,
+          "carbohidratos_g": 67,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 1080,
+        "alimentos": [
+          {
+            "nombre": "Alubias blancas",
+            "cantidad": "252g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "234g"
+          },
+          {
+            "nombre": "Espinacas",
+            "cantidad": "1440g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 67,
+          "carbohidratos_g": 135,
+          "grasas_g": 30
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Puding de chía (Proteína + Chía + Leche)",
+            "cantidad": "120ml"
+          },
+          {
+            "nombre": "Fresas",
+            "cantidad": "360g"
+          },
+          {
+            "nombre": "Sirope cero",
+            "cantidad": "120g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 22,
+          "carbohidratos_g": 45,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 720,
+        "alimentos": [
+          {
+            "nombre": "Bacalao",
+            "cantidad": "288g"
+          },
+          {
+            "nombre": "Pimientos asados",
+            "cantidad": "720g"
+          },
+          {
+            "nombre": "Pan integral",
+            "cantidad": "96g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 45,
+          "carbohidratos_g": 90,
+          "grasas_g": 20
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin lactosa."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

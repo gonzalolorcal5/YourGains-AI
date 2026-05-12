@@ -1,0 +1,228 @@
+[
+  {
+    "id": "1d_sub30_v1",
+    "titulo": "Full Body Express A",
+    "dias_semana": 1,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Full Body Express",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Press banca",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Remo con mancuerna",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Press militar de pie",
+            "series": 2,
+            "repeticiones": "12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Plancha",
+            "series": 3,
+            "repeticiones": "30s",
+            "descanso": "30s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Descansa máximo 45 segundos entre series para mantener el ritmo.",
+      "Prioriza la técnica sobre el peso.",
+      "Calienta 3-5 min con movilidad articular antes de empezar."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "1d_sub30_v2",
+    "titulo": "Full Body Express B",
+    "dias_semana": 1,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Full Body Express",
+        "ejercicios": [
+          {
+            "nombre": "Peso muerto rumano",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Fondos en paralelas",
+            "series": 3,
+            "repeticiones": "8-10",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Dominadas o jalón al pecho",
+            "series": 3,
+            "repeticiones": "8-10",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Zancadas alternas",
+            "series": 2,
+            "repeticiones": "10 por pierna",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Elevaciones laterales",
+            "series": 2,
+            "repeticiones": "15",
+            "descanso": "30s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Superset opcional entre fondos y jalón para ahorrar tiempo.",
+      "El peso muerto rumano es clave: espalda neutra siempre.",
+      "Si falla la técnica, reduce el peso."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "1d_sub30_v3",
+    "titulo": "Full Body Express C - Circuito",
+    "dias_semana": 1,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Circuito Full Body",
+        "ejercicios": [
+          {
+            "nombre": "Goblet squat",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "40s"
+          },
+          {
+            "nombre": "Press inclinado con mancuernas",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "40s"
+          },
+          {
+            "nombre": "Remo en polea baja",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "40s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "40s"
+          },
+          {
+            "nombre": "Curl de bíceps",
+            "series": 2,
+            "repeticiones": "12",
+            "descanso": "30s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Realiza los ejercicios en circuito si quieres maximizar el tiempo.",
+      "El goblet squat es ideal para trabajar cuádriceps y core simultáneamente.",
+      "Hidratación: bebe agua entre cada ronda."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "1d_sub30_v4",
+    "titulo": "Full Body Express D - Compound Only",
+    "dias_semana": 1,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Solo Compuestos",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 4,
+            "repeticiones": "8",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press banca agarre ancho",
+            "series": 4,
+            "repeticiones": "8",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 3,
+            "repeticiones": "6-8",
+            "descanso": "60s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Solo 3 ejercicios compuestos maximizan el estímulo en poco tiempo.",
+      "Descansa exactamente 60s para mantener la sesión bajo 30 min.",
+      "Incrementa 2.5 kg cada semana que completes todas las series."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "1d_sub30_v5",
+    "titulo": "Full Body Express E - Supersets",
+    "dias_semana": 1,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Supersets Full Body",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla + Press militar (superset)",
+            "series": 3,
+            "repeticiones": "10+10",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Peso muerto rumano + Remo con barra (superset)",
+            "series": 3,
+            "repeticiones": "10+10",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Fondos + Curl bíceps (superset)",
+            "series": 3,
+            "repeticiones": "10+12",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Los supersets agonista-antagonista permiten entrenar todo el cuerpo en 20-25 min.",
+      "No descanses entre los dos ejercicios del superset, solo al terminar el par.",
+      "Ideal para usuarios con tiempo muy limitado."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  }
+]

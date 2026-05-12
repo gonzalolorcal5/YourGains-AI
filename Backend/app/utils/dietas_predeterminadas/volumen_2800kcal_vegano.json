@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_2800_vegano",
+    "objetivo": "volumen",
+    "kcal_objetivo": 2800,
+    "restriccion": "vegano",
+    "macros": {
+      "proteinas_g": 175,
+      "carbohidratos_g": 350,
+      "grasas_g": 77
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Avena",
+            "cantidad": "60g"
+          },
+          {
+            "nombre": "Bebida de soja",
+            "cantidad": "513ml"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "261g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 43,
+          "carbohidratos_g": 87,
+          "grasas_g": 19
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Dátiles",
+            "cantidad": "49g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "22g"
+          },
+          {
+            "nombre": "Batido de proteínas",
+            "cantidad": "35g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 26,
+          "carbohidratos_g": 52,
+          "grasas_g": 11
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Boniato al horno",
+            "cantidad": "322g"
+          },
+          {
+            "nombre": "Tempeh asado",
+            "cantidad": "140g"
+          },
+          {
+            "nombre": "Espárragos trigueros",
+            "cantidad": "1260g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 105,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Hummus",
+            "cantidad": "55g"
+          },
+          {
+            "nombre": "Palitos de zanahoria",
+            "cantidad": "223g"
+          },
+          {
+            "nombre": "Lonchas de pavo vegano",
+            "cantidad": "83g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 17,
+          "carbohidratos_g": 35,
+          "grasas_g": 7
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Hamburguesa vegetal",
+            "cantidad": "130g"
+          },
+          {
+            "nombre": "Pan de hamburguesa",
+            "cantidad": "65g"
+          },
+          {
+            "nombre": "Tomate y lechuga",
+            "cantidad": "746g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 35,
+          "carbohidratos_g": 70,
+          "grasas_g": 15
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_1800_ninguna",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 1800,
+    "restriccion": "ninguna",
+    "macros": {
+      "proteinas_g": 135,
+      "carbohidratos_g": 180,
+      "grasas_g": 60
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 450,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "60g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "135g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "16g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 33,
+          "carbohidratos_g": 45,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 270,
+        "alimentos": [
+          {
+            "nombre": "Yogur griego",
+            "cantidad": "90g"
+          },
+          {
+            "nombre": "Avena",
+            "cantidad": "23g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "27g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 20,
+          "carbohidratos_g": 27,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Garbanzos",
+            "cantidad": "108g"
+          },
+          {
+            "nombre": "Atún al natural",
+            "cantidad": "162g"
+          },
+          {
+            "nombre": "Tomate triturado",
+            "cantidad": "360g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 54,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 180,
+        "alimentos": [
+          {
+            "nombre": "Hummus",
+            "cantidad": "36g"
+          },
+          {
+            "nombre": "Palitos de zanahoria",
+            "cantidad": "144g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "54g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 13,
+          "carbohidratos_g": 18,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Salmón a la plancha",
+            "cantidad": "60g"
+          },
+          {
+            "nombre": "Patata asada",
+            "cantidad": "139g"
+          },
+          {
+            "nombre": "Espárragos",
+            "cantidad": "540g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 36,
+          "grasas_g": 12
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Ninguna."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

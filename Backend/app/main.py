@@ -9,6 +9,7 @@ from fastapi.responses import RedirectResponse, FileResponse, JSONResponse
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+from apscheduler.schedulers.background import BackgroundScheduler
 
 # Routers "seguros" (no fallan al importar)
 from app.routes import (
@@ -487,3 +488,39 @@ async def _print_routes():
         print(f"[STARTUP] login.html existe: {login_path.exists()}")
     except Exception as e:
         print("[ROUTES-ERROR]", e)
+
+@app.on_event("startup")
+async def _start_email_scheduler():
+    """Scheduler diario para emails automáticos de retención."""
+    try:
+        from app.services.email_service import check_and_send_emails
+        from app.database import SessionLocal
+
+        scheduler = BackgroundScheduler(timezone="Europe/Madrid")
+
+        def _run_email_check():
+            db = SessionLocal()
+            try:
+                print("📧 [SCHEDULER] Ejecutando check de emails...")
+                check_and_send_emails(db)
+            except Exception as e:
+                print(f"❌ [SCHEDULER] Error en check de emails: {e}")
+            finally:
+                db.close()
+
+        # Ejecutar cada día a las 9:00 hora española
+        scheduler.add_job(
+            _run_email_check,
+            'cron',
+            hour=9,
+            minute=0,
+            id='email_daily_check',
+            replace_existing=True
+        )
+
+        scheduler.start()
+        app.state.email_scheduler = scheduler
+        print("✅ [SCHEDULER] Email scheduler iniciado — se ejecuta a las 9:00 diariamente")
+
+    except Exception as e:
+        print(f"⚠️ [SCHEDULER] No se pudo iniciar el scheduler de emails: {e}")

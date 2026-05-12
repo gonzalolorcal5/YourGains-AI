@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2500_ninguna",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2500,
+    "restriccion": "ninguna",
+    "macros": {
+      "proteinas_g": 218,
+      "carbohidratos_g": 218,
+      "grasas_g": 83
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Pan de espelta",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Huevo a la plancha",
+            "cantidad": "135g"
+          },
+          {
+            "nombre": "Aguacate",
+            "cantidad": "125g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 54,
+          "carbohidratos_g": 54,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Batido de proteínas",
+            "cantidad": "31g"
+          },
+          {
+            "nombre": "Mandarinas",
+            "cantidad": "250g"
+          },
+          {
+            "nombre": "Anacardos",
+            "cantidad": "21g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 32,
+          "carbohidratos_g": 32,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Arroz basmati",
+            "cantidad": "70g"
+          },
+          {
+            "nombre": "Curry de pollo",
+            "cantidad": "175g"
+          },
+          {
+            "nombre": "Leche de coco light",
+            "cantidad": "375ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 65,
+          "carbohidratos_g": 65,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Bocadillo pequeño de atún",
+            "cantidad": "41g"
+          },
+          {
+            "nombre": "Lechuga",
+            "cantidad": "416g"
+          },
+          {
+            "nombre": "Aceitunas",
+            "cantidad": "58g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 21,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Salmón a la plancha",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Patata asada",
+            "cantidad": "193g"
+          },
+          {
+            "nombre": "Espárragos",
+            "cantidad": "749g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 43,
+          "carbohidratos_g": 43,
+          "grasas_g": 16
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Ninguna."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

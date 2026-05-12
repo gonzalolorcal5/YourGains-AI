@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_1800_sin_gluten",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 1800,
+    "restriccion": "sin_gluten",
+    "macros": {
+      "proteinas_g": 135,
+      "carbohidratos_g": 180,
+      "grasas_g": 60
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 450,
+        "alimentos": [
+          {
+            "nombre": "Copos de avena sin gluten",
+            "cantidad": "39g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "330ml"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "168g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 33,
+          "carbohidratos_g": 45,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 270,
+        "alimentos": [
+          {
+            "nombre": "Yogur griego",
+            "cantidad": "90g"
+          },
+          {
+            "nombre": "Copos de avena sin gluten",
+            "cantidad": "23g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "27g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 20,
+          "carbohidratos_g": 27,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Arroz integral",
+            "cantidad": "50g"
+          },
+          {
+            "nombre": "Lomo de cerdo magro",
+            "cantidad": "126g"
+          },
+          {
+            "nombre": "Pimientos",
+            "cantidad": "630g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 54,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 180,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de maíz",
+            "cantidad": "15g"
+          },
+          {
+            "nombre": "Guacamole",
+            "cantidad": "36g"
+          },
+          {
+            "nombre": "Pechuga de pollo (fiambre)",
+            "cantidad": "54g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 13,
+          "carbohidratos_g": 18,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Revuelto de gulas",
+            "cantidad": "78g"
+          },
+          {
+            "nombre": "Gambas",
+            "cantidad": "144g"
+          },
+          {
+            "nombre": "Pan tostado sin gluten",
+            "cantidad": "48g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 36,
+          "grasas_g": 12
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin gluten."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

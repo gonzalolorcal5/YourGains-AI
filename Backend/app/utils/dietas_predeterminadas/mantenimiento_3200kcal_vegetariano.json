@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_3200_vegetariano",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 3200,
+    "restriccion": "vegetariano",
+    "macros": {
+      "proteinas_g": 240,
+      "carbohidratos_g": 320,
+      "grasas_g": 106
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 800,
+        "alimentos": [
+          {
+            "nombre": "Yogur griego natural",
+            "cantidad": "266g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "42g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "80g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 60,
+          "carbohidratos_g": 80,
+          "grasas_g": 26
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Avena cocida",
+            "cantidad": "41g"
+          },
+          {
+            "nombre": "Pasas",
+            "cantidad": "48g"
+          },
+          {
+            "nombre": "Leche desnatada",
+            "cantidad": "400ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 48,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 960,
+        "alimentos": [
+          {
+            "nombre": "Quinoa",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Tofu a la plancha",
+            "cantidad": "288g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "1920g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 72,
+          "carbohidratos_g": 96,
+          "grasas_g": 32
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de maíz",
+            "cantidad": "27g"
+          },
+          {
+            "nombre": "Guacamole",
+            "cantidad": "64g"
+          },
+          {
+            "nombre": "Queso en lonchas",
+            "cantidad": "96g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 32,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 640,
+        "alimentos": [
+          {
+            "nombre": "Huevos duros",
+            "cantidad": "128g"
+          },
+          {
+            "nombre": "Ensalada verde",
+            "cantidad": "1066g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "23g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 48,
+          "carbohidratos_g": 64,
+          "grasas_g": 21
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegetariano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

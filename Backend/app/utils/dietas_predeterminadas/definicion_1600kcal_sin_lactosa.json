@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_1600_sin_lactosa",
+    "objetivo": "definicion",
+    "kcal_objetivo": 1600,
+    "restriccion": "sin_lactosa",
+    "macros": {
+      "proteinas_g": 140,
+      "carbohidratos_g": 140,
+      "grasas_g": 53
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Leche sin lactosa",
+            "cantidad": "293ml"
+          },
+          {
+            "nombre": "Cereales integrales",
+            "cantidad": "33g"
+          },
+          {
+            "nombre": "Kiwi",
+            "cantidad": "213g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 35,
+          "carbohidratos_g": 35,
+          "grasas_g": 13
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 240,
+        "alimentos": [
+          {
+            "nombre": "Gominolas deportivas o ositos",
+            "cantidad": "24g"
+          },
+          {
+            "nombre": "Proteína aislada (Isolate) o Vegetal",
+            "cantidad": "20g"
+          },
+          {
+            "nombre": "Pre-entreno líquido",
+            "cantidad": "240g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 21,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de trigo (Fajitas)",
+            "cantidad": "56g"
+          },
+          {
+            "nombre": "Tiras de pollo",
+            "cantidad": "96g"
+          },
+          {
+            "nombre": "Pimiento rojo y verde",
+            "cantidad": "560g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 42,
+          "carbohidratos_g": 42,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 160,
+        "alimentos": [
+          {
+            "nombre": "Huevos revueltos",
+            "cantidad": "34g"
+          },
+          {
+            "nombre": "Pan integral",
+            "cantidad": "21g"
+          },
+          {
+            "nombre": "Aguacate",
+            "cantidad": "32g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 14,
+          "carbohidratos_g": 14,
+          "grasas_g": 5
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Tortilla francesa",
+            "cantidad": "69g"
+          },
+          {
+            "nombre": "Queso tierno sin lactosa",
+            "cantidad": "32g"
+          },
+          {
+            "nombre": "Ensalada de canónigos",
+            "cantidad": "533g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 28,
+          "carbohidratos_g": 28,
+          "grasas_g": 10
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin lactosa."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

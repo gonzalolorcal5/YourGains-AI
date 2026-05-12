@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2500_sin_pescado",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2500,
+    "restriccion": "sin_pescado",
+    "macros": {
+      "proteinas_g": 218,
+      "carbohidratos_g": 218,
+      "grasas_g": 83
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Kéfir",
+            "cantidad": "312g"
+          },
+          {
+            "nombre": "Copos de maíz",
+            "cantidad": "52g"
+          },
+          {
+            "nombre": "Semillas de chía",
+            "cantidad": "41g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 54,
+          "carbohidratos_g": 54,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Manzana",
+            "cantidad": "237g"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "21g"
+          },
+          {
+            "nombre": "Café",
+            "cantidad": "625g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 32,
+          "carbohidratos_g": 32,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Cous cous",
+            "cantidad": "65g"
+          },
+          {
+            "nombre": "Pechuga de pollo",
+            "cantidad": "150g"
+          },
+          {
+            "nombre": "Berenjena asada",
+            "cantidad": "1000g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 65,
+          "carbohidratos_g": 65,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "33g"
+          },
+          {
+            "nombre": "Jamón serrano magro",
+            "cantidad": "49g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "416g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 21,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "150g"
+          },
+          {
+            "nombre": "Crema de calabaza",
+            "cantidad": "416g"
+          },
+          {
+            "nombre": "Picatostes integrales",
+            "cantidad": "41g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 43,
+          "carbohidratos_g": 43,
+          "grasas_g": 16
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin pescado."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2200_sin_frutos_secos",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2200,
+    "restriccion": "sin_frutos_secos",
+    "macros": {
+      "proteinas_g": 192,
+      "carbohidratos_g": 192,
+      "grasas_g": 73
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 550,
+        "alimentos": [
+          {
+            "nombre": "Avena",
+            "cantidad": "47g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "403ml"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "205g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 48,
+          "carbohidratos_g": 48,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 330,
+        "alimentos": [
+          {
+            "nombre": "Batido de proteínas",
+            "cantidad": "27g"
+          },
+          {
+            "nombre": "Mandarinas",
+            "cantidad": "220g"
+          },
+          {
+            "nombre": "Pipas de girasol",
+            "cantidad": "18g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 28,
+          "carbohidratos_g": 28,
+          "grasas_g": 11
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 660,
+        "alimentos": [
+          {
+            "nombre": "Fideos de arroz",
+            "cantidad": "59g"
+          },
+          {
+            "nombre": "Tiras de ternera",
+            "cantidad": "110g"
+          },
+          {
+            "nombre": "Cebolla y zanahoria salteadas",
+            "cantidad": "550g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 57,
+          "carbohidratos_g": 57,
+          "grasas_g": 22
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 220,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de maíz",
+            "cantidad": "19g"
+          },
+          {
+            "nombre": "Guacamole",
+            "cantidad": "44g"
+          },
+          {
+            "nombre": "Pechuga de pollo (fiambre)",
+            "cantidad": "66g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 19,
+          "carbohidratos_g": 19,
+          "grasas_g": 7
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 440,
+        "alimentos": [
+          {
+            "nombre": "Dorada al horno",
+            "cantidad": "146g"
+          },
+          {
+            "nombre": "Patata panadera",
+            "cantidad": "170g"
+          },
+          {
+            "nombre": "Champiñones al ajillo",
+            "cantidad": "293g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 38,
+          "carbohidratos_g": 38,
+          "grasas_g": 14
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin frutos secos."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

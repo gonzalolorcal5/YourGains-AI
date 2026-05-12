@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_2800_sin_frutos_secos",
+    "objetivo": "volumen",
+    "kcal_objetivo": 2800,
+    "restriccion": "sin_frutos_secos",
+    "macros": {
+      "proteinas_g": 175,
+      "carbohidratos_g": 350,
+      "grasas_g": 77
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "210g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "25g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 43,
+          "carbohidratos_g": 87,
+          "grasas_g": 19
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Avena cocida",
+            "cantidad": "36g"
+          },
+          {
+            "nombre": "Pasas",
+            "cantidad": "42g"
+          },
+          {
+            "nombre": "Leche desnatada",
+            "cantidad": "350ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 26,
+          "carbohidratos_g": 52,
+          "grasas_g": 11
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Quinoa",
+            "cantidad": "72g"
+          },
+          {
+            "nombre": "Pavo a la plancha",
+            "cantidad": "251g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "1680g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 105,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Bocadillo pequeño de atún",
+            "cantidad": "46g"
+          },
+          {
+            "nombre": "Lechuga",
+            "cantidad": "466g"
+          },
+          {
+            "nombre": "Aceitunas",
+            "cantidad": "65g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 17,
+          "carbohidratos_g": 35,
+          "grasas_g": 7
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Queso cottage",
+            "cantidad": "186g"
+          },
+          {
+            "nombre": "Salmón ahumado",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Tostadas integrales",
+            "cantidad": "46g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 35,
+          "carbohidratos_g": 70,
+          "grasas_g": 15
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin frutos secos."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

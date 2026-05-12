@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_2500_sin_pescado",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 2500,
+    "restriccion": "sin_pescado",
+    "macros": {
+      "proteinas_g": 187,
+      "carbohidratos_g": 250,
+      "grasas_g": 83
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "187g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "22g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 46,
+          "carbohidratos_g": 62,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Plátano maduro",
+            "cantidad": "140g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "37g"
+          },
+          {
+            "nombre": "Café solo",
+            "cantidad": "625g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 28,
+          "carbohidratos_g": 37,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Arroz integral",
+            "cantidad": "70g"
+          },
+          {
+            "nombre": "Lomo de cerdo magro",
+            "cantidad": "175g"
+          },
+          {
+            "nombre": "Pimientos",
+            "cantidad": "875g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 56,
+          "carbohidratos_g": 75,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Queso cottage",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Mermelada light",
+            "cantidad": "49g"
+          },
+          {
+            "nombre": "Tostadas integrales",
+            "cantidad": "20g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 18,
+          "carbohidratos_g": 25,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Hamburguesa de pollo casera",
+            "cantidad": "116g"
+          },
+          {
+            "nombre": "Pan de hamburguesa",
+            "cantidad": "58g"
+          },
+          {
+            "nombre": "Tomate y lechuga",
+            "cantidad": "666g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 37,
+          "carbohidratos_g": 50,
+          "grasas_g": 16
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin pescado."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

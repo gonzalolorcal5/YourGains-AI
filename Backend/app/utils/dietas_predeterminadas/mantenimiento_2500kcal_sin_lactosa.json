@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_2500_sin_lactosa",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 2500,
+    "restriccion": "sin_lactosa",
+    "macros": {
+      "proteinas_g": 187,
+      "carbohidratos_g": 250,
+      "grasas_g": 83
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Proteína aislada (Isolate) o Vegetal",
+            "cantidad": "52g"
+          },
+          {
+            "nombre": "Bebida de almendras",
+            "cantidad": "833ml"
+          },
+          {
+            "nombre": "Crema de cacahuete",
+            "cantidad": "35g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 46,
+          "carbohidratos_g": 62,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de arroz",
+            "cantidad": "32g"
+          },
+          {
+            "nombre": "Crema de cacahuete",
+            "cantidad": "21g"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "140g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 28,
+          "carbohidratos_g": 37,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Pasta de lentejas rojas",
+            "cantidad": "70g"
+          },
+          {
+            "nombre": "Gambas peladas",
+            "cantidad": "300g"
+          },
+          {
+            "nombre": "Ajo y perejil",
+            "cantidad": "500g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 56,
+          "carbohidratos_g": 75,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Yogur de soja",
+            "cantidad": "99g"
+          },
+          {
+            "nombre": "Granola sin azúcar",
+            "cantidad": "20g"
+          },
+          {
+            "nombre": "Frambuesas",
+            "cantidad": "150g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 18,
+          "carbohidratos_g": 25,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Merluza",
+            "cantidad": "183g"
+          },
+          {
+            "nombre": "Boniato",
+            "cantidad": "191g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "833g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 37,
+          "carbohidratos_g": 50,
+          "grasas_g": 16
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin lactosa."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

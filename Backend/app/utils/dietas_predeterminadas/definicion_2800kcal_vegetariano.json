@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2800_vegetariano",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2800,
+    "restriccion": "vegetariano",
+    "macros": {
+      "proteinas_g": 244,
+      "carbohidratos_g": 244,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Queso havarti",
+            "cantidad": "210g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "25g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 61,
+          "carbohidratos_g": 61,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de arroz",
+            "cantidad": "36g"
+          },
+          {
+            "nombre": "Crema de cacahuete",
+            "cantidad": "23g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "42g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 36,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Pasta de lentejas rojas",
+            "cantidad": "78g"
+          },
+          {
+            "nombre": "Huevo duro",
+            "cantidad": "336g"
+          },
+          {
+            "nombre": "Ajo y perejil",
+            "cantidad": "560g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 73,
+          "carbohidratos_g": 73,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Yogur de proteínas",
+            "cantidad": "111g"
+          },
+          {
+            "nombre": "Granola sin azúcar",
+            "cantidad": "23g"
+          },
+          {
+            "nombre": "Frambuesas",
+            "cantidad": "167g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 24,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Hamburguesa vegetal",
+            "cantidad": "130g"
+          },
+          {
+            "nombre": "Quinoa",
+            "cantidad": "48g"
+          },
+          {
+            "nombre": "Ensalada de algas wakame",
+            "cantidad": "373g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 49,
+          "carbohidratos_g": 49,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegetariano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

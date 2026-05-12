@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_1800_sin_pescado",
+    "objetivo": "definicion",
+    "kcal_objetivo": 1800,
+    "restriccion": "sin_pescado",
+    "macros": {
+      "proteinas_g": 157,
+      "carbohidratos_g": 157,
+      "grasas_g": 60
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 450,
+        "alimentos": [
+          {
+            "nombre": "Harina de avena",
+            "cantidad": "37g"
+          },
+          {
+            "nombre": "Claras de huevo",
+            "cantidad": "300g"
+          },
+          {
+            "nombre": "Arándanos",
+            "cantidad": "262g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 39,
+          "carbohidratos_g": 39,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 270,
+        "alimentos": [
+          {
+            "nombre": "Crema de arroz",
+            "cantidad": "25g"
+          },
+          {
+            "nombre": "Proteína Whey aislada",
+            "cantidad": "22g"
+          },
+          {
+            "nombre": "Mermelada",
+            "cantidad": "36g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 23,
+          "carbohidratos_g": 23,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Macarrones",
+            "cantidad": "50g"
+          },
+          {
+            "nombre": "Carne picada de pollo",
+            "cantidad": "117g"
+          },
+          {
+            "nombre": "Champiñones",
+            "cantidad": "810g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 47,
+          "carbohidratos_g": 47,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 180,
+        "alimentos": [
+          {
+            "nombre": "Queso fresco batido",
+            "cantidad": "84g"
+          },
+          {
+            "nombre": "Avena",
+            "cantidad": "15g"
+          },
+          {
+            "nombre": "Chocolate negro 85%",
+            "cantidad": "10g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 15,
+          "carbohidratos_g": 15,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Sopa de fideos",
+            "cantidad": "180g"
+          },
+          {
+            "nombre": "Pollo desmenuzado",
+            "cantidad": "72g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "78g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 31,
+          "grasas_g": 12
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin pescado."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

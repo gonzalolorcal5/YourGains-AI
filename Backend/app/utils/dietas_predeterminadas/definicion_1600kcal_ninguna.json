@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_1600_ninguna",
+    "objetivo": "definicion",
+    "kcal_objetivo": 1600,
+    "restriccion": "ninguna",
+    "macros": {
+      "proteinas_g": 140,
+      "carbohidratos_g": 140,
+      "grasas_g": 53
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Yogur griego natural",
+            "cantidad": "133g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "21g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "40g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 35,
+          "carbohidratos_g": 35,
+          "grasas_g": 13
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 240,
+        "alimentos": [
+          {
+            "nombre": "Batido de proteínas",
+            "cantidad": "20g"
+          },
+          {
+            "nombre": "Mandarinas",
+            "cantidad": "160g"
+          },
+          {
+            "nombre": "Anacardos",
+            "cantidad": "13g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 21,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Pasta integral",
+            "cantidad": "112g"
+          },
+          {
+            "nombre": "Ternera magra",
+            "cantidad": "64g"
+          },
+          {
+            "nombre": "Ensalada mixta",
+            "cantidad": "800g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 42,
+          "carbohidratos_g": 42,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 160,
+        "alimentos": [
+          {
+            "nombre": "Bocadillo pequeño de atún",
+            "cantidad": "26g"
+          },
+          {
+            "nombre": "Lechuga",
+            "cantidad": "266g"
+          },
+          {
+            "nombre": "Aceitunas",
+            "cantidad": "37g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 14,
+          "carbohidratos_g": 14,
+          "grasas_g": 5
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Merluza",
+            "cantidad": "117g"
+          },
+          {
+            "nombre": "Boniato",
+            "cantidad": "122g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "533g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 28,
+          "carbohidratos_g": 28,
+          "grasas_g": 10
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Ninguna."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

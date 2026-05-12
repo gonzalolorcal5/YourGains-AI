@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_3200_vegano",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 3200,
+    "restriccion": "vegano",
+    "macros": {
+      "proteinas_g": 240,
+      "carbohidratos_g": 320,
+      "grasas_g": 106
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 800,
+        "alimentos": [
+          {
+            "nombre": "Tofu sedoso",
+            "cantidad": "373g"
+          },
+          {
+            "nombre": "Almendras",
+            "cantidad": "42g"
+          },
+          {
+            "nombre": "Manzana",
+            "cantidad": "506g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 60,
+          "carbohidratos_g": 80,
+          "grasas_g": 26
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Manzana",
+            "cantidad": "304g"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "27g"
+          },
+          {
+            "nombre": "Café",
+            "cantidad": "800g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 48,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 960,
+        "alimentos": [
+          {
+            "nombre": "Lentejas cocidas",
+            "cantidad": "275g"
+          },
+          {
+            "nombre": "Patata cocida",
+            "cantidad": "371g"
+          },
+          {
+            "nombre": "Zanahoria",
+            "cantidad": "768g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 72,
+          "carbohidratos_g": 96,
+          "grasas_g": 32
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "42g"
+          },
+          {
+            "nombre": "Lonchas veganas",
+            "cantidad": "64g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "533g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 32,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 640,
+        "alimentos": [
+          {
+            "nombre": "Tofu al horno",
+            "cantidad": "192g"
+          },
+          {
+            "nombre": "Puré de patata",
+            "cantidad": "247g"
+          },
+          {
+            "nombre": "Judías verdes",
+            "cantidad": "640g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 48,
+          "carbohidratos_g": 64,
+          "grasas_g": 21
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

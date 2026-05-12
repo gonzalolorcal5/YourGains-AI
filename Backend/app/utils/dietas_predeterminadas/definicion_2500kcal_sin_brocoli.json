@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2500_sin_brocoli",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2500,
+    "restriccion": "sin_brocoli",
+    "macros": {
+      "proteinas_g": 218,
+      "carbohidratos_g": 218,
+      "grasas_g": 83
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Huevos",
+            "cantidad": "135g"
+          },
+          {
+            "nombre": "Jamón cocido",
+            "cantidad": "187g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "1041g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 54,
+          "carbohidratos_g": 54,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Barrita de proteínas (baja en azúcar)",
+            "cantidad": "37g"
+          },
+          {
+            "nombre": "Pera",
+            "cantidad": "212g"
+          },
+          {
+            "nombre": "Nueces de macadamia",
+            "cantidad": "18g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 32,
+          "carbohidratos_g": 32,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Ensalada de pasta",
+            "cantidad": "70g"
+          },
+          {
+            "nombre": "Atún y huevo duro",
+            "cantidad": "175g"
+          },
+          {
+            "nombre": "Aceitunas y tomate",
+            "cantidad": "500g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 65,
+          "carbohidratos_g": 65,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Leche con cacao puro",
+            "cantidad": "183ml"
+          },
+          {
+            "nombre": "Pan tostado",
+            "cantidad": "33g"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "14g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 21,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Dorada al horno",
+            "cantidad": "166g"
+          },
+          {
+            "nombre": "Patata panadera",
+            "cantidad": "193g"
+          },
+          {
+            "nombre": "Champiñones al ajillo",
+            "cantidad": "333g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 43,
+          "carbohidratos_g": 43,
+          "grasas_g": 16
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin brocoli."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

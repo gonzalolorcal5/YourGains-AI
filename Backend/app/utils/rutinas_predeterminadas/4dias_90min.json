@@ -1,0 +1,3239 @@
+[
+  {
+    "id": "4d_90min_v1",
+    "titulo": "Upper/Lower 4 días 90min A - Volumen Máximo",
+    "dias_semana": 4,
+    "duracion": "75-90",
+    "dias": [
+      {
+        "dia": "Día 1 - Tren Superior A",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press inclinado con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Aperturas en cable cruzado",
+            "series": 3,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Dominadas agarre ancho",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo en polea baja agarre neutro",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones laterales mancuernas",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión tríceps en polea",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Tren Inferior A",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Extensión de cuádriceps",
+            "series": 4,
+            "repeticiones": "15-20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Peso muerto rumano",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Curl femoral tumbado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 5,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos de pie",
+            "series": 5,
+            "repeticiones": "15-20",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Tren Superior B",
+        "ejercicios": [
+          {
+            "nombre": "Press banca inclinado mancuernas",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press banca declinado",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Fondos en paralelas lastrados",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre supino",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Remo en máquina agarre neutro",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press Arnold sentado",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones laterales cable",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl inclinado mancuernas",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión tríceps sobre cabeza mancuerna",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 4 - Tren Inferior B",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla búlgara",
+            "series": 4,
+            "repeticiones": "10 por pierna",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 5,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Peso muerto sumo",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Prensa de piernas pie alto",
+            "series": 4,
+            "repeticiones": "15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Curl femoral sentado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Patada de glúteo en cable",
+            "series": 3,
+            "repeticiones": "15 por pierna",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos sentado",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Upper/Lower 4 días con 90 min: el volumen más alto posible para cada grupo muscular.",
+      "Superior A y B usan ejercicios completamente distintos para máxima variabilidad.",
+      "Inferior A con bilateral (sentadilla), inferior B con unilateral (búlgara) y énfasis glúteo."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "4d_90min_v2",
+    "titulo": "PPL + Upper 90min A",
+    "dias_semana": 4,
+    "duracion": "75-90",
+    "dias": [
+      {
+        "dia": "Día 1 - Empuje Completo",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press inclinado con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press banca declinado mancuernas",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Aperturas en cable",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones laterales mancuernas",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Fondos lastrados",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Extensión tríceps sobre cabeza",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Tirón Completo",
+        "ejercicios": [
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 5,
+            "repeticiones": "5-6",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Dominadas agarre ancho",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre estrecho",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Remo en polea baja agarre neutro",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl inclinado mancuernas",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl martillo",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Piernas Completas",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 5,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Peso muerto rumano",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Extensión cuádriceps",
+            "series": 4,
+            "repeticiones": "15-20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl femoral sentado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Abducción cadera en máquina",
+            "series": 3,
+            "repeticiones": "20",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos de pie",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 4 - Tren Superior Completo",
+        "ejercicios": [
+          {
+            "nombre": "Press banca inclinado mancuernas",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre supino",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press Arnold sentado",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Remo en máquina agarre neutro",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones laterales cable",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Pájaros posteriores",
+            "series": 4,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl de concentración",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press francés skullcrusher",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "PPL + día extra de tren superior: el mayor volumen total posible en 4 días.",
+      "Pecho, espalda y hombros reciben doble estímulo semanal.",
+      "El día 4 es el segundo estímulo de tren superior: ejercicios distintos al día 1 y 2."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "4d_90min_v3",
+    "titulo": "PHUL 90min (Power Hypertrophy Upper Lower)",
+    "dias_semana": 4,
+    "duracion": "75-90",
+    "dias": [
+      {
+        "dia": "Día 1 - Superior Fuerza",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 6,
+            "repeticiones": "4-6",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Remo con barra Pendlay",
+            "series": 6,
+            "repeticiones": "4-6",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 5,
+            "repeticiones": "5-6",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Dominadas lastradas",
+            "series": 5,
+            "repeticiones": "5-6",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 4,
+            "repeticiones": "8",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press francés skullcrusher",
+            "series": 4,
+            "repeticiones": "8",
+            "descanso": "90s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Inferior Fuerza",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 6,
+            "repeticiones": "4-6",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 5,
+            "repeticiones": "4-6",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 4,
+            "repeticiones": "8",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Zancadas con barra",
+            "series": 4,
+            "repeticiones": "8 por pierna",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Curl femoral tumbado",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos de pie",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Superior Hipertrofia",
+        "ejercicios": [
+          {
+            "nombre": "Press banca inclinado mancuernas",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Aperturas en cable",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press Arnold sentado",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre supino",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Remo en polea baja agarre neutro",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Elevaciones laterales cable",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl inclinado mancuernas",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión tríceps sobre cabeza",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 4 - Inferior Hipertrofia",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla búlgara",
+            "series": 4,
+            "repeticiones": "10 por pierna",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 5,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Extensión de cuádriceps",
+            "series": 5,
+            "repeticiones": "15-20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl femoral sentado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Peso muerto sumo",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Patada de glúteo en cable",
+            "series": 4,
+            "repeticiones": "15 por pierna",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos sentado",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "PHUL: el programa de 4 días más científicamente validado para ganar fuerza e hipertrofia.",
+      "2 días de fuerza (bajas reps, mucho peso) + 2 días de hipertrofia (rangos medios).",
+      "Con 90 min por sesión, el protocolo completo cabe perfectamente."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "4d_90min_v4",
+    "titulo": "Arnold Split 90min Completo",
+    "dias_semana": 4,
+    "duracion": "75-90",
+    "dias": [
+      {
+        "dia": "Día 1 - Pecho y Espalda A",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Dominadas agarre ancho",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press inclinado con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Aperturas con mancuernas",
+            "series": 3,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre estrecho",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Fondos en paralelas",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Hombros, Brazos y Piernas",
+        "ejercicios": [
+          {
+            "nombre": "Press Arnold sentado",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones laterales mancuernas",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Pájaros posteriores",
+            "series": 4,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl inclinado mancuernas",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión tríceps en polea",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos de pie",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Pecho y Espalda B",
+        "ejercicios": [
+          {
+            "nombre": "Press banca inclinado mancuernas",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre supino",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press banca declinado",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Remo en polea baja agarre neutro",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Aperturas en cable cruzado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Remo en máquina agarre neutro",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press francés skullcrusher",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl martillo",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 4 - Piernas Completas",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 5,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Peso muerto rumano",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Extensión cuádriceps",
+            "series": 4,
+            "repeticiones": "15-20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl femoral tumbado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Abducción cadera en máquina",
+            "series": 3,
+            "repeticiones": "20",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos sentado",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Arnold Split completo: pecho-espalda 2 veces, hombros-brazos y piernas 1 vez.",
+      "8 ejercicios por sesión con 90 min disponibles: máxima cobertura.",
+      "El split favorito de Schwarzenegger adaptado a 4 días intensos."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "4d_90min_v5",
+    "titulo": "Upper/Lower 4 días 90min B - Fuerza Total",
+    "dias_semana": 4,
+    "duracion": "75-90",
+    "dias": [
+      {
+        "dia": "Día 1 - Superior Fuerza A",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 6,
+            "repeticiones": "4-5",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Remo con barra Pendlay",
+            "series": 6,
+            "repeticiones": "4-5",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Dominadas lastradas",
+            "series": 5,
+            "repeticiones": "5-6",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 4,
+            "repeticiones": "8",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press francés skullcrusher",
+            "series": 4,
+            "repeticiones": "8",
+            "descanso": "75s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Inferior Fuerza A",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 6,
+            "repeticiones": "4-5",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 5,
+            "repeticiones": "4-5",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 4,
+            "repeticiones": "8",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Zancadas con barra",
+            "series": 4,
+            "repeticiones": "8 por pierna",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Curl femoral tumbado",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos de pie",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Superior Fuerza B",
+        "ejercicios": [
+          {
+            "nombre": "Press banca inclinado con barra",
+            "series": 5,
+            "repeticiones": "5-6",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Jalón al pecho agarre ancho",
+            "series": 5,
+            "repeticiones": "6-8",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Press Arnold sentado",
+            "series": 4,
+            "repeticiones": "6-8",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo en polea baja agarre neutro",
+            "series": 4,
+            "repeticiones": "8",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Curl martillo",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Extensión tríceps sobre cabeza",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "75s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 4 - Inferior Fuerza B",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla búlgara",
+            "series": 5,
+            "repeticiones": "8 por pierna",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Peso muerto sumo",
+            "series": 5,
+            "repeticiones": "5-6",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Curl femoral sentado",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos sentado",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "60s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Fuerza total en los 4 días: rangos bajos en todos los ejercicios principales.",
+      "Los descansos largos son obligatorios: no los recortes.",
+      "Progresión lineal en todos los compuestos: el objetivo es batir marcas."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "4d_90min_v6",
+    "titulo": "Upper/Lower 4 días 90min C - Hipertrofia Avanzada",
+    "dias_semana": 4,
+    "duracion": "75-90",
+    "dias": [
+      {
+        "dia": "Día 1 - Superior Hipertrofia A",
+        "ejercicios": [
+          {
+            "nombre": "Press banca inclinado con barra",
+            "series": 5,
+            "repeticiones": "8-12",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press banca plano mancuernas",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Aperturas en cable alto",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre supino",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Remo en máquina agarre neutro",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press Arnold sentado",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones laterales cable",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl inclinado mancuernas",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión tríceps sobre cabeza mancuerna",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Inferior Hipertrofia A",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla frontal",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 5,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Extensión cuádriceps",
+            "series": 5,
+            "repeticiones": "15-20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 5,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Peso muerto rumano",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Curl femoral sentado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos de pie",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Superior Hipertrofia B",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press banca declinado mancuernas",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Aperturas en cable bajo",
+            "series": 3,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Dominadas agarre neutro",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo en polea baja agarre estrecho",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Elevaciones laterales mancuernas",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Pájaros posteriores",
+            "series": 4,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl de concentración",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión tríceps polea agarre inverso",
+            "series": 4,
+            "repeticiones": "15",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 4 - Inferior Hipertrofia B",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla búlgara",
+            "series": 5,
+            "repeticiones": "10 por pierna",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 6,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Peso muerto sumo",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Prensa de piernas pie alto",
+            "series": 4,
+            "repeticiones": "15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Patada de glúteo en cable",
+            "series": 4,
+            "repeticiones": "15 por pierna",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Abducción cadera en máquina",
+            "series": 4,
+            "repeticiones": "20",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos sentado",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "El mayor volumen de hipertrofia posible en un Upper/Lower de 4 días.",
+      "RIR 1-2 en todos los ejercicios: máxima tensión mecánica sin llegar al fallo técnico.",
+      "Nutrición y descanso críticos: 4 sesiones tan demandantes requieren recuperación óptima."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "4d_90min_v7",
+    "titulo": "Powerbuilding Upper/Lower 4 días 90min",
+    "dias_semana": 4,
+    "duracion": "75-90",
+    "dias": [
+      {
+        "dia": "Día 1 - Superior Powerbuilding A",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 5,
+            "repeticiones": "4-6",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Remo con barra",
+            "series": 5,
+            "repeticiones": "4-6",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Press inclinado mancuernas",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre ancho",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 4,
+            "repeticiones": "6-8",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Elevaciones laterales mancuernas",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión tríceps en polea",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Inferior Powerbuilding A",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "4-6",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 4,
+            "repeticiones": "4-6",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Extensión cuádriceps",
+            "series": 3,
+            "repeticiones": "15-20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl femoral tumbado",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos de pie",
+            "series": 5,
+            "repeticiones": "15-20",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Superior Powerbuilding B",
+        "ejercicios": [
+          {
+            "nombre": "Press banca inclinado con barra",
+            "series": 5,
+            "repeticiones": "5-6",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Dominadas lastradas",
+            "series": 5,
+            "repeticiones": "5-6",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Press Arnold sentado",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Remo en polea baja agarre neutro",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Aperturas en cable",
+            "series": 3,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Elevaciones laterales cable",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl inclinado mancuernas",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión tríceps sobre cabeza",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 4 - Inferior Powerbuilding B",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla búlgara",
+            "series": 5,
+            "repeticiones": "8-10 por pierna",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Peso muerto sumo",
+            "series": 4,
+            "repeticiones": "5-6",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Curl femoral sentado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Patada de glúteo en cable",
+            "series": 4,
+            "repeticiones": "15 por pierna",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos sentado",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Powerbuilding Upper/Lower: fuerza en los compuestos principales, hipertrofia en los accesorios.",
+      "Con 90 min y 4 días, el protocolo más completo de powerbuilding.",
+      "El objetivo dual es mover más peso y ganar más músculo semana a semana."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "4d_90min_v8",
+    "titulo": "Bro Split 90min Completo",
+    "dias_semana": 4,
+    "duracion": "75-90",
+    "dias": [
+      {
+        "dia": "Día 1 - Pecho y Tríceps",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press inclinado con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press banca declinado mancuernas",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Aperturas en cable cruzado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Fondos en paralelas lastrados",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Extensión tríceps en polea",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión tríceps sobre cabeza mancuerna",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press francés skullcrusher",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Espalda y Bíceps",
+        "ejercicios": [
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 4,
+            "repeticiones": "5-6",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Dominadas agarre ancho",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre supino",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Remo en polea baja agarre neutro",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl inclinado mancuernas",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl martillo",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Hombros y Abdomen",
+        "ejercicios": [
+          {
+            "nombre": "Press militar con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press Arnold sentado",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones laterales mancuernas",
+            "series": 6,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Elevaciones frontales cable",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Pájaros posteriores en máquina",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Elevaciones laterales en polea baja",
+            "series": 4,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Plancha",
+            "series": 4,
+            "repeticiones": "60s",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Rueda abdominal",
+            "series": 4,
+            "repeticiones": "10-15",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 4 - Piernas",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Extensión cuádriceps",
+            "series": 4,
+            "repeticiones": "15-20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 5,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Peso muerto rumano",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Curl femoral tumbado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Abducción cadera en máquina",
+            "series": 3,
+            "repeticiones": "20",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos de pie",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Bro split completo con 90 min: cada grupo muscular recibe máximo volumen en su día.",
+      "Día de hombros dedicado con 6 ejercicios: el mayor desarrollo de deltoides posible.",
+      "8 ejercicios por sesión: la cobertura más exhaustiva posible para cada grupo."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "4d_90min_v9",
+    "titulo": "Upper/Lower 4 días 90min D - Énfasis Fuerza-Hiper",
+    "dias_semana": 4,
+    "duracion": "75-90",
+    "dias": [
+      {
+        "dia": "Día 1 - Superior Fuerza",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 5,
+            "repeticiones": "4-6",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Remo con barra Pendlay",
+            "series": 5,
+            "repeticiones": "4-6",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 4,
+            "repeticiones": "5-6",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Dominadas lastradas",
+            "series": 4,
+            "repeticiones": "5-6",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Press inclinado mancuernas",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Inferior Fuerza",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "4-6",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 4,
+            "repeticiones": "4-6",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Zancadas con barra",
+            "series": 3,
+            "repeticiones": "8 por pierna",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos de pie",
+            "series": 4,
+            "repeticiones": "15",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Superior Hipertrofia",
+        "ejercicios": [
+          {
+            "nombre": "Press banca inclinado mancuernas",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Aperturas en cable",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre supino",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Remo en máquina agarre neutro",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press Arnold sentado",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones laterales cable",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl inclinado mancuernas",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión tríceps sobre cabeza",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 4 - Inferior Hipertrofia",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla búlgara",
+            "series": 5,
+            "repeticiones": "10 por pierna",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 5,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Extensión cuádriceps",
+            "series": 5,
+            "repeticiones": "15-20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl femoral sentado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Peso muerto sumo",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Patada de glúteo en cable",
+            "series": 4,
+            "repeticiones": "15 por pierna",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos sentado",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Días 1 y 2 de fuerza pura, días 3 y 4 de hipertrofia pura: lo mejor de ambos mundos.",
+      "La variación semanal de estímulo es el método más efectivo para progresión continua.",
+      "Ideal para intermedios con más de 1 año de entrenamiento consistente."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "4d_90min_v10",
+    "titulo": "PPL + Piernas 90min",
+    "dias_semana": 4,
+    "duracion": "75-90",
+    "dias": [
+      {
+        "dia": "Día 1 - Empuje Completo",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press inclinado con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Aperturas en cable",
+            "series": 3,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones laterales mancuernas",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Fondos lastrados",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Extensión tríceps sobre cabeza",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Tirón Completo",
+        "ejercicios": [
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 5,
+            "repeticiones": "5-6",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Dominadas agarre ancho",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre estrecho",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Remo en polea baja agarre neutro",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl martillo",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Piernas A (Cuádriceps dominante)",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 5,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Extensión cuádriceps",
+            "series": 5,
+            "repeticiones": "15-20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Peso muerto rumano",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Curl femoral tumbado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos de pie",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 4 - Piernas B (Glúteo dominante)",
+        "ejercicios": [
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 6,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Sentadilla búlgara",
+            "series": 4,
+            "repeticiones": "10 por pierna",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Peso muerto sumo",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Patada de glúteo en cable",
+            "series": 4,
+            "repeticiones": "15 por pierna",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Abducción cadera en máquina",
+            "series": 4,
+            "repeticiones": "20",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl femoral sentado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos sentado",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "PPL + segundo día de piernas: el tren inferior recibe doble estímulo semanal.",
+      "Día de piernas A enfocado en cuádriceps, día B enfocado en glúteo e isquios.",
+      "Perfecto para quien quiere priorizar el desarrollo del tren inferior."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "4d_90min_v11",
+    "titulo": "Upper/Lower 4 días 90min E - Equilibrado Completo",
+    "dias_semana": 4,
+    "duracion": "75-90",
+    "dias": [
+      {
+        "dia": "Día 1 - Tren Superior A",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press inclinado mancuernas",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Aperturas con mancuernas",
+            "series": 3,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre ancho",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo en polea baja agarre neutro",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones laterales mancuernas",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión tríceps en polea",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Tren Inferior A",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 5,
+            "repeticiones": "12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Peso muerto rumano",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Extensión cuádriceps",
+            "series": 3,
+            "repeticiones": "15-20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl femoral tumbado",
+            "series": 3,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos de pie",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Tren Superior B",
+        "ejercicios": [
+          {
+            "nombre": "Press banca inclinado con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press banca agarre cerrado",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Fondos en paralelas lastrados",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Dominadas agarre supino",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press Arnold sentado",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones laterales cable",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl inclinado mancuernas",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión tríceps sobre cabeza",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 4 - Tren Inferior B",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla búlgara",
+            "series": 4,
+            "repeticiones": "10 por pierna",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 5,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Peso muerto sumo",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Extensión cuádriceps",
+            "series": 4,
+            "repeticiones": "15-20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl femoral sentado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Abducción cadera en máquina",
+            "series": 3,
+            "repeticiones": "20",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos sentado",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Upper/Lower equilibrado: igual volumen para todos los grupos musculares.",
+      "Superior A y B con ejercicios distintos para máxima variabilidad de estímulo.",
+      "La rutina más sostenible y completa para 4 días de 90 min."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "4d_90min_v12",
+    "titulo": "Upper/Lower 4 días 90min F - Énfasis Espalda Pierna",
+    "dias_semana": 4,
+    "duracion": "75-90",
+    "dias": [
+      {
+        "dia": "Día 1 - Superior A Énfasis Espalda",
+        "ejercicios": [
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 5,
+            "repeticiones": "5-6",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Dominadas agarre ancho",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo con barra Pendlay",
+            "series": 5,
+            "repeticiones": "8",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo en máquina agarre neutro",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre estrecho",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press banca plano",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press militar mancuernas",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Inferior A Cuádriceps",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 6,
+            "repeticiones": "8-10",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 5,
+            "repeticiones": "12-15",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Extensión cuádriceps",
+            "series": 5,
+            "repeticiones": "15-20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Sentadilla búlgara",
+            "series": 4,
+            "repeticiones": "10 por pierna",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Peso muerto rumano",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos de pie",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Superior B Énfasis Pecho Hombros",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press inclinado con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press banca declinado mancuernas",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Elevaciones laterales mancuernas",
+            "series": 6,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Pájaros posteriores",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Fondos lastrados",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Extensión tríceps en polea",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 4 - Inferior B Glúteo Isquios",
+        "ejercicios": [
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 6,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Peso muerto sumo",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Curl femoral tumbado",
+            "series": 5,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Patada de glúteo en cable",
+            "series": 5,
+            "repeticiones": "15 por pierna",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Abducción cadera en máquina",
+            "series": 4,
+            "repeticiones": "20",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Zancadas con mancuernas",
+            "series": 4,
+            "repeticiones": "10 por pierna",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos sentado",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Énfasis claro: espalda y cuádriceps en los días A, pecho-hombros y glúteo en los B.",
+      "Los 4 grupos musculares más grandes reciben máximo volumen.",
+      "Perfecto si quieres espalda en V, piernas fuertes y glúteo desarrollado."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "4d_90min_v13",
+    "titulo": "Full Body 4 días 90min - Alto Volumen",
+    "dias_semana": 4,
+    "duracion": "75-90",
+    "dias": [
+      {
+        "dia": "Día 1 - Full Body A",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Press banca plano",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión tríceps en polea",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Elevaciones laterales",
+            "series": 4,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos de pie",
+            "series": 4,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Full Body B",
+        "ejercicios": [
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 5,
+            "repeticiones": "5-6",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Press inclinado con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre ancho",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 5,
+            "repeticiones": "12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press Arnold sentado",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Curl inclinado mancuernas",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Fondos en paralelas",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Plancha",
+            "series": 3,
+            "repeticiones": "60s",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Full Body C",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla frontal",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Press banca agarre cerrado",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Dominadas agarre supino",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Sentadilla búlgara",
+            "series": 4,
+            "repeticiones": "10 por pierna",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Elevaciones laterales cable",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl martillo",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión cuádriceps",
+            "series": 3,
+            "repeticiones": "15-20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos sentado",
+            "series": 4,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 4 - Full Body D",
+        "ejercicios": [
+          {
+            "nombre": "Peso muerto sumo",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo en polea baja agarre neutro",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 5,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press inclinado mancuernas",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Curl de concentración",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl femoral tumbado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Plancha lateral",
+            "series": 3,
+            "repeticiones": "45s por lado",
+            "descanso": "30s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Full Body 4 días: máxima frecuencia de estímulo con alta variabilidad de ejercicios.",
+      "Cada músculo recibe 4 estímulos semanales con ejercicios distintos cada día.",
+      "El protocolo con mayor frecuencia posible: recuperación entre sesiones es clave."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "4d_90min_v14",
+    "titulo": "Upper/Lower 4 días 90min G - Periodización Ondulante",
+    "dias_semana": 4,
+    "duracion": "75-90",
+    "dias": [
+      {
+        "dia": "Día 1 - Superior Pesado (4-6 reps)",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 6,
+            "repeticiones": "4-5",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Remo con barra Pendlay",
+            "series": 6,
+            "repeticiones": "4-5",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Dominadas lastradas",
+            "series": 5,
+            "repeticiones": "5-6",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 4,
+            "repeticiones": "8",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Extensión tríceps en polea",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "75s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Inferior Pesado (4-6 reps)",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 6,
+            "repeticiones": "4-5",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 5,
+            "repeticiones": "4-5",
+            "descanso": "3min"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 4,
+            "repeticiones": "8",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Curl femoral tumbado",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos de pie",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Superior Ligero (12-15 reps)",
+        "ejercicios": [
+          {
+            "nombre": "Press banca inclinado mancuernas",
+            "series": 5,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Aperturas en cable",
+            "series": 4,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre supino",
+            "series": 5,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Remo en máquina agarre neutro",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press Arnold sentado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Elevaciones laterales cable",
+            "series": 5,
+            "repeticiones": "15-20",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl inclinado mancuernas",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Extensión tríceps sobre cabeza",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 4 - Inferior Ligero (12-20 reps)",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 5,
+            "repeticiones": "15-20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión cuádriceps",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl femoral sentado",
+            "series": 5,
+            "repeticiones": "15-20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Patada de glúteo en cable",
+            "series": 4,
+            "repeticiones": "15 por pierna",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos de pie",
+            "series": 6,
+            "repeticiones": "25",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Periodización ondulante: días 1 y 2 pesados, días 3 y 4 ligeros.",
+      "Los días ligeros no son fáciles: el volumen total es muy alto.",
+      "Esta variación mantiene la progresión continua sin estancamiento durante meses."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "4d_90min_v15",
+    "titulo": "Upper/Lower 4 días 90min H - Definitivo",
+    "dias_semana": 4,
+    "duracion": "75-90",
+    "dias": [
+      {
+        "dia": "Día 1 - Tren Superior A Definitivo",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press inclinado con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Aperturas con mancuernas",
+            "series": 3,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Dominadas agarre ancho",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo en polea baja agarre neutro",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones laterales mancuernas",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión tríceps sobre cabeza",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Tren Inferior A Definitivo",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 5,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Peso muerto rumano",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Extensión cuádriceps",
+            "series": 4,
+            "repeticiones": "15-20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl femoral tumbado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Abducción cadera en máquina",
+            "series": 3,
+            "repeticiones": "20",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos de pie",
+            "series": 5,
+            "repeticiones": "15-20",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Tren Superior B Definitivo",
+        "ejercicios": [
+          {
+            "nombre": "Press banca inclinado mancuernas",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press banca declinado",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Fondos lastrados",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre supino",
+            "series": 5,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Remo en máquina agarre neutro",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press Arnold sentado",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones laterales cable",
+            "series": 5,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Pájaros posteriores",
+            "series": 4,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl inclinado mancuernas",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión tríceps polea agarre inverso",
+            "series": 4,
+            "repeticiones": "15",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 4 - Tren Inferior B Definitivo",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla búlgara",
+            "series": 5,
+            "repeticiones": "10 por pierna",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 6,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Peso muerto sumo",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Prensa de piernas pie alto",
+            "series": 4,
+            "repeticiones": "15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Curl femoral sentado",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Patada de glúteo en cable",
+            "series": 4,
+            "repeticiones": "15 por pierna",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Extensión cuádriceps",
+            "series": 3,
+            "repeticiones": "15-20",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos sentado",
+            "series": 5,
+            "repeticiones": "20",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "El Upper/Lower de 4 días más completo posible con 90 min por sesión.",
+      "10 ejercicios en los días superiores y 8 en los inferiores: cobertura total.",
+      "La rutina definitiva para intermedios y avanzados con 4 días disponibles."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  }
+]

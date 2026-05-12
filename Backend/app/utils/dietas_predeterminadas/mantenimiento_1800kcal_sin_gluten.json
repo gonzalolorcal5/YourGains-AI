@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_1800_sin_gluten",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 1800,
+    "restriccion": "sin_gluten",
+    "macros": {
+      "proteinas_g": 135,
+      "carbohidratos_g": 180,
+      "grasas_g": 60
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 450,
+        "alimentos": [
+          {
+            "nombre": "Porridge de arroz",
+            "cantidad": "39g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "330ml"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "25g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 33,
+          "carbohidratos_g": 45,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 270,
+        "alimentos": [
+          {
+            "nombre": "Avena cocida",
+            "cantidad": "23g"
+          },
+          {
+            "nombre": "Pasas",
+            "cantidad": "27g"
+          },
+          {
+            "nombre": "Leche desnatada",
+            "cantidad": "225ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 20,
+          "carbohidratos_g": 27,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Guisantes",
+            "cantidad": "216g"
+          },
+          {
+            "nombre": "Jamón serrano en tacos",
+            "cantidad": "108g"
+          },
+          {
+            "nombre": "Huevo poché",
+            "cantidad": "117g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 54,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 180,
+        "alimentos": [
+          {
+            "nombre": "Queso fresco batido",
+            "cantidad": "84g"
+          },
+          {
+            "nombre": "Copos de avena sin gluten",
+            "cantidad": "15g"
+          },
+          {
+            "nombre": "Chocolate negro 85%",
+            "cantidad": "10g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 13,
+          "carbohidratos_g": 18,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Sopa de arroz",
+            "cantidad": "180g"
+          },
+          {
+            "nombre": "Pollo desmenuzado",
+            "cantidad": "72g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "78g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 36,
+          "grasas_g": 12
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin gluten."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

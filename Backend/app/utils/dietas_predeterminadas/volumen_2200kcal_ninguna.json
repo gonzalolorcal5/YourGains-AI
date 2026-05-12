@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_2200_ninguna",
+    "objetivo": "volumen",
+    "kcal_objetivo": 2200,
+    "restriccion": "ninguna",
+    "macros": {
+      "proteinas_g": 137,
+      "carbohidratos_g": 275,
+      "grasas_g": 61
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 550,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "73g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "165g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "20g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 34,
+          "carbohidratos_g": 68,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 330,
+        "alimentos": [
+          {
+            "nombre": "Barrita de proteínas (baja en azúcar)",
+            "cantidad": "33g"
+          },
+          {
+            "nombre": "Pera",
+            "cantidad": "187g"
+          },
+          {
+            "nombre": "Nueces de macadamia",
+            "cantidad": "16g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 20,
+          "carbohidratos_g": 41,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 660,
+        "alimentos": [
+          {
+            "nombre": "Pasta de lentejas rojas",
+            "cantidad": "61g"
+          },
+          {
+            "nombre": "Gambas peladas",
+            "cantidad": "264g"
+          },
+          {
+            "nombre": "Ajo y perejil",
+            "cantidad": "440g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 41,
+          "carbohidratos_g": 82,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 220,
+        "alimentos": [
+          {
+            "nombre": "Bocadillo pequeño de atún",
+            "cantidad": "36g"
+          },
+          {
+            "nombre": "Lechuga",
+            "cantidad": "366g"
+          },
+          {
+            "nombre": "Aceitunas",
+            "cantidad": "51g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 13,
+          "carbohidratos_g": 27,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 440,
+        "alimentos": [
+          {
+            "nombre": "Filete de ternera fino",
+            "cantidad": "73g"
+          },
+          {
+            "nombre": "Boniato frito (Airfryer)",
+            "cantidad": "168g"
+          },
+          {
+            "nombre": "Pimientos de Padrón",
+            "cantidad": "293g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 55,
+          "grasas_g": 12
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Ninguna."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

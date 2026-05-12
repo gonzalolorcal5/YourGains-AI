@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2500_sin_lactosa",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2500,
+    "restriccion": "sin_lactosa",
+    "macros": {
+      "proteinas_g": 218,
+      "carbohidratos_g": 218,
+      "grasas_g": 83
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "187g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "22g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 54,
+          "carbohidratos_g": 54,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Pan blanco",
+            "cantidad": "43g"
+          },
+          {
+            "nombre": "Mermelada",
+            "cantidad": "50g"
+          },
+          {
+            "nombre": "Queso fresco sin lactosa",
+            "cantidad": "125g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 32,
+          "carbohidratos_g": 32,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de trigo (Fajitas)",
+            "cantidad": "87g"
+          },
+          {
+            "nombre": "Tiras de pollo",
+            "cantidad": "150g"
+          },
+          {
+            "nombre": "Pimiento rojo y verde",
+            "cantidad": "875g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 65,
+          "carbohidratos_g": 65,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de maíz",
+            "cantidad": "21g"
+          },
+          {
+            "nombre": "Guacamole",
+            "cantidad": "49g"
+          },
+          {
+            "nombre": "Pechuga de pollo (fiambre)",
+            "cantidad": "75g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 21,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Revuelto de gulas",
+            "cantidad": "108g"
+          },
+          {
+            "nombre": "Gambas",
+            "cantidad": "199g"
+          },
+          {
+            "nombre": "Pan tostado",
+            "cantidad": "66g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 43,
+          "carbohidratos_g": 43,
+          "grasas_g": 16
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin lactosa."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_3600_vegetariano",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 3600,
+    "restriccion": "vegetariano",
+    "macros": {
+      "proteinas_g": 270,
+      "carbohidratos_g": 360,
+      "grasas_g": 120
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 900,
+        "alimentos": [
+          {
+            "nombre": "Pan de espelta",
+            "cantidad": "120g"
+          },
+          {
+            "nombre": "Huevo a la plancha",
+            "cantidad": "195g"
+          },
+          {
+            "nombre": "Aguacate",
+            "cantidad": "180g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 67,
+          "carbohidratos_g": 90,
+          "grasas_g": 30
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Dátiles",
+            "cantidad": "63g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "28g"
+          },
+          {
+            "nombre": "Batido de proteínas",
+            "cantidad": "45g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 54,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 1080,
+        "alimentos": [
+          {
+            "nombre": "Lentejas cocidas",
+            "cantidad": "309g"
+          },
+          {
+            "nombre": "Patata cocida",
+            "cantidad": "417g"
+          },
+          {
+            "nombre": "Zanahoria",
+            "cantidad": "864g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 81,
+          "carbohidratos_g": 108,
+          "grasas_g": 36
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de maíz",
+            "cantidad": "31g"
+          },
+          {
+            "nombre": "Guacamole",
+            "cantidad": "72g"
+          },
+          {
+            "nombre": "Queso en lonchas",
+            "cantidad": "108g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 36,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 720,
+        "alimentos": [
+          {
+            "nombre": "Berenjena rellena",
+            "cantidad": "240g"
+          },
+          {
+            "nombre": "Patatas baby",
+            "cantidad": "278g"
+          },
+          {
+            "nombre": "Tomates cherry",
+            "cantidad": "1200g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 54,
+          "carbohidratos_g": 72,
+          "grasas_g": 24
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegetariano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2500_sin_frutos_secos",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2500,
+    "restriccion": "sin_frutos_secos",
+    "macros": {
+      "proteinas_g": 218,
+      "carbohidratos_g": 218,
+      "grasas_g": 83
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "52g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "833ml"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "35g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 54,
+          "carbohidratos_g": 54,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Queso fresco batido",
+            "cantidad": "175g"
+          },
+          {
+            "nombre": "Semillas de chía",
+            "cantidad": "25g"
+          },
+          {
+            "nombre": "Kiwi",
+            "cantidad": "200g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 32,
+          "carbohidratos_g": 32,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Fideos de arroz",
+            "cantidad": "67g"
+          },
+          {
+            "nombre": "Tiras de ternera",
+            "cantidad": "125g"
+          },
+          {
+            "nombre": "Cebolla y zanahoria salteadas",
+            "cantidad": "625g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 65,
+          "carbohidratos_g": 65,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "75g"
+          },
+          {
+            "nombre": "Pan",
+            "cantidad": "33g"
+          },
+          {
+            "nombre": "Queso light",
+            "cantidad": "49g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 21,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Sopa de fideos",
+            "cantidad": "249g"
+          },
+          {
+            "nombre": "Pollo desmenuzado",
+            "cantidad": "99g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "108g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 43,
+          "carbohidratos_g": 43,
+          "grasas_g": 16
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin frutos secos."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

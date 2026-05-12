@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_3600_vegetariano",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 3600,
+    "restriccion": "vegetariano",
+    "macros": {
+      "proteinas_g": 270,
+      "carbohidratos_g": 360,
+      "grasas_g": 120
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 900,
+        "alimentos": [
+          {
+            "nombre": "Pan de espelta",
+            "cantidad": "120g"
+          },
+          {
+            "nombre": "Huevo a la plancha",
+            "cantidad": "195g"
+          },
+          {
+            "nombre": "Aguacate",
+            "cantidad": "180g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 67,
+          "carbohidratos_g": 90,
+          "grasas_g": 30
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "117g"
+          },
+          {
+            "nombre": "Pan tostado",
+            "cantidad": "72g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "19g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 54,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 1080,
+        "alimentos": [
+          {
+            "nombre": "Ñoquis de patata",
+            "cantidad": "216g"
+          },
+          {
+            "nombre": "Queso havarti",
+            "cantidad": "324g"
+          },
+          {
+            "nombre": "Salsa de tomate casera",
+            "cantidad": "900g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 81,
+          "carbohidratos_g": 108,
+          "grasas_g": 36
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Hummus",
+            "cantidad": "72g"
+          },
+          {
+            "nombre": "Palitos de zanahoria",
+            "cantidad": "288g"
+          },
+          {
+            "nombre": "Queso havarti",
+            "cantidad": "108g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 36,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 720,
+        "alimentos": [
+          {
+            "nombre": "Setas a la plancha",
+            "cantidad": "288g"
+          },
+          {
+            "nombre": "Arroz blanco",
+            "cantidad": "180g"
+          },
+          {
+            "nombre": "Ajo y perejil",
+            "cantidad": "480g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 54,
+          "carbohidratos_g": 72,
+          "grasas_g": 24
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegetariano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

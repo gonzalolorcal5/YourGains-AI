@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_3600_sin_frutos_secos",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 3600,
+    "restriccion": "sin_frutos_secos",
+    "macros": {
+      "proteinas_g": 270,
+      "carbohidratos_g": 360,
+      "grasas_g": 120
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 900,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "120g"
+          },
+          {
+            "nombre": "Queso fresco batido",
+            "cantidad": "420g"
+          },
+          {
+            "nombre": "Tomate natural rallado",
+            "cantidad": "1500g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 67,
+          "carbohidratos_g": 90,
+          "grasas_g": 30
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Manzana",
+            "cantidad": "342g"
+          },
+          {
+            "nombre": "Semillas de chía",
+            "cantidad": "28g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "45g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 54,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 1080,
+        "alimentos": [
+          {
+            "nombre": "Macarrones",
+            "cantidad": "100g"
+          },
+          {
+            "nombre": "Carne picada de pollo",
+            "cantidad": "234g"
+          },
+          {
+            "nombre": "Champiñones",
+            "cantidad": "1620g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 81,
+          "carbohidratos_g": 108,
+          "grasas_g": 36
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Leche con cacao puro",
+            "cantidad": "264ml"
+          },
+          {
+            "nombre": "Pan tostado",
+            "cantidad": "48g"
+          },
+          {
+            "nombre": "Aceite de coco o mantequilla",
+            "cantidad": "20g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 36,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 720,
+        "alimentos": [
+          {
+            "nombre": "Pavo al horno",
+            "cantidad": "216g"
+          },
+          {
+            "nombre": "Puré de patata",
+            "cantidad": "278g"
+          },
+          {
+            "nombre": "Judías verdes",
+            "cantidad": "720g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 54,
+          "carbohidratos_g": 72,
+          "grasas_g": 24
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin frutos secos."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

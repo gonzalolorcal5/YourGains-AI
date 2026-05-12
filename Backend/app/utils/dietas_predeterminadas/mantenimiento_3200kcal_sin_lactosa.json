@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_3200_sin_lactosa",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 3200,
+    "restriccion": "sin_lactosa",
+    "macros": {
+      "proteinas_g": 240,
+      "carbohidratos_g": 320,
+      "grasas_g": 106
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 800,
+        "alimentos": [
+          {
+            "nombre": "Avena",
+            "cantidad": "69g"
+          },
+          {
+            "nombre": "Leche sin lactosa",
+            "cantidad": "586ml"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "298g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 60,
+          "carbohidratos_g": 80,
+          "grasas_g": 26
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Plátano maduro",
+            "cantidad": "179g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "48g"
+          },
+          {
+            "nombre": "Café solo",
+            "cantidad": "800g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 48,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 960,
+        "alimentos": [
+          {
+            "nombre": "Trigo sarraceno",
+            "cantidad": "89g"
+          },
+          {
+            "nombre": "Pechuga de pavo asada",
+            "cantidad": "288g"
+          },
+          {
+            "nombre": "Calabaza asada",
+            "cantidad": "960g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 72,
+          "carbohidratos_g": 96,
+          "grasas_g": 32
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Leche con cacao puro",
+            "cantidad": "234ml"
+          },
+          {
+            "nombre": "Pan tostado",
+            "cantidad": "42g"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "18g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 32,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 640,
+        "alimentos": [
+          {
+            "nombre": "Huevos",
+            "cantidad": "138g"
+          },
+          {
+            "nombre": "Patata cocida",
+            "cantidad": "247g"
+          },
+          {
+            "nombre": "Cebolla",
+            "cantidad": "533g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 48,
+          "carbohidratos_g": 64,
+          "grasas_g": 21
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin lactosa."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

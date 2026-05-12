@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_2500_sin_pescado",
+    "objetivo": "volumen",
+    "kcal_objetivo": 2500,
+    "restriccion": "sin_pescado",
+    "macros": {
+      "proteinas_g": 156,
+      "carbohidratos_g": 312,
+      "grasas_g": 69
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Porridge de avena",
+            "cantidad": "54g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "458ml"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "35g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 39,
+          "carbohidratos_g": 78,
+          "grasas_g": 17
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Kéfir",
+            "cantidad": "187g"
+          },
+          {
+            "nombre": "Arándanos",
+            "cantidad": "218g"
+          },
+          {
+            "nombre": "Almendras",
+            "cantidad": "20g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 23,
+          "carbohidratos_g": 46,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Arroz basmati",
+            "cantidad": "70g"
+          },
+          {
+            "nombre": "Curry de pollo",
+            "cantidad": "175g"
+          },
+          {
+            "nombre": "Leche de coco light",
+            "cantidad": "375ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 46,
+          "carbohidratos_g": 93,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "75g"
+          },
+          {
+            "nombre": "Tortitas de arroz",
+            "cantidad": "21g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "416g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 15,
+          "carbohidratos_g": 31,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "150g"
+          },
+          {
+            "nombre": "Crema de calabaza",
+            "cantidad": "416g"
+          },
+          {
+            "nombre": "Picatostes integrales",
+            "cantidad": "41g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 62,
+          "grasas_g": 13
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin pescado."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

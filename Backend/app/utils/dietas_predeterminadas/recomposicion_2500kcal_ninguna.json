@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_2500_ninguna",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 2500,
+    "restriccion": "ninguna",
+    "macros": {
+      "proteinas_g": 187,
+      "carbohidratos_g": 250,
+      "grasas_g": 83
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Avena",
+            "cantidad": "54g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "135g"
+          },
+          {
+            "nombre": "Espinacas baby",
+            "cantidad": "833g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 46,
+          "carbohidratos_g": 62,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de arroz",
+            "cantidad": "32g"
+          },
+          {
+            "nombre": "Crema de cacahuete",
+            "cantidad": "21g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "37g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 28,
+          "carbohidratos_g": 37,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Guisantes",
+            "cantidad": "300g"
+          },
+          {
+            "nombre": "Jamón serrano en tacos",
+            "cantidad": "150g"
+          },
+          {
+            "nombre": "Huevo poché",
+            "cantidad": "162g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 56,
+          "carbohidratos_g": 75,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Atún al natural",
+            "cantidad": "75g"
+          },
+          {
+            "nombre": "Tortitas de arroz",
+            "cantidad": "21g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "416g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 18,
+          "carbohidratos_g": 25,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Sepia a la plancha",
+            "cantidad": "199g"
+          },
+          {
+            "nombre": "Arroz blanco",
+            "cantidad": "124g"
+          },
+          {
+            "nombre": "Ajo y perejil",
+            "cantidad": "333g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 37,
+          "carbohidratos_g": 50,
+          "grasas_g": 16
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Ninguna."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

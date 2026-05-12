@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2000_vegetariano",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2000,
+    "restriccion": "vegetariano",
+    "macros": {
+      "proteinas_g": 175,
+      "carbohidratos_g": 175,
+      "grasas_g": 66
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "66g"
+          },
+          {
+            "nombre": "Queso fresco batido",
+            "cantidad": "233g"
+          },
+          {
+            "nombre": "Tomate natural rallado",
+            "cantidad": "833g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 43,
+          "carbohidratos_g": 43,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 300,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de arroz",
+            "cantidad": "26g"
+          },
+          {
+            "nombre": "Crema de cacahuete",
+            "cantidad": "17g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "30g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 26,
+          "carbohidratos_g": 26,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 600,
+        "alimentos": [
+          {
+            "nombre": "Arroz blanco",
+            "cantidad": "150g"
+          },
+          {
+            "nombre": "Huevos duros",
+            "cantidad": "120g"
+          },
+          {
+            "nombre": "Brócoli",
+            "cantidad": "560g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 52,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 200,
+        "alimentos": [
+          {
+            "nombre": "Requesón desnatado",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Sirope cero",
+            "cantidad": "66g"
+          },
+          {
+            "nombre": "Canela",
+            "cantidad": "66g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 17,
+          "carbohidratos_g": 17,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Huevos",
+            "cantidad": "86g"
+          },
+          {
+            "nombre": "Patata cocida",
+            "cantidad": "154g"
+          },
+          {
+            "nombre": "Cebolla",
+            "cantidad": "333g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 35,
+          "carbohidratos_g": 35,
+          "grasas_g": 13
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegetariano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

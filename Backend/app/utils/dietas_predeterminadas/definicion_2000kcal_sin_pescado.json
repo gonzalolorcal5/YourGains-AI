@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2000_sin_pescado",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2000,
+    "restriccion": "sin_pescado",
+    "macros": {
+      "proteinas_g": 175,
+      "carbohidratos_g": 175,
+      "grasas_g": 66
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "41g"
+          },
+          {
+            "nombre": "Bebida de almendras",
+            "cantidad": "666ml"
+          },
+          {
+            "nombre": "Crema de cacahuete",
+            "cantidad": "28g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 43,
+          "carbohidratos_g": 43,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 300,
+        "alimentos": [
+          {
+            "nombre": "Crema de arroz",
+            "cantidad": "28g"
+          },
+          {
+            "nombre": "Proteína Whey aislada",
+            "cantidad": "25g"
+          },
+          {
+            "nombre": "Mermelada",
+            "cantidad": "40g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 26,
+          "carbohidratos_g": 26,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 600,
+        "alimentos": [
+          {
+            "nombre": "Puré de patata",
+            "cantidad": "232g"
+          },
+          {
+            "nombre": "Albóndigas de ternera",
+            "cantidad": "110g"
+          },
+          {
+            "nombre": "Guisantes",
+            "cantidad": "240g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 52,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 200,
+        "alimentos": [
+          {
+            "nombre": "Manzana asada",
+            "cantidad": "126g"
+          },
+          {
+            "nombre": "Yogur natural",
+            "cantidad": "100g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "10g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 17,
+          "carbohidratos_g": 17,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "66g"
+          },
+          {
+            "nombre": "Patata asada",
+            "cantidad": "154g"
+          },
+          {
+            "nombre": "Espárragos",
+            "cantidad": "600g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 35,
+          "carbohidratos_g": 35,
+          "grasas_g": 13
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin pescado."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

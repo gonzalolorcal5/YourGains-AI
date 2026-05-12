@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2800_sin_gluten",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2800,
+    "restriccion": "sin_gluten",
+    "macros": {
+      "proteinas_g": 244,
+      "carbohidratos_g": 244,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Yogur griego natural",
+            "cantidad": "233g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "37g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "70g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 61,
+          "carbohidratos_g": 61,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Barrita de proteínas sin gluten",
+            "cantidad": "42g"
+          },
+          {
+            "nombre": "Pera",
+            "cantidad": "237g"
+          },
+          {
+            "nombre": "Nueces de macadamia",
+            "cantidad": "21g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 36,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Quinoa",
+            "cantidad": "72g"
+          },
+          {
+            "nombre": "Pavo a la plancha",
+            "cantidad": "251g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "1680g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 73,
+          "carbohidratos_g": 73,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Huevos revueltos",
+            "cantidad": "60g"
+          },
+          {
+            "nombre": "Pan sin gluten",
+            "cantidad": "37g"
+          },
+          {
+            "nombre": "Aguacate",
+            "cantidad": "55g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 24,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Salmón a la plancha",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Patata asada",
+            "cantidad": "216g"
+          },
+          {
+            "nombre": "Espárragos",
+            "cantidad": "839g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 49,
+          "carbohidratos_g": 49,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin gluten."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

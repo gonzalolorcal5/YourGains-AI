@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_3600_sin_pescado",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 3600,
+    "restriccion": "sin_pescado",
+    "macros": {
+      "proteinas_g": 270,
+      "carbohidratos_g": 360,
+      "grasas_g": 120
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 900,
+        "alimentos": [
+          {
+            "nombre": "Avena",
+            "cantidad": "78g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "660ml"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "336g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 67,
+          "carbohidratos_g": 90,
+          "grasas_g": 30
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Manzana",
+            "cantidad": "342g"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "30g"
+          },
+          {
+            "nombre": "Café",
+            "cantidad": "900g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 54,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 1080,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de trigo (Fajitas)",
+            "cantidad": "126g"
+          },
+          {
+            "nombre": "Tiras de pollo",
+            "cantidad": "216g"
+          },
+          {
+            "nombre": "Pimiento rojo y verde",
+            "cantidad": "1260g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 81,
+          "carbohidratos_g": 108,
+          "grasas_g": 36
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Caseína micelar",
+            "cantidad": "30g"
+          },
+          {
+            "nombre": "Crema de cacahuete",
+            "cantidad": "20g"
+          },
+          {
+            "nombre": "Leche",
+            "cantidad": "264ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 36,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 720,
+        "alimentos": [
+          {
+            "nombre": "Huevos",
+            "cantidad": "156g"
+          },
+          {
+            "nombre": "Patata cocida",
+            "cantidad": "278g"
+          },
+          {
+            "nombre": "Cebolla",
+            "cantidad": "600g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 54,
+          "carbohidratos_g": 72,
+          "grasas_g": 24
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin pescado."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

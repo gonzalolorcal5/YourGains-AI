@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_1800_vegetariano",
+    "objetivo": "definicion",
+    "kcal_objetivo": 1800,
+    "restriccion": "vegetariano",
+    "macros": {
+      "proteinas_g": 157,
+      "carbohidratos_g": 157,
+      "grasas_g": 60
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 450,
+        "alimentos": [
+          {
+            "nombre": "Huevos",
+            "cantidad": "97g"
+          },
+          {
+            "nombre": "Jamón cocido",
+            "cantidad": "135g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "750g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 39,
+          "carbohidratos_g": 39,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 270,
+        "alimentos": [
+          {
+            "nombre": "Manzana",
+            "cantidad": "171g"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "15g"
+          },
+          {
+            "nombre": "Café",
+            "cantidad": "450g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 23,
+          "carbohidratos_g": 23,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Ñoquis de patata",
+            "cantidad": "108g"
+          },
+          {
+            "nombre": "Queso havarti",
+            "cantidad": "162g"
+          },
+          {
+            "nombre": "Salsa de tomate casera",
+            "cantidad": "450g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 47,
+          "carbohidratos_g": 47,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 180,
+        "alimentos": [
+          {
+            "nombre": "Porridge frío (Overnight oats)",
+            "cantidad": "15g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "15g"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "67g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 15,
+          "carbohidratos_g": 15,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Queso cottage",
+            "cantidad": "120g"
+          },
+          {
+            "nombre": "Huevo poché",
+            "cantidad": "60g"
+          },
+          {
+            "nombre": "Tostadas integrales",
+            "cantidad": "30g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 31,
+          "grasas_g": 12
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegetariano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

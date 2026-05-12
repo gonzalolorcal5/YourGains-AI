@@ -81,6 +81,8 @@ async def get_current_user_data(
             email=user_email,
             plan_type=user_plan_type,
             is_premium=user_is_premium,
+            racha_actual=getattr(user, 'racha_actual', 0) or 0,
+            mejor_racha=getattr(user, 'mejor_racha', 0) or 0,
             onboarding_completed=onboarding_completed,
             session_duration=session_duration,
             profile_picture=getattr(user, 'profile_picture', None),
@@ -112,6 +114,8 @@ async def get_current_user_data(
             email=user_email,
             plan_type=user_plan_type,
             is_premium=user_is_premium,
+            racha_actual=getattr(current_user, 'racha_actual', 0) or 0 if current_user else 0,
+            mejor_racha=getattr(current_user, 'mejor_racha', 0) or 0 if current_user else 0,
             onboarding_completed=False,  # Por defecto False si hay error
             session_duration="45-60",  # Valor por defecto
             profile_picture=getattr(current_user, 'profile_picture', None) if current_user else None,

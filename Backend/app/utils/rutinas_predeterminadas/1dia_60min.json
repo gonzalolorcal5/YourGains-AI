@@ -1,0 +1,324 @@
+[
+  {
+    "id": "1d_60min_v1",
+    "titulo": "Full Body 60min A - Volumen Completo",
+    "dias_semana": 1,
+    "duracion": "60-75",
+    "dias": [
+      {
+        "dia": "Día 1 - Full Body Volumen",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press banca plano",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 4,
+            "repeticiones": "6-8",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre ancho",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión tríceps en polea",
+            "series": 3,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos",
+            "series": 4,
+            "repeticiones": "15-20",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Con un solo día semanal, este volumen es óptimo para estimular todos los grupos.",
+      "Los 4 grandes compuestos primero: sentadilla, press, peso muerto, press militar.",
+      "Prioriza la técnica perfecta por encima del peso en todos los movimientos."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "1d_60min_v2",
+    "titulo": "Full Body 60min B - Push/Pull/Legs en uno",
+    "dias_semana": 1,
+    "duracion": "60-75",
+    "dias": [
+      {
+        "dia": "Día 1 - PPL Comprimido",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Zancadas con mancuernas",
+            "series": 3,
+            "repeticiones": "10 por pierna",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press banca inclinado",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Fondos en paralelas",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Dominadas agarre supino",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo con mancuerna",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press Arnold sentado",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "60s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Estructura piernas → empuje → tirón para distribuir la fatiga de forma óptima.",
+      "Las dominadas son el mejor ejercicio de tirón: si no puedes, usa el jalón.",
+      "Este es tu único día: no te guardes nada."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "1d_60min_v3",
+    "titulo": "Full Body 60min C - Fuerza e Hipertrofia",
+    "dias_semana": 1,
+    "duracion": "60-75",
+    "dias": [
+      {
+        "dia": "Día 1 - Fuerza + Hipertrofia",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Press banca plano",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 3,
+            "repeticiones": "5",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Remo con barra Pendlay",
+            "series": 4,
+            "repeticiones": "8",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press militar mancuernas",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Curl inclinado mancuernas",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión tríceps tumbado",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "60s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Bloques de fuerza (5x5) seguidos de aislamiento para hipertrofia: lo mejor de dos mundos.",
+      "El Pendlay row es más explosivo que el remo tradicional: gran complemento al peso muerto.",
+      "Si progresas en los 5x5 semana a semana, estás en el camino correcto."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "1d_60min_v4",
+    "titulo": "Full Body 60min D - Énfasis Tren Superior",
+    "dias_semana": 1,
+    "duracion": "60-75",
+    "dias": [
+      {
+        "dia": "Día 1 - Tren Superior + Pierna Básica",
+        "ejercicios": [
+          {
+            "nombre": "Prensa de piernas",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Curl femoral tumbado",
+            "series": 3,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press banca plano",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press banca inclinado mancuernas",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Remo en polea baja agarre neutro",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre estrecho",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Elevaciones laterales con mancuernas",
+            "series": 4,
+            "repeticiones": "15",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl de bíceps alterno",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "60s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Piernas en máquinas para no agotar energía del SNC antes del tren superior.",
+      "Dos ejercicios de pecho desde ángulos distintos para estimulación completa del pectoral.",
+      "Idealmente entrena lunes o miércoles para llegar con energía máxima."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "1d_60min_v5",
+    "titulo": "Full Body 60min E - Énfasis Tren Inferior",
+    "dias_semana": 1,
+    "duracion": "60-75",
+    "dias": [
+      {
+        "dia": "Día 1 - Tren Inferior + Superior Básico",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "8-10",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Peso muerto rumano",
+            "series": 4,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Prensa de piernas",
+            "series": 3,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 4,
+            "repeticiones": "12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Extensión de cuádriceps",
+            "series": 3,
+            "repeticiones": "15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press banca plano",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Dominadas o jalón al pecho",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Piernas son el grupo muscular más grande: dedicarle más volumen da más retorno.",
+      "El hip thrust es el rey del glúteo: no lo saltes.",
+      "Press y dominadas al final como mantenimiento del tren superior."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  }
+]

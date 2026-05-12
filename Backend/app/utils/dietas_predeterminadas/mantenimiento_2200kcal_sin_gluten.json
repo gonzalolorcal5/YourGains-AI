@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_2200_sin_gluten",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 2200,
+    "restriccion": "sin_gluten",
+    "macros": {
+      "proteinas_g": 165,
+      "carbohidratos_g": 220,
+      "grasas_g": 73
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 550,
+        "alimentos": [
+          {
+            "nombre": "Revuelto de claras",
+            "cantidad": "366g"
+          },
+          {
+            "nombre": "Champiñones",
+            "cantidad": "825g"
+          },
+          {
+            "nombre": "Pan sin gluten",
+            "cantidad": "73g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 41,
+          "carbohidratos_g": 55,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 330,
+        "alimentos": [
+          {
+            "nombre": "Corn Flakes sin gluten",
+            "cantidad": "27g"
+          },
+          {
+            "nombre": "Leche",
+            "cantidad": "242ml"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "123g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 33,
+          "grasas_g": 11
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 660,
+        "alimentos": [
+          {
+            "nombre": "Ñoquis sin gluten",
+            "cantidad": "132g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "198g"
+          },
+          {
+            "nombre": "Salsa de tomate casera",
+            "cantidad": "550g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 49,
+          "carbohidratos_g": 66,
+          "grasas_g": 22
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 220,
+        "alimentos": [
+          {
+            "nombre": "Requesón desnatado",
+            "cantidad": "102g"
+          },
+          {
+            "nombre": "Sirope cero",
+            "cantidad": "73g"
+          },
+          {
+            "nombre": "Canela",
+            "cantidad": "73g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 16,
+          "carbohidratos_g": 22,
+          "grasas_g": 7
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 440,
+        "alimentos": [
+          {
+            "nombre": "Filete de ternera fino",
+            "cantidad": "73g"
+          },
+          {
+            "nombre": "Boniato frito (Airfryer)",
+            "cantidad": "168g"
+          },
+          {
+            "nombre": "Pimientos de Padrón",
+            "cantidad": "293g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 33,
+          "carbohidratos_g": 44,
+          "grasas_g": 14
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin gluten."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_3200_ninguna",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 3200,
+    "restriccion": "ninguna",
+    "macros": {
+      "proteinas_g": 240,
+      "carbohidratos_g": 320,
+      "grasas_g": 106
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 800,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "106g"
+          },
+          {
+            "nombre": "Queso fresco batido",
+            "cantidad": "373g"
+          },
+          {
+            "nombre": "Tomate natural rallado",
+            "cantidad": "1333g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 60,
+          "carbohidratos_g": 80,
+          "grasas_g": 26
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Avena cocida",
+            "cantidad": "41g"
+          },
+          {
+            "nombre": "Pasas",
+            "cantidad": "48g"
+          },
+          {
+            "nombre": "Leche desnatada",
+            "cantidad": "400ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 48,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 960,
+        "alimentos": [
+          {
+            "nombre": "Quinoa",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Pavo a la plancha",
+            "cantidad": "288g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "1920g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 72,
+          "carbohidratos_g": 96,
+          "grasas_g": 32
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Queso fresco batido",
+            "cantidad": "149g"
+          },
+          {
+            "nombre": "Avena",
+            "cantidad": "27g"
+          },
+          {
+            "nombre": "Chocolate negro 85%",
+            "cantidad": "19g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 32,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 640,
+        "alimentos": [
+          {
+            "nombre": "Sepia a la plancha",
+            "cantidad": "256g"
+          },
+          {
+            "nombre": "Arroz blanco",
+            "cantidad": "160g"
+          },
+          {
+            "nombre": "Ajo y perejil",
+            "cantidad": "426g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 48,
+          "carbohidratos_g": 64,
+          "grasas_g": 21
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Ninguna."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

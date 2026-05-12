@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_3200_sin_frutos_secos",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 3200,
+    "restriccion": "sin_frutos_secos",
+    "macros": {
+      "proteinas_g": 240,
+      "carbohidratos_g": 320,
+      "grasas_g": 106
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 800,
+        "alimentos": [
+          {
+            "nombre": "Porridge de avena",
+            "cantidad": "69g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "586ml"
+          },
+          {
+            "nombre": "Aceite de coco o mantequilla",
+            "cantidad": "45g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 60,
+          "carbohidratos_g": 80,
+          "grasas_g": 26
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Queso fresco batido",
+            "cantidad": "224g"
+          },
+          {
+            "nombre": "Semillas de chía",
+            "cantidad": "32g"
+          },
+          {
+            "nombre": "Kiwi",
+            "cantidad": "256g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 48,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 960,
+        "alimentos": [
+          {
+            "nombre": "Puré de patata",
+            "cantidad": "371g"
+          },
+          {
+            "nombre": "Albóndigas de ternera",
+            "cantidad": "176g"
+          },
+          {
+            "nombre": "Guisantes",
+            "cantidad": "384g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 72,
+          "carbohidratos_g": 96,
+          "grasas_g": 32
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Queso cottage",
+            "cantidad": "106g"
+          },
+          {
+            "nombre": "Mermelada light",
+            "cantidad": "64g"
+          },
+          {
+            "nombre": "Tostadas integrales",
+            "cantidad": "26g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 32,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 640,
+        "alimentos": [
+          {
+            "nombre": "Revuelto de gulas",
+            "cantidad": "138g"
+          },
+          {
+            "nombre": "Gambas",
+            "cantidad": "256g"
+          },
+          {
+            "nombre": "Pan tostado",
+            "cantidad": "85g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 48,
+          "carbohidratos_g": 64,
+          "grasas_g": 21
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin frutos secos."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

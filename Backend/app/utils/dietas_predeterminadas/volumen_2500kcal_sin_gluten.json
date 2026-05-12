@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_2500_sin_gluten",
+    "objetivo": "volumen",
+    "kcal_objetivo": 2500,
+    "restriccion": "sin_gluten",
+    "macros": {
+      "proteinas_g": 156,
+      "carbohidratos_g": 312,
+      "grasas_g": 69
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "458ml"
+          },
+          {
+            "nombre": "Cereales sin gluten",
+            "cantidad": "52g"
+          },
+          {
+            "nombre": "Kiwi",
+            "cantidad": "333g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 39,
+          "carbohidratos_g": 78,
+          "grasas_g": 17
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Manzana",
+            "cantidad": "237g"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "21g"
+          },
+          {
+            "nombre": "Café",
+            "cantidad": "625g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 23,
+          "carbohidratos_g": 46,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Quinoa",
+            "cantidad": "65g"
+          },
+          {
+            "nombre": "Pavo a la plancha",
+            "cantidad": "225g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "1500g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 46,
+          "carbohidratos_g": 93,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Bocadillo de pan sin gluten",
+            "cantidad": "41g"
+          },
+          {
+            "nombre": "Lechuga",
+            "cantidad": "416g"
+          },
+          {
+            "nombre": "Aceitunas",
+            "cantidad": "58g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 15,
+          "carbohidratos_g": 31,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Pechuga de pollo asada",
+            "cantidad": "99g"
+          },
+          {
+            "nombre": "Gazpacho",
+            "cantidad": "333g"
+          },
+          {
+            "nombre": "Huevo duro picado",
+            "cantidad": "108g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 62,
+          "grasas_g": 13
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin gluten."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

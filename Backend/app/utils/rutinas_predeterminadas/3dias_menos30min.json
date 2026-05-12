@@ -1,0 +1,1172 @@
+[
+  {
+    "id": "3d_sub30_v1",
+    "titulo": "PPL Express A",
+    "dias_semana": 3,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Empuje",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Press militar mancuernas",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Fondos en paralelas",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Tirón",
+        "ejercicios": [
+          {
+            "nombre": "Dominadas agarre prono",
+            "series": 3,
+            "repeticiones": "8-10",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Remo con mancuerna",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Piernas",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Peso muerto rumano",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Zancadas alternas",
+            "series": 2,
+            "repeticiones": "10 por pierna",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "PPL clásico: el split más popular del mundo del fitness.",
+      "Con 3 días, cada grupo muscular descansa 48h antes de volver a trabajar.",
+      "Descansa máximo 45-60s para mantener la sesión bajo 30 min."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "3d_sub30_v2",
+    "titulo": "Full Body 3 días Express A",
+    "dias_semana": 3,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Full Body A",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Press banca plano",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Remo con barra",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Full Body B",
+        "ejercicios": [
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 3,
+            "repeticiones": "8",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Dominadas o jalón al pecho",
+            "series": 3,
+            "repeticiones": "8-10",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Full Body C",
+        "ejercicios": [
+          {
+            "nombre": "Goblet squat",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Press inclinado mancuernas",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Remo en polea baja",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Full Body 3 días: cada músculo recibe estímulo 3 veces por semana.",
+      "Frecuencia alta con volumen bajo por sesión: ideal para principiantes y intermedios.",
+      "A, B y C usan ejercicios distintos para cada patrón de movimiento."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "3d_sub30_v3",
+    "titulo": "Upper/Lower/Full Express",
+    "dias_semana": 3,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Tren Superior",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Remo con mancuerna",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Press militar mancuernas",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Tren Inferior",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Peso muerto rumano",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Hip thrust mancuerna",
+            "series": 3,
+            "repeticiones": "15",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Full Body",
+        "ejercicios": [
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 3,
+            "repeticiones": "8",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press inclinado mancuernas",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Jalón al pecho",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Híbrido Upper/Lower + Full Body: cada músculo trabaja 1.5-2 veces por semana.",
+      "El día Full Body al final de semana como 'recogida' de volumen.",
+      "Flexible: puede hacerse L/M/V o M/J/S."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "3d_sub30_v4",
+    "titulo": "PPL Express B - Supersets",
+    "dias_semana": 3,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Empuje Supersets",
+        "ejercicios": [
+          {
+            "nombre": "Press banca + Elevaciones laterales (superset)",
+            "series": 3,
+            "repeticiones": "10+12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press inclinado mancuernas + Fondos (superset)",
+            "series": 3,
+            "repeticiones": "12+10",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Tirón Supersets",
+        "ejercicios": [
+          {
+            "nombre": "Dominadas + Curl bíceps (superset)",
+            "series": 3,
+            "repeticiones": "8+12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Remo con barra + Jalón agarre estrecho (superset)",
+            "series": 3,
+            "repeticiones": "10+12",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Piernas Supersets",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla + Peso muerto rumano (superset)",
+            "series": 3,
+            "repeticiones": "10+10",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Zancadas + Hip thrust (superset)",
+            "series": 3,
+            "repeticiones": "10+12",
+            "descanso": "60s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Supersets en PPL: máximo volumen en mínimo tiempo.",
+      "Sesiones de 15-20 min reales con alta densidad de trabajo.",
+      "Reduce el peso un 15-20% respecto a lo normal al usar supersets."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "3d_sub30_v5",
+    "titulo": "Compound Only 3 días Express",
+    "dias_semana": 3,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Compuestos A",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 4,
+            "repeticiones": "6-8",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press banca plano",
+            "series": 4,
+            "repeticiones": "6-8",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Compuestos B",
+        "ejercicios": [
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 4,
+            "repeticiones": "5",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 4,
+            "repeticiones": "6-8",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Compuestos C",
+        "ejercicios": [
+          {
+            "nombre": "Remo con barra",
+            "series": 4,
+            "repeticiones": "6-8",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Dominadas lastradas",
+            "series": 4,
+            "repeticiones": "6",
+            "descanso": "60s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Solo 2 compuestos por día: máxima concentración y esfuerzo en cada uno.",
+      "La clave es la progresión de carga: más peso cada semana.",
+      "Sesiones de 15 min reales con altísima intensidad."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "3d_sub30_v6",
+    "titulo": "PPL Express C - Fuerza",
+    "dias_semana": 3,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Empuje Fuerza",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 4,
+            "repeticiones": "5",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 4,
+            "repeticiones": "5",
+            "descanso": "75s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Tirón Fuerza",
+        "ejercicios": [
+          {
+            "nombre": "Dominadas lastradas",
+            "series": 4,
+            "repeticiones": "5",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Remo con barra",
+            "series": 4,
+            "repeticiones": "5",
+            "descanso": "75s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Piernas Fuerza",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 4,
+            "repeticiones": "5",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 3,
+            "repeticiones": "5",
+            "descanso": "75s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "PPL de fuerza pura: 2 ejercicios por día, máxima carga.",
+      "Progresión lineal semanal: +2.5 kg en press y +5 kg en pierna.",
+      "Sesiones de 15-20 min con altísima intensidad."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "3d_sub30_v7",
+    "titulo": "Full Body 3 días Express B - Circuito",
+    "dias_semana": 3,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Circuito A",
+        "ejercicios": [
+          {
+            "nombre": "Goblet squat",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "40s"
+          },
+          {
+            "nombre": "Press banca inclinado mancuernas",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "40s"
+          },
+          {
+            "nombre": "Remo en polea baja",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "40s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Circuito B",
+        "ejercicios": [
+          {
+            "nombre": "Peso muerto rumano",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "40s"
+          },
+          {
+            "nombre": "Press Arnold sentado",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "40s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre estrecho",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "40s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Circuito C",
+        "ejercicios": [
+          {
+            "nombre": "Hip thrust con mancuerna",
+            "series": 3,
+            "repeticiones": "15",
+            "descanso": "40s"
+          },
+          {
+            "nombre": "Press banca agarre cerrado",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "40s"
+          },
+          {
+            "nombre": "Dominadas agarre supino",
+            "series": 3,
+            "repeticiones": "8-10",
+            "descanso": "40s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Circuito: un ejercicio tras otro con mínimo descanso.",
+      "Más metabólico que un full body tradicional: ideal para definición.",
+      "Sesiones de 18-22 min reales."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "3d_sub30_v8",
+    "titulo": "Upper A / Upper B / Lower Express",
+    "dias_semana": 3,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Superior A (Empuje dominante)",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Press militar mancuernas",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Remo con mancuerna",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Superior B (Tirón dominante)",
+        "ejercicios": [
+          {
+            "nombre": "Dominadas agarre ancho",
+            "series": 3,
+            "repeticiones": "8-10",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre supino",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Press inclinado mancuernas",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Tren Inferior",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Peso muerto rumano",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "60s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "2 días de tren superior permite más volumen para pecho y espalda.",
+      "Un día domina el empuje, el otro domina el tirón: equilibrio perfecto.",
+      "El tren inferior recibe un día completo para no descuidarlo."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "3d_sub30_v9",
+    "titulo": "PPL Express D - Hipertrofia",
+    "dias_semana": 3,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Empuje Hipertrofia",
+        "ejercicios": [
+          {
+            "nombre": "Press banca inclinado mancuernas",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Elevaciones laterales",
+            "series": 3,
+            "repeticiones": "15",
+            "descanso": "40s"
+          },
+          {
+            "nombre": "Extensión tríceps en polea",
+            "series": 3,
+            "repeticiones": "15",
+            "descanso": "40s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Tirón Hipertrofia",
+        "ejercicios": [
+          {
+            "nombre": "Jalón al pecho agarre ancho",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Remo en polea baja agarre neutro",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl inclinado mancuernas",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "40s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Piernas Hipertrofia",
+        "ejercicios": [
+          {
+            "nombre": "Prensa de piernas",
+            "series": 3,
+            "repeticiones": "15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 3,
+            "repeticiones": "15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión cuádriceps",
+            "series": 3,
+            "repeticiones": "15",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "PPL orientado a hipertrofia: más reps, menos descanso.",
+      "Ejercicios de aislamiento para maximizar el bombeo muscular.",
+      "Ideal para personas con buena base que quieren definir y crecer."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "3d_sub30_v10",
+    "titulo": "Full Body 3 días Express C - Progresión",
+    "dias_semana": 3,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Fuerza (5x5)",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press banca plano",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Fuerza (5x5)",
+        "ejercicios": [
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Fuerza (5x5)",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Dominadas lastradas",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "60s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Esquema StrongLifts 5x5 adaptado: la rutina de fuerza más probada.",
+      "Progresión lineal: +2.5 kg por sesión en press, +5 kg en sentadilla y peso muerto.",
+      "Sesiones de 15 min máximo: máxima eficiencia absoluta."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "3d_sub30_v11",
+    "titulo": "PPL Express E - Mixto",
+    "dias_semana": 3,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Empuje",
+        "ejercicios": [
+          {
+            "nombre": "Press banca agarre cerrado",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Press Arnold sentado",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Fondos en paralelas",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Tirón",
+        "ejercicios": [
+          {
+            "nombre": "Dominadas agarre supino",
+            "series": 3,
+            "repeticiones": "8-10",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Remo con barra Pendlay",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl martillo",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "40s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Piernas",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla búlgara",
+            "series": 3,
+            "repeticiones": "10 por pierna",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 3,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Elevaciones de gemelos de pie",
+            "series": 3,
+            "repeticiones": "20",
+            "descanso": "30s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Variación de ejercicios respecto al PPL A para mayor diversidad de estímulo.",
+      "La sentadilla búlgara es más exigente: dale tiempo para adaptarte.",
+      "El Pendlay row es explosivo: ideal para desarrollar potencia en la espalda."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "3d_sub30_v12",
+    "titulo": "Full Body 3 días Express D - Supersets",
+    "dias_semana": 3,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Supersets A",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla + Press banca (superset)",
+            "series": 3,
+            "repeticiones": "10+10",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Remo con barra + Plancha (superset)",
+            "series": 3,
+            "repeticiones": "10+30s",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Supersets B",
+        "ejercicios": [
+          {
+            "nombre": "Peso muerto + Press militar (superset)",
+            "series": 3,
+            "repeticiones": "8+10",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Jalón + Hip thrust (superset)",
+            "series": 3,
+            "repeticiones": "12+12",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Supersets C",
+        "ejercicios": [
+          {
+            "nombre": "Goblet squat + Press inclinado (superset)",
+            "series": 3,
+            "repeticiones": "12+12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Dominadas + Zancadas (superset)",
+            "series": 3,
+            "repeticiones": "8+10 por pierna",
+            "descanso": "60s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Supersets antagonistas full body: máximo volumen en 20 min por sesión.",
+      "Cada par trabaja grupos musculares que no compiten entre sí.",
+      "Alta densidad de trabajo: no apto para principiantes absolutos."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "3d_sub30_v13",
+    "titulo": "Push/Legs/Pull Express",
+    "dias_semana": 3,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Empuje",
+        "ejercicios": [
+          {
+            "nombre": "Press banca plano",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Press militar mancuernas",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Extensión tríceps en polea",
+            "series": 3,
+            "repeticiones": "15",
+            "descanso": "40s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Piernas",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Peso muerto rumano",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Tirón",
+        "ejercicios": [
+          {
+            "nombre": "Dominadas agarre prono",
+            "series": 3,
+            "repeticiones": "8-10",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Remo con mancuerna",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "40s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Variación del orden clásico PPL: piernas en el medio para separar los días de press.",
+      "El día de tirón al final de semana cuando espalda y bíceps están frescos.",
+      "Estructura muy popular entre atletas naturales."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "3d_sub30_v14",
+    "titulo": "Upper/Lower/Full Express B",
+    "dias_semana": 3,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Tren Superior",
+        "ejercicios": [
+          {
+            "nombre": "Press inclinado mancuernas",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre ancho",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Elevaciones laterales",
+            "series": 3,
+            "repeticiones": "15",
+            "descanso": "40s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Tren Inferior",
+        "ejercicios": [
+          {
+            "nombre": "Prensa de piernas",
+            "series": 3,
+            "repeticiones": "15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Hip thrust con barra",
+            "series": 3,
+            "repeticiones": "15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl femoral tumbado",
+            "series": 3,
+            "repeticiones": "15",
+            "descanso": "45s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Full Body",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press banca plano",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "45s"
+          },
+          {
+            "nombre": "Remo con barra",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Variante del Upper/Lower/Full con ejercicios distintos al A.",
+      "Uso de máquinas en tren inferior para mayor aislamiento y seguridad.",
+      "El día full body cierra la semana con los patrones principales."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "3d_sub30_v15",
+    "titulo": "Full Body 3 días Express E - Minimalista",
+    "dias_semana": 3,
+    "duracion": "<30",
+    "dias": [
+      {
+        "dia": "Día 1 - Compuesto Principal A",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press banca plano",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Remo con barra",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 2 - Compuesto Principal B",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 1,
+            "repeticiones": "5",
+            "descanso": "60s"
+          }
+        ]
+      },
+      {
+        "dia": "Día 3 - Compuesto Principal C",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Press banca plano",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Remo con barra",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "60s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "StrongLifts 5x5 original: la rutina de fuerza más probada de la historia.",
+      "Sentadilla en todas las sesiones: el ejercicio más completo del mundo.",
+      "+2.5 kg cada sesión: cuando falles 3 veces en un ejercicio, deload al 90%."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_2500_ninguna",
+    "objetivo": "volumen",
+    "kcal_objetivo": 2500,
+    "restriccion": "ninguna",
+    "macros": {
+      "proteinas_g": 156,
+      "carbohidratos_g": 312,
+      "grasas_g": 69
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Tostadas de arroz",
+            "cantidad": "54g"
+          },
+          {
+            "nombre": "Atún al natural",
+            "cantidad": "187g"
+          },
+          {
+            "nombre": "Pimientos asados",
+            "cantidad": "625g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 39,
+          "carbohidratos_g": 78,
+          "grasas_g": 17
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Gominolas deportivas o ositos",
+            "cantidad": "37g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "31g"
+          },
+          {
+            "nombre": "Pre-entreno líquido",
+            "cantidad": "375g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 23,
+          "carbohidratos_g": 46,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Macarrones",
+            "cantidad": "70g"
+          },
+          {
+            "nombre": "Carne picada de pollo",
+            "cantidad": "162g"
+          },
+          {
+            "nombre": "Champiñones",
+            "cantidad": "1125g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 46,
+          "carbohidratos_g": 93,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Atún al natural",
+            "cantidad": "75g"
+          },
+          {
+            "nombre": "Tortitas de arroz",
+            "cantidad": "21g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "416g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 15,
+          "carbohidratos_g": 31,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Pavo al horno",
+            "cantidad": "150g"
+          },
+          {
+            "nombre": "Puré de patata",
+            "cantidad": "193g"
+          },
+          {
+            "nombre": "Judías verdes",
+            "cantidad": "499g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 62,
+          "grasas_g": 13
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Ninguna."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

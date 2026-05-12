@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_3200_sin_brocoli",
+    "objetivo": "volumen",
+    "kcal_objetivo": 3200,
+    "restriccion": "sin_brocoli",
+    "macros": {
+      "proteinas_g": 200,
+      "carbohidratos_g": 400,
+      "grasas_g": 88
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 800,
+        "alimentos": [
+          {
+            "nombre": "Huevos",
+            "cantidad": "173g"
+          },
+          {
+            "nombre": "Jamón cocido",
+            "cantidad": "240g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "1333g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 50,
+          "carbohidratos_g": 100,
+          "grasas_g": 22
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Cereales tipo Corn Flakes",
+            "cantidad": "40g"
+          },
+          {
+            "nombre": "Leche",
+            "cantidad": "352ml"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "179g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 60,
+          "grasas_g": 13
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 960,
+        "alimentos": [
+          {
+            "nombre": "Ñoquis de patata",
+            "cantidad": "192g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "288g"
+          },
+          {
+            "nombre": "Salsa de tomate casera",
+            "cantidad": "800g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 60,
+          "carbohidratos_g": 120,
+          "grasas_g": 26
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de maíz",
+            "cantidad": "27g"
+          },
+          {
+            "nombre": "Guacamole",
+            "cantidad": "64g"
+          },
+          {
+            "nombre": "Pechuga de pollo (fiambre)",
+            "cantidad": "96g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 20,
+          "carbohidratos_g": 40,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 640,
+        "alimentos": [
+          {
+            "nombre": "Sopa de fideos",
+            "cantidad": "320g"
+          },
+          {
+            "nombre": "Pollo desmenuzado",
+            "cantidad": "128g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "138g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 80,
+          "grasas_g": 17
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin brocoli."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

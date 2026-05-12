@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_2800_sin_brocoli",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 2800,
+    "restriccion": "sin_brocoli",
+    "macros": {
+      "proteinas_g": 210,
+      "carbohidratos_g": 280,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Huevos",
+            "cantidad": "151g"
+          },
+          {
+            "nombre": "Jamón cocido",
+            "cantidad": "210g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "1166g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 70,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Yogur griego",
+            "cantidad": "140g"
+          },
+          {
+            "nombre": "Avena",
+            "cantidad": "36g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "42g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 42,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Pasta de lentejas rojas",
+            "cantidad": "78g"
+          },
+          {
+            "nombre": "Gambas peladas",
+            "cantidad": "336g"
+          },
+          {
+            "nombre": "Ajo y perejil",
+            "cantidad": "560g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 63,
+          "carbohidratos_g": 84,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Pan",
+            "cantidad": "37g"
+          },
+          {
+            "nombre": "Queso light",
+            "cantidad": "55g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 28,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Bacalao",
+            "cantidad": "223g"
+          },
+          {
+            "nombre": "Pimientos asados",
+            "cantidad": "559g"
+          },
+          {
+            "nombre": "Pan integral",
+            "cantidad": "74g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 42,
+          "carbohidratos_g": 56,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin brocoli."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

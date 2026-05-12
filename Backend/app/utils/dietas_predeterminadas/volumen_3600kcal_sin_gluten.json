@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_3600_sin_gluten",
+    "objetivo": "volumen",
+    "kcal_objetivo": 3600,
+    "restriccion": "sin_gluten",
+    "macros": {
+      "proteinas_g": 225,
+      "carbohidratos_g": 450,
+      "grasas_g": 100
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 900,
+        "alimentos": [
+          {
+            "nombre": "Huevos",
+            "cantidad": "195g"
+          },
+          {
+            "nombre": "Jamón cocido",
+            "cantidad": "270g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "1500g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 56,
+          "carbohidratos_g": 112,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Dátiles",
+            "cantidad": "63g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "28g"
+          },
+          {
+            "nombre": "Batido de proteínas",
+            "cantidad": "45g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 33,
+          "carbohidratos_g": 67,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 1080,
+        "alimentos": [
+          {
+            "nombre": "Alubias blancas",
+            "cantidad": "252g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "234g"
+          },
+          {
+            "nombre": "Espinacas",
+            "cantidad": "1440g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 67,
+          "carbohidratos_g": 135,
+          "grasas_g": 30
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Caseína micelar",
+            "cantidad": "30g"
+          },
+          {
+            "nombre": "Crema de cacahuete",
+            "cantidad": "20g"
+          },
+          {
+            "nombre": "Leche",
+            "cantidad": "264ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 22,
+          "carbohidratos_g": 45,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 720,
+        "alimentos": [
+          {
+            "nombre": "Atún a la plancha",
+            "cantidad": "168g"
+          },
+          {
+            "nombre": "Quinoa",
+            "cantidad": "62g"
+          },
+          {
+            "nombre": "Ensalada de algas wakame",
+            "cantidad": "480g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 45,
+          "carbohidratos_g": 90,
+          "grasas_g": 20
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin gluten."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

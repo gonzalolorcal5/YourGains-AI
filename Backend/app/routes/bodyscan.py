@@ -212,17 +212,17 @@ no markdown, no explanations outside the JSON:
     db.commit()
     db.refresh(scan)
 
+    es_premium = bool(usuario.is_premium) or usuario.plan_type in ("PREMIUM", "PREMIUM_MONTHLY", "PREMIUM_YEARLY")
+
     return {
         "success": True,
         "scan_id": scan.id,
-        "tipo_cuerpo": scan.tipo_cuerpo,
-        "grasa_estimada_min": scan.grasa_estimada_min,
-        "grasa_estimada_max": scan.grasa_estimada_max,
-        "puntos_fuertes": scan.puntos_fuertes,
-        "musculos_rezagados": scan.puntos_debiles,
-        "recomendacion": None,
-        "analisis_completo": scan.analisis_completo,
-        "peso": scan.peso,
-        "altura": scan.altura,
-        "experiencia": scan.experiencia,
+        "tipo_cuerpo": scan.tipo_cuerpo,  # Free
+        "grasa_estimada_min": scan.grasa_estimada_min,  # Free
+        "grasa_estimada_max": scan.grasa_estimada_max,  # Free
+        # Censura de textos largos (Strings)
+        "puntos_fuertes": scan.puntos_fuertes if es_premium else "🔒 Solo disponible en Premium",
+        "musculos_rezagados": scan.puntos_debiles if es_premium else "🔒 Solo disponible en Premium",
+        "analisis_completo": scan.analisis_completo if es_premium else "Hazte Premium para ver el análisis biomecánico completo de tu cuerpo.",
+        "is_premium_result": es_premium,
     }

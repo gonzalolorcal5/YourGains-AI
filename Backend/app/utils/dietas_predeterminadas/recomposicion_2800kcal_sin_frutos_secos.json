@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_2800_sin_frutos_secos",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 2800,
+    "restriccion": "sin_frutos_secos",
+    "macros": {
+      "proteinas_g": 210,
+      "carbohidratos_g": 280,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Harina de avena",
+            "cantidad": "58g"
+          },
+          {
+            "nombre": "Claras de huevo",
+            "cantidad": "466g"
+          },
+          {
+            "nombre": "Arándanos",
+            "cantidad": "408g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 70,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de arroz",
+            "cantidad": "36g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "23g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "42g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 42,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Guisantes",
+            "cantidad": "336g"
+          },
+          {
+            "nombre": "Jamón serrano en tacos",
+            "cantidad": "168g"
+          },
+          {
+            "nombre": "Huevo poché",
+            "cantidad": "182g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 63,
+          "carbohidratos_g": 84,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Caseína micelar",
+            "cantidad": "23g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "15g"
+          },
+          {
+            "nombre": "Leche",
+            "cantidad": "205ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 28,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Pizza con base de coliflor",
+            "cantidad": "279g"
+          },
+          {
+            "nombre": "Mozzarella light",
+            "cantidad": "111g"
+          },
+          {
+            "nombre": "Tomate frito sin azúcar",
+            "cantidad": "466g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 42,
+          "carbohidratos_g": 56,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin frutos secos."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

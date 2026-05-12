@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_2200_sin_brocoli",
+    "objetivo": "volumen",
+    "kcal_objetivo": 2200,
+    "restriccion": "sin_brocoli",
+    "macros": {
+      "proteinas_g": 137,
+      "carbohidratos_g": 275,
+      "grasas_g": 61
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 550,
+        "alimentos": [
+          {
+            "nombre": "Kéfir",
+            "cantidad": "275g"
+          },
+          {
+            "nombre": "Copos de maíz",
+            "cantidad": "45g"
+          },
+          {
+            "nombre": "Semillas de chía",
+            "cantidad": "36g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 34,
+          "carbohidratos_g": 68,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 330,
+        "alimentos": [
+          {
+            "nombre": "Manzana",
+            "cantidad": "209g"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "18g"
+          },
+          {
+            "nombre": "Café",
+            "cantidad": "550g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 20,
+          "carbohidratos_g": 41,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 660,
+        "alimentos": [
+          {
+            "nombre": "Ensalada de pasta",
+            "cantidad": "61g"
+          },
+          {
+            "nombre": "Atún y huevo duro",
+            "cantidad": "154g"
+          },
+          {
+            "nombre": "Aceitunas y tomate",
+            "cantidad": "440g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 41,
+          "carbohidratos_g": 82,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 220,
+        "alimentos": [
+          {
+            "nombre": "Queso fresco batido",
+            "cantidad": "102g"
+          },
+          {
+            "nombre": "Avena",
+            "cantidad": "19g"
+          },
+          {
+            "nombre": "Chocolate negro 85%",
+            "cantidad": "13g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 13,
+          "carbohidratos_g": 27,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 440,
+        "alimentos": [
+          {
+            "nombre": "Queso cottage",
+            "cantidad": "146g"
+          },
+          {
+            "nombre": "Salmón ahumado",
+            "cantidad": "73g"
+          },
+          {
+            "nombre": "Tostadas integrales",
+            "cantidad": "36g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 55,
+          "grasas_g": 12
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin brocoli."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

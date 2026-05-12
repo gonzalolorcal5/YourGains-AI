@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_1600_sin_gluten",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 1600,
+    "restriccion": "sin_gluten",
+    "macros": {
+      "proteinas_g": 120,
+      "carbohidratos_g": 160,
+      "grasas_g": 53
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Harina de avena sin gluten",
+            "cantidad": "33g"
+          },
+          {
+            "nombre": "Claras de huevo",
+            "cantidad": "266g"
+          },
+          {
+            "nombre": "Arándanos",
+            "cantidad": "233g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 40,
+          "grasas_g": 13
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 240,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de arroz",
+            "cantidad": "20g"
+          },
+          {
+            "nombre": "Crema de cacahuete",
+            "cantidad": "13g"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "89g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 18,
+          "carbohidratos_g": 24,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Macarrones de sarraceno",
+            "cantidad": "44g"
+          },
+          {
+            "nombre": "Carne picada de pollo",
+            "cantidad": "104g"
+          },
+          {
+            "nombre": "Champiñones",
+            "cantidad": "720g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 48,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 160,
+        "alimentos": [
+          {
+            "nombre": "Manzana asada",
+            "cantidad": "101g"
+          },
+          {
+            "nombre": "Yogur natural",
+            "cantidad": "80g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "8g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 12,
+          "carbohidratos_g": 16,
+          "grasas_g": 5
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Pechuga de pollo",
+            "cantidad": "64g"
+          },
+          {
+            "nombre": "Ensalada verde",
+            "cantidad": "533g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "11g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 32,
+          "grasas_g": 10
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin gluten."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

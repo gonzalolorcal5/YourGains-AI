@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2800_sin_frutos_secos",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2800,
+    "restriccion": "sin_frutos_secos",
+    "macros": {
+      "proteinas_g": 244,
+      "carbohidratos_g": 244,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Avena",
+            "cantidad": "60g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "151g"
+          },
+          {
+            "nombre": "Espinacas baby",
+            "cantidad": "933g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 61,
+          "carbohidratos_g": 61,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Yogur griego",
+            "cantidad": "140g"
+          },
+          {
+            "nombre": "Avena",
+            "cantidad": "36g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "42g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 36,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Quinoa",
+            "cantidad": "72g"
+          },
+          {
+            "nombre": "Pavo a la plancha",
+            "cantidad": "251g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "1680g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 73,
+          "carbohidratos_g": 73,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Atún al natural",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Tortitas de arroz",
+            "cantidad": "24g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "466g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 24,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Huevos",
+            "cantidad": "121g"
+          },
+          {
+            "nombre": "Patata cocida",
+            "cantidad": "216g"
+          },
+          {
+            "nombre": "Cebolla",
+            "cantidad": "466g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 49,
+          "carbohidratos_g": 49,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin frutos secos."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2000_sin_gluten",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2000,
+    "restriccion": "sin_gluten",
+    "macros": {
+      "proteinas_g": 175,
+      "carbohidratos_g": 175,
+      "grasas_g": 66
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Tostadas de arroz",
+            "cantidad": "43g"
+          },
+          {
+            "nombre": "Atún al natural",
+            "cantidad": "150g"
+          },
+          {
+            "nombre": "Pimientos asados",
+            "cantidad": "499g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 43,
+          "carbohidratos_g": 43,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 300,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de arroz",
+            "cantidad": "26g"
+          },
+          {
+            "nombre": "Crema de cacahuete",
+            "cantidad": "17g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "30g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 26,
+          "carbohidratos_g": 26,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 600,
+        "alimentos": [
+          {
+            "nombre": "Edamame",
+            "cantidad": "160g"
+          },
+          {
+            "nombre": "Arroz para sushi",
+            "cantidad": "150g"
+          },
+          {
+            "nombre": "Salmón crudo (Poke)",
+            "cantidad": "100g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 52,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 200,
+        "alimentos": [
+          {
+            "nombre": "Requesón",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "20g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "10g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 17,
+          "carbohidratos_g": 17,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Sepia a la plancha",
+            "cantidad": "160g"
+          },
+          {
+            "nombre": "Arroz blanco",
+            "cantidad": "100g"
+          },
+          {
+            "nombre": "Ajo y perejil",
+            "cantidad": "266g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 35,
+          "carbohidratos_g": 35,
+          "grasas_g": 13
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin gluten."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

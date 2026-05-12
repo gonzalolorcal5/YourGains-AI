@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_1800_vegano",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 1800,
+    "restriccion": "vegano",
+    "macros": {
+      "proteinas_g": 135,
+      "carbohidratos_g": 180,
+      "grasas_g": 60
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 450,
+        "alimentos": [
+          {
+            "nombre": "Pan de espelta",
+            "cantidad": "60g"
+          },
+          {
+            "nombre": "Filete de tofu",
+            "cantidad": "97g"
+          },
+          {
+            "nombre": "Aguacate",
+            "cantidad": "90g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 33,
+          "carbohidratos_g": 45,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 270,
+        "alimentos": [
+          {
+            "nombre": "Dátiles",
+            "cantidad": "31g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "14g"
+          },
+          {
+            "nombre": "Batido de proteínas",
+            "cantidad": "22g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 20,
+          "carbohidratos_g": 27,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Garbanzos",
+            "cantidad": "108g"
+          },
+          {
+            "nombre": "Heura en trozos",
+            "cantidad": "162g"
+          },
+          {
+            "nombre": "Tomate triturado",
+            "cantidad": "360g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 54,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 180,
+        "alimentos": [
+          {
+            "nombre": "Hummus",
+            "cantidad": "36g"
+          },
+          {
+            "nombre": "Palitos de zanahoria",
+            "cantidad": "144g"
+          },
+          {
+            "nombre": "Lonchas de pavo vegano",
+            "cantidad": "54g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 13,
+          "carbohidratos_g": 18,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Tortilla de harina de garbanzo",
+            "cantidad": "78g"
+          },
+          {
+            "nombre": "Queso vegano",
+            "cantidad": "36g"
+          },
+          {
+            "nombre": "Ensalada de canónigos",
+            "cantidad": "600g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 36,
+          "grasas_g": 12
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

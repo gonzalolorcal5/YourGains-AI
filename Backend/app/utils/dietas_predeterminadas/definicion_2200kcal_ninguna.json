@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2200_ninguna",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2200,
+    "restriccion": "ninguna",
+    "macros": {
+      "proteinas_g": 192,
+      "carbohidratos_g": 192,
+      "grasas_g": 73
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 550,
+        "alimentos": [
+          {
+            "nombre": "Avena",
+            "cantidad": "47g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "119g"
+          },
+          {
+            "nombre": "Espinacas baby",
+            "cantidad": "733g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 48,
+          "carbohidratos_g": 48,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 330,
+        "alimentos": [
+          {
+            "nombre": "Dátiles",
+            "cantidad": "38g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "17g"
+          },
+          {
+            "nombre": "Batido de proteínas",
+            "cantidad": "27g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 28,
+          "carbohidratos_g": 28,
+          "grasas_g": 11
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 660,
+        "alimentos": [
+          {
+            "nombre": "Quinoa",
+            "cantidad": "57g"
+          },
+          {
+            "nombre": "Pavo a la plancha",
+            "cantidad": "198g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "1320g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 57,
+          "carbohidratos_g": 57,
+          "grasas_g": 22
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 220,
+        "alimentos": [
+          {
+            "nombre": "Requesón desnatado",
+            "cantidad": "102g"
+          },
+          {
+            "nombre": "Sirope cero",
+            "cantidad": "73g"
+          },
+          {
+            "nombre": "Canela",
+            "cantidad": "73g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 19,
+          "carbohidratos_g": 19,
+          "grasas_g": 7
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 440,
+        "alimentos": [
+          {
+            "nombre": "Hamburguesa de pollo casera",
+            "cantidad": "102g"
+          },
+          {
+            "nombre": "Pan de hamburguesa",
+            "cantidad": "51g"
+          },
+          {
+            "nombre": "Tomate y lechuga",
+            "cantidad": "586g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 38,
+          "carbohidratos_g": 38,
+          "grasas_g": 14
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Ninguna."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

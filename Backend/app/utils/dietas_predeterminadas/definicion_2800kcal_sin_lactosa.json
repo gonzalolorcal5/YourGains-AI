@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2800_sin_lactosa",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2800,
+    "restriccion": "sin_lactosa",
+    "macros": {
+      "proteinas_g": 244,
+      "carbohidratos_g": 244,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Harina de avena",
+            "cantidad": "58g"
+          },
+          {
+            "nombre": "Claras de huevo",
+            "cantidad": "466g"
+          },
+          {
+            "nombre": "Arándanos",
+            "cantidad": "408g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 61,
+          "carbohidratos_g": 61,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Crema de arroz",
+            "cantidad": "39g"
+          },
+          {
+            "nombre": "Proteína Whey aislada",
+            "cantidad": "35g"
+          },
+          {
+            "nombre": "Mermelada",
+            "cantidad": "56g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 36,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Arroz basmati",
+            "cantidad": "78g"
+          },
+          {
+            "nombre": "Curry de pollo",
+            "cantidad": "196g"
+          },
+          {
+            "nombre": "Leche de coco light",
+            "cantidad": "420ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 73,
+          "carbohidratos_g": 73,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Pan",
+            "cantidad": "37g"
+          },
+          {
+            "nombre": "Queso en lonchas sin lactosa",
+            "cantidad": "55g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 24,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Sepia a la plancha",
+            "cantidad": "223g"
+          },
+          {
+            "nombre": "Arroz blanco",
+            "cantidad": "139g"
+          },
+          {
+            "nombre": "Ajo y perejil",
+            "cantidad": "373g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 49,
+          "carbohidratos_g": 49,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin lactosa."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

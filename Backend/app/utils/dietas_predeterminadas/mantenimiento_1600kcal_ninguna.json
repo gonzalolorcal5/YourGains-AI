@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_1600_ninguna",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 1600,
+    "restriccion": "ninguna",
+    "macros": {
+      "proteinas_g": 120,
+      "carbohidratos_g": 160,
+      "grasas_g": 53
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Porridge de avena",
+            "cantidad": "34g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "293ml"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "22g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 40,
+          "grasas_g": 13
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 240,
+        "alimentos": [
+          {
+            "nombre": "Pan de centeno",
+            "cantidad": "32g"
+          },
+          {
+            "nombre": "Atún al natural",
+            "cantidad": "72g"
+          },
+          {
+            "nombre": "Pimientos",
+            "cantidad": "280g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 18,
+          "carbohidratos_g": 24,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Quinoa",
+            "cantidad": "41g"
+          },
+          {
+            "nombre": "Pavo a la plancha",
+            "cantidad": "144g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "960g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 48,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 160,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "21g"
+          },
+          {
+            "nombre": "Jamón serrano magro",
+            "cantidad": "32g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "266g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 12,
+          "carbohidratos_g": 16,
+          "grasas_g": 5
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Carne picada de pollo",
+            "cantidad": "69g"
+          },
+          {
+            "nombre": "Fideos de calabacín",
+            "cantidad": "533g"
+          },
+          {
+            "nombre": "Salsa de soja y sésamo",
+            "cantidad": "21g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 32,
+          "grasas_g": 10
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Ninguna."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

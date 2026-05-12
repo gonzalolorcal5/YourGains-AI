@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_1600_sin_gluten",
+    "objetivo": "definicion",
+    "kcal_objetivo": 1600,
+    "restriccion": "sin_gluten",
+    "macros": {
+      "proteinas_g": 140,
+      "carbohidratos_g": 140,
+      "grasas_g": 53
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Crema de arroz",
+            "cantidad": "37g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "33g"
+          },
+          {
+            "nombre": "Canela",
+            "cantidad": "133g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 35,
+          "carbohidratos_g": 35,
+          "grasas_g": 13
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 240,
+        "alimentos": [
+          {
+            "nombre": "Gominolas deportivas o ositos",
+            "cantidad": "24g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "20g"
+          },
+          {
+            "nombre": "Pre-entreno líquido",
+            "cantidad": "240g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 21,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Puré de patata",
+            "cantidad": "185g"
+          },
+          {
+            "nombre": "Albóndigas de ternera",
+            "cantidad": "88g"
+          },
+          {
+            "nombre": "Guisantes",
+            "cantidad": "192g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 42,
+          "carbohidratos_g": 42,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 160,
+        "alimentos": [
+          {
+            "nombre": "Caseína micelar",
+            "cantidad": "13g"
+          },
+          {
+            "nombre": "Crema de cacahuete",
+            "cantidad": "9g"
+          },
+          {
+            "nombre": "Leche",
+            "cantidad": "117ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 14,
+          "carbohidratos_g": 14,
+          "grasas_g": 5
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Atún a la plancha",
+            "cantidad": "74g"
+          },
+          {
+            "nombre": "Quinoa",
+            "cantidad": "27g"
+          },
+          {
+            "nombre": "Ensalada de algas wakame",
+            "cantidad": "213g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 28,
+          "carbohidratos_g": 28,
+          "grasas_g": 10
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin gluten."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

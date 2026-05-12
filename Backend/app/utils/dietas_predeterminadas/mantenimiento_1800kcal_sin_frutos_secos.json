@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_1800_sin_frutos_secos",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 1800,
+    "restriccion": "sin_frutos_secos",
+    "macros": {
+      "proteinas_g": 135,
+      "carbohidratos_g": 180,
+      "grasas_g": 60
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 450,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "60g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "135g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "16g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 33,
+          "carbohidratos_g": 45,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 270,
+        "alimentos": [
+          {
+            "nombre": "Kéfir",
+            "cantidad": "135g"
+          },
+          {
+            "nombre": "Arándanos",
+            "cantidad": "157g"
+          },
+          {
+            "nombre": "Semillas de calabaza",
+            "cantidad": "14g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 20,
+          "carbohidratos_g": 27,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Macarrones",
+            "cantidad": "50g"
+          },
+          {
+            "nombre": "Carne picada de pollo",
+            "cantidad": "117g"
+          },
+          {
+            "nombre": "Champiñones",
+            "cantidad": "810g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 54,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 180,
+        "alimentos": [
+          {
+            "nombre": "Batido de Proteína",
+            "cantidad": "15g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "132ml"
+          },
+          {
+            "nombre": "Fresas",
+            "cantidad": "180g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 13,
+          "carbohidratos_g": 18,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Huevos",
+            "cantidad": "78g"
+          },
+          {
+            "nombre": "Patata cocida",
+            "cantidad": "139g"
+          },
+          {
+            "nombre": "Cebolla",
+            "cantidad": "300g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 36,
+          "grasas_g": 12
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin frutos secos."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

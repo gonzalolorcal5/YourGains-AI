@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_2500_sin_frutos_secos",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 2500,
+    "restriccion": "sin_frutos_secos",
+    "macros": {
+      "proteinas_g": 187,
+      "carbohidratos_g": 250,
+      "grasas_g": 83
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "187g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "22g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 46,
+          "carbohidratos_g": 62,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Avena cocida",
+            "cantidad": "32g"
+          },
+          {
+            "nombre": "Pasas",
+            "cantidad": "37g"
+          },
+          {
+            "nombre": "Leche desnatada",
+            "cantidad": "312ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 28,
+          "carbohidratos_g": 37,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Arroz basmati",
+            "cantidad": "70g"
+          },
+          {
+            "nombre": "Curry de pollo",
+            "cantidad": "175g"
+          },
+          {
+            "nombre": "Leche de coco light",
+            "cantidad": "375ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 56,
+          "carbohidratos_g": 75,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Hummus",
+            "cantidad": "49g"
+          },
+          {
+            "nombre": "Palitos de zanahoria",
+            "cantidad": "199g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "75g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 18,
+          "carbohidratos_g": 25,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Huevos",
+            "cantidad": "108g"
+          },
+          {
+            "nombre": "Patata cocida",
+            "cantidad": "193g"
+          },
+          {
+            "nombre": "Cebolla",
+            "cantidad": "416g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 37,
+          "carbohidratos_g": 50,
+          "grasas_g": 16
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin frutos secos."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

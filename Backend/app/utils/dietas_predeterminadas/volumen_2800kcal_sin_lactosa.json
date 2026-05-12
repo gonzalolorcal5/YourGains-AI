@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_2800_sin_lactosa",
+    "objetivo": "volumen",
+    "kcal_objetivo": 2800,
+    "restriccion": "sin_lactosa",
+    "macros": {
+      "proteinas_g": 175,
+      "carbohidratos_g": 350,
+      "grasas_g": 77
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Pan de espelta",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Huevo a la plancha",
+            "cantidad": "151g"
+          },
+          {
+            "nombre": "Aguacate",
+            "cantidad": "140g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 43,
+          "carbohidratos_g": 87,
+          "grasas_g": 19
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Dátiles",
+            "cantidad": "49g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "22g"
+          },
+          {
+            "nombre": "Batido de proteínas",
+            "cantidad": "35g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 26,
+          "carbohidratos_g": 52,
+          "grasas_g": 11
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Ensalada de pasta",
+            "cantidad": "78g"
+          },
+          {
+            "nombre": "Atún y huevo duro",
+            "cantidad": "196g"
+          },
+          {
+            "nombre": "Aceitunas y tomate",
+            "cantidad": "560g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 105,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Batido de Proteína",
+            "cantidad": "23g"
+          },
+          {
+            "nombre": "Leche sin lactosa",
+            "cantidad": "205ml"
+          },
+          {
+            "nombre": "Fresas",
+            "cantidad": "279g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 17,
+          "carbohidratos_g": 35,
+          "grasas_g": 7
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Bacalao",
+            "cantidad": "223g"
+          },
+          {
+            "nombre": "Pimientos asados",
+            "cantidad": "559g"
+          },
+          {
+            "nombre": "Pan integral",
+            "cantidad": "74g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 35,
+          "carbohidratos_g": 70,
+          "grasas_g": 15
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin lactosa."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

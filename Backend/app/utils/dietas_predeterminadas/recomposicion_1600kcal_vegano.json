@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_1600_vegano",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 1600,
+    "restriccion": "vegano",
+    "macros": {
+      "proteinas_g": 120,
+      "carbohidratos_g": 160,
+      "grasas_g": 53
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Pan de centeno",
+            "cantidad": "53g"
+          },
+          {
+            "nombre": "Zanahoria marinada (salmón vegano)",
+            "cantidad": "66g"
+          },
+          {
+            "nombre": "Queso crema vegano",
+            "cantidad": "80g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 40,
+          "grasas_g": 13
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 240,
+        "alimentos": [
+          {
+            "nombre": "Manzana",
+            "cantidad": "152g"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "13g"
+          },
+          {
+            "nombre": "Café",
+            "cantidad": "400g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 18,
+          "carbohidratos_g": 24,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Lentejas cocidas",
+            "cantidad": "137g"
+          },
+          {
+            "nombre": "Patata cocida",
+            "cantidad": "185g"
+          },
+          {
+            "nombre": "Zanahoria",
+            "cantidad": "384g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 48,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 160,
+        "alimentos": [
+          {
+            "nombre": "Puding de chía (Proteína + Chía + Leche)",
+            "cantidad": "53ml"
+          },
+          {
+            "nombre": "Fresas",
+            "cantidad": "160g"
+          },
+          {
+            "nombre": "Sirope cero",
+            "cantidad": "53g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 12,
+          "carbohidratos_g": 16,
+          "grasas_g": 5
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Tofu revuelto",
+            "cantidad": "69g"
+          },
+          {
+            "nombre": "Patata cocida",
+            "cantidad": "123g"
+          },
+          {
+            "nombre": "Cebolla",
+            "cantidad": "266g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 32,
+          "grasas_g": 10
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

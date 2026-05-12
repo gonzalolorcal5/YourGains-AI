@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_1800_vegetariano",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 1800,
+    "restriccion": "vegetariano",
+    "macros": {
+      "proteinas_g": 135,
+      "carbohidratos_g": 180,
+      "grasas_g": 60
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 450,
+        "alimentos": [
+          {
+            "nombre": "Porridge de avena",
+            "cantidad": "39g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "330ml"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "25g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 33,
+          "carbohidratos_g": 45,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 270,
+        "alimentos": [
+          {
+            "nombre": "Gominolas deportivas o ositos",
+            "cantidad": "27g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "22g"
+          },
+          {
+            "nombre": "Pre-entreno líquido",
+            "cantidad": "270g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 20,
+          "carbohidratos_g": 27,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Pasta integral",
+            "cantidad": "126g"
+          },
+          {
+            "nombre": "Queso fresco batido",
+            "cantidad": "72g"
+          },
+          {
+            "nombre": "Ensalada mixta",
+            "cantidad": "900g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 54,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 180,
+        "alimentos": [
+          {
+            "nombre": "Queso havarti",
+            "cantidad": "54g"
+          },
+          {
+            "nombre": "Pan",
+            "cantidad": "24g"
+          },
+          {
+            "nombre": "Queso light",
+            "cantidad": "36g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 13,
+          "carbohidratos_g": 18,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Revuelto de ajetes",
+            "cantidad": "78g"
+          },
+          {
+            "nombre": "Champiñones",
+            "cantidad": "144g"
+          },
+          {
+            "nombre": "Pan tostado",
+            "cantidad": "48g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 36,
+          "grasas_g": 12
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegetariano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

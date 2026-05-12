@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_2800_sin_brocoli",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 2800,
+    "restriccion": "sin_brocoli",
+    "macros": {
+      "proteinas_g": 210,
+      "carbohidratos_g": 280,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Porridge de avena",
+            "cantidad": "60g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "513ml"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "39g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 70,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Pan blanco",
+            "cantidad": "49g"
+          },
+          {
+            "nombre": "Mermelada",
+            "cantidad": "56g"
+          },
+          {
+            "nombre": "Queso fresco",
+            "cantidad": "140g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 42,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Alubias blancas",
+            "cantidad": "196g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "182g"
+          },
+          {
+            "nombre": "Espinacas",
+            "cantidad": "1120g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 63,
+          "carbohidratos_g": 84,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Requesón desnatado",
+            "cantidad": "130g"
+          },
+          {
+            "nombre": "Sirope cero",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Canela",
+            "cantidad": "93g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 28,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Sepia a la plancha",
+            "cantidad": "223g"
+          },
+          {
+            "nombre": "Arroz blanco",
+            "cantidad": "139g"
+          },
+          {
+            "nombre": "Ajo y perejil",
+            "cantidad": "373g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 42,
+          "carbohidratos_g": 56,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin brocoli."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

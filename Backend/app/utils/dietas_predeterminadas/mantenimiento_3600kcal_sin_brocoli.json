@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_3600_sin_brocoli",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 3600,
+    "restriccion": "sin_brocoli",
+    "macros": {
+      "proteinas_g": 270,
+      "carbohidratos_g": 360,
+      "grasas_g": 120
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 900,
+        "alimentos": [
+          {
+            "nombre": "Revuelto de claras",
+            "cantidad": "600g"
+          },
+          {
+            "nombre": "Champiñones",
+            "cantidad": "1350g"
+          },
+          {
+            "nombre": "Pan integral",
+            "cantidad": "120g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 67,
+          "carbohidratos_g": 90,
+          "grasas_g": 30
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Queso fresco batido",
+            "cantidad": "252g"
+          },
+          {
+            "nombre": "Semillas de chía",
+            "cantidad": "36g"
+          },
+          {
+            "nombre": "Kiwi",
+            "cantidad": "288g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 54,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 1080,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de trigo (Fajitas)",
+            "cantidad": "126g"
+          },
+          {
+            "nombre": "Tiras de pollo",
+            "cantidad": "216g"
+          },
+          {
+            "nombre": "Pimiento rojo y verde",
+            "cantidad": "1260g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 81,
+          "carbohidratos_g": 108,
+          "grasas_g": 36
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "48g"
+          },
+          {
+            "nombre": "Jamón serrano magro",
+            "cantidad": "72g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "600g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 36,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 720,
+        "alimentos": [
+          {
+            "nombre": "Sopa de fideos",
+            "cantidad": "360g"
+          },
+          {
+            "nombre": "Pollo desmenuzado",
+            "cantidad": "144g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "156g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 54,
+          "carbohidratos_g": 72,
+          "grasas_g": 24
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin brocoli."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

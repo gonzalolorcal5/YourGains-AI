@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2800_sin_pescado",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2800,
+    "restriccion": "sin_pescado",
+    "macros": {
+      "proteinas_g": 244,
+      "carbohidratos_g": 244,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de avena",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Sirope sin azúcar",
+            "cantidad": "233g"
+          },
+          {
+            "nombre": "Fresas",
+            "cantidad": "700g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 61,
+          "carbohidratos_g": 61,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Barrita de proteínas (baja en azúcar)",
+            "cantidad": "42g"
+          },
+          {
+            "nombre": "Pera",
+            "cantidad": "237g"
+          },
+          {
+            "nombre": "Nueces de macadamia",
+            "cantidad": "21g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 36,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Pasta integral",
+            "cantidad": "196g"
+          },
+          {
+            "nombre": "Ternera magra",
+            "cantidad": "112g"
+          },
+          {
+            "nombre": "Ensalada mixta",
+            "cantidad": "1400g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 73,
+          "carbohidratos_g": 73,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Manzana asada",
+            "cantidad": "177g"
+          },
+          {
+            "nombre": "Yogur natural",
+            "cantidad": "139g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "14g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 24,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Pizza con base de coliflor",
+            "cantidad": "279g"
+          },
+          {
+            "nombre": "Mozzarella light",
+            "cantidad": "111g"
+          },
+          {
+            "nombre": "Tomate frito sin azúcar",
+            "cantidad": "466g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 49,
+          "carbohidratos_g": 49,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin pescado."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

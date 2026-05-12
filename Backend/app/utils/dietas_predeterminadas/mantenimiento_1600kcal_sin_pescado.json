@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_1600_sin_pescado",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 1600,
+    "restriccion": "sin_pescado",
+    "macros": {
+      "proteinas_g": 120,
+      "carbohidratos_g": 160,
+      "grasas_g": 53
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Harina de avena",
+            "cantidad": "33g"
+          },
+          {
+            "nombre": "Claras de huevo",
+            "cantidad": "266g"
+          },
+          {
+            "nombre": "Arándanos",
+            "cantidad": "233g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 40,
+          "grasas_g": 13
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 240,
+        "alimentos": [
+          {
+            "nombre": "Pan blanco",
+            "cantidad": "28g"
+          },
+          {
+            "nombre": "Mermelada",
+            "cantidad": "32g"
+          },
+          {
+            "nombre": "Queso fresco",
+            "cantidad": "80g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 18,
+          "carbohidratos_g": 24,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Puré de patata",
+            "cantidad": "185g"
+          },
+          {
+            "nombre": "Albóndigas de ternera",
+            "cantidad": "88g"
+          },
+          {
+            "nombre": "Guisantes",
+            "cantidad": "192g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 48,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 160,
+        "alimentos": [
+          {
+            "nombre": "Queso fresco batido",
+            "cantidad": "74g"
+          },
+          {
+            "nombre": "Avena",
+            "cantidad": "13g"
+          },
+          {
+            "nombre": "Chocolate negro 85%",
+            "cantidad": "9g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 12,
+          "carbohidratos_g": 16,
+          "grasas_g": 5
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Pavo al horno",
+            "cantidad": "96g"
+          },
+          {
+            "nombre": "Puré de patata",
+            "cantidad": "123g"
+          },
+          {
+            "nombre": "Judías verdes",
+            "cantidad": "320g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 32,
+          "grasas_g": 10
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin pescado."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

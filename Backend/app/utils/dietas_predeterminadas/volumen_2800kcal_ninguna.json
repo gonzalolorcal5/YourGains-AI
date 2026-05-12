@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_2800_ninguna",
+    "objetivo": "volumen",
+    "kcal_objetivo": 2800,
+    "restriccion": "ninguna",
+    "macros": {
+      "proteinas_g": 175,
+      "carbohidratos_g": 350,
+      "grasas_g": 77
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Porridge de avena",
+            "cantidad": "60g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "513ml"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "39g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 43,
+          "carbohidratos_g": 87,
+          "grasas_g": 19
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Crema de arroz",
+            "cantidad": "39g"
+          },
+          {
+            "nombre": "Proteína Whey aislada",
+            "cantidad": "35g"
+          },
+          {
+            "nombre": "Mermelada",
+            "cantidad": "56g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 26,
+          "carbohidratos_g": 52,
+          "grasas_g": 11
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de trigo (Fajitas)",
+            "cantidad": "98g"
+          },
+          {
+            "nombre": "Tiras de pollo",
+            "cantidad": "168g"
+          },
+          {
+            "nombre": "Pimiento rojo y verde",
+            "cantidad": "979g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 105,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Batido de Proteína",
+            "cantidad": "23g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "205ml"
+          },
+          {
+            "nombre": "Fresas",
+            "cantidad": "279g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 17,
+          "carbohidratos_g": 35,
+          "grasas_g": 7
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Dorada al horno",
+            "cantidad": "186g"
+          },
+          {
+            "nombre": "Patata panadera",
+            "cantidad": "216g"
+          },
+          {
+            "nombre": "Champiñones al ajillo",
+            "cantidad": "373g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 35,
+          "carbohidratos_g": 70,
+          "grasas_g": 15
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Ninguna."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

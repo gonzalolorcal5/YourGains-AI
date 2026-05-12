@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_2800_ninguna",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 2800,
+    "restriccion": "ninguna",
+    "macros": {
+      "proteinas_g": 210,
+      "carbohidratos_g": 280,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Pan de centeno",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Salmón ahumado",
+            "cantidad": "116g"
+          },
+          {
+            "nombre": "Queso crema light",
+            "cantidad": "140g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 70,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Cereales tipo Corn Flakes",
+            "cantidad": "35g"
+          },
+          {
+            "nombre": "Leche",
+            "cantidad": "308ml"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "156g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 42,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Trigo sarraceno",
+            "cantidad": "78g"
+          },
+          {
+            "nombre": "Pechuga de pavo asada",
+            "cantidad": "251g"
+          },
+          {
+            "nombre": "Calabaza asada",
+            "cantidad": "840g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 63,
+          "carbohidratos_g": 84,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Yogur griego",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Arándanos",
+            "cantidad": "163g"
+          },
+          {
+            "nombre": "Almendras",
+            "cantidad": "14g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 28,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Filete de ternera fino",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Boniato frito (Airfryer)",
+            "cantidad": "214g"
+          },
+          {
+            "nombre": "Pimientos de Padrón",
+            "cantidad": "373g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 42,
+          "carbohidratos_g": 56,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Ninguna."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

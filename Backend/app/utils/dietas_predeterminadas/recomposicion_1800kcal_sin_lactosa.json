@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_1800_sin_lactosa",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 1800,
+    "restriccion": "sin_lactosa",
+    "macros": {
+      "proteinas_g": 135,
+      "carbohidratos_g": 180,
+      "grasas_g": 60
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 450,
+        "alimentos": [
+          {
+            "nombre": "Proteína aislada (Isolate) o Vegetal",
+            "cantidad": "37g"
+          },
+          {
+            "nombre": "Bebida de almendras",
+            "cantidad": "600ml"
+          },
+          {
+            "nombre": "Crema de cacahuete",
+            "cantidad": "25g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 33,
+          "carbohidratos_g": 45,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 270,
+        "alimentos": [
+          {
+            "nombre": "Manzana",
+            "cantidad": "171g"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "15g"
+          },
+          {
+            "nombre": "Café",
+            "cantidad": "450g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 20,
+          "carbohidratos_g": 27,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Ensalada de pasta",
+            "cantidad": "50g"
+          },
+          {
+            "nombre": "Atún y huevo duro",
+            "cantidad": "126g"
+          },
+          {
+            "nombre": "Aceitunas y tomate",
+            "cantidad": "360g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 54,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 180,
+        "alimentos": [
+          {
+            "nombre": "Atún al natural",
+            "cantidad": "54g"
+          },
+          {
+            "nombre": "Tortitas de arroz",
+            "cantidad": "15g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "300g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 13,
+          "carbohidratos_g": 18,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Queso sin lactosa",
+            "cantidad": "120g"
+          },
+          {
+            "nombre": "Salmón ahumado",
+            "cantidad": "60g"
+          },
+          {
+            "nombre": "Tostadas integrales",
+            "cantidad": "30g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 36,
+          "grasas_g": 12
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin lactosa."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

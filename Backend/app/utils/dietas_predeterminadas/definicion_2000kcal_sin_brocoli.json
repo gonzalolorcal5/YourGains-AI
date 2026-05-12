@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2000_sin_brocoli",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2000,
+    "restriccion": "sin_brocoli",
+    "macros": {
+      "proteinas_g": 175,
+      "carbohidratos_g": 175,
+      "grasas_g": 66
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Crema de arroz",
+            "cantidad": "46g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "41g"
+          },
+          {
+            "nombre": "Canela",
+            "cantidad": "166g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 43,
+          "carbohidratos_g": 43,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 300,
+        "alimentos": [
+          {
+            "nombre": "Avena cocida",
+            "cantidad": "26g"
+          },
+          {
+            "nombre": "Pasas",
+            "cantidad": "30g"
+          },
+          {
+            "nombre": "Leche desnatada",
+            "cantidad": "250ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 26,
+          "carbohidratos_g": 26,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 600,
+        "alimentos": [
+          {
+            "nombre": "Alubias blancas",
+            "cantidad": "140g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "130g"
+          },
+          {
+            "nombre": "Espinacas",
+            "cantidad": "800g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 52,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 200,
+        "alimentos": [
+          {
+            "nombre": "Huevos revueltos",
+            "cantidad": "43g"
+          },
+          {
+            "nombre": "Pan integral",
+            "cantidad": "26g"
+          },
+          {
+            "nombre": "Aguacate",
+            "cantidad": "40g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 17,
+          "carbohidratos_g": 17,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Pizza con base de coliflor",
+            "cantidad": "200g"
+          },
+          {
+            "nombre": "Mozzarella light",
+            "cantidad": "80g"
+          },
+          {
+            "nombre": "Tomate frito sin azúcar",
+            "cantidad": "333g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 35,
+          "carbohidratos_g": 35,
+          "grasas_g": 13
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin brocoli."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

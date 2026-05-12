@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_3200_sin_pescado",
+    "objetivo": "volumen",
+    "kcal_objetivo": 3200,
+    "restriccion": "sin_pescado",
+    "macros": {
+      "proteinas_g": 200,
+      "carbohidratos_g": 400,
+      "grasas_g": 88
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 800,
+        "alimentos": [
+          {
+            "nombre": "Batido de frutas (Plátano/Fresa)",
+            "cantidad": "533g"
+          },
+          {
+            "nombre": "Avena",
+            "cantidad": "69g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "66g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 50,
+          "carbohidratos_g": 100,
+          "grasas_g": 22
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Pan blanco",
+            "cantidad": "56g"
+          },
+          {
+            "nombre": "Mermelada",
+            "cantidad": "64g"
+          },
+          {
+            "nombre": "Queso fresco",
+            "cantidad": "160g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 60,
+          "grasas_g": 13
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 960,
+        "alimentos": [
+          {
+            "nombre": "Macarrones",
+            "cantidad": "89g"
+          },
+          {
+            "nombre": "Carne picada de pollo",
+            "cantidad": "208g"
+          },
+          {
+            "nombre": "Champiñones",
+            "cantidad": "1440g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 60,
+          "carbohidratos_g": 120,
+          "grasas_g": 26
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Yogur de proteínas",
+            "cantidad": "128g"
+          },
+          {
+            "nombre": "Granola sin azúcar",
+            "cantidad": "26g"
+          },
+          {
+            "nombre": "Frambuesas",
+            "cantidad": "192g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 20,
+          "carbohidratos_g": 40,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 640,
+        "alimentos": [
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "106g"
+          },
+          {
+            "nombre": "Patata asada",
+            "cantidad": "247g"
+          },
+          {
+            "nombre": "Espárragos",
+            "cantidad": "960g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 80,
+          "grasas_g": 17
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin pescado."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

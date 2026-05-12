@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_1600_sin_frutos_secos",
+    "objetivo": "definicion",
+    "kcal_objetivo": 1600,
+    "restriccion": "sin_frutos_secos",
+    "macros": {
+      "proteinas_g": 140,
+      "carbohidratos_g": 140,
+      "grasas_g": 53
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Harina de avena",
+            "cantidad": "33g"
+          },
+          {
+            "nombre": "Claras de huevo",
+            "cantidad": "266g"
+          },
+          {
+            "nombre": "Arándanos",
+            "cantidad": "233g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 35,
+          "carbohidratos_g": 35,
+          "grasas_g": 13
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 240,
+        "alimentos": [
+          {
+            "nombre": "Crema de arroz",
+            "cantidad": "22g"
+          },
+          {
+            "nombre": "Proteína Whey aislada",
+            "cantidad": "20g"
+          },
+          {
+            "nombre": "Mermelada",
+            "cantidad": "32g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 21,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Macarrones",
+            "cantidad": "44g"
+          },
+          {
+            "nombre": "Carne picada de pollo",
+            "cantidad": "104g"
+          },
+          {
+            "nombre": "Champiñones",
+            "cantidad": "720g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 42,
+          "carbohidratos_g": 42,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 160,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "21g"
+          },
+          {
+            "nombre": "Jamón serrano magro",
+            "cantidad": "32g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "266g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 14,
+          "carbohidratos_g": 14,
+          "grasas_g": 5
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "96g"
+          },
+          {
+            "nombre": "Crema de calabaza",
+            "cantidad": "266g"
+          },
+          {
+            "nombre": "Picatostes integrales",
+            "cantidad": "26g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 28,
+          "carbohidratos_g": 28,
+          "grasas_g": 10
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin frutos secos."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_2800_vegano",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 2800,
+    "restriccion": "vegano",
+    "macros": {
+      "proteinas_g": 210,
+      "carbohidratos_g": 280,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Revuelto de tofu",
+            "cantidad": "151g"
+          },
+          {
+            "nombre": "Pan integral",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Aguacate",
+            "cantidad": "140g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 70,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Gominolas deportivas o ositos",
+            "cantidad": "42g"
+          },
+          {
+            "nombre": "Proteína de guisante",
+            "cantidad": "35g"
+          },
+          {
+            "nombre": "Pre-entreno líquido",
+            "cantidad": "420g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 42,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Guisantes",
+            "cantidad": "336g"
+          },
+          {
+            "nombre": "Tacos de soja texturizada",
+            "cantidad": "168g"
+          },
+          {
+            "nombre": "Huevo poché",
+            "cantidad": "182g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 63,
+          "carbohidratos_g": 84,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Leche con cacao puro",
+            "cantidad": "205ml"
+          },
+          {
+            "nombre": "Pan tostado",
+            "cantidad": "37g"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "15g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 28,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Lonchas de pavo vegano",
+            "cantidad": "167g"
+          },
+          {
+            "nombre": "Crema de calabaza",
+            "cantidad": "466g"
+          },
+          {
+            "nombre": "Picatostes integrales",
+            "cantidad": "46g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 42,
+          "carbohidratos_g": 56,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

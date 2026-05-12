@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_2500_vegetariano",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 2500,
+    "restriccion": "vegetariano",
+    "macros": {
+      "proteinas_g": 187,
+      "carbohidratos_g": 250,
+      "grasas_g": 83
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Huevos",
+            "cantidad": "135g"
+          },
+          {
+            "nombre": "Jamón cocido",
+            "cantidad": "187g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "1041g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 46,
+          "carbohidratos_g": 62,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Pan de centeno",
+            "cantidad": "50g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "112g"
+          },
+          {
+            "nombre": "Pimientos",
+            "cantidad": "437g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 28,
+          "carbohidratos_g": 37,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Macarrones",
+            "cantidad": "70g"
+          },
+          {
+            "nombre": "Soja texturizada",
+            "cantidad": "162g"
+          },
+          {
+            "nombre": "Champiñones",
+            "cantidad": "1125g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 56,
+          "carbohidratos_g": 75,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Batido de Proteína Whey",
+            "cantidad": "20g"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Cereales",
+            "cantidad": "20g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 18,
+          "carbohidratos_g": 25,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Pizza con base de coliflor",
+            "cantidad": "249g"
+          },
+          {
+            "nombre": "Mozzarella light",
+            "cantidad": "99g"
+          },
+          {
+            "nombre": "Tomate frito sin azúcar",
+            "cantidad": "416g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 37,
+          "carbohidratos_g": 50,
+          "grasas_g": 16
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegetariano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

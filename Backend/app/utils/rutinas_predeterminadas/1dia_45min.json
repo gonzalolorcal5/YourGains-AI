@@ -1,0 +1,258 @@
+[
+  {
+    "id": "1d_45min_v1",
+    "titulo": "Full Body 45min A",
+    "dias_semana": 1,
+    "duracion": "45-60",
+    "dias": [
+      {
+        "dia": "Día 1 - Full Body",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press banca plano",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Remo con barra",
+            "series": 4,
+            "repeticiones": "8-10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press militar con barra",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Curl bíceps con barra",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Extensión de tríceps en polea",
+            "series": 3,
+            "repeticiones": "12-15",
+            "descanso": "60s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Prioriza los compuestos al inicio cuando tienes más energía.",
+      "10-20 series semanales por grupo muscular es el rango óptimo.",
+      "Progresión: añade 2.5 kg cuando completes todas las series con buena técnica."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "1d_45min_v2",
+    "titulo": "Full Body 45min B - Empuje/Tirón/Pierna",
+    "dias_semana": 1,
+    "duracion": "45-60",
+    "dias": [
+      {
+        "dia": "Día 1 - Full Body Equilibrado",
+        "ejercicios": [
+          {
+            "nombre": "Prensa de piernas",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press inclinado con mancuernas",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Jalón al pecho agarre ancho",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Elevaciones laterales",
+            "series": 3,
+            "repeticiones": "15",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Peso muerto rumano",
+            "series": 3,
+            "repeticiones": "10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Plancha",
+            "series": 3,
+            "repeticiones": "40s",
+            "descanso": "45s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Un ejercicio de pierna, uno de empuje y uno de tirón cubre todo el cuerpo eficientemente.",
+      "El peso muerto rumano al final, cuando la espalda ya está activada.",
+      "Registra los pesos para aplicar progresión semana a semana."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "1d_45min_v3",
+    "titulo": "Full Body 45min C - Fuerza Base",
+    "dias_semana": 1,
+    "duracion": "45-60",
+    "dias": [
+      {
+        "dia": "Día 1 - Fuerza Full Body",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla con barra",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Press banca plano",
+            "series": 5,
+            "repeticiones": "5",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Peso muerto convencional",
+            "series": 3,
+            "repeticiones": "5",
+            "descanso": "2min"
+          },
+          {
+            "nombre": "Dominadas",
+            "series": 3,
+            "repeticiones": "max",
+            "descanso": "90s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Esquema 5x5 clásico: alta eficiencia para fuerza con pocos ejercicios.",
+      "2 minutos de descanso son necesarios para recuperar el SNC entre series pesadas.",
+      "El único día de la semana: deja todo en la barra."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "1d_45min_v4",
+    "titulo": "Full Body 45min D - Hipertrofia",
+    "dias_semana": 1,
+    "duracion": "45-60",
+    "dias": [
+      {
+        "dia": "Día 1 - Hipertrofia Full Body",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla frontal",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press banca agarre cerrado",
+            "series": 3,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Remo en polea baja agarre neutro",
+            "series": 4,
+            "repeticiones": "10-12",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Hip thrust",
+            "series": 4,
+            "repeticiones": "12-15",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press Arnold",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "60s"
+          },
+          {
+            "nombre": "Curl martillo",
+            "series": 3,
+            "repeticiones": "12",
+            "descanso": "60s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Rango 10-15 repeticiones con RIR 1-2 para maximizar hipertrofia.",
+      "Enfocado en variaciones que trabajan músculos de forma ligeramente diferente.",
+      "Alterna con las otras variantes cada semana para evitar la adaptación."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  },
+  {
+    "id": "1d_45min_v5",
+    "titulo": "Full Body 45min E - Supersets Agonista-Antagonista",
+    "dias_semana": 1,
+    "duracion": "45-60",
+    "dias": [
+      {
+        "dia": "Día 1 - Supersets Full Body",
+        "ejercicios": [
+          {
+            "nombre": "Sentadilla + Peso muerto rumano (superset)",
+            "series": 4,
+            "repeticiones": "10+10",
+            "descanso": "90s"
+          },
+          {
+            "nombre": "Press banca + Remo con mancuerna (superset)",
+            "series": 4,
+            "repeticiones": "10+10",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Press militar + Jalón al pecho (superset)",
+            "series": 3,
+            "repeticiones": "10+10",
+            "descanso": "75s"
+          },
+          {
+            "nombre": "Curl bíceps + Extensión tríceps (superset)",
+            "series": 3,
+            "repeticiones": "12+12",
+            "descanso": "60s"
+          }
+        ]
+      }
+    ],
+    "consejos": [
+      "Los supersets agonista-antagonista no fatigan: mientras descansa el pecho, trabaja la espalda.",
+      "Permite mayor volumen total en el mismo tiempo.",
+      "Descanso solo al terminar el par completo."
+    ],
+    "is_ai_generated": false,
+    "version": "2.0.0"
+  }
+]

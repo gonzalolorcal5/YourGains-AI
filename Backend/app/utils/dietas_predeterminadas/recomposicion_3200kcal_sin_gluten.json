@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_3200_sin_gluten",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 3200,
+    "restriccion": "sin_gluten",
+    "macros": {
+      "proteinas_g": 240,
+      "carbohidratos_g": 320,
+      "grasas_g": 106
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 800,
+        "alimentos": [
+          {
+            "nombre": "Pan sin gluten",
+            "cantidad": "106g"
+          },
+          {
+            "nombre": "Queso fresco batido",
+            "cantidad": "373g"
+          },
+          {
+            "nombre": "Tomate natural rallado",
+            "cantidad": "1333g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 60,
+          "carbohidratos_g": 80,
+          "grasas_g": 26
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de arroz",
+            "cantidad": "41g"
+          },
+          {
+            "nombre": "Crema de cacahuete",
+            "cantidad": "27g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "48g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 48,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 960,
+        "alimentos": [
+          {
+            "nombre": "Pasta de arroz o maíz",
+            "cantidad": "224g"
+          },
+          {
+            "nombre": "Ternera magra",
+            "cantidad": "128g"
+          },
+          {
+            "nombre": "Ensalada mixta",
+            "cantidad": "1600g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 72,
+          "carbohidratos_g": 96,
+          "grasas_g": 32
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Huevos revueltos",
+            "cantidad": "69g"
+          },
+          {
+            "nombre": "Pan sin gluten",
+            "cantidad": "42g"
+          },
+          {
+            "nombre": "Aguacate",
+            "cantidad": "64g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 32,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 640,
+        "alimentos": [
+          {
+            "nombre": "Hamburguesa de pollo casera",
+            "cantidad": "149g"
+          },
+          {
+            "nombre": "Pan de hamburguesa sin gluten",
+            "cantidad": "74g"
+          },
+          {
+            "nombre": "Tomate y lechuga",
+            "cantidad": "853g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 48,
+          "carbohidratos_g": 64,
+          "grasas_g": 21
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin gluten."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

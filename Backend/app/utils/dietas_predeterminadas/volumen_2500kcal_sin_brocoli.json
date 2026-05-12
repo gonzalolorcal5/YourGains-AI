@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_2500_sin_brocoli",
+    "objetivo": "volumen",
+    "kcal_objetivo": 2500,
+    "restriccion": "sin_brocoli",
+    "macros": {
+      "proteinas_g": 156,
+      "carbohidratos_g": 312,
+      "grasas_g": 69
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de avena",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Sirope sin azúcar",
+            "cantidad": "208g"
+          },
+          {
+            "nombre": "Fresas",
+            "cantidad": "625g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 39,
+          "carbohidratos_g": 78,
+          "grasas_g": 17
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Pan blanco",
+            "cantidad": "43g"
+          },
+          {
+            "nombre": "Mermelada",
+            "cantidad": "50g"
+          },
+          {
+            "nombre": "Queso fresco",
+            "cantidad": "125g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 23,
+          "carbohidratos_g": 46,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Guisantes",
+            "cantidad": "300g"
+          },
+          {
+            "nombre": "Jamón serrano en tacos",
+            "cantidad": "150g"
+          },
+          {
+            "nombre": "Huevo poché",
+            "cantidad": "162g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 46,
+          "carbohidratos_g": 93,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Queso fresco batido",
+            "cantidad": "116g"
+          },
+          {
+            "nombre": "Avena",
+            "cantidad": "21g"
+          },
+          {
+            "nombre": "Chocolate negro 85%",
+            "cantidad": "14g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 15,
+          "carbohidratos_g": 31,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Tortilla francesa",
+            "cantidad": "108g"
+          },
+          {
+            "nombre": "Queso tierno",
+            "cantidad": "49g"
+          },
+          {
+            "nombre": "Ensalada de canónigos",
+            "cantidad": "833g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 62,
+          "grasas_g": 13
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin brocoli."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

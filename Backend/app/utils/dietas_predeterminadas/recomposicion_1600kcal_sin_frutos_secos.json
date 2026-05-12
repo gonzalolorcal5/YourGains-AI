@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_1600_sin_frutos_secos",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 1600,
+    "restriccion": "sin_frutos_secos",
+    "macros": {
+      "proteinas_g": 120,
+      "carbohidratos_g": 160,
+      "grasas_g": 53
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Huevos revueltos",
+            "cantidad": "86g"
+          },
+          {
+            "nombre": "Pan integral",
+            "cantidad": "53g"
+          },
+          {
+            "nombre": "Aguacate",
+            "cantidad": "80g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 40,
+          "grasas_g": 13
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 240,
+        "alimentos": [
+          {
+            "nombre": "Gominolas deportivas o ositos",
+            "cantidad": "24g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "20g"
+          },
+          {
+            "nombre": "Pre-entreno líquido",
+            "cantidad": "240g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 18,
+          "carbohidratos_g": 24,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Arroz blanco",
+            "cantidad": "120g"
+          },
+          {
+            "nombre": "Pechuga de pollo",
+            "cantidad": "96g"
+          },
+          {
+            "nombre": "Brócoli",
+            "cantidad": "448g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 48,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 160,
+        "alimentos": [
+          {
+            "nombre": "Queso cottage",
+            "cantidad": "53g"
+          },
+          {
+            "nombre": "Mermelada light",
+            "cantidad": "32g"
+          },
+          {
+            "nombre": "Tostadas integrales",
+            "cantidad": "13g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 12,
+          "carbohidratos_g": 16,
+          "grasas_g": 5
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Salmón a la plancha",
+            "cantidad": "53g"
+          },
+          {
+            "nombre": "Patata asada",
+            "cantidad": "123g"
+          },
+          {
+            "nombre": "Espárragos",
+            "cantidad": "480g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 32,
+          "grasas_g": 10
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin frutos secos."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

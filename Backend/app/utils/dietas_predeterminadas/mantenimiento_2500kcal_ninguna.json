@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_2500_ninguna",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 2500,
+    "restriccion": "ninguna",
+    "macros": {
+      "proteinas_g": 187,
+      "carbohidratos_g": 250,
+      "grasas_g": 83
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Porridge de avena",
+            "cantidad": "54g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "458ml"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "35g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 46,
+          "carbohidratos_g": 62,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Cereales tipo Corn Flakes",
+            "cantidad": "31g"
+          },
+          {
+            "nombre": "Leche",
+            "cantidad": "275ml"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "140g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 28,
+          "carbohidratos_g": 37,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de trigo (Fajitas)",
+            "cantidad": "87g"
+          },
+          {
+            "nombre": "Tiras de pollo",
+            "cantidad": "150g"
+          },
+          {
+            "nombre": "Pimiento rojo y verde",
+            "cantidad": "875g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 56,
+          "carbohidratos_g": 75,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Requesón",
+            "cantidad": "116g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "24g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "13g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 18,
+          "carbohidratos_g": 25,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Sopa de fideos",
+            "cantidad": "249g"
+          },
+          {
+            "nombre": "Pollo desmenuzado",
+            "cantidad": "99g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "108g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 37,
+          "carbohidratos_g": 50,
+          "grasas_g": 16
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Ninguna."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

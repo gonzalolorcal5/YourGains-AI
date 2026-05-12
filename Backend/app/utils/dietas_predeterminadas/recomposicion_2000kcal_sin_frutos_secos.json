@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_2000_sin_frutos_secos",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 2000,
+    "restriccion": "sin_frutos_secos",
+    "macros": {
+      "proteinas_g": 150,
+      "carbohidratos_g": 200,
+      "grasas_g": 66
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Pan de centeno",
+            "cantidad": "66g"
+          },
+          {
+            "nombre": "Salmón ahumado",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Queso crema light",
+            "cantidad": "99g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 37,
+          "carbohidratos_g": 50,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 300,
+        "alimentos": [
+          {
+            "nombre": "Cereales tipo Corn Flakes",
+            "cantidad": "25g"
+          },
+          {
+            "nombre": "Leche",
+            "cantidad": "220ml"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "112g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 22,
+          "carbohidratos_g": 30,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 600,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de trigo (Fajitas)",
+            "cantidad": "70g"
+          },
+          {
+            "nombre": "Tiras de pollo",
+            "cantidad": "120g"
+          },
+          {
+            "nombre": "Pimiento rojo y verde",
+            "cantidad": "700g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 45,
+          "carbohidratos_g": 60,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 200,
+        "alimentos": [
+          {
+            "nombre": "Caseína micelar",
+            "cantidad": "16g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "11g"
+          },
+          {
+            "nombre": "Leche",
+            "cantidad": "146ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 15,
+          "carbohidratos_g": 20,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Revuelto de gulas",
+            "cantidad": "86g"
+          },
+          {
+            "nombre": "Gambas",
+            "cantidad": "160g"
+          },
+          {
+            "nombre": "Pan tostado",
+            "cantidad": "53g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 40,
+          "grasas_g": 13
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin frutos secos."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

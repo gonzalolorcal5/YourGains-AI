@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_2200_sin_pescado",
+    "objetivo": "volumen",
+    "kcal_objetivo": 2200,
+    "restriccion": "sin_pescado",
+    "macros": {
+      "proteinas_g": 137,
+      "carbohidratos_g": 275,
+      "grasas_g": 61
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 550,
+        "alimentos": [
+          {
+            "nombre": "Batido de frutas (Plátano/Fresa)",
+            "cantidad": "366g"
+          },
+          {
+            "nombre": "Avena",
+            "cantidad": "47g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "45g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 34,
+          "carbohidratos_g": 68,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 330,
+        "alimentos": [
+          {
+            "nombre": "Yogur griego",
+            "cantidad": "110g"
+          },
+          {
+            "nombre": "Avena",
+            "cantidad": "28g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "33g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 20,
+          "carbohidratos_g": 41,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 660,
+        "alimentos": [
+          {
+            "nombre": "Ñoquis de patata",
+            "cantidad": "132g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "198g"
+          },
+          {
+            "nombre": "Salsa de tomate casera",
+            "cantidad": "550g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 41,
+          "carbohidratos_g": 82,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 220,
+        "alimentos": [
+          {
+            "nombre": "Caseína micelar",
+            "cantidad": "18g"
+          },
+          {
+            "nombre": "Crema de cacahuete",
+            "cantidad": "12g"
+          },
+          {
+            "nombre": "Leche",
+            "cantidad": "161ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 13,
+          "carbohidratos_g": 27,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 440,
+        "alimentos": [
+          {
+            "nombre": "Pollo desmenuzado",
+            "cantidad": "161g"
+          },
+          {
+            "nombre": "Boniato",
+            "cantidad": "168g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "733g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 55,
+          "grasas_g": 12
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin pescado."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

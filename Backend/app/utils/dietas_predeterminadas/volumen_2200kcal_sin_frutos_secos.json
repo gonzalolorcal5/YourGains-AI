@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_2200_sin_frutos_secos",
+    "objetivo": "volumen",
+    "kcal_objetivo": 2200,
+    "restriccion": "sin_frutos_secos",
+    "macros": {
+      "proteinas_g": 137,
+      "carbohidratos_g": 275,
+      "grasas_g": 61
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 550,
+        "alimentos": [
+          {
+            "nombre": "Huevos",
+            "cantidad": "119g"
+          },
+          {
+            "nombre": "Jamón cocido",
+            "cantidad": "165g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "916g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 34,
+          "carbohidratos_g": 68,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 330,
+        "alimentos": [
+          {
+            "nombre": "Avena cocida",
+            "cantidad": "28g"
+          },
+          {
+            "nombre": "Pasas",
+            "cantidad": "33g"
+          },
+          {
+            "nombre": "Leche desnatada",
+            "cantidad": "275ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 20,
+          "carbohidratos_g": 41,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 660,
+        "alimentos": [
+          {
+            "nombre": "Cous cous",
+            "cantidad": "57g"
+          },
+          {
+            "nombre": "Pechuga de pollo",
+            "cantidad": "132g"
+          },
+          {
+            "nombre": "Berenjena asada",
+            "cantidad": "880g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 41,
+          "carbohidratos_g": 82,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 220,
+        "alimentos": [
+          {
+            "nombre": "Leche con cacao puro",
+            "cantidad": "161ml"
+          },
+          {
+            "nombre": "Pan tostado",
+            "cantidad": "29g"
+          },
+          {
+            "nombre": "Aceite de coco o mantequilla",
+            "cantidad": "12g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 13,
+          "carbohidratos_g": 27,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 440,
+        "alimentos": [
+          {
+            "nombre": "Carne picada de pollo",
+            "cantidad": "95g"
+          },
+          {
+            "nombre": "Fideos de calabacín",
+            "cantidad": "733g"
+          },
+          {
+            "nombre": "Salsa de soja y sésamo",
+            "cantidad": "29g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 55,
+          "grasas_g": 12
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin frutos secos."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

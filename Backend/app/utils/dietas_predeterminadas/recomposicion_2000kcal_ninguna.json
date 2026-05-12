@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_2000_ninguna",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 2000,
+    "restriccion": "ninguna",
+    "macros": {
+      "proteinas_g": 150,
+      "carbohidratos_g": 200,
+      "grasas_g": 66
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "66g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "150g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "18g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 37,
+          "carbohidratos_g": 50,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 300,
+        "alimentos": [
+          {
+            "nombre": "Cereales tipo Corn Flakes",
+            "cantidad": "25g"
+          },
+          {
+            "nombre": "Leche",
+            "cantidad": "220ml"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "112g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 22,
+          "carbohidratos_g": 30,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 600,
+        "alimentos": [
+          {
+            "nombre": "Trigo sarraceno",
+            "cantidad": "56g"
+          },
+          {
+            "nombre": "Pechuga de pavo asada",
+            "cantidad": "180g"
+          },
+          {
+            "nombre": "Calabaza asada",
+            "cantidad": "600g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 45,
+          "carbohidratos_g": 60,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 200,
+        "alimentos": [
+          {
+            "nombre": "Leche con cacao puro",
+            "cantidad": "146ml"
+          },
+          {
+            "nombre": "Pan tostado",
+            "cantidad": "26g"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "11g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 15,
+          "carbohidratos_g": 20,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Tortilla francesa",
+            "cantidad": "86g"
+          },
+          {
+            "nombre": "Queso tierno",
+            "cantidad": "40g"
+          },
+          {
+            "nombre": "Ensalada de canónigos",
+            "cantidad": "666g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 40,
+          "grasas_g": 13
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Ninguna."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

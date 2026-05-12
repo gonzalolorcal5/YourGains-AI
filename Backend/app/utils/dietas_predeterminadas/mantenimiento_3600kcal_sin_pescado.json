@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_3600_sin_pescado",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 3600,
+    "restriccion": "sin_pescado",
+    "macros": {
+      "proteinas_g": 270,
+      "carbohidratos_g": 360,
+      "grasas_g": 120
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 900,
+        "alimentos": [
+          {
+            "nombre": "Avena",
+            "cantidad": "78g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "660ml"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "336g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 67,
+          "carbohidratos_g": 90,
+          "grasas_g": 30
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Queso fresco batido",
+            "cantidad": "252g"
+          },
+          {
+            "nombre": "Semillas de chía",
+            "cantidad": "36g"
+          },
+          {
+            "nombre": "Kiwi",
+            "cantidad": "288g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 54,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 1080,
+        "alimentos": [
+          {
+            "nombre": "Pasta integral",
+            "cantidad": "252g"
+          },
+          {
+            "nombre": "Ternera magra",
+            "cantidad": "144g"
+          },
+          {
+            "nombre": "Ensalada mixta",
+            "cantidad": "1800g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 81,
+          "carbohidratos_g": 108,
+          "grasas_g": 36
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Batido de Proteína Whey",
+            "cantidad": "30g"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "134g"
+          },
+          {
+            "nombre": "Cereales",
+            "cantidad": "30g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 36,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 720,
+        "alimentos": [
+          {
+            "nombre": "Lomo de cerdo",
+            "cantidad": "168g"
+          },
+          {
+            "nombre": "Quinoa",
+            "cantidad": "62g"
+          },
+          {
+            "nombre": "Ensalada de algas wakame",
+            "cantidad": "480g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 54,
+          "carbohidratos_g": 72,
+          "grasas_g": 24
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin pescado."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

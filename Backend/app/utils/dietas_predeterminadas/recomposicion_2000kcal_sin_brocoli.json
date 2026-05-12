@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_2000_sin_brocoli",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 2000,
+    "restriccion": "sin_brocoli",
+    "macros": {
+      "proteinas_g": 150,
+      "carbohidratos_g": 200,
+      "grasas_g": 66
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Crema de arroz",
+            "cantidad": "46g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "41g"
+          },
+          {
+            "nombre": "Canela",
+            "cantidad": "166g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 37,
+          "carbohidratos_g": 50,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 300,
+        "alimentos": [
+          {
+            "nombre": "Kéfir",
+            "cantidad": "150g"
+          },
+          {
+            "nombre": "Arándanos",
+            "cantidad": "175g"
+          },
+          {
+            "nombre": "Almendras",
+            "cantidad": "16g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 22,
+          "carbohidratos_g": 30,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 600,
+        "alimentos": [
+          {
+            "nombre": "Ñoquis de patata",
+            "cantidad": "120g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "180g"
+          },
+          {
+            "nombre": "Salsa de tomate casera",
+            "cantidad": "500g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 45,
+          "carbohidratos_g": 60,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 200,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de maíz",
+            "cantidad": "17g"
+          },
+          {
+            "nombre": "Guacamole",
+            "cantidad": "40g"
+          },
+          {
+            "nombre": "Pechuga de pollo (fiambre)",
+            "cantidad": "60g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 15,
+          "carbohidratos_g": 20,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Sopa de fideos",
+            "cantidad": "200g"
+          },
+          {
+            "nombre": "Pollo desmenuzado",
+            "cantidad": "80g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "86g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 40,
+          "grasas_g": 13
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin brocoli."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

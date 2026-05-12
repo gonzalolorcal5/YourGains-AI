@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_3600_vegetariano",
+    "objetivo": "volumen",
+    "kcal_objetivo": 3600,
+    "restriccion": "vegetariano",
+    "macros": {
+      "proteinas_g": 225,
+      "carbohidratos_g": 450,
+      "grasas_g": 100
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 900,
+        "alimentos": [
+          {
+            "nombre": "Pan de centeno",
+            "cantidad": "120g"
+          },
+          {
+            "nombre": "Huevo poché",
+            "cantidad": "150g"
+          },
+          {
+            "nombre": "Queso crema light",
+            "cantidad": "180g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 56,
+          "carbohidratos_g": 112,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Kéfir",
+            "cantidad": "270g"
+          },
+          {
+            "nombre": "Arándanos",
+            "cantidad": "315g"
+          },
+          {
+            "nombre": "Almendras",
+            "cantidad": "28g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 33,
+          "carbohidratos_g": 67,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 1080,
+        "alimentos": [
+          {
+            "nombre": "Puré de patata",
+            "cantidad": "417g"
+          },
+          {
+            "nombre": "Albóndigas de soja",
+            "cantidad": "198g"
+          },
+          {
+            "nombre": "Guisantes",
+            "cantidad": "432g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 67,
+          "carbohidratos_g": 135,
+          "grasas_g": 30
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Requesón",
+            "cantidad": "168g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "36g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "19g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 22,
+          "carbohidratos_g": 45,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 720,
+        "alimentos": [
+          {
+            "nombre": "Tempeh al horno",
+            "cantidad": "216g"
+          },
+          {
+            "nombre": "Puré de patata",
+            "cantidad": "278g"
+          },
+          {
+            "nombre": "Judías verdes",
+            "cantidad": "720g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 45,
+          "carbohidratos_g": 90,
+          "grasas_g": 20
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegetariano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

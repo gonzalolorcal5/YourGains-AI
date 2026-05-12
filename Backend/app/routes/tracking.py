@@ -10,7 +10,7 @@ import json
 
 from app.database import get_db
 from app.auth_utils import get_current_user
-from app.models import Usuario, EntrenamientoSession, EntrenamientoSet
+from app.models import Usuario, Plan, EntrenamientoSession, EntrenamientoSet
 
 load_dotenv()
 openai_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"), timeout=60.0)
@@ -74,6 +74,16 @@ def guardar_serie(
     db: Session = Depends(get_db),
     usuario: Usuario = Depends(get_current_user)
 ):
+    # 🛡️ Seguridad Freemium: Límite 21 días
+    is_premium = bool(usuario.is_premium) or usuario.plan_type in ("PREMIUM", "PREMIUM_MONTHLY", "PREMIUM_YEARLY")
+    if not is_premium:
+        plan_inicial = db.query(Plan).filter(Plan.user_id == usuario.id).order_by(Plan.fecha_creacion.asc()).first()
+        if plan_inicial and plan_inicial.fecha_creacion:
+            # Normalizar fechas a naive para evitar errores de offset-naive/aware
+            fecha_plan = plan_inicial.fecha_creacion.replace(tzinfo=None)
+            if (datetime.utcnow() - fecha_plan).days > 21:
+                raise HTTPException(status_code=403, detail="Prueba de 21 días finalizada. Pásate a Premium para seguir registrando tus entrenos.")
+
     hoy_inicio = datetime.utcnow().replace(
         hour=0, minute=0, second=0, microsecond=0
     )
@@ -123,6 +133,27 @@ def guardar_serie(
         db.add(nueva_serie)
 
     db.commit()
+
+    # ── Lógica de racha ──────────────────────────────
+    hoy = datetime.utcnow().date()
+    ayer = hoy - timedelta(days=1)
+
+    db.refresh(usuario)
+
+    if usuario.ultima_sesion_fecha == hoy:
+        pass  # Ya entrenó hoy, racha ya contada
+    elif usuario.ultima_sesion_fecha == ayer:
+        usuario.racha_actual = (usuario.racha_actual or 0) + 1
+    else:
+        usuario.racha_actual = 1
+
+    usuario.ultima_sesion_fecha = hoy
+
+    if (usuario.racha_actual or 0) > (usuario.mejor_racha or 0):
+        usuario.mejor_racha = usuario.racha_actual
+
+    db.commit()
+    # ────────────────────────────────────────────────
 
     return {
         "success": True,
@@ -329,6 +360,9 @@ async def generar_resumen_semanal(
     Genera un resumen semanal con IA comparando semana actual vs anterior.
     Python calcula todas las matemáticas — GPT solo redacta.
     """
+    if not (usuario.is_premium or usuario.plan_type in ("PREMIUM", "PREMIUM_MONTHLY", "PREMIUM_YEARLY")):
+        raise HTTPException(status_code=403, detail="Resumen IA exclusivo para usuarios Premium.")
+
     # --- Calcular rangos de fechas en UTC+1 España ---
     tz_spain = timezone(timedelta(hours=1))
     ahora_spain = datetime.now(tz_spain)
@@ -462,3 +496,125 @@ Instrucciones:
         "num_sesiones": num_sesiones,
         "resumen": resumen_data
     }
+
+
+@router.get("/ejercicios-registrados")
+def obtener_ejercicios_registrados(
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(get_current_user)
+):
+    """Devuelve lista de nombres únicos de ejercicios que el usuario ha registrado."""
+    from sqlalchemy import distinct
+    ejercicios = db.query(
+        distinct(EntrenamientoSet.ejercicio_nombre)
+    ).join(
+        EntrenamientoSession,
+        EntrenamientoSet.session_id == EntrenamientoSession.id
+    ).filter(
+        EntrenamientoSession.user_id == usuario.id,
+        EntrenamientoSet.ejercicio_nombre.isnot(None)
+    ).order_by(EntrenamientoSet.ejercicio_nombre.asc()).all()
+
+    return {
+        "success": True,
+        "ejercicios": [e[0] for e in ejercicios if e[0]]
+    }
+
+
+@router.get("/progresion")
+def obtener_progresion_ejercicio(
+    ejercicio: str,
+    dias: int = 0,
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(get_current_user)
+):
+    """
+    Devuelve el peso máximo por fecha para un ejercicio específico.
+    Solo para usuarios Premium.
+    """
+    if not (usuario.is_premium or usuario.plan_type in ("PREMIUM", "PREMIUM_MONTHLY", "PREMIUM_YEARLY")):
+        raise HTTPException(status_code=403, detail="Gráficas de progresión exclusivas para Premium.")
+
+    from sqlalchemy import func
+    filtros = [
+        EntrenamientoSession.user_id == usuario.id,
+        EntrenamientoSet.ejercicio_nombre == ejercicio,
+        EntrenamientoSet.peso.isnot(None),
+        EntrenamientoSet.peso > 0
+    ]
+    if dias > 0:
+        desde = datetime.utcnow() - timedelta(days=dias)
+        filtros.append(EntrenamientoSession.fecha >= desde)
+
+    resultados = db.query(
+        func.date(EntrenamientoSession.fecha).label("fecha"),
+        func.max(EntrenamientoSet.peso).label("peso_max")
+    ).join(
+        EntrenamientoSession,
+        EntrenamientoSet.session_id == EntrenamientoSession.id
+    ).filter(*filtros).group_by(
+        func.date(EntrenamientoSession.fecha)
+    ).order_by(
+        func.date(EntrenamientoSession.fecha).asc()
+    ).all()
+
+    return {
+        "success": True,
+        "ejercicio": ejercicio,
+        "datos": [
+            {"fecha": str(r.fecha), "peso_max": float(r.peso_max)}
+            for r in resultados
+        ]
+    }
+
+
+@router.get("/volumen-semanal")
+def obtener_volumen_semanal(
+    semanas: int = 8,
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(get_current_user)
+):
+    """
+    Devuelve el volumen total (kg) por semana de las últimas N semanas.
+    Solo para usuarios Premium.
+    """
+    if not (usuario.is_premium or usuario.plan_type in ("PREMIUM", "PREMIUM_MONTHLY", "PREMIUM_YEARLY")):
+        raise HTTPException(status_code=403, detail="Gráficas de progresión exclusivas para Premium.")
+
+    desde = datetime.utcnow() - timedelta(weeks=semanas)
+
+    sesiones = db.query(EntrenamientoSession).filter(
+        EntrenamientoSession.user_id == usuario.id,
+        EntrenamientoSession.fecha >= desde
+    ).all()
+
+    if not sesiones:
+        return {"success": True, "datos": []}
+
+    ids = [s.id for s in sesiones]
+    sets = db.query(EntrenamientoSet).filter(
+        EntrenamientoSet.session_id.in_(ids)
+    ).all()
+
+    volumen_semana = {}
+    sets_por_sesion = {}
+    for s in sets:
+        sets_por_sesion.setdefault(s.session_id, []).append(s)
+
+    for sesion in sesiones:
+        semana_iso = sesion.fecha.isocalendar()
+        clave = f"{semana_iso[0]}-W{semana_iso[1]:02d}"
+        vol = sum(
+            (s.peso or 0) * (s.reps or 0)
+            for s in sets_por_sesion.get(sesion.id, [])
+        )
+        volumen_semana[clave] = round(
+            volumen_semana.get(clave, 0) + vol, 2
+        )
+
+    datos_ordenados = [
+        {"semana": k, "volumen_kg": v}
+        for k, v in sorted(volumen_semana.items())
+    ]
+
+    return {"success": True, "datos": datos_ordenados}

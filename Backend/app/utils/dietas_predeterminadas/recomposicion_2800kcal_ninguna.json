@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_2800_ninguna",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 2800,
+    "restriccion": "ninguna",
+    "macros": {
+      "proteinas_g": 210,
+      "carbohidratos_g": 280,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Avena",
+            "cantidad": "60g"
+          },
+          {
+            "nombre": "Leche semidesnatada",
+            "cantidad": "513ml"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "261g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 70,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "56g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "125g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "700g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 42,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Boniato al horno",
+            "cantidad": "322g"
+          },
+          {
+            "nombre": "Salmón al horno",
+            "cantidad": "140g"
+          },
+          {
+            "nombre": "Espárragos trigueros",
+            "cantidad": "1260g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 63,
+          "carbohidratos_g": 84,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Porridge frío (Overnight oats)",
+            "cantidad": "24g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "23g"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "104g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 28,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Pechuga de pollo asada",
+            "cantidad": "111g"
+          },
+          {
+            "nombre": "Gazpacho",
+            "cantidad": "373g"
+          },
+          {
+            "nombre": "Huevo duro picado",
+            "cantidad": "121g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 42,
+          "carbohidratos_g": 56,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Ninguna."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "volumen_2200_sin_gluten",
+    "objetivo": "volumen",
+    "kcal_objetivo": 2200,
+    "restriccion": "sin_gluten",
+    "macros": {
+      "proteinas_g": 137,
+      "carbohidratos_g": 275,
+      "grasas_g": 61
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 550,
+        "alimentos": [
+          {
+            "nombre": "Revuelto de claras",
+            "cantidad": "366g"
+          },
+          {
+            "nombre": "Champiñones",
+            "cantidad": "825g"
+          },
+          {
+            "nombre": "Pan sin gluten",
+            "cantidad": "73g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 34,
+          "carbohidratos_g": 68,
+          "grasas_g": 15
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 330,
+        "alimentos": [
+          {
+            "nombre": "Crema de arroz",
+            "cantidad": "30g"
+          },
+          {
+            "nombre": "Proteína Whey aislada",
+            "cantidad": "27g"
+          },
+          {
+            "nombre": "Mermelada",
+            "cantidad": "44g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 20,
+          "carbohidratos_g": 41,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 660,
+        "alimentos": [
+          {
+            "nombre": "Alubias blancas",
+            "cantidad": "154g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "143g"
+          },
+          {
+            "nombre": "Espinacas",
+            "cantidad": "880g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 41,
+          "carbohidratos_g": 82,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 220,
+        "alimentos": [
+          {
+            "nombre": "Manzana asada",
+            "cantidad": "139g"
+          },
+          {
+            "nombre": "Yogur natural",
+            "cantidad": "109g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "11g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 13,
+          "carbohidratos_g": 27,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 440,
+        "alimentos": [
+          {
+            "nombre": "Bacalao",
+            "cantidad": "176g"
+          },
+          {
+            "nombre": "Pimientos asados",
+            "cantidad": "439g"
+          },
+          {
+            "nombre": "Pan sin gluten",
+            "cantidad": "58g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 55,
+          "grasas_g": 12
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin gluten."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_2800_vegetariano",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 2800,
+    "restriccion": "vegetariano",
+    "macros": {
+      "proteinas_g": 210,
+      "carbohidratos_g": 280,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Tostadas de arroz",
+            "cantidad": "60g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "210g"
+          },
+          {
+            "nombre": "Pimientos asados",
+            "cantidad": "700g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 70,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Pan de centeno",
+            "cantidad": "56g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "125g"
+          },
+          {
+            "nombre": "Pimientos",
+            "cantidad": "489g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 42,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Arroz basmati",
+            "cantidad": "78g"
+          },
+          {
+            "nombre": "Curry de pollo",
+            "cantidad": "196g"
+          },
+          {
+            "nombre": "Leche de coco light",
+            "cantidad": "420ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 63,
+          "carbohidratos_g": 84,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Caseína micelar",
+            "cantidad": "23g"
+          },
+          {
+            "nombre": "Crema de cacahuete",
+            "cantidad": "15g"
+          },
+          {
+            "nombre": "Leche",
+            "cantidad": "205ml"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 28,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Tortilla francesa",
+            "cantidad": "121g"
+          },
+          {
+            "nombre": "Queso tierno",
+            "cantidad": "55g"
+          },
+          {
+            "nombre": "Ensalada de canónigos",
+            "cantidad": "933g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 42,
+          "carbohidratos_g": 56,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegetariano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

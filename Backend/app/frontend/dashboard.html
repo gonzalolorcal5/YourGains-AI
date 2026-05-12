@@ -244,6 +244,11 @@
                 letter-spacing: 0.2px;
             }
             
+            #app-view-home.app-view.active {
+                flex-direction: column;
+                min-height: 0;
+            }
+
             #app-view-chat {
                 flex-direction: column;
                 overflow: hidden;
@@ -930,7 +935,10 @@
             
             .chat-messages {
                 flex: 1;
-                padding: 20px;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 12px !important;
+                padding: 15px !important;
                 overflow-y: auto;
                 color: white;
                 background: #000000;
@@ -940,6 +948,14 @@
                 -ms-overflow-style: none;
                 overscroll-behavior: contain;
                 -webkit-overflow-scrolling: touch;
+            }
+
+            #chatMessages,
+            #chat-messages {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 12px !important;
+                padding: 15px !important;
             }
             
             .chat-messages::-webkit-scrollbar {
@@ -1187,16 +1203,76 @@
             }
             
             .user-message {
-                background: #84cc16;
-                color: #000000;
-                margin-left: auto;
-                text-align: left;
+                align-self: flex-end !important; /* Mueve el mensaje a la derecha */
+                background-color: #84cc16 !important; /* Verde YourGains */
+                color: #000000 !important;
+                border-radius: 15px 15px 0 15px !important; /* Esquina derecha inferior recta */
+                margin-left: 20% !important; /* Deja espacio a la izquierda */
+                font-size: 15px !important;
+                line-height: 1.5 !important;
+                padding: 12px 16px !important;
+                width: fit-content !important; /* Solo ocupa lo que mide el texto */
+                max-width: 85% !important;
             }
             
             .ai-message {
                 background: #1a1a1a;
                 color: white;
                 border: 1px solid #333;
+            }
+            
+            /* =========================================
+               UI/UX - MEJORAS DEL CHAT DE IA
+               ========================================= */
+            .bot-message {
+                align-self: flex-start !important;
+                background-color: #1e1e1e !important;
+                color: #e5e5e5 !important;
+                border-radius: 15px 15px 15px 0 !important;
+
+                /* === AJUSTES DE ANCHURA === */
+                max-width: 92% !important; /* Ahora permite que el mensaje sea mucho más ancho */
+                margin-right: 8% !important;  /* Solo dejamos un pequeño hueco a la derecha para diferenciar */
+                width: fit-content !important;
+
+                font-size: 15px !important;
+                line-height: 1.6 !important;
+                padding: 12px 16px !important;
+                margin-bottom: 10px !important;
+            }
+            .message.ai-message:has(.bot-message) {
+                align-self: flex-start !important;
+                width: fit-content !important;
+                max-width: 92% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                background: transparent !important;
+                border: none !important;
+            }
+            .bot-message strong {
+                color: #84cc16 !important; /* Verde corporativo YourGains */
+                font-weight: 600 !important;
+            }
+
+            /* =========================================
+               UI/UX - PUNTITOS FLOTANTES DE CARGA
+               ========================================= */
+            .typing-indicator {
+                align-self: flex-start !important;
+                background: transparent !important;
+                padding: 0 16px !important;
+                box-shadow: none !important;
+                margin-left: 0 !important;
+                margin-bottom: 16px !important;
+            }
+
+            /* Hacemos los puntos un poco más visibles ahora que no tienen fondo oscuro */
+            .typing-indicator span,
+            .typing-indicator .typing-dot {
+                background-color: #84cc16 !important; /* Puntos en verde corporativo */
+                width: 8px !important;
+                height: 8px !important;
+                opacity: 0.8;
             }
             
             .placeholder {
@@ -1237,11 +1313,9 @@
                 display: flex;
                 align-items: center;
                 gap: 4px;
-                padding: 12px 16px;
-                margin: 10px 0;
-                background: #f0f0f0;
-                border-radius: 15px;
-                max-width: 90%;
+                margin: 0;
+                border-radius: 0;
+                max-width: none;
                 color: #84cc16;
                 font-size: 18px;
                 font-weight: bold;
@@ -2500,6 +2574,129 @@
                 min-height: 200px;
             }
 
+            /* Grilla responsive: 5 comidas (Desayuno, Snack 1, Comida, Snack 2, Cena) */
+            .diet-meals-section {
+                position: relative;
+                margin-top: 1.5rem;
+            }
+
+            .diet-meals-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+                gap: 0.85rem;
+                align-items: stretch;
+            }
+
+            @media (min-width: 900px) {
+                .diet-meals-grid {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+            }
+
+            @media (min-width: 1200px) {
+                .diet-meals-grid {
+                    grid-template-columns: repeat(5, 1fr);
+                }
+            }
+
+            @media (max-width: 599px) {
+                .diet-meals-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .meal-foods-wrap {
+                margin-top: 0.35rem;
+            }
+
+            .meal-foods-blur {
+                filter: blur(8px);
+                pointer-events: none;
+                user-select: none;
+                min-height: 2rem;
+                opacity: 0.92;
+                transition: filter 0.2s ease, opacity 0.2s ease;
+            }
+
+            .meal-foods-clear {
+                filter: none;
+                pointer-events: auto;
+                user-select: auto;
+                opacity: 1;
+            }
+
+            .diet-unlock-overlay {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 1rem;
+                pointer-events: none;
+                z-index: 25;
+            }
+
+            .diet-unlock-card {
+                pointer-events: auto;
+                position: relative;
+                max-width: 400px;
+                width: 100%;
+                padding: 1.35rem 1.25rem 1.5rem;
+                border-radius: 18px;
+                text-align: center;
+                background: linear-gradient(155deg, rgba(28, 20, 8, 0.96) 0%, rgba(42, 30, 12, 0.98) 42%, rgba(22, 16, 6, 0.96) 100%);
+                border: 1px solid rgba(212, 175, 55, 0.5);
+                box-shadow:
+                    0 16px 48px rgba(0, 0, 0, 0.55),
+                    0 0 0 1px rgba(255, 230, 160, 0.12) inset,
+                    0 0 60px rgba(245, 158, 11, 0.18);
+            }
+
+            .diet-unlock-card__title {
+                margin: 0 0 0.4rem;
+                font-size: 1.12rem;
+                font-weight: 800;
+                line-height: 1.35;
+                letter-spacing: -0.02em;
+                background: linear-gradient(92deg, #fef3c7 0%, #fbbf24 35%, #f59e0b 55%, #fde68a 100%);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.65));
+            }
+
+            .diet-unlock-card__sub {
+                margin: 0 0 1rem;
+                font-size: 0.88rem;
+                line-height: 1.45;
+                color: rgba(253, 230, 138, 0.82);
+            }
+
+            .diet-unlock-card__btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                max-width: 280px;
+                margin: 0 auto;
+                padding: 0.75rem 1rem;
+                border-radius: 12px;
+                font-weight: 700;
+                font-size: 0.95rem;
+                text-decoration: none;
+                color: #1a1204;
+                background: linear-gradient(95deg, #fcd34d 0%, #f59e0b 45%, #d97706 100%);
+                border: none;
+                box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
+                cursor: pointer;
+                transition: transform 0.15s ease, box-shadow 0.15s ease;
+            }
+
+            .diet-unlock-card__btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 6px 22px rgba(245, 158, 11, 0.45);
+            }
+
             .premium-overlay {
                 position: absolute;
                 top: 0;
@@ -3408,7 +3605,10 @@
                 }
 
                 .chat-messages {
-                    padding: 20px;
+                    display: flex !important;
+                    flex-direction: column !important;
+                    gap: 12px !important;
+                    padding: 15px !important;
                     font-size: 14px;
                     background: #000000 !important; /* Negro puro forzado */
                     flex: 1; /* Ocupar todo el espacio disponible menos el input */
@@ -3419,6 +3619,14 @@
                     scrollbar-width: thin;
                     scrollbar-color: #333 #000;
                     height: auto; /* Dejar que flex controle la altura */
+                }
+
+                #chatMessages,
+                #chat-messages {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    gap: 12px !important;
+                    padding: 15px !important;
                 }
                 
                 .chat-messages::-webkit-scrollbar {
@@ -3623,10 +3831,16 @@
                 }
 
                 .user-message {
-                    background: #84cc16;
-                    color: #000000;
-                    margin-left: auto;
-                    font-weight: 500;
+                    align-self: flex-end !important;
+                    background-color: #84cc16 !important;
+                    color: #000000 !important;
+                    border-radius: 15px 15px 0 15px !important;
+                    margin-left: 20% !important;
+                    font-size: 15px !important;
+                    line-height: 1.5 !important;
+                    padding: 12px 16px !important;
+                    width: fit-content !important;
+                    max-width: 85% !important;
                 }
 
                 .ai-message {
@@ -3636,11 +3850,56 @@
                     border: 1px solid #333;
                 }
 
-                /* Indicador de escritura para móvil */
+                .bot-message {
+                    align-self: flex-start !important;
+                    background-color: #1e1e1e !important;
+                    color: #e5e5e5 !important;
+                    border-radius: 15px 15px 15px 0 !important;
+
+                    /* === AJUSTES DE ANCHURA === */
+                    max-width: 92% !important;
+                    margin-right: 8% !important;
+                    width: fit-content !important;
+
+                    font-size: 15px !important;
+                    line-height: 1.6 !important;
+                    padding: 12px 16px !important;
+                    margin-bottom: 10px !important;
+                }
+                .message.ai-message:has(.bot-message) {
+                    align-self: flex-start !important;
+                    width: fit-content !important;
+                    max-width: 92% !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    background: transparent !important;
+                    border: none !important;
+                }
+                .bot-message strong {
+                    color: #84cc16 !important;
+                    font-weight: 600 !important;
+                }
+
+                /* =========================================
+                   UI/UX - PUNTITOS FLOTANTES DE CARGA (móvil)
+                   ========================================= */
                 .typing-indicator {
-                    background: #111111;
+                    align-self: flex-start !important;
+                    background: transparent !important;
+                    padding: 0 16px !important;
+                    box-shadow: none !important;
+                    border: none !important;
                     color: #84cc16;
-                    border: 1px solid #333;
+                    margin-left: 0 !important;
+                    margin-bottom: 16px !important;
+                }
+
+                .typing-indicator span,
+                .typing-indicator .typing-dot {
+                    background-color: #84cc16 !important;
+                    width: 8px !important;
+                    height: 8px !important;
+                    opacity: 0.8;
                 }
 
 
@@ -3763,12 +4022,23 @@
                 }
                 
                 .chat-messages {
-                    padding: 20px 18px 120px 18px; /* Más padding inferior: 16px → 120px */
+                    display: flex !important;
+                    flex-direction: column !important;
+                    gap: 12px !important;
+                    padding: 15px 15px 120px 15px !important; /* inferior extra para input fijo */
                     height: calc(100% - 80px);
                     overflow-y: auto;
                     overflow-x: hidden;
                     background: transparent; /* Mantener transparente para mensajes */
                     scroll-behavior: smooth;
+                }
+
+                #chatMessages,
+                #chat-messages {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    gap: 12px !important;
+                    padding: 15px 15px 120px 15px !important;
                 }
                 
                 .chat-input-area {
@@ -4328,7 +4598,259 @@
                 overflow-y: auto !important;
             }
 
+            /* ═══ Widget Rachas ═══ */
+            .bento-card-racha {
+                background: linear-gradient(135deg, #1a1a1a 0%, #111 100%);
+                border: 1px solid rgba(251, 146, 60, 0.3);
+                position: relative;
+                overflow: hidden;
+            }
+            .bento-card-racha::before {
+                content: '';
+                position: absolute;
+                top: -20px;
+                right: -20px;
+                width: 80px;
+                height: 80px;
+                background: radial-gradient(circle, rgba(251, 146, 60, 0.15) 0%, transparent 70%);
+                pointer-events: none;
+            }
+            .racha-numero {
+                font-size: 36px;
+                font-weight: 800;
+                color: #fb923c;
+                line-height: 1;
+                margin-bottom: 2px;
+            }
+            .racha-numero.racha-cero {
+                color: rgba(255, 255, 255, 0.3);
+                font-size: 28px;
+            }
+            .racha-label {
+                font-size: 11px;
+                color: rgba(255, 255, 255, 0.5);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 6px;
+            }
+            .racha-record {
+                font-size: 11px;
+                color: rgba(255, 255, 255, 0.35);
+            }
+            .racha-fuego {
+                font-size: 28px;
+                line-height: 1;
+                margin-bottom: 4px;
+            }
+            @keyframes racha-pulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+            }
+            .racha-fuego.activa {
+                animation: racha-pulse 2s ease-in-out infinite;
+            }
+
+            /* Widget rachas horizontal — sección entreno */
+            .entreno-racha-banner {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px 16px;
+                background: rgba(132, 204, 22, 0.06);
+                border-bottom: 1px solid rgba(132, 204, 22, 0.15);
+            }
+            .entreno-racha-fuego {
+                font-size: 26px;
+                line-height: 1;
+                flex-shrink: 0;
+                filter: hue-rotate(90deg) saturate(1.2);
+            }
+            .entreno-racha-fuego.activa {
+                animation: racha-pulse 2s ease-in-out infinite;
+            }
+            .entreno-racha-info {
+                display: flex;
+                flex-direction: column;
+                gap: 1px;
+            }
+            .entreno-racha-numero {
+                font-size: 20px;
+                font-weight: 800;
+                color: #84cc16;
+                line-height: 1;
+            }
+            .entreno-racha-numero.racha-cero {
+                color: rgba(255, 255, 255, 0.3);
+            }
+            .entreno-racha-label {
+                font-size: 11px;
+                color: rgba(255, 255, 255, 0.4);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            .entreno-racha-record {
+                margin-left: auto;
+                font-size: 11px;
+                color: rgba(255, 255, 255, 0.25);
+                text-align: right;
+                flex-shrink: 0;
+            }
+            .entreno-racha-cta {
+                margin-left: auto;
+                font-size: 11px;
+                color: rgba(255, 255, 255, 0.4);
+                font-style: italic;
+            }
+
+            /* ═══ Sección Gráficas ═══ */
+            .graficas-section {
+                margin: 16px 16px 0 16px;
+                border-radius: 16px;
+                overflow: hidden;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+            }
+            .graficas-header {
+                padding: 16px;
+                background: #111;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .graficas-title {
+                font-size: 16px;
+                font-weight: 700;
+                color: white;
+            }
+            .graficas-subtitle {
+                font-size: 12px;
+                color: rgba(255,255,255,0.4);
+                margin-top: 2px;
+            }
+            .graficas-preview-wrap {
+                position: relative;
+                background: #0a0a0a;
+                padding: 16px;
+            }
+            /* Gráfica fake con CSS */
+            .graficas-fake-chart {
+                height: 120px;
+                display: flex;
+                align-items: flex-end;
+                gap: 6px;
+                padding: 0 4px;
+                filter: blur(3px);
+                opacity: 0.4;
+            }
+            .graficas-fake-bar {
+                flex: 1;
+                background: linear-gradient(to top, #84cc16, rgba(132, 204, 22, 0.3));
+                border-radius: 4px 4px 0 0;
+                min-height: 10px;
+            }
+            .graficas-lock-overlay {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                background: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(1px);
+            }
+            .graficas-lock-icon {
+                font-size: 28px;
+            }
+            .graficas-lock-text {
+                font-size: 14px;
+                font-weight: 600;
+                color: white;
+                text-align: center;
+                padding: 0 20px;
+            }
+            .graficas-lock-sub {
+                font-size: 12px;
+                color: rgba(255,255,255,0.5);
+                text-align: center;
+                padding: 0 24px;
+            }
+            .graficas-cta-btn {
+                margin-top: 4px;
+                background: #84cc16;
+                color: #000;
+                border: none;
+                border-radius: 20px;
+                padding: 8px 20px;
+                font-size: 13px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: transform 0.15s;
+            }
+            .graficas-cta-btn:active {
+                transform: scale(0.97);
+            }
+            /* Cuando es Premium, ocultar overlay y quitar blur */
+            .graficas-section.premium .graficas-fake-chart {
+                filter: none;
+                opacity: 1;
+            }
+            .graficas-section.premium .graficas-lock-overlay {
+                display: none;
+            }
+
+            /* =========================================
+               UI/UX - PREMIUM LOCK CARDS
+               ========================================= */
+            .premium-lock-card {
+                background: rgba(30, 30, 30, 0.8);
+                border: 1px solid #333;
+                border-radius: 16px;
+                padding: 30px 20px;
+                text-align: center;
+                margin: 20px 0;
+                backdrop-filter: blur(10px);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            .premium-lock-icon {
+                font-size: 40px;
+                margin-bottom: 15px;
+                filter: drop-shadow(0 0 10px rgba(132, 204, 22, 0.3));
+            }
+            .premium-lock-title {
+                color: #fff;
+                font-size: 18px;
+                margin-bottom: 10px;
+                font-weight: 600;
+            }
+            .premium-lock-desc {
+                color: #a3a3a3;
+                font-size: 14px;
+                line-height: 1.5;
+                margin-bottom: 20px;
+                max-width: 80%;
+            }
+            .premium-lock-btn {
+                background-color: #84cc16;
+                color: #000;
+                font-weight: bold;
+                padding: 12px 24px;
+                border-radius: 25px;
+                text-decoration: none;
+                font-size: 15px;
+                transition: all 0.3s ease;
+                border: none;
+                cursor: pointer;
+            }
+            .premium-lock-btn:hover {
+                background-color: #65a30d;
+                transform: scale(1.05);
+            }
+
         </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     </head>
     <body>
         <div id="app-shell">
@@ -4344,6 +4866,7 @@
             </header>
             <main class="app-main">
                 <div id="app-view-home" class="app-view">
+                    <div style="flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding-bottom: calc(82px + env(safe-area-inset-bottom, 0px));">
                     <div class="bento-grid">
                         <!-- TARJETA 1: MI RUTINA -->
                         <div class="bento-card skeleton" id="bentoRutinaCard" role="button" tabindex="0" style="cursor: pointer;">
@@ -4403,7 +4926,7 @@
                             </div>
                             <div class="bento-card-title">Body Scan IA</div>
                         </div>
-                        <!-- TARJETA 6: FOOD SCAN -->
+                        <!-- TARJETA 7: FOOD SCAN -->
                         <div class="bento-card bento-card-disabled" role="presentation">
                             <span class="bento-card-badge bento-card-badge-soon">Muy pronto</span>
                             <div class="bento-card-icon">
@@ -4415,6 +4938,57 @@
                             </div>
                             <div class="bento-card-title">Food Scan</div>
                         </div>
+                    </div>
+                    <!-- SECCIÓN GRÁFICAS DE PROGRESIÓN -->
+                    <div class="graficas-section" id="graficasSection">
+                        <div class="graficas-header">
+                            <div>
+                                <div class="graficas-title">📈 Mi Progresión</div>
+                                <div class="graficas-subtitle" id="graficasSubtitle">
+                                    Activa Premium para ver tu evolución
+                                </div>
+                            </div>
+                            <span id="graficasPremiumBadge" style="
+                                background: rgba(132, 204, 22, 0.15);
+                                color: #84cc16;
+                                border: 1px solid rgba(132, 204, 22, 0.3);
+                                padding: 3px 10px;
+                                border-radius: 20px;
+                                font-size: 11px;
+                                font-weight: 700;
+                            ">PREMIUM</span>
+                        </div>
+                        <div class="graficas-preview-wrap">
+                            <!-- Barras fake de preview -->
+                            <div class="graficas-fake-chart" id="graficasFakeChart">
+                                <div class="graficas-fake-bar" style="height: 40%"></div>
+                                <div class="graficas-fake-bar" style="height: 55%"></div>
+                                <div class="graficas-fake-bar" style="height: 45%"></div>
+                                <div class="graficas-fake-bar" style="height: 70%"></div>
+                                <div class="graficas-fake-bar" style="height: 60%"></div>
+                                <div class="graficas-fake-bar" style="height: 80%"></div>
+                                <div class="graficas-fake-bar" style="height: 75%"></div>
+                                <div class="graficas-fake-bar" style="height: 90%"></div>
+                                <div class="graficas-fake-bar" style="height: 85%"></div>
+                                <div class="graficas-fake-bar" style="height: 95%"></div>
+                                <div class="graficas-fake-bar" style="height: 88%"></div>
+                                <div class="graficas-fake-bar" style="height: 100%"></div>
+                            </div>
+                            <!-- Overlay de bloqueo (solo Free) -->
+                            <div class="graficas-lock-overlay" id="graficasLockOverlay">
+                                <div class="graficas-lock-icon">🔒</div>
+                                <div class="graficas-lock-text" id="graficasLockText">
+                                    Tu progresión está siendo registrada
+                                </div>
+                                <div class="graficas-lock-sub" id="graficasLockSub">
+                                    Hazte Premium para ver cómo evoluciona tu fuerza semana a semana
+                                </div>
+                                <button class="graficas-cta-btn" onclick="openStripeCheckout()">
+                                    Ver mi progresión →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     </div>
                 </div>
                 <div id="app-view-chat" class="app-view active">
@@ -4702,6 +5276,15 @@
                         <h2 style="font-size: 28px; font-weight: 700; margin-bottom: 8px;">💪 Registro de Entrenos</h2>
                         <p style="font-size: 14px; color: #999;">Anota tus repeticiones, kg y rango de esfuerzo para mejorar más rápido.</p>
                     </div>
+                    <!-- WIDGET RACHA ENTRENO -->
+                    <div class="entreno-racha-banner" id="entrenoBannerRacha">
+                        <div class="entreno-racha-fuego" id="entrenRachaFuego">🔥</div>
+                        <div class="entreno-racha-info">
+                            <div class="entreno-racha-numero racha-cero" id="entrenRachaNúmero">0</div>
+                            <div class="entreno-racha-label">días de racha</div>
+                        </div>
+                        <div class="entreno-racha-record" id="entrenRachaMejor"></div>
+                    </div>
                     <div style="flex: 1; overflow-y: auto; padding: 16px;">
                         <div id="routine-container" style="max-width: 800px; margin: 0 auto;">
                             <div style="text-align: center; padding: 60px 20px; color: #84cc16;">
@@ -4965,6 +5548,32 @@
                 return null;
             }
             window.getCurrentUserId = getCurrentUserId;
+
+            function getPremiumLockHTML(titulo, descripcion) {
+                return `
+        <div class="premium-lock-card">
+            <div class="premium-lock-icon">🔒</div>
+            <div class="premium-lock-title">${titulo}</div>
+            <div class="premium-lock-desc">${descripcion}</div>
+            <button class="premium-lock-btn" onclick="window.location.href='/tarifas.html'">Ver Planes Premium</button>
+        </div>
+    `;
+            }
+            window.getPremiumLockHTML = getPremiumLockHTML;
+
+            function renderDieta(dietaObj) {
+                const container = document.getElementById('dietaContainer') || document.getElementById('dietaContent');
+                if (!container) return false;
+                if (dietaObj && (dietaObj.is_locked || dietaObj.locked)) {
+                    container.innerHTML = getPremiumLockHTML(
+                        "Dieta Personalizada Bloqueada",
+                        "Los usuarios gratuitos pueden ver la rutina, pero la dieta generada por IA requiere una suscripción activa."
+                    );
+                    return true;
+                }
+                return false;
+            }
+            window.renderDieta = renderDieta;
 
             // Modal de Perfil: actualizar avatar (inicial) y email al abrir
             function updateProfileOverlayContent() {
@@ -5298,12 +5907,13 @@
                 var dias = routine.dias || [];
                 var initialDayIndex = 0;
                 var html = '';
-                html += '<div style="display: flex; gap: 8px; margin-bottom: 16px;">';
-                html += '<button type="button" id="tab-registro" onclick="switchTrackingTab(\'registro\')" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(132,204,22,0.5); background: rgba(132,204,22,0.15); color: #84cc16; font-size: 14px; font-weight: 600; cursor: pointer;">Registro</button>';
-                html += '<button type="button" id="tab-historial" onclick="switchTrackingTab(\'historial\')" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #737373; font-size: 14px; font-weight: 600; cursor: pointer;">Historial</button>';
+                html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px;">';
+                html += '<button type="button" id="tab-registro" onclick="switchTrackingTab(\'registro\')" style="padding: 10px; border-radius: 8px; border: 1px solid rgba(132,204,22,0.5); background: rgba(132,204,22,0.15); color: #84cc16; font-size: 14px; font-weight: 600; cursor: pointer;">Registro</button>';
+                html += '<button type="button" id="tab-historial" onclick="switchTrackingTab(\'historial\')" style="padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #737373; font-size: 14px; font-weight: 600; cursor: pointer;">Historial</button>';
+                html += '<button type="button" id="tab-progresion" onclick="switchTrackingTab(\'progresion\')" style="padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #737373; font-size: 14px; font-weight: 600; cursor: pointer;">Progresión</button>';
+                html += '<button type="button" id="btn-resumen-semanal" onclick="abrirResumenSemanal()" style="padding: 10px; border-radius: 8px; border: 1px solid rgba(132, 204, 22, 0.35); background: rgba(132, 204, 22, 0.08); color: #84cc16; font-size: 14px; font-weight: 600; cursor: pointer;">Resumen Semanal IA</button>';
                 html += '</div>';
                 html += '<div id="tracking-registro-view">';
-                html += '<button type="button" id="btn-resumen-semanal" onclick="abrirResumenSemanal()" style="width: 100%; margin-bottom: 16px; padding: 12px; background: rgba(132, 204, 22, 0.1); border: 1px solid rgba(132, 204, 22, 0.35); border-radius: 10px; color: #84cc16; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">Resumen Semanal IA</button>';
                 html += '<div class="tracking-day-pills">';
                 dias.forEach(function(dia, diaIdx) {
                     html += '<button type="button" class="tracking-day-pill ' + (diaIdx === initialDayIndex ? 'active' : '') + '" data-day-index="' + diaIdx + '">' + (dia.dia || dia.nombre || ('Día ' + (diaIdx + 1))) + '</button>';
@@ -5312,6 +5922,43 @@
                 html += '<div id="tracking-day-panel" class="tracking-day-panel"></div>';
                 html += '</div>'; // cierre tracking-registro-view
                 html += '<div id="tracking-historial-view" style="display:none;"></div>';
+                html += '<div id="tracking-progresion-view" style="display:none;">';
+                html += '<div style="text-align: center; padding: 40px 20px;">';
+                html += '<div style="font-size: 48px; margin-bottom: 16px;">📈</div>';
+                html += '<div style="font-size: 18px; font-weight: 700; color: white; margin-bottom: 8px;">Tu Progresión</div>';
+                html += '<div style="font-size: 14px; color: #999; margin-bottom: 24px;">Registra entrenamientos para ver cómo evoluciona tu fuerza semana a semana.</div>';
+                if (window.isPremiumSynced()) {
+                    html += '<div class="progression-charts-container" style="padding: 10px; text-align: left;">';
+                    html += '<h4 style="margin-bottom: 10px; color: #fff;">Progresión por Ejercicio</h4>';
+                    html += '<div style="display: flex; gap: 8px; margin-bottom: 12px;">';
+                    html += '<select id="ventanaSelector" style="flex: 1; padding: 8px 10px; border-radius: 8px; background: #2A2A2A; color: white; border: 1px solid #444; font-size: 13px;" onchange="if(window.cargarGraficaProgresion) window.cargarGraficaProgresion(document.getElementById(\'ejercicioSelector\').value)">';
+                    html += '<option value="0">Todo el historial</option>';
+                    html += '<option value="30">Último mes</option>';
+                    html += '<option value="90" selected>Últimos 3 meses</option>';
+                    html += '<option value="180">Últimos 6 meses</option>';
+                    html += '<option value="365">Último año</option>';
+                    html += '</select>';
+                    html += '</div>';
+                    html += '<select id="ejercicioSelector" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; background: #2A2A2A; color: white; border: 1px solid #444;" onchange="if(window.cargarGraficaProgresion) window.cargarGraficaProgresion(this.value)">';
+                    html += '<option value="">Cargando ejercicios...</option>';
+                    html += '</select>';
+                    html += '<div style="position: relative; height: 250px; width: 100%; margin-bottom: 30px;">';
+                    html += '<canvas id="graficaProgresion"></canvas>';
+                    html += '</div>';
+                    html += '<h4 style="margin-bottom: 10px; color: #fff;">Volumen Semanal (Últimas 8 semanas)</h4>';
+                    html += '<div style="position: relative; height: 200px; width: 100%;">';
+                    html += '<canvas id="graficaVolumen"></canvas>';
+                    html += '</div>';
+                    html += '</div>';
+                } else {
+                    html += '<div style="background: rgba(132,204,22,0.08); border: 1px solid rgba(132,204,22,0.2); border-radius: 12px; padding: 20px;">';
+                    html += '<div style="font-size: 14px; color: #84cc16; font-weight: 600; margin-bottom: 8px;">🔒 Función Premium</div>';
+                    html += '<div style="font-size: 13px; color: #999; margin-bottom: 16px;">Hazte Premium para ver cómo evoluciona tu fuerza semana a semana con gráficas detalladas.</div>';
+                    html += '<button onclick="openStripeCheckout()" style="background: #84cc16; color: #000; border: none; border-radius: 20px; padding: 10px 24px; font-size: 14px; font-weight: 700; cursor: pointer;">Ver planes Premium</button>';
+                    html += '</div>';
+                }
+                html += '</div>';
+                html += '</div>';
                 container.innerHTML = html;
 
                 window.__routineTrackingState = { routine: routine, selectedDayIndex: initialDayIndex };
@@ -5602,37 +6249,60 @@
             function switchTrackingTab(tab) {
                 var registroView = document.getElementById('tracking-registro-view');
                 var historialView = document.getElementById('tracking-historial-view');
+                var progresionView = document.getElementById('tracking-progresion-view');
                 var tabRegistro = document.getElementById('tab-registro');
                 var tabHistorial = document.getElementById('tab-historial');
+                var tabProgresion = document.getElementById('tab-progresion');
+                var btnResumen = document.getElementById('btn-resumen-semanal');
                 if (!registroView || !historialView) return;
+
+                function tabInactive(el) {
+                    if (!el) return;
+                    el.style.background = 'transparent';
+                    el.style.borderColor = 'rgba(255,255,255,0.1)';
+                    el.style.color = '#737373';
+                }
+                function tabActive(el) {
+                    if (!el) return;
+                    el.style.background = 'rgba(132,204,22,0.15)';
+                    el.style.borderColor = 'rgba(132,204,22,0.5)';
+                    el.style.color = '#84cc16';
+                }
 
                 if (tab === 'registro') {
                     registroView.style.display = 'block';
                     historialView.style.display = 'none';
-                    if (tabRegistro) {
-                        tabRegistro.style.background = 'rgba(132,204,22,0.15)';
-                        tabRegistro.style.borderColor = 'rgba(132,204,22,0.5)';
-                        tabRegistro.style.color = '#84cc16';
-                    }
-                    if (tabHistorial) {
-                        tabHistorial.style.background = 'transparent';
-                        tabHistorial.style.borderColor = 'rgba(255,255,255,0.1)';
-                        tabHistorial.style.color = '#737373';
-                    }
-                } else {
+                    if (progresionView) progresionView.style.display = 'none';
+                    tabActive(tabRegistro);
+                    tabInactive(tabHistorial);
+                    tabInactive(tabProgresion);
+                    tabInactive(btnResumen);
+                } else if (tab === 'historial') {
                     registroView.style.display = 'none';
                     historialView.style.display = 'block';
-                    if (tabHistorial) {
-                        tabHistorial.style.background = 'rgba(132,204,22,0.15)';
-                        tabHistorial.style.borderColor = 'rgba(132,204,22,0.5)';
-                        tabHistorial.style.color = '#84cc16';
-                    }
-                    if (tabRegistro) {
-                        tabRegistro.style.background = 'transparent';
-                        tabRegistro.style.borderColor = 'rgba(255,255,255,0.1)';
-                        tabRegistro.style.color = '#737373';
-                    }
+                    if (progresionView) progresionView.style.display = 'none';
+                    tabActive(tabHistorial);
+                    tabInactive(tabRegistro);
+                    tabInactive(tabProgresion);
+                    tabInactive(btnResumen);
                     cargarHistorialEntrenos();
+                } else if (tab === 'progresion') {
+                    registroView.style.display = 'none';
+                    historialView.style.display = 'none';
+                    if (progresionView) progresionView.style.display = 'block';
+                    tabActive(tabProgresion);
+                    tabInactive(tabRegistro);
+                    tabInactive(tabHistorial);
+                    tabInactive(btnResumen);
+
+                    var isPremium = (typeof window.isPremiumSynced === 'function')
+                        ? window.isPremiumSynced()
+                        : (localStorage.getItem('isPremium') === 'true');
+                    if (isPremium) {
+                        setTimeout(function() {
+                            if (window.initProgressionTab) window.initProgressionTab();
+                        }, 100);
+                    }
                 }
             }
             window.switchTrackingTab = switchTrackingTab;
@@ -5792,7 +6462,16 @@
                             'Authorization': 'Bearer ' + token
                         }
                     });
-                    if (!res.ok) throw new Error('Error ' + res.status);
+                    if (!res.ok) {
+                        if (res.status === 403) {
+                            content.innerHTML = getPremiumLockHTML(
+                                "Análisis IA de Entrenos",
+                                "Deja que nuestro entrenador IA analice tus últimas sesiones y te diga exactamente qué debes mejorar."
+                            );
+                            return;
+                        }
+                        throw new Error('Error cargando resumen semanas');
+                    }
                     var data = await res.json();
 
                     if (!data.tiene_datos) {
@@ -6971,6 +7650,7 @@
                     const token = localStorage.getItem('accessToken');
                     if (!token) {
                         console.log('⚠️ No hay token, usuario no autenticado');
+                        window.isUserPremium = false;
                         return false;
                     }
 
@@ -6983,6 +7663,7 @@
 
                     if (!response.ok) {
                         console.error('❌ Error obteniendo datos de usuario');
+                        window.isUserPremium = false;
                         return false;
                     }
 
@@ -7009,6 +7690,7 @@
                     
                     // Actualizar variable global
                     userPremiumStatus = isPremium;
+                    window.isUserPremium = isPremium;
 
                     return isPremium;
 
@@ -7018,9 +7700,14 @@
                     // Por seguridad, asumir FREE
                     document.body.classList.remove('user-is-premium');
                     document.body.classList.add('user-is-free');
+                    window.isUserPremium = false;
                     return false;
                 }
             }
+
+            window.isPremiumSynced = function () {
+                return localStorage.getItem('isPremium') === 'true' || window.isUserPremium === true;
+            };
             
             function isPremiumUser() {
                 // Si ya tenemos el estado, devolverlo
@@ -7039,6 +7726,11 @@
                 const storedPlan = localStorage.getItem('plan');
                 return storedPlan === 'premium';
             }
+
+            function openStripeCheckout() {
+                window.location.href = '/tarifas.html';
+            }
+            window.openStripeCheckout = openStripeCheckout;
 
             // Función auxiliar para renderizar un alimento solo con nombre (para usuarios FREE)
             function renderAlimentoSimplified(alimento) {
@@ -7711,9 +8403,33 @@
                 const chatInput = document.getElementById('chatInput');
                 const sendBtn = document.getElementById('sendBtn');
 
+                function appendMessage(sender, text) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'message ' + (sender === 'user' ? 'user-message' : 'ai-message');
+                    if (sender === 'bot') {
+                        var formattedText = String(text)
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;');
+                        formattedText = formattedText
+                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                            .replace(/\n- (.*?)/g, '<br><span style="color:#84cc16; margin-right:6px;">•</span> $1')
+                            .replace(/\n\* (.*?)/g, '<br><span style="color:#84cc16; margin-right:6px;">•</span> $1')
+                            .replace(/\n/g, '<br><br>'); // Doble salto para separar párrafos de verdad
+                        messageDiv.innerHTML = '<div class="bot-message">' + formattedText + '</div>';
+                    } else {
+                        messageDiv.textContent = text;
+                    }
+                    chatMessages.appendChild(messageDiv);
+                    setTimeout(function() {
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 100);
+                }
+
                 function addMessage(content, isUser = false, showUpgradeButton = false) {
                     const messageDiv = document.createElement('div');
-                    messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+                    const userMsg = isUser === true || isUser === 'user';
+                    messageDiv.className = `message ${userMsg ? 'user-message' : 'ai-message'}`;
                     
                     if (showUpgradeButton) {
                         messageDiv.innerHTML = `
@@ -7725,16 +8441,13 @@
                                 Mejorar a Pro
                             </button>
                         `;
+                        chatMessages.appendChild(messageDiv);
+                        setTimeout(() => {
+                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                        }, 100);
                     } else {
-                    messageDiv.textContent = content;
+                        appendMessage(userMsg ? 'user' : 'bot', content);
                     }
-                    
-                    chatMessages.appendChild(messageDiv);
-                    
-                    // Auto-scroll al final del chat
-                    setTimeout(() => {
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                    }, 100);
                 }
 
                 // Función para mostrar indicador "IA escribiendo"
@@ -7942,7 +8655,7 @@
                             
                             // Mostrar el mensaje de respuesta
                             if (data.response) {
-                                addMessage(data.response, 'assistant');
+                                addMessage(data.response, false);
                             }
                             
                             // FORZAR RECARGA INMEDIATA
@@ -8275,48 +8988,62 @@
                 }
             }
 
+            /** Card premium dorada: solo cuando la dieta viene bloqueada (Freemium opción B). */
+            function getDietNutritionUnlockCardHTML() {
+                return `
+                    <div class="diet-unlock-overlay" role="presentation">
+                        <div class="diet-unlock-card" role="region" aria-label="Desbloquear plan nutricional">
+                            <p class="diet-unlock-card__title">🔓 Desbloquear Plan Nutricional Completo</p>
+                            <p class="diet-unlock-card__sub">Cantidades, alimentos detallados y ajustes ilimitados con Premium.</p>
+                            <a class="diet-unlock-card__btn" href="/tarifas.html">Ver planes Premium</a>
+                        </div>
+                    </div>`;
+            }
+
             // Función centralizada para renderizar el HTML de la dieta
             // Esta función contiene toda la lógica de "cómo se ve la dieta"
             // Retorna el HTML como string sin insertarlo en el DOM
             function renderDietHTML(plan, isPremium) {
                 // Verificación robusta del estado premium
                 if (isPremium === undefined || isPremium === null) {
-                    // Forzar verificación: por defecto asumir FREE
                     isPremium = false;
                     const storedPremium = localStorage.getItem('is_premium');
                     if (storedPremium === 'true' || storedPremium === true) {
                         isPremium = true;
                     }
                 }
-                
-                // Debug: verificar estado
+
                 console.log('🔍 renderDietHTML - isPremium:', isPremium, 'tipo:', typeof isPremium);
-                
-                // Forzar boolean
+
                 isPremium = Boolean(isPremium);
-                
-                // Fallback de claves: normalizar meals/comidas
+
+                if (plan && plan.dieta && (plan.dieta.is_locked || plan.dieta.locked)) {
+                    return getPremiumLockHTML(
+                        "Dieta Personalizada Bloqueada",
+                        "Los usuarios gratuitos pueden ver la rutina, pero la dieta generada por IA requiere una suscripción activa."
+                    );
+                }
+
                 const meals = plan.dieta?.meals || plan.dieta?.comidas || [];
-                
-                // Si no hay dieta, retornar HTML de error
+
                 if (!plan.dieta || !Array.isArray(meals) || meals.length === 0) {
                     return '<h2 class="section-title" style="font-size: 24px; font-weight: 700; margin-bottom: 20px; color: #ffffff;">Plan nutricional</h2><p style="color: #999; padding: 20px;">No hay un plan nutricional disponible. Usa el chat para crear tu dieta personalizada.</p>';
                 }
-                
+
                 const comidas = meals;
-                
-                // Normalización robusta de macros con fallbacks
+
+                const hasLockedFlag = plan.dieta && Object.prototype.hasOwnProperty.call(plan.dieta, 'locked');
+                const dietLocked = hasLockedFlag ? plan.dieta.locked === true : !isPremium;
+
                 const macros = plan.dieta?.macros || {};
-                const proteinaVal = macros.proteinas || macros.proteina || macros.protein || 0;
-                const carbosVal = macros.hidratos || macros.carbohidratos || macros.carbs || 0;
-                const grasasVal = macros.grasas || macros.fats || 0;
-                const caloriasVal = macros.calorias || macros.total_kcal || plan.dieta?.kcal_objetivo || 0;
-                
-                // Generar HTML - Título
+                const proteinaVal = macros.proteinas_g ?? macros.proteinas ?? macros.proteina ?? macros.protein ?? 0;
+                const carbosVal = macros.carbohidratos_g ?? macros.carbohidratos ?? macros.hidratos ?? macros.carbs ?? 0;
+                const grasasVal = macros.grasas_g ?? macros.grasas ?? macros.fats ?? 0;
+                const caloriasVal = macros.calorias ?? macros.total_kcal ?? plan.dieta?.total_kcal ?? plan.dieta?.kcal_objetivo ?? 0;
+
                 let dietHTML = '<h2 class="section-title" style="font-size: 24px; font-weight: 700; margin-bottom: 20px; color: #ffffff;">Plan nutricional</h2>';
-                
-                // Macros VISIBLES (solo proteínas y carbohidratos para FREE)
-                if (!isPremium) {
+
+                if (dietLocked) {
                     dietHTML += `<div class="macros-summary" style="margin: 20px 0; padding: 15px; background: rgba(132, 204, 22, 0.1); border-radius: 8px; border-left: 3px solid #84CC16;">
                         <p style="color: #ffffff; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Resumen de Macronutrientes</p>
                         <div style="display: flex; gap: 20px; flex-wrap: wrap;">
@@ -8324,66 +9051,49 @@
                             <span style="color:#84CC16;font-size:15px;font-weight:600;">Carbohidratos: ${carbosVal}g</span>
                         </div>
                     </div>`;
-                } else {
-                    // Usuarios premium ven todos los macros
-                    if (plan.dieta?.macros || proteinaVal || carbosVal || grasasVal) {
-                        dietHTML += `<div class="macros-grid">`;
-                        dietHTML += `<div class="macro-card"><span class="macro-value">${proteinaVal}g</span><span class="macro-label">Proteínas</span></div>`;
-                        dietHTML += `<div class="macro-card"><span class="macro-value">${carbosVal}g</span><span class="macro-label">Carbohidratos</span></div>`;
-                        dietHTML += `<div class="macro-card"><span class="macro-value">${grasasVal}g</span><span class="macro-label">Grasas</span></div>`;
-                        dietHTML += `<div class="macro-card"><span class="macro-value">${caloriasVal || ''}</span><span class="macro-label">Calorías</span></div>`;
-                        dietHTML += `</div>`;
-                    }
+                } else if (plan.dieta?.macros || proteinaVal || carbosVal || grasasVal || caloriasVal) {
+                    dietHTML += `<div class="macros-grid">`;
+                    dietHTML += `<div class="macro-card"><span class="macro-value">${proteinaVal}g</span><span class="macro-label">Proteínas</span></div>`;
+                    dietHTML += `<div class="macro-card"><span class="macro-value">${carbosVal}g</span><span class="macro-label">Carbohidratos</span></div>`;
+                    dietHTML += `<div class="macro-card"><span class="macro-value">${grasasVal}g</span><span class="macro-label">Grasas</span></div>`;
+                    dietHTML += `<div class="macro-card"><span class="macro-value">${caloriasVal || ''}</span><span class="macro-label">Calorías</span></div>`;
+                    dietHTML += `</div>`;
                 }
 
-                // Contenedor de comidas con blur - SOLO para usuarios FREE
-                if (!isPremium) {
-                    dietHTML += '<div class="comidas-container" style="position: relative; min-height: 300px; margin-top: 30px;">';
-                    dietHTML += '<div class="blur-content" style="filter: blur(10px) brightness(0.7) !important; pointer-events: none !important; user-select: none !important; position: relative !important;">';
-                    
-                    // Mostrar TODAS las comidas dentro del blur - SOLO NOMBRES para usuarios FREE
-                    comidas.forEach((comida, index) => {
-                        dietHTML += `<div class="meal-card">`;
-                        dietHTML += `<div class="meal-header">`;
-                        dietHTML += `<span class="meal-time"></span>`; // Sin kcal para usuarios FREE
-                        dietHTML += `<span class="meal-name">${comida.nombre}</span>`;
-                        dietHTML += `</div>`;
-                        if (comida.alimentos) {
-                            comida.alimentos.forEach(alimento => {
-                                dietHTML += `<div class="food-item">`;
-                                const alimentoText = renderAlimentoSimplified(alimento); // Solo nombre, sin cantidades/calorías
-                                dietHTML += `<span>${alimentoText}</span>`;
-                                dietHTML += `</div>`;
-                            });
-                        }
-                        dietHTML += `</div>`; // Close meal-card
-                    });
-                    
-                    dietHTML += '</div>'; // Close blur-content
-                    
-                    // Overlay premium (sin wrapper, como en rutina)
-                    dietHTML += getPremiumLockHTML("Plan Nutricional Bloqueado", "Accede a tu dieta personalizada, macros detallados y recetas exclusivas actualizando a Premium.");
-                    dietHTML += '</div>'; // Close comidas-container
-                } else {
-                    // Para usuarios PREMIUM: mostrar todas las comidas sin blur
-                    comidas.forEach((comida, index) => {
-                        dietHTML += `<div class="meal-card">`;
-                        dietHTML += `<div class="meal-header">`;
-                        dietHTML += `<span class="meal-time">${comida.kcal ? `${comida.kcal} kcal` : ''}</span>`;
-                        dietHTML += `<span class="meal-name">${comida.nombre}</span>`;
-                        dietHTML += `</div>`;
-                        if (comida.alimentos) {
-                            comida.alimentos.forEach(alimento => {
-                                dietHTML += `<div class="food-item">`;
-                                const alimentoText = renderAlimento(alimento);
-                                dietHTML += `<span>${alimentoText}</span>`;
-                                dietHTML += `</div>`;
-                            });
-                        }
-                        dietHTML += `</div>`; // Close meal-card
-                    });
+                dietHTML += '<div class="diet-meals-section comidas-container" style="min-height: 260px;">';
+                dietHTML += '<div class="diet-meals-grid">';
+
+                comidas.forEach((comida) => {
+                    const nombre = comida.nombre || comida.name || 'Comida';
+                    const kcalStr = comida.kcal ? `${comida.kcal} kcal` : '';
+                    dietHTML += `<div class="meal-card">`;
+                    dietHTML += `<div class="meal-header">`;
+                    dietHTML += `<span class="meal-time">${kcalStr || '\u00A0'}</span>`;
+                    dietHTML += `<span class="meal-name">${nombre}</span>`;
+                    dietHTML += `</div>`;
+                    const foodsClass = dietLocked ? 'meal-foods-wrap meal-foods-blur' : 'meal-foods-wrap meal-foods-clear';
+                    dietHTML += `<div class="${foodsClass}">`;
+                    if (comida.alimentos && comida.alimentos.length) {
+                        comida.alimentos.forEach((alimento) => {
+                            dietHTML += `<div class="food-item">`;
+                            const alimentoText = dietLocked ? renderAlimentoSimplified(alimento) : renderAlimento(alimento);
+                            dietHTML += `<span>${alimentoText}</span>`;
+                            dietHTML += `</div>`;
+                        });
+                    } else {
+                        dietHTML += `<div class="food-item"><span style="color:#888;">—</span></div>`;
+                    }
+                    dietHTML += `</div></div>`;
+                });
+
+                dietHTML += '</div>';
+
+                if (dietLocked) {
+                    dietHTML += getDietNutritionUnlockCardHTML();
                 }
-                
+
+                dietHTML += '</div>';
+
                 return dietHTML;
             }
 
@@ -8700,9 +9410,6 @@
                 
                 // Solo renderizar si NO estamos en un overlay abierto
                 if (dietaContent) {
-                    // Generar HTML usando función centralizada
-                    const dietaHtml = renderDietHTML(plan, isPremium);
-                    
                     // Limpiar mensajes de error que puedan estar tapando la dieta
                     const noContentMessages = dietaContent.querySelectorAll('p');
                     noContentMessages.forEach(p => {
@@ -8719,8 +9426,10 @@
                     dietaContent.style.zIndex = '10';
                     dietaContent.style.position = 'relative';
                     
-                    // Insertar dieta
-                    dietaContent.innerHTML = dietaHtml;
+                    if (!renderDieta(plan.dieta)) {
+                        const dietaHtml = renderDietHTML(plan, isPremium);
+                        dietaContent.innerHTML = dietaHtml;
+                    }
                 }
 
                 // Mostrar consejos (aplicar recorte si es free)
@@ -10219,9 +10928,90 @@
                     }
                     
                     console.log('✅ [LOAD_USER] Usuario cargado desde BD:', userData);
-                    
+
+                    // Actualizar widget de rachas
+                    var rachaActual = userData.racha_actual || 0;
+                    var mejorRacha = userData.mejor_racha || 0;
+                    var rachaNum = document.getElementById('rachaNúmero');
+                    var rachaFuego = document.getElementById('rachaFuego');
+                    var rachaMejor = document.getElementById('rachaMejor');
+
+                    if (rachaNum) {
+                        rachaNum.textContent = rachaActual;
+                        if (rachaActual === 0) {
+                            rachaNum.className = 'racha-numero racha-cero';
+                            if (rachaFuego) rachaFuego.textContent = '🔥';
+                            if (rachaFuego) rachaFuego.classList.remove('activa');
+                        } else if (rachaActual >= 7) {
+                            rachaNum.className = 'racha-numero';
+                            if (rachaFuego) rachaFuego.textContent = '🔥';
+                            if (rachaFuego) rachaFuego.classList.add('activa');
+                        } else {
+                            rachaNum.className = 'racha-numero';
+                            if (rachaFuego) rachaFuego.textContent = '🔥';
+                            if (rachaFuego) rachaFuego.classList.remove('activa');
+                        }
+                    }
+                    if (rachaMejor) {
+                        if (mejorRacha > 0) {
+                            rachaMejor.textContent = 'Récord: ' + mejorRacha + ' días';
+                        } else {
+                            rachaMejor.textContent = '';
+                        }
+                    }
+
+                    // Actualizar banner de rachas en sección entreno
+                    var entrenNum = document.getElementById('entrenRachaNúmero');
+                    var entrenFuego = document.getElementById('entrenRachaFuego');
+                    var entrenMejor = document.getElementById('entrenRachaMejor');
+
+                    if (entrenNum) {
+                        entrenNum.textContent = rachaActual;
+                        if (rachaActual === 0) {
+                            entrenNum.className = 'entreno-racha-numero racha-cero';
+                            if (entrenFuego) {
+                                entrenFuego.textContent = '🔥';
+                                entrenFuego.classList.remove('activa');
+                            }
+                        } else if (rachaActual >= 7) {
+                            entrenNum.className = 'entreno-racha-numero';
+                            if (entrenFuego) {
+                                entrenFuego.textContent = '🔥';
+                                entrenFuego.classList.add('activa');
+                            }
+                        } else {
+                            entrenNum.className = 'entreno-racha-numero';
+                            if (entrenFuego) {
+                                entrenFuego.textContent = '🔥';
+                                entrenFuego.classList.remove('activa');
+                            }
+                        }
+                    }
+                    if (entrenMejor) {
+                        if (mejorRacha > 0) {
+                            entrenMejor.textContent = 'Récord: ' + mejorRacha + ' días';
+                        } else {
+                            entrenMejor.textContent = '';
+                        }
+                    }
+
+                    // Actualizar sección de gráficas según tier
+                    var isPremium = userData.is_premium === true || (String(userData.plan_type || '').toUpperCase() === 'PREMIUM');
+                    var graficasSection = document.getElementById('graficasSection');
+                    if (graficasSection) {
+                        if (isPremium) {
+                            graficasSection.classList.add('premium');
+                            var subtitle = document.getElementById('graficasSubtitle');
+                            if (subtitle) subtitle.textContent = 'Tu evolución de fuerza';
+                            var badge = document.getElementById('graficasPremiumBadge');
+                            if (badge) badge.style.background = 'rgba(132, 204, 22, 0.3)';
+                        } else {
+                            graficasSection.classList.remove('premium');
+                        }
+                    }
+
                     return userData;
-                    
+
                 } catch (error) {
                     console.error('❌ [LOAD_USER] Error al cargar usuario:', error);
                     
@@ -10779,24 +11569,6 @@
                 if (parts.length === 2) return parts.pop().split(';').shift();
             }
 
-            // Función helper para generar HTML de bloqueo premium unificado
-            function getPremiumLockHTML(title, subtitle) {
-                return `
-                    <div class="premium-lock-container">
-                        <div class="premium-lock-card">
-                            <div class="premium-icon-wrapper">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                            </div>
-                            <div class="premium-title">${title}</div>
-                            <div class="premium-subtitle">${subtitle}</div>
-                            <button class="premium-btn-unified" onclick="window.location.href='/tarifas.html'">
-                                Desbloquear Premium
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }
-
             // Funciones para renderizar rutina y dieta
             function renderRoutine(routine) {
                 if (!routine || !routine.exercises) {
@@ -10831,28 +11603,24 @@
             }
 
             function renderDiet(diet) {
-                // Fallback de claves: normalizar meals/comidas
                 const meals = diet?.meals || diet?.comidas || [];
-                
-                // Validación robusta: asegurar que meals es un array válido
+
                 if (!diet || !Array.isArray(meals) || meals.length === 0) {
                     return '<div class="no-diet">No hay dieta disponible</div>';
                 }
-                
-                // Obtener el estado premium
+
                 const isPremium = window.isPremiumUser ? window.isPremiumUser() : false;
-                
+                const hasLockedFlag = diet && Object.prototype.hasOwnProperty.call(diet, 'locked');
+                const dietLocked = hasLockedFlag ? diet.locked === true : !isPremium;
+
                 let html = '<div class="diet-display">';
                 html += '<h3>Tu Dieta Actualizada</h3>';
-                
-                // Mostrar macros VISIBLES (solo proteínas y carbohidratos para FREE)
-                // Nota: Esta función necesita acceso a los macros, pero aquí solo tenemos las meals
-                // Si se usa esta función, los macros deberían estar en el objeto diet
+
                 const macros = diet?.macros || {};
-                const proteinaVal = macros.proteinas || macros.proteina || macros.protein || 0;
-                const carbosVal = macros.hidratos || macros.carbohidratos || macros.carbs || 0;
-                
-                if (!isPremium && (proteinaVal || carbosVal)) {
+                const proteinaVal = macros.proteinas_g ?? macros.proteinas ?? macros.proteina ?? macros.protein ?? 0;
+                const carbosVal = macros.carbohidratos_g ?? macros.carbohidratos ?? macros.hidratos ?? macros.carbs ?? 0;
+
+                if (dietLocked && (proteinaVal || carbosVal)) {
                     html += `<div class="macros-summary" style="margin: 20px 0; padding: 15px; background: rgba(132, 204, 22, 0.1); border-radius: 8px; border-left: 3px solid #84CC16;">
                         <p style="color: #ffffff; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Resumen de Macronutrientes</p>
                         <div style="display: flex; gap: 20px; flex-wrap: wrap;">
@@ -10861,34 +11629,37 @@
                         </div>
                     </div>`;
                 }
-                
-                // Contenedor de comidas con blur para FREE
-                if (!isPremium) {
-                    html += `<div class="comidas-container" style="position: relative; margin-top: 30px;">`;
-                    html += `<div class="blur-content">`;
-                }
-                
-                meals.forEach((meal, index) => {
-                    html += `<div class="meal-section">`;
-                    html += `<h4>${meal.name || meal.nombre || 'Comida'}${meal.kcal ? ` <span style="color: #84cc16; font-size: 0.85em; font-weight: 400;">(${meal.kcal} kcal)</span>` : ''}</h4>`;
-                    if (meal.alimentos) {
-                        meal.alimentos.forEach(food => {
-                            const foodText = renderAlimento(food);
-                            html += `<div class="food-item">• ${foodText}</div>`;
-                        });
-                    }
-                    html += '</div>'; // Close meal-section
-                });
-                
-                // Cerrar wrapper de blur y añadir overlay para usuarios free
-                if (!isPremium) {
-                    html += `</div>`; // Close blur-content
-                    html += `<div class="premium-overlay">`;
-                    html += getPremiumLockHTML("Plan Nutricional Bloqueado", "Accede a todas tus comidas personalizadas, recetas detalladas y ajustes ilimitados con IA.");
+
+                html += `<div class="diet-meals-section comidas-container" style="min-height: 200px; margin-top: 16px;">`;
+                html += `<div class="diet-meals-grid">`;
+
+                meals.forEach((meal) => {
+                    const nombre = meal.name || meal.nombre || 'Comida';
+                    const kcalStr = meal.kcal ? `${meal.kcal} kcal` : '';
+                    const foodsClass = dietLocked ? 'meal-foods-wrap meal-foods-blur' : 'meal-foods-wrap meal-foods-clear';
+                    html += `<div class="meal-card">`;
+                    html += `<div class="meal-header">`;
+                    html += `<span class="meal-time">${kcalStr || '\u00A0'}</span>`;
+                    html += `<span class="meal-name">${nombre}</span>`;
                     html += `</div>`;
-                    html += `</div>`; // Close comidas-container
+                    html += `<div class="${foodsClass}">`;
+                    if (meal.alimentos && meal.alimentos.length) {
+                        meal.alimentos.forEach((food) => {
+                            const foodText = dietLocked ? renderAlimentoSimplified(food) : renderAlimento(food);
+                            html += `<div class="food-item"><span>${foodText}</span></div>`;
+                        });
+                    } else {
+                        html += `<div class="food-item"><span style="color:#888;">—</span></div>`;
+                    }
+                    html += `</div></div>`;
+                });
+
+                html += `</div>`;
+                if (dietLocked && typeof getDietNutritionUnlockCardHTML === 'function') {
+                    html += getDietNutritionUnlockCardHTML();
                 }
-                
+                html += `</div>`;
+
                 html += '</div>';
                 return html;
             }
@@ -11597,5 +12368,140 @@
             transform: scale(1.1);
         }
         </style>
+    <script>
+        window.chartProgresionInstancia = null;
+        window.chartVolumenInstancia = null;
+
+        window.initProgressionTab = async function() {
+            try {
+                var token = localStorage.getItem('accessToken');
+                var authHeaders = token ? { 'Authorization': 'Bearer ' + token } : {};
+
+                var responseEjercicios = await fetch('/api/tracking/ejercicios-registrados', { headers: authHeaders });
+                if (!responseEjercicios.ok) throw new Error('Error al cargar ejercicios');
+                var ejJson = await responseEjercicios.json();
+                var ejercicios = Array.isArray(ejJson) ? ejJson : (ejJson.ejercicios || []);
+
+                var selector = document.getElementById('ejercicioSelector');
+                if (!selector) return;
+
+                selector.innerHTML = '';
+                if (!ejercicios.length) {
+                    selector.innerHTML = '<option value="">No hay entrenos registrados aún</option>';
+                } else {
+                    ejercicios.forEach(function(ej) {
+                        var opt = document.createElement('option');
+                        opt.value = ej;
+                        opt.textContent = ej;
+                        selector.appendChild(opt);
+                    });
+                    if (window.cargarGraficaProgresion) {
+                        await window.cargarGraficaProgresion(ejercicios[0]);
+                    }
+                }
+
+                var responseVolumen = await fetch('/api/tracking/volumen-semanal?semanas=8', { headers: authHeaders });
+                if (!responseVolumen.ok) {
+                    if (responseVolumen.status === 403) {
+                        var gv403 = document.getElementById('graficaVolumen');
+                        if (gv403 && gv403.parentElement && typeof getPremiumLockHTML === 'function') {
+                            gv403.parentElement.innerHTML = getPremiumLockHTML(
+                                "Volumen Semanal",
+                                "Descubre cuántos kilos levantas por semana y optimiza tu hipertrofia con el plan Premium."
+                            );
+                        }
+                        return;
+                    }
+                    throw new Error('Error cargando volumen');
+                }
+                var volJson = await responseVolumen.json();
+                var dataVolumen = Array.isArray(volJson) ? volJson : (volJson.datos || []);
+
+                var ctxVol = document.getElementById('graficaVolumen');
+                if (ctxVol && dataVolumen.length > 0 && typeof Chart !== 'undefined') {
+                    if (window.chartVolumenInstancia) window.chartVolumenInstancia.destroy();
+
+                    var labelsVol = dataVolumen.map(function(d) { return d.semana; });
+                    var dataVol = dataVolumen.map(function(d) {
+                        return d.volumen_total != null ? d.volumen_total : d.volumen_kg;
+                    });
+
+                    window.chartVolumenInstancia = new Chart(ctxVol, {
+                        type: 'bar',
+                        data: {
+                            labels: labelsVol,
+                            datasets: [{
+                                label: 'Volumen Total (Kg)',
+                                data: dataVol,
+                                backgroundColor: '#4CAF50',
+                                borderRadius: 4
+                            }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+                }
+            } catch (error) {
+                console.error('Error inicializando gráficas:', error);
+                var selErr = document.getElementById('ejercicioSelector');
+                if (selErr && !selErr.options.length) {
+                    selErr.innerHTML = '<option value="">No se pudieron cargar los datos</option>';
+                }
+            }
+        };
+
+        window.cargarGraficaProgresion = async function(ejercicio) {
+            if (!ejercicio) return;
+            try {
+                var token = localStorage.getItem('accessToken');
+                var authHeaders = token ? { 'Authorization': 'Bearer ' + token } : {};
+                var ventanaSelector = document.getElementById('ventanaSelector');
+                var dias = ventanaSelector ? ventanaSelector.value : '0';
+                var url = '/api/tracking/progresion?ejercicio=' + encodeURIComponent(ejercicio);
+                if (dias && dias !== '0') url += '&dias=' + dias;
+                var response = await fetch(url, { headers: authHeaders });
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        var gp403 = document.getElementById('graficaProgresion');
+                        if (gp403 && gp403.parentElement && typeof getPremiumLockHTML === 'function') {
+                            gp403.parentElement.innerHTML = getPremiumLockHTML(
+                                "Gráficas Avanzadas",
+                                "Analiza tu 1RM, volumen semanal y evolución con las gráficas exclusivas para usuarios Premium."
+                            );
+                        }
+                        return;
+                    }
+                    throw new Error('Error cargando progresión');
+                }
+                var rawProg = await response.json();
+                var dataProg = Array.isArray(rawProg) ? rawProg : (rawProg.datos || []);
+
+                var ctxProg = document.getElementById('graficaProgresion');
+                if (!ctxProg || typeof Chart === 'undefined') return;
+
+                if (window.chartProgresionInstancia) window.chartProgresionInstancia.destroy();
+
+                var labels = dataProg.map(function(d) { return d.fecha; });
+                var data = dataProg.map(function(d) { return d.peso_max; });
+
+                window.chartProgresionInstancia = new Chart(ctxProg, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '1RM / Peso Máximo (Kg)',
+                            data: data,
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            } catch (error) {
+                console.error('Error al cargar gráfica de progresión:', error);
+            }
+        };
+    </script>
     </body>
     </html>

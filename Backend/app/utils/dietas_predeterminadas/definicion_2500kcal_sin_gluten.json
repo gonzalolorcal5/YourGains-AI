@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2500_sin_gluten",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2500,
+    "restriccion": "sin_gluten",
+    "macros": {
+      "proteinas_g": 218,
+      "carbohidratos_g": 218,
+      "grasas_g": 83
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Copos de avena sin gluten",
+            "cantidad": "54g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "135g"
+          },
+          {
+            "nombre": "Espinacas baby",
+            "cantidad": "833g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 54,
+          "carbohidratos_g": 54,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Dátiles",
+            "cantidad": "43g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "20g"
+          },
+          {
+            "nombre": "Batido de proteínas",
+            "cantidad": "31g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 32,
+          "carbohidratos_g": 32,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Arroz blanco",
+            "cantidad": "187g"
+          },
+          {
+            "nombre": "Pechuga de pollo",
+            "cantidad": "150g"
+          },
+          {
+            "nombre": "Brócoli",
+            "cantidad": "700g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 65,
+          "carbohidratos_g": 65,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Queso cottage",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Mermelada light",
+            "cantidad": "49g"
+          },
+          {
+            "nombre": "Tostadas de arroz",
+            "cantidad": "20g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 21,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Salmón a la plancha",
+            "cantidad": "83g"
+          },
+          {
+            "nombre": "Patata asada",
+            "cantidad": "193g"
+          },
+          {
+            "nombre": "Espárragos",
+            "cantidad": "749g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 43,
+          "carbohidratos_g": 43,
+          "grasas_g": 16
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin gluten."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

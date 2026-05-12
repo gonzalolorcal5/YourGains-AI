@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_2800_sin_frutos_secos",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 2800,
+    "restriccion": "sin_frutos_secos",
+    "macros": {
+      "proteinas_g": 210,
+      "carbohidratos_g": 280,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "93g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "210g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "25g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 52,
+          "carbohidratos_g": 70,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Gominolas deportivas o ositos",
+            "cantidad": "42g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "35g"
+          },
+          {
+            "nombre": "Pre-entreno líquido",
+            "cantidad": "420g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 31,
+          "carbohidratos_g": 42,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Ensalada de pasta",
+            "cantidad": "78g"
+          },
+          {
+            "nombre": "Atún y huevo duro",
+            "cantidad": "196g"
+          },
+          {
+            "nombre": "Aceitunas y tomate",
+            "cantidad": "560g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 63,
+          "carbohidratos_g": 84,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Porridge frío (Overnight oats)",
+            "cantidad": "24g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "23g"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "104g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 21,
+          "carbohidratos_g": 28,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Pizza con base de coliflor",
+            "cantidad": "279g"
+          },
+          {
+            "nombre": "Mozzarella light",
+            "cantidad": "111g"
+          },
+          {
+            "nombre": "Tomate frito sin azúcar",
+            "cantidad": "466g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 42,
+          "carbohidratos_g": 56,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin frutos secos."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

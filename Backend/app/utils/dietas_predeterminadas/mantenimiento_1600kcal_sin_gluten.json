@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_1600_sin_gluten",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 1600,
+    "restriccion": "sin_gluten",
+    "macros": {
+      "proteinas_g": 120,
+      "carbohidratos_g": 160,
+      "grasas_g": 53
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Huevos",
+            "cantidad": "86g"
+          },
+          {
+            "nombre": "Jamón cocido",
+            "cantidad": "120g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "666g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 40,
+          "grasas_g": 13
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 240,
+        "alimentos": [
+          {
+            "nombre": "Dátiles",
+            "cantidad": "28g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "12g"
+          },
+          {
+            "nombre": "Batido de proteínas",
+            "cantidad": "20g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 18,
+          "carbohidratos_g": 24,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Pasta de arroz",
+            "cantidad": "44g"
+          },
+          {
+            "nombre": "Gambas peladas",
+            "cantidad": "192g"
+          },
+          {
+            "nombre": "Ajo y perejil",
+            "cantidad": "320g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 48,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 160,
+        "alimentos": [
+          {
+            "nombre": "Porridge frío (Overnight oats)",
+            "cantidad": "13g"
+          },
+          {
+            "nombre": "Proteína Whey",
+            "cantidad": "13g"
+          },
+          {
+            "nombre": "Plátano",
+            "cantidad": "59g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 12,
+          "carbohidratos_g": 16,
+          "grasas_g": 5
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "96g"
+          },
+          {
+            "nombre": "Crema de calabaza",
+            "cantidad": "266g"
+          },
+          {
+            "nombre": "Picatostes integrales",
+            "cantidad": "26g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 32,
+          "grasas_g": 10
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin gluten."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_2000_vegano",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 2000,
+    "restriccion": "vegano",
+    "macros": {
+      "proteinas_g": 150,
+      "carbohidratos_g": 200,
+      "grasas_g": 66
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Revuelto de tofu",
+            "cantidad": "108g"
+          },
+          {
+            "nombre": "Pan integral",
+            "cantidad": "66g"
+          },
+          {
+            "nombre": "Aguacate",
+            "cantidad": "99g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 37,
+          "carbohidratos_g": 50,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 300,
+        "alimentos": [
+          {
+            "nombre": "Tofu marinado",
+            "cantidad": "65g"
+          },
+          {
+            "nombre": "Pan tostado",
+            "cantidad": "40g"
+          },
+          {
+            "nombre": "Aceite de oliva virgen extra",
+            "cantidad": "11g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 22,
+          "carbohidratos_g": 30,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 600,
+        "alimentos": [
+          {
+            "nombre": "Boniato al horno",
+            "cantidad": "230g"
+          },
+          {
+            "nombre": "Tempeh asado",
+            "cantidad": "100g"
+          },
+          {
+            "nombre": "Espárragos trigueros",
+            "cantidad": "900g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 45,
+          "carbohidratos_g": 60,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 200,
+        "alimentos": [
+          {
+            "nombre": "Bocadillo pequeño de atún",
+            "cantidad": "33g"
+          },
+          {
+            "nombre": "Lechuga",
+            "cantidad": "333g"
+          },
+          {
+            "nombre": "Aceitunas",
+            "cantidad": "46g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 15,
+          "carbohidratos_g": 20,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Soja texturizada",
+            "cantidad": "86g"
+          },
+          {
+            "nombre": "Fideos de calabacín",
+            "cantidad": "666g"
+          },
+          {
+            "nombre": "Salsa de soja y sésamo",
+            "cantidad": "26g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 40,
+          "grasas_g": 13
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

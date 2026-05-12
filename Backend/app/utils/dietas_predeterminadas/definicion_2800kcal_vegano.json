@@ -1,0 +1,137 @@
+[
+  {
+    "id": "definicion_2800_vegano",
+    "objetivo": "definicion",
+    "kcal_objetivo": 2800,
+    "restriccion": "vegano",
+    "macros": {
+      "proteinas_g": 244,
+      "carbohidratos_g": 244,
+      "grasas_g": 93
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 700,
+        "alimentos": [
+          {
+            "nombre": "Tostadas de arroz",
+            "cantidad": "60g"
+          },
+          {
+            "nombre": "Heura en trozos",
+            "cantidad": "210g"
+          },
+          {
+            "nombre": "Pimientos asados",
+            "cantidad": "700g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 61,
+          "carbohidratos_g": 61,
+          "grasas_g": 23
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 420,
+        "alimentos": [
+          {
+            "nombre": "Batido de proteínas",
+            "cantidad": "35g"
+          },
+          {
+            "nombre": "Mandarinas",
+            "cantidad": "280g"
+          },
+          {
+            "nombre": "Anacardos",
+            "cantidad": "23g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 36,
+          "grasas_g": 14
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 840,
+        "alimentos": [
+          {
+            "nombre": "Edamame",
+            "cantidad": "224g"
+          },
+          {
+            "nombre": "Arroz para sushi",
+            "cantidad": "210g"
+          },
+          {
+            "nombre": "Edamame extra",
+            "cantidad": "140g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 73,
+          "carbohidratos_g": 73,
+          "grasas_g": 28
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 280,
+        "alimentos": [
+          {
+            "nombre": "Tortitas de maíz",
+            "cantidad": "24g"
+          },
+          {
+            "nombre": "Guacamole",
+            "cantidad": "55g"
+          },
+          {
+            "nombre": "Fiambre vegetal",
+            "cantidad": "83g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 24,
+          "grasas_g": 9
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 560,
+        "alimentos": [
+          {
+            "nombre": "Sopa de fideos",
+            "cantidad": "279g"
+          },
+          {
+            "nombre": "Jackfruit",
+            "cantidad": "111g"
+          },
+          {
+            "nombre": "Tofu marinado",
+            "cantidad": "121g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 49,
+          "carbohidratos_g": 49,
+          "grasas_g": 18
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

@@ -1380,6 +1380,15 @@ def obtener_rutina_actual(
         # Normalizar a Formato A por si hay datos antiguos en BD
         current_routine = _normalizar_formato_a(current_routine)
 
+        # 🔒 Bloqueo de Dieta en modo Free
+        es_realmente_premium = bool(usuario.is_premium) or usuario.plan_type in ("PREMIUM", "PREMIUM_MONTHLY", "PREMIUM_YEARLY")
+        if not es_realmente_premium:
+            current_diet = {
+                "is_locked": True,
+                "message": "Contenido Premium bloqueado",
+                "comidas": []  # Enviamos lista vacía para evitar errores en el frontend
+            }
+
         return {
             "success": True,
             "current_routine": current_routine,
@@ -1407,7 +1416,15 @@ def obtener_dieta_actual(
     try:
         # CRÍTICO: Refrescar datos del usuario desde BD para obtener la versión más reciente
         db.refresh(usuario)
-        
+
+        es_realmente_premium = bool(usuario.is_premium) or usuario.plan_type in ("PREMIUM", "PREMIUM_MONTHLY", "PREMIUM_YEARLY")
+        if not es_realmente_premium:
+            return {
+                "success": True,
+                "is_locked": True,
+                "current_diet": {"message": "Desbloquea tu dieta con el plan Premium", "locked": True}
+            }
+
         current_diet = deserialize_json(usuario.current_diet or "{}", "current_diet")
         
         # Si no hay current_diet, intentar obtener del último plan como fallback

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_1600_sin_brocoli",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 1600,
+    "restriccion": "sin_brocoli",
+    "macros": {
+      "proteinas_g": 120,
+      "carbohidratos_g": 160,
+      "grasas_g": 53
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Kéfir",
+            "cantidad": "200g"
+          },
+          {
+            "nombre": "Copos de maíz",
+            "cantidad": "33g"
+          },
+          {
+            "nombre": "Semillas de chía",
+            "cantidad": "26g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 40,
+          "grasas_g": 13
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 240,
+        "alimentos": [
+          {
+            "nombre": "Pan blanco",
+            "cantidad": "28g"
+          },
+          {
+            "nombre": "Mermelada",
+            "cantidad": "32g"
+          },
+          {
+            "nombre": "Queso fresco",
+            "cantidad": "80g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 18,
+          "carbohidratos_g": 24,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Boniato al horno",
+            "cantidad": "184g"
+          },
+          {
+            "nombre": "Salmón al horno",
+            "cantidad": "80g"
+          },
+          {
+            "nombre": "Espárragos trigueros",
+            "cantidad": "720g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 48,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 160,
+        "alimentos": [
+          {
+            "nombre": "Bocadillo pequeño de atún",
+            "cantidad": "26g"
+          },
+          {
+            "nombre": "Lechuga",
+            "cantidad": "266g"
+          },
+          {
+            "nombre": "Aceitunas",
+            "cantidad": "37g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 12,
+          "carbohidratos_g": 16,
+          "grasas_g": 5
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Carne picada de pollo",
+            "cantidad": "69g"
+          },
+          {
+            "nombre": "Fideos de calabacín",
+            "cantidad": "533g"
+          },
+          {
+            "nombre": "Salsa de soja y sésamo",
+            "cantidad": "21g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 32,
+          "grasas_g": 10
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin brocoli."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

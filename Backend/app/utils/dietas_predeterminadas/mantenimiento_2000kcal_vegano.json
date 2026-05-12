@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_2000_vegano",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 2000,
+    "restriccion": "vegano",
+    "macros": {
+      "proteinas_g": 150,
+      "carbohidratos_g": 200,
+      "grasas_g": 66
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Porridge de avena",
+            "cantidad": "43g"
+          },
+          {
+            "nombre": "Bebida de soja",
+            "cantidad": "366ml"
+          },
+          {
+            "nombre": "Crema de almendras",
+            "cantidad": "28g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 37,
+          "carbohidratos_g": 50,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Media Mañana / Pre-entreno",
+        "kcal": 300,
+        "alimentos": [
+          {
+            "nombre": "Dátiles",
+            "cantidad": "35g"
+          },
+          {
+            "nombre": "Nueces",
+            "cantidad": "16g"
+          },
+          {
+            "nombre": "Batido de proteínas",
+            "cantidad": "25g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 22,
+          "carbohidratos_g": 30,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 600,
+        "alimentos": [
+          {
+            "nombre": "Quinoa",
+            "cantidad": "52g"
+          },
+          {
+            "nombre": "Tempeh a la plancha",
+            "cantidad": "180g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "1200g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 45,
+          "carbohidratos_g": 60,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 200,
+        "alimentos": [
+          {
+            "nombre": "Yogur de proteínas",
+            "cantidad": "80g"
+          },
+          {
+            "nombre": "Granola sin azúcar",
+            "cantidad": "16g"
+          },
+          {
+            "nombre": "Frambuesas",
+            "cantidad": "120g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 15,
+          "carbohidratos_g": 20,
+          "grasas_g": 6
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 400,
+        "alimentos": [
+          {
+            "nombre": "Tempeh",
+            "cantidad": "66g"
+          },
+          {
+            "nombre": "Patata asada",
+            "cantidad": "154g"
+          },
+          {
+            "nombre": "Espárragos",
+            "cantidad": "600g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 30,
+          "carbohidratos_g": 40,
+          "grasas_g": 13
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Vegano."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "recomposicion_2500_sin_gluten",
+    "objetivo": "recomposicion",
+    "kcal_objetivo": 2500,
+    "restriccion": "sin_gluten",
+    "macros": {
+      "proteinas_g": 187,
+      "carbohidratos_g": 250,
+      "grasas_g": 83
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 625,
+        "alimentos": [
+          {
+            "nombre": "Kéfir",
+            "cantidad": "312g"
+          },
+          {
+            "nombre": "Copos de maíz sin gluten",
+            "cantidad": "52g"
+          },
+          {
+            "nombre": "Semillas de chía",
+            "cantidad": "41g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 46,
+          "carbohidratos_g": 62,
+          "grasas_g": 20
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 375,
+        "alimentos": [
+          {
+            "nombre": "Yogur griego",
+            "cantidad": "125g"
+          },
+          {
+            "nombre": "Copos de avena sin gluten",
+            "cantidad": "32g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "37g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 28,
+          "carbohidratos_g": 37,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 750,
+        "alimentos": [
+          {
+            "nombre": "Quinoa",
+            "cantidad": "65g"
+          },
+          {
+            "nombre": "Pavo a la plancha",
+            "cantidad": "225g"
+          },
+          {
+            "nombre": "Calabacín",
+            "cantidad": "1500g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 56,
+          "carbohidratos_g": 75,
+          "grasas_g": 25
+        }
+      },
+      {
+        "nombre": "Merienda / Post-entreno",
+        "kcal": 250,
+        "alimentos": [
+          {
+            "nombre": "Puding de chía (Proteína + Chía + Leche)",
+            "cantidad": "83ml"
+          },
+          {
+            "nombre": "Fresas",
+            "cantidad": "249g"
+          },
+          {
+            "nombre": "Sirope cero",
+            "cantidad": "83g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 18,
+          "carbohidratos_g": 25,
+          "grasas_g": 8
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 500,
+        "alimentos": [
+          {
+            "nombre": "Tortilla francesa",
+            "cantidad": "108g"
+          },
+          {
+            "nombre": "Queso tierno",
+            "cantidad": "49g"
+          },
+          {
+            "nombre": "Ensalada de canónigos",
+            "cantidad": "833g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 37,
+          "carbohidratos_g": 50,
+          "grasas_g": 16
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin gluten."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_3600_sin_frutos_secos",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 3600,
+    "restriccion": "sin_frutos_secos",
+    "macros": {
+      "proteinas_g": 270,
+      "carbohidratos_g": 360,
+      "grasas_g": 120
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 900,
+        "alimentos": [
+          {
+            "nombre": "Harina de avena",
+            "cantidad": "75g"
+          },
+          {
+            "nombre": "Claras de huevo",
+            "cantidad": "600g"
+          },
+          {
+            "nombre": "Arándanos",
+            "cantidad": "525g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 67,
+          "carbohidratos_g": 90,
+          "grasas_g": 30
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 540,
+        "alimentos": [
+          {
+            "nombre": "Yogur griego",
+            "cantidad": "180g"
+          },
+          {
+            "nombre": "Avena",
+            "cantidad": "46g"
+          },
+          {
+            "nombre": "Miel",
+            "cantidad": "54g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 40,
+          "carbohidratos_g": 54,
+          "grasas_g": 18
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 1080,
+        "alimentos": [
+          {
+            "nombre": "Arroz integral",
+            "cantidad": "100g"
+          },
+          {
+            "nombre": "Lomo de cerdo magro",
+            "cantidad": "252g"
+          },
+          {
+            "nombre": "Pimientos",
+            "cantidad": "1260g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 81,
+          "carbohidratos_g": 108,
+          "grasas_g": 36
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 360,
+        "alimentos": [
+          {
+            "nombre": "Pan integral",
+            "cantidad": "48g"
+          },
+          {
+            "nombre": "Jamón serrano magro",
+            "cantidad": "72g"
+          },
+          {
+            "nombre": "Tomate",
+            "cantidad": "600g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 27,
+          "carbohidratos_g": 36,
+          "grasas_g": 12
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 720,
+        "alimentos": [
+          {
+            "nombre": "Queso cottage",
+            "cantidad": "240g"
+          },
+          {
+            "nombre": "Salmón ahumado",
+            "cantidad": "120g"
+          },
+          {
+            "nombre": "Tostadas integrales",
+            "cantidad": "60g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 54,
+          "carbohidratos_g": 72,
+          "grasas_g": 24
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin frutos secos."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]

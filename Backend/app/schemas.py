@@ -49,6 +49,8 @@ class UserResponse(BaseModel):
     email: str
     plan_type: str = "FREE"
     is_premium: bool = False
+    racha_actual: int = 0
+    mejor_racha: int = 0
     onboarding_completed: bool = False
     session_duration: str = "45-60"  # Valor por defecto para usuarios antiguos
     profile_picture: Optional[str] = None

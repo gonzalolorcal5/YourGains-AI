@@ -1,0 +1,137 @@
+[
+  {
+    "id": "mantenimiento_3200_sin_pescado",
+    "objetivo": "mantenimiento",
+    "kcal_objetivo": 3200,
+    "restriccion": "sin_pescado",
+    "macros": {
+      "proteinas_g": 240,
+      "carbohidratos_g": 320,
+      "grasas_g": 106
+    },
+    "comidas": [
+      {
+        "nombre": "Desayuno",
+        "kcal": 800,
+        "alimentos": [
+          {
+            "nombre": "Kéfir",
+            "cantidad": "400g"
+          },
+          {
+            "nombre": "Copos de maíz",
+            "cantidad": "66g"
+          },
+          {
+            "nombre": "Semillas de chía",
+            "cantidad": "53g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 60,
+          "carbohidratos_g": 80,
+          "grasas_g": 26
+        }
+      },
+      {
+        "nombre": "Media Mañana",
+        "kcal": 480,
+        "alimentos": [
+          {
+            "nombre": "Pan de centeno",
+            "cantidad": "64g"
+          },
+          {
+            "nombre": "Huevo cocido",
+            "cantidad": "144g"
+          },
+          {
+            "nombre": "Pimientos",
+            "cantidad": "560g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 36,
+          "carbohidratos_g": 48,
+          "grasas_g": 16
+        }
+      },
+      {
+        "nombre": "Almuerzo / Comida",
+        "kcal": 960,
+        "alimentos": [
+          {
+            "nombre": "Arroz blanco",
+            "cantidad": "240g"
+          },
+          {
+            "nombre": "Pechuga de pollo",
+            "cantidad": "192g"
+          },
+          {
+            "nombre": "Brócoli",
+            "cantidad": "896g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 72,
+          "carbohidratos_g": 96,
+          "grasas_g": 32
+        }
+      },
+      {
+        "nombre": "Merienda",
+        "kcal": 320,
+        "alimentos": [
+          {
+            "nombre": "Hummus",
+            "cantidad": "64g"
+          },
+          {
+            "nombre": "Palitos de zanahoria",
+            "cantidad": "256g"
+          },
+          {
+            "nombre": "Pechuga de pavo",
+            "cantidad": "96g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 24,
+          "carbohidratos_g": 32,
+          "grasas_g": 10
+        }
+      },
+      {
+        "nombre": "Cena",
+        "kcal": 640,
+        "alimentos": [
+          {
+            "nombre": "Huevos",
+            "cantidad": "138g"
+          },
+          {
+            "nombre": "Patata cocida",
+            "cantidad": "247g"
+          },
+          {
+            "nombre": "Cebolla",
+            "cantidad": "533g"
+          }
+        ],
+        "macros": {
+          "proteinas_g": 48,
+          "carbohidratos_g": 64,
+          "grasas_g": 21
+        }
+      }
+    ],
+    "consejos": [
+      "Bebe al menos 2.5L de agua al día.",
+      "Puedes cambiar las especias al gusto, no suman calorías.",
+      "Plan ajustado para requerimientos: Sin pescado."
+    ],
+    "locked": false,
+    "version": "2.1.0"
+  }
+]
