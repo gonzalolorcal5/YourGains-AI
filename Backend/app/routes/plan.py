@@ -3,7 +3,7 @@ from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.auth_utils import get_current_user
-from app.schemas import PlanRequest, PlanResponse
+from app.schemas import PlanRequest, PlanResponse, RutinaEditRequest
 from app.models import Usuario, Plan
 from datetime import datetime
 from fastapi.security import HTTPBearer
@@ -11,6 +11,7 @@ from typing import List
 import json
 from app.utils.pdf_generator import generate_routine_pdf
 from app.utils.json_helpers import deserialize_json
+from app.utils.ejercicios_catalogo import get_catalogo
 
 # 👇 importa tu generador GPT
 from app.utils.gpt import generar_plan_personalizado
@@ -1443,6 +1444,103 @@ def obtener_dieta_actual(
         raise HTTPException(status_code=500, detail=f"Error obteniendo dieta actual: {str(e)}")
 
 
+@router.put("/user/rutina", dependencies=[Depends(security)])
+def actualizar_rutina_usuario(
+    body: RutinaEditRequest = Body(...),
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(get_current_user)
+):
+    """
+    Actualiza la rutina del usuario tras edición manual desde el dashboard.
+    Escribe en `usuario.current_routine` (fuente de verdad para el render)
+    y también en `Plan.rutina` del último plan (para coherencia y PDFs).
+    
+    Preserva metadata, titulo, consejos, version y created_at de la rutina
+    actual. Añade updated_at con timestamp ISO.
+    
+    Body: RutinaEditRequest (validado por Pydantic).
+    """
+    try:
+        print(f"📝 PUT /user/rutina para user_id={usuario.id}")
+        
+        # Refrescar usuario desde BD (defensa contra stale data)
+        db.expire_all()
+        usuario_fresh = db.query(Usuario).filter(Usuario.id == usuario.id).first()
+        if not usuario_fresh:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+        
+        # 1. Leer current_routine actual para preservar metadata/titulo/consejos/version
+        try:
+            current_routine_actual = json.loads(usuario_fresh.current_routine or "{}")
+            if not isinstance(current_routine_actual, dict):
+                current_routine_actual = {}
+        except (json.JSONDecodeError, TypeError):
+            print(f"⚠️ current_routine actual no parseable, partiendo de {{}}")
+            current_routine_actual = {}
+        
+        # 2. Construir nueva rutina merging body + campos preservados
+        # Normalizar nombres de ejercicios (strip defensivo aunque Pydantic ya lo hace)
+        nuevos_dias = []
+        for dia in body.dias:
+            nuevos_ejercicios = []
+            for ej in dia.ejercicios:
+                nuevos_ejercicios.append({
+                    "nombre": ej.nombre.strip(),
+                    "series": ej.series,
+                    "repeticiones": ej.repeticiones.strip(),
+                    "descanso": ej.descanso.strip(),
+                })
+            nuevos_dias.append({
+                "dia": dia.dia.strip(),
+                "ejercicios": nuevos_ejercicios,
+            })
+        
+        nueva_rutina = {
+            "dias": nuevos_dias,
+            "titulo": current_routine_actual.get("titulo", ""),
+            "consejos": current_routine_actual.get("consejos", []),
+            "metadata": current_routine_actual.get("metadata", {}),
+            "created_at": current_routine_actual.get("created_at", datetime.utcnow().isoformat()),
+            "updated_at": datetime.utcnow().isoformat(),
+            "version": current_routine_actual.get("version", "2.0.0"),
+        }
+        
+        nueva_rutina_str = json.dumps(nueva_rutina, ensure_ascii=False)
+        
+        # 3. Actualizar usuario.current_routine
+        usuario_fresh.current_routine = nueva_rutina_str
+        
+        # 4. Actualizar Plan.rutina del último plan (si existe)
+        ultimo_plan = db.query(Plan).filter(Plan.user_id == usuario_fresh.id).order_by(Plan.id.desc()).first()
+        if ultimo_plan:
+            print(f"📝 Actualizando también Plan.rutina (plan_id={ultimo_plan.id})")
+            ultimo_plan.rutina = nueva_rutina_str
+        else:
+            print(f"ℹ️ Usuario {usuario_fresh.id} no tiene Plan registrado, solo se actualiza current_routine")
+        
+        # 5. Commit atómico
+        db.commit()
+        db.refresh(usuario_fresh)
+        
+        print(f"✅ Rutina actualizada para user_id={usuario_fresh.id}: {len(nuevos_dias)} días")
+        
+        return {
+            "success": True,
+            "message": "Rutina actualizada correctamente",
+            "current_routine": nueva_rutina,
+        }
+    
+    except HTTPException:
+        db.rollback()
+        raise
+    except Exception as e:
+        db.rollback()
+        print(f"❌ Error en PUT /user/rutina: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Error al actualizar rutina: {str(e)}")
+
+
 @router.get("/planes/{plan_id}/pdf", dependencies=[Depends(security)])
 def descargar_plan_pdf(
     plan_id: int,
@@ -1531,3 +1629,21 @@ def descargar_ultimo_plan_pdf(
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al generar PDF: {str(e)}")
+
+
+@router.get("/api/ejercicios/catalogo")
+def obtener_catalogo_ejercicios():
+    """
+    Devuelve el catálogo curado de ejercicios agrupados por grupo muscular.
+    Endpoint público (sin auth) porque es data estática.
+    Usado por el editor de rutina en el dashboard.
+    """
+    try:
+        catalogo = get_catalogo()
+        return {
+            "success": True,
+            "catalogo": catalogo
+        }
+    except Exception as e:
+        print(f"❌ Error sirviendo catálogo de ejercicios: {e}")
+        raise HTTPException(status_code=500, detail="Error al obtener catálogo de ejercicios")

@@ -11,7 +11,6 @@ from dotenv import load_dotenv
 
 from app.database import SessionLocal
 from app.models import Usuario, Plan
-from app.routes.stripe_webhook import generate_and_save_ai_plan, _user_has_premium_generated_plan
 
 router = APIRouter()
 
@@ -30,8 +29,6 @@ def set_customer_id_by_email(db: Session, email: str, customer_id: str):
 async def set_premium_by_customer(db: Session, customer_id: str, is_premium: bool):
     user = db.query(Usuario).filter(Usuario.stripe_customer_id == customer_id).first()
     if user:
-        was_already_premium = user.is_premium
-
         user.is_premium = is_premium
         user.plan_type = "PREMIUM_MONTHLY" if is_premium else "FREE"
         if not is_premium:
@@ -42,15 +39,7 @@ async def set_premium_by_customer(db: Session, customer_id: str, is_premium: boo
         db.refresh(user)
 
         if is_premium:
-            # Triple validación anti-duplicados:
-            # 1. ¿Ya era premium antes de este evento? → otro evento ya lo activó
-            # 2. ¿Ya tiene plan generado por IA guardado?
-            # 3. ¿Está el lock de generación activo ahora mismo?
-            if was_already_premium or _user_has_premium_generated_plan(user) or getattr(user, 'is_generating_plan', False):
-                print(f"⚠️ Skipping generación: was_already_premium={was_already_premium}, plan_exists={_user_has_premium_generated_plan(user)}, lock={getattr(user, 'is_generating_plan', False)} (user_id {user.id})")
-            else:
-                print(f"💎 Usuario {user.id} se hizo PREMIUM, generando plan con IA...")
-                await generate_and_save_ai_plan(db, user.id, force=True)
+            print(f"✅ Usuario {user.id} activado como Premium — rutina del banco de JSONs activa")
 
         print(f"✅ Usuario {user.id} actualizado a {'PREMIUM_MONTHLY' if is_premium else 'FREE'}")
 
@@ -167,10 +156,7 @@ async def stripe_webhook_cli(request: Request):
                         db.commit()
                         print(f"✅ Usuario {user.id} actualizado a PREMIUM")
                         
-                        # Generar plan con IA
-                        print(f"🤖 Iniciando generación de plan con IA...")
-                        await generate_and_save_ai_plan(db, user.id, force=True)
-                        print(f"🎉 Plan generado exitosamente para usuario {user.id}")
+                        print(f"✅ Usuario {user.id} activado como Premium via payment_intent")
                     else:
                         print(f"❌ No se encontró usuario con ID: {user_id}")
                 except Exception as e:

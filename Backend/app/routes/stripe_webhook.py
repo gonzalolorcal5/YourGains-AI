@@ -503,33 +503,9 @@ async def stripe_webhook(request: Request):
                             generate_plan=False,
                         )
 
-                        # 🔥 GENERAR PLAN UNA SOLA VEZ — triple protección frente a duplicados por retries
-                        # 1) Idempotencia por event_id (arriba): mismo evento → skip completo.
-                        # 2) Plan ya generado (is_premium_generated): skip generación.
-                        # 3) Lock is_generating_plan: otra request generando → skip. Lock se libera en finally.
                         user = db.query(Usuario).filter(Usuario.stripe_customer_id == customer_id).first()
                         if user:
-                            # 🛡️ PROTECCIÓN 1: Ya existe plan generado por IA para este usuario
-                            if _user_has_premium_generated_plan(user):
-                                print(f"⚠️ Plan ya existe para user_id {user.id}, skipping generation")
-                            # 🛡️ PROTECCIÓN 2: Lock activo — otra request ya está generando
-                            elif user.is_generating_plan:
-                                print(f"⚠️ Ya se está generando plan para user_id {user.id}, skipping")
-                            else:
-                                try:
-                                    print(f"💎 Generando plan con IA para usuario {user.id} (checkout.session.completed)...")
-                                    plan_generated = await generate_and_save_ai_plan(db, user.id, force=True)
-                                    if plan_generated:
-                                        print(f"✅ Plan generado exitosamente para usuario {user.id}")
-                                    else:
-                                        print(f"⚠️ No se pudo generar plan para usuario {user.id}, pero el usuario es premium")
-                                except Exception as gen_err:
-                                    print(f"❌ Error generando plan para user_id {user.id}: {gen_err}")
-                                    import traceback
-                                    traceback.print_exc()
-                                    # Lock se libera en finally de generate_and_save_ai_plan
-                                    # Re-raise para devolver 500: no marcamos evento → Stripe reintenta
-                                    raise
+                            print(f"✅ Usuario {user.id} activado como Premium — rutina del banco de JSONs activa")
 
                         print(f"✅ Premium activado correctamente")
                         
@@ -636,9 +612,7 @@ async def stripe_webhook(request: Request):
                         db.commit()
                         print(f"✅ Usuario {user.id} actualizado a {plan_type}")
                         
-                        # Generar plan con IA (forzado porque es un pago)
-                        await generate_and_save_ai_plan(db, user.id, force=True)
-                        print(f"🎉 Plan generado exitosamente para usuario {user.id}")
+                        print(f"✅ Usuario {user.id} activado como Premium via payment_intent — rutina del banco activa")
                     else:
                         print(f"❌ No se encontró usuario con ID: {user_id}")
                 except Exception as e:
